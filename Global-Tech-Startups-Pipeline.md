@@ -1,0 +1,4 @@
+# Link
+[Dataset Global Tech Startups Pipeline](https://www.kaggle.com/datasets/saitejabandaruin/global-tech-startups-pipeline)
+# Acerca de este archivo
+Este conjunto de datos ofrece un entorno excepcional para que científicos de datos, economistas e ingenieros de aprendizaje automático modelen las valoraciones de las empresas, predigan la gravedad de los despidos en función de los índices de gasto macroeconómico y analicen el panorama global de la inversión tecnológica. El modelo de despidos de este conjunto de datos utiliza modelos probabilísticos avanzados que tienen en cuenta los multiplicadores de sobrecontratación de las políticas de tipos de interés cero, las limitaciones de liquidez y el colapso del mercado específico de cada sector.

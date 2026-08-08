@@ -1,0 +1,4 @@
+# Link
+[Dataset Credit Card Customer Behavior Segmentation Dataset](https://www.kaggle.com/datasets/dharmendrapandit12/credit-card-customer-behavior-segmentation-dataset)
+# Acerca de este archivo
+Este conjunto de datos contiene 50 000 registros sintéticos de clientes de tarjetas de crédito generados mediante reglas de negocio bancarias realistas y distribuciones estadísticas. Al asignar valores aleatoriamente, el conjunto de datos conserva relaciones significativas entre la demografía del cliente, su comportamiento financiero, el uso de la tarjeta de crédito, los patrones de gasto, los hábitos de pago y la solvencia crediticia. El conjunto de datos está diseñado para proyectos de aprendizaje automático, análisis de datos, segmentación de clientes y análisis financiero. Puede utilizarse para clasificación, regresión, agrupamiento, ingeniería de características, creación de paneles de control y fines educativos.
