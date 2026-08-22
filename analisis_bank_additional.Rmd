@@ -1,10 +1,15 @@
-------------------------------------------------------------------------
-
-editor_options: markdown: wrap: 72 ---
-
-# ---
-
-title: "Estadística Multidimensional — Análisis Exploratorio" subtitle: "Dataset 1: Campaña de Marketing Bancario (bank-additional-full)" author: "Estadística Multidimensional" date: "`r format(Sys.Date(), '%d/%m/%Y')`" output: html_document: toc: true toc_depth: 3 number_sections: true df_print: paged ---
+---
+title: "Estadística Multidimensional — Análisis Exploratorio"
+subtitle: "Dataset 1: Campaña de Marketing Bancario (bank-additional-full)"
+author: "Estadística Multidimensional"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output: 
+  html_document: 
+    toc: true 
+    toc_depth: 3 
+    number_sections: true 
+    df_print: paged
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment = "#>")
@@ -29,7 +34,13 @@ ruta_bank <- "bronze/bank-additional-full.csv"
 readLines(ruta_bank, n = 3)
 ```
 
-**Diagnóstico preliminar:** \* **Separador de columnas:** Punto y coma (`;`). \* **Separador decimal:** Punto (`.`) en variables cuantitativas (ej. `1.1`, `93.994`). \* **Encabezado:** Sí, presente en la primera línea. \* **Valores de texto:** Vienen delimitados por comillas dobles (`"..."`). \* **Faltantes en la fuente:** Se observa el texto `"unknown"` para registrar valores no conocidos.
+**Diagnóstico preliminar:**
+
+* **Separador de columnas:** Punto y coma (`;`).
+* **Separador decimal:** Punto (`.`) en variables cuantitativas (ej. `1.1`, `93.994`).
+* **Encabezado:** Sí, presente en la primera línea.
+* **Valores de texto:** Vienen delimitados por comillas dobles (`"..."`).
+* **Faltantes en la fuente:** Se observa el texto `"unknown"` para registrar valores no conocidos.
 
 ------------------------------------------------------------------------
 
@@ -69,7 +80,10 @@ Revisamos que cada variable haya quedado registrada en el tipo de dato correcto:
 str(bank)
 ```
 
-**Resumen de tipos:** \* **10 variables numéricas:** `age`, `duration`, `campaign`, `pdays`, `previous`, `emp.var.rate`, `cons.price.idx`, `cons.conf.idx`, `euribor3m`, `nr.employed`. \* **11 variables de texto/factor:** `job`, `marital`, `education`, `default`, `housing`, `loan`, `contact`, `month`, `day_of_week`, `poutcome`, `y` (variable objetivo: suscripción del cliente).
+**Resumen de tipos:**
+
+* **10 variables numéricas:** `age`, `duration`, `campaign`, `pdays`, `previous`, `emp.var.rate`, `cons.price.idx`, `cons.conf.idx`, `euribor3m`, `nr.employed`.
+* **11 variables de texto/factor:** `job`, `marital`, `education`, `default`, `housing`, `loan`, `contact`, `month`, `day_of_week`, `poutcome`, `y` (variable objetivo: suscripción del cliente).
 
 ------------------------------------------------------------------------
 
