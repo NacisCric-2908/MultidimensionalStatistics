@@ -1,0 +1,159 @@
+---
+title: "Estadística Multidimensional — Análisis Exploratorio"
+subtitle: "Dataset 3: Comportamiento de Tarjetas de Crédito (synthetic_credit_card...)"
+author: "Estadística Multidimensional"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>")
+```
+
+# Contexto y Objetivos
+
+Este documento contiene la exploración del conjunto de datos `bronze/synthetic_credit_card_customer_behavior_dataset.csv`. Se trata de una base de datos sintética de comportamiento crediticio, límites, transacciones y scoring de riesgo.
+
+---
+
+# 1. Mirar antes de leer (`readLines`)
+
+```{r}
+ruta_credit <- "bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+readLines(ruta_credit, n = 3)
+```
+
+**Diagnóstico preliminar:**
+* **Separador de columnas:** Coma (`,`).
+* **Separador decimal:** Punto (`.`).
+* **Encabezado:** Presente en la línea 1.
+
+---
+
+# 2. Importación explícita
+
+```{r}
+credit <- read.csv(
+  file = ruta_credit,
+  header = TRUE,
+  sep = ",",
+  dec = ".",
+  stringsAsFactors = FALSE
+)
+```
+
+---
+
+# 3. Dimensiones de la matriz de datos ($n \times p$)
+
+```{r}
+dim(credit)
+```
+
+* **$n$:** `r nrow(credit)` clientes sintéticos simulados.
+* **$p$:** `r ncol(credit)` variables medidas.
+
+---
+
+# 4. Estructura y tipos de variables (`str`)
+
+```{r}
+str(credit)
+```
+
+* **26 variables numéricas:** Demografía (`Age`, `Annual_Income`), límites (`Credit_Limit`, `Card_Age_Months`), gastos agregados y detallados (`Monthly_Spending`, `Grocery_Spending`, `Fuel_Spending`, etc.), saldos y pagos (`Outstanding_Balance`, `Statement_Balance`, `Payment_Amount`, `Payment_Ratio`, `Credit_Utilization`) y puntuación de crédito (`Credit_Score`).
+* **7 variables categóricas:** `Customer_ID`, `Gender`, `Marital_Status`, `Education_Level`, `Occupation`, `Card_Type`, `Default_Payment_Next_Month`.
+
+---
+
+# 5. Resumen numérico y revisión de anomalías (`summary`)
+
+```{r}
+summary(credit)
+```
+
+### Hallazgos críticos:
+1. **Datos limpios de fábrica:** Los rangos de todas las variables son perfectamente válidos y no presentan códigos de error como `-99` o `999`.
+2. **Distribuciones balanceadas:** Las variables muestran promedios y medianas muy cercanos, con dispersiones consistentes.
+
+---
+
+# 6. Tablas de frecuencia para variables categóricas (`table`)
+
+```{r}
+table(credit$Gender, useNA = "always")
+table(credit$Marital_Status, useNA = "always")
+table(credit$Card_Type, useNA = "always")
+table(credit$Default_Payment_Next_Month, useNA = "always")
+```
+
+---
+
+# 7. Diagnóstico multivariante de datos faltantes
+
+```{r}
+total_celdas <- prod(dim(credit))
+celdas_vacias <- sum(is.na(credit))
+filas_completas <- sum(complete.cases(credit))
+```
+
+* **Total de celdas:** `r total_celdas`
+* **Celdas vacías (`NA`):** `r celdas_vacias` ($0.00\%$)
+* **Filas completas (`complete.cases`):** `r filas_completas` ($100.00\%$)
+
+> **Lección Multivariante:** Al ser un dataset generado sintéticamente, la matriz $\mathbf{X}$ está completamente llena ($0$ pérdidas por filas).
+
+---
+
+# 8. Verificación de duplicados
+
+```{r}
+sum(duplicated(credit))
+sum(duplicated(credit$Customer_ID))
+```
+
+No existen filas duplicadas ni identificadores de cliente (`Customer_ID`) repetidos.
+
+---
+
+# 9. Análisis Univariado y Multivariado Numérico
+
+Extraemos la submatriz numérica $\mathbf{X}_{\text{num}}$:
+
+```{r}
+cols_num <- sapply(credit, is.numeric)
+credit_num <- credit[, cols_num]
+```
+
+## Medias y desviaciones estándar
+
+```{r}
+round(colMeans(credit_num), 2)
+round(apply(credit_num, 2, sd), 2)
+```
+
+## Matriz de correlaciones seleccionada
+
+```{r}
+vars_interes <- c("Annual_Income", "Credit_Limit", "Monthly_Spending",
+                  "Outstanding_Balance", "Statement_Balance", "Payment_Amount",
+                  "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Credit_Score")
+
+mat_cor <- cor(credit_num[, vars_interes], use = "complete.obs")
+round(mat_cor, 3)
+```
+
+### Conclusiones de correlación:
+* **Relaciones estructurales fuertes:**
+  * `Outstanding_Balance` y `Statement_Balance`: $r = 0.997$
+  * `Monthly_Spending` y `Reward_Points_Earned`: $r = 0.980$
+  * `Credit_Limit` y `Reward_Points_Earned`: $r = 0.958$
+  * `Statement_Balance` y `Payment_Amount`: $r = 0.936$
+* **Determinantes del riesgo crediticio:**
+  * `Payment_Ratio` y `Credit_Score`: $r = 0.767$ (mayor ratio de pago $\rightarrow$ mejor puntaje crediticio).
+  * `Credit_Utilization` y `Credit_Score`: $r = -0.599$ (mayor uso del cupo $\rightarrow$ menor puntaje crediticio).

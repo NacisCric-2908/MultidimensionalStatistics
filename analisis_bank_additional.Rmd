@@ -1,0 +1,176 @@
+------------------------------------------------------------------------
+
+editor_options: markdown: wrap: 72 ---
+
+# ---
+
+title: "Estadística Multidimensional — Análisis Exploratorio" subtitle: "Dataset 1: Campaña de Marketing Bancario (bank-additional-full)" author: "Estadística Multidimensional" date: "`r format(Sys.Date(), '%d/%m/%Y')`" output: html_document: toc: true toc_depth: 3 number_sections: true df_print: paged ---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>")
+```
+
+# Contexto y Objetivos
+
+El objetivo de este documento es aplicar el protocolo de importación, diagnóstico de faltantes y análisis univariado/multivariado inicial desarrollado en las **Semanas 1 y 2** sobre el archivo `bronze/bank-additional-full.csv`.
+
+------------------------------------------------------------------------
+
+# 1. Mirar antes de leer (`readLines`)
+
+Antes de usar cualquier función de lectura estructurada, inspeccionamos las primeras 3 líneas del archivo en texto plano para identificar:
+
+1.  Separador de columnas (`sep`)
+2.  Separador decimal (`dec`)
+3.  Presencia de encabezado (`header`)
+
+```{r}
+ruta_bank <- "bronze/bank-additional-full.csv"
+readLines(ruta_bank, n = 3)
+```
+
+**Diagnóstico preliminar:** \* **Separador de columnas:** Punto y coma (`;`). \* **Separador decimal:** Punto (`.`) en variables cuantitativas (ej. `1.1`, `93.994`). \* **Encabezado:** Sí, presente en la primera línea. \* **Valores de texto:** Vienen delimitados por comillas dobles (`"..."`). \* **Faltantes en la fuente:** Se observa el texto `"unknown"` para registrar valores no conocidos.
+
+------------------------------------------------------------------------
+
+# 2. Importación explícita
+
+Utilizamos `read.table()` con argumentos explícitos. Es fundamental definir `dec = "."` (a pesar de tener separador `;`) y registrar `"unknown"` dentro del argumento `na.strings` para que R lo reconozca como `NA` real:
+
+```{r}
+bank <- read.table(
+  file = ruta_bank,
+  header = TRUE,
+  sep = ";",
+  dec = ".",
+  na.strings = c("", "NA", "unknown"),
+  stringsAsFactors = FALSE
+)
+```
+
+------------------------------------------------------------------------
+
+# 3. Dimensiones de la matriz de datos ($n \times p$)
+
+```{r}
+dim(bank)
+```
+
+- $n$ (filas / observaciones): `r nrow(bank)` clientes contactados durante las campañas.
+- $p$ (columnas / variables): `r ncol(bank)` variables medidas.
+
+------------------------------------------------------------------------
+
+# 4. Estructura y tipos de variables (`str`)
+
+Revisamos que cada variable haya quedado registrada en el tipo de dato correcto:
+
+```{r}
+str(bank)
+```
+
+**Resumen de tipos:** \* **10 variables numéricas:** `age`, `duration`, `campaign`, `pdays`, `previous`, `emp.var.rate`, `cons.price.idx`, `cons.conf.idx`, `euribor3m`, `nr.employed`. \* **11 variables de texto/factor:** `job`, `marital`, `education`, `default`, `housing`, `loan`, `contact`, `month`, `day_of_week`, `poutcome`, `y` (variable objetivo: suscripción del cliente).
+
+------------------------------------------------------------------------
+
+# 5. Resumen numérico y detección de anomalías (`summary`)
+
+```{r}
+summary(bank)
+```
+
+### Hallazgos críticos:
+
+1.  **Código numérico de faltante en `pdays`:**
+    - Mínimo: $0$, Mediana: $999$, Máximo: $999$.
+    - El valor $999$ no representa 999 días reales, sino que es un código numérico estándar que significa *"el cliente nunca fue contactado previamente"*.
+2.  **Disparidad de escalas:**
+    - Tasas económicas (`emp.var.rate` entre $-3.4$ y $1.4$) vs indicadores de empleo (`nr.employed` entre $4964$ y $5228$). Esto anticipa la necesidad de estandarización al aplicar métodos como PCA.
+
+------------------------------------------------------------------------
+
+# 6. Tablas de frecuencia para variables categóricas (`table`)
+
+```{r}
+table(bank$job, useNA = "always")
+table(bank$marital, useNA = "always")
+table(bank$education, useNA = "always")
+table(bank$default, useNA = "always")
+table(bank$y, useNA = "always")
+```
+
+------------------------------------------------------------------------
+
+# 7. Diagnóstico multivariante de datos faltantes
+
+Evaluamos el impacto de los `NA` tanto a nivel de celdas individuales como a nivel de filas completas:
+
+```{r}
+# Conteo y proporción de faltantes por columna
+faltantes_col <- colSums(is.na(bank))
+faltantes_col[faltantes_col > 0]
+round(colMeans(is.na(bank))[faltantes_col > 0], 4)
+```
+
+```{r}
+total_celdas <- prod(dim(bank))
+celdas_vacias <- sum(is.na(bank))
+pct_celdas_vacias <- (celdas_vacias / total_celdas) * 100
+
+filas_completas <- sum(complete.cases(bank))
+filas_incompletas <- sum(!complete.cases(bank))
+pct_filas_perdidas <- (filas_incompletas / nrow(bank)) * 100
+```
+
+- **Total de celdas en la matriz:** `r total_celdas`
+- **Celdas vacías (`NA`):** `r celdas_vacias` (`r round(pct_celdas_vacias, 2)` %)
+- **Filas completas (`complete.cases`):** `r filas_completas` (`r round(100 - pct_filas_perdidas, 2)` %)
+- **Filas con al menos un hueco:** `r filas_incompletas` (**`r round(pct_filas_perdidas, 2)` %**)
+
+> **Lección Multivariante:** Aunque solo el **`r round(pct_celdas_vacias, 2)` %** de las celdas de la matriz está vacío, la eliminación por casos completos (*listwise deletion*) descartaría el **`r round(pct_filas_perdidas, 2)` %** de las observaciones.
+
+------------------------------------------------------------------------
+
+# 8. Verificación de duplicados
+
+```{r}
+sum(duplicated(bank))
+```
+
+Existen **`r sum(duplicated(bank))`** filas repetidas de forma exacta en toda la tabla.
+
+------------------------------------------------------------------------
+
+# 9. Análisis Univariado y Multivariado Numérico
+
+Extraemos la submatriz numérica $\mathbf{X}_{\text{num}}$:
+
+```{r}
+cols_num <- sapply(bank, is.numeric)
+bank_num <- bank[, cols_num]
+```
+
+## Medias y desviaciones estándar
+
+```{r}
+round(colMeans(bank_num, na.rm = TRUE), 3)
+round(apply(bank_num, 2, sd, na.rm = TRUE), 3)
+```
+
+## Matriz de correlaciones ($\mathbf{R}$)
+
+Calculamos la matriz de correlación completa con `use = "complete.obs"`:
+
+```{r}
+mat_cor <- cor(bank_num, use = "complete.obs")
+round(mat_cor, 3)
+```
+
+### Conclusiones de correlación:
+
+- **Pares más correlacionados positivamente:**
+  - `euribor3m` y `emp.var.rate`: $r = 0.972$
+  - `euribor3m` y `nr.employed`: $r = 0.945$
+  - `emp.var.rate` y `nr.employed`: $r = 0.907$
+- **Par más correlacionado negativamente:**
+  - `pdays` y `previous`: $r = -0.588$
