@@ -1,0 +1,103 @@
+---
+title: "Estadística Multidimensional — Actividad en clase, semana 1"
+subtitle: "Primer contacto con la matriz de datos"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>")
+```
+
+**Trabajo en parejas · 30 minutos · no calificable**
+
+Escriban las respuestas como comentarios (`#`) dentro del mismo script y guárdenlo como
+`S01_[código1]_[código2].R`. Al terminar la clase, súbanlo al aula virtual.
+
+> Objetivo: que al salir de esta sesión sepan abrir un conjunto de datos que no construyeron
+> ustedes y decir qué tiene adentro.
+
+---
+
+# 1. El objeto y sus dimensiones
+
+`USArrests` viene incluido en R. Contiene estadísticas de arrestos en los 50 estados de EE. UU.
+
+```{r eval=FALSE}
+data(USArrests)
+```
+
+**Responder:**
+
+1. ¿De qué clase es el objeto `USArrests`?
+2. ¿Cuánto valen $n$ y $p$?
+3. ¿Cómo se llaman las variables?
+4. ¿De qué tipo es cada una? ¿Hay alguna que no sea numérica?
+5. En la notación del curso, ¿qué representa una **fila** y qué representa una **columna**?
+
+*Pistas:* `class()`, `dim()`, `names()`, `str()`, `head()`.
+
+---
+
+# 2. Un vistazo a una variable (univariado)
+
+Tomen la variable `Murder`.
+
+1. Calculen media, desviación estándar, mínimo y máximo.
+2. Hagan un histograma con título y etiquetas de eje en español.
+3. Escriban **una** frase describiendo la forma de la distribución.
+
+---
+
+# 3. Dos variables a la vez (bivariado)
+
+Ahora `Murder` y `Assault`.
+
+1. Hagan un diagrama de dispersión de `Assault` (eje x) contra `Murder` (eje y).
+2. Calculen la correlación entre las dos.
+3. ¿El signo de la correlación coincide con lo que se ve en el gráfico? Expliquen en una frase.
+
+---
+
+# 4. Todas a la vez (multivariado)
+
+1. Construyan `arrestos_num` con las **cuatro** variables numéricas de `USArrests`.
+2. Calculen la media de cada variable con una sola instrucción.
+3. Calculen la matriz de correlación completa.
+4. Hagan la matriz de dispersión con `pairs()`.
+
+**Responder:**
+
+5. ¿Cuál es el par de variables **más** correlacionado? ¿Y el **menos**?
+6. La matriz de correlación de 4 variables tiene 16 celdas, pero sólo unas pocas dan información
+   nueva. ¿Cuántas son y por qué?
+7. En una frase: ¿qué vieron en la matriz de correlación que **no** podían ver mirando los
+   histogramas de a uno?
+
+---
+
+# 5. Pregunta extra (para quien vaya adelantado)
+
+`UrbanPop` es el porcentaje de población urbana; las otras tres son tasas de delito.
+
+1. Usen `apply()` para obtener la desviación estándar de cada variable de `arrestos_num`.
+2. Miren las cuatro desviaciones estándar. ¿Están las variables en escalas comparables?
+3. Si más adelante quisiéramos «combinar» las cuatro variables en una sola medida resumen,
+   ¿qué problema traería que estén en escalas tan distintas?
+
+> Esa pregunta es, literalmente, el motivo por el que en la unidad 6 el PCA se hace
+> **sobre la matriz de correlaciones** y no sobre la de covarianzas. Guarden la respuesta.
+
+---
+
+# Entrega
+
+Un solo archivo `.R` por pareja, subido a **Moodle**, con:
+
+- el código que usaron,
+- las respuestas como comentarios,
+- los nombres y códigos de ambos al inicio del archivo.
+
+Lo sube **una** de las dos personas; la otra queda registrada por los nombres del encabezado.

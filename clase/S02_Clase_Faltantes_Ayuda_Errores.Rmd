@@ -1,0 +1,373 @@
+---
+title: "Estadística Multidimensional"
+subtitle: "Semana 2 — Datos faltantes, sistema de ayuda, errores y advertencias"
+author: "Jhon Alejandro Varón Robayo"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>")
+```
+
+# De dónde venimos
+
+La semana pasada quedó una idea: **el dato multivariante es una matriz $\mathbf{X}$ de
+$n$ observaciones × $p$ variables**, y en R esa matriz vive en un `data.frame`.
+
+Esta sesión es sobre lo que pasa cuando esa matriz **tiene huecos**. Y sobre las dos
+habilidades que separan a quien avanza solo de quien se queda esperando al profesor:
+**leer la ayuda** y **leer un error**.
+
+---
+
+# `NA`: qué es y qué no es
+
+`NA` (*Not Available*) significa **«no se sabe»**. No es cero, no es el texto `"NA"`,
+no es una cadena vacía.
+
+```{r}
+x <- c(19, 21, NA, 22, 19)
+x
+length(x)      # el hueco ocupa lugar: sigue habiendo 5 observaciones
+```
+
+## Los cuatro «vacíos» de R, que no son lo mismo
+
+```{r}
+c(NA, NULL, NaN, Inf)
+length(c(NA, NULL, NaN, Inf))   # NULL desaparece: no ocupa lugar
+```
+
+| Valor | Significa | De dónde sale |
+|---|---|---|
+| `NA` | No se sabe | Dato faltante en la fuente |
+| `NULL` | No existe | Un objeto vacío; **se borra** al combinarlo |
+| `NaN` | No es un número | `0/0` |
+| `Inf` / `-Inf` | Infinito | `1/0` |
+
+```{r}
+0 / 0
+1 / 0
+is.na(NaN)     # ojo: NaN cuenta como NA
+is.nan(NA)     # pero NA no es NaN
+```
+
+## `NA` contagia
+
+Cualquier operación que toque un `NA` devuelve `NA`. R no adivina.
+
+```{r}
+mean(x)
+sum(x)
+x + 1
+```
+
+La solución **no** es rellenar a la brava, sino decidir qué se hace y decirlo explícitamente:
+
+```{r}
+mean(x, na.rm = TRUE)
+sum(x, na.rm = TRUE)
+```
+
+> `na.rm = TRUE` no es un arreglo neutro: está calculando la media **de otro conjunto de datos**,
+> el de los que sí se observaron. Si los que faltan faltan por una razón, ese promedio está sesgado.
+
+## Detectarlos: nunca con `==`
+
+Éste es el error clásico. `NA == NA` no da `TRUE`: da `NA`, porque *no se sabe* si dos cosas
+desconocidas son iguales.
+
+```{r}
+NA == NA
+x == NA
+```
+
+Se detectan con `is.na()`:
+
+```{r}
+is.na(x)
+sum(is.na(x))          # cuántos faltan
+which(is.na(x))         # en qué posiciones
+mean(is.na(x))          # qué proporción falta
+```
+
+---
+
+# El punto que hace multivariante el problema
+
+Hasta aquí todo es univariado. Lo importante empieza ahora.
+
+Trabajamos con `airquality`, que viene con R: mediciones diarias de calidad del aire en
+Nueva York, 153 días × 6 variables.
+
+```{r}
+data(airquality)
+dim(airquality)
+str(airquality)
+```
+
+## Cuántos faltan, variable por variable
+
+```{r}
+colSums(is.na(airquality))
+```
+
+```{r}
+# la misma cuenta, en proporción
+round(colMeans(is.na(airquality)), 3)
+```
+
+Sólo dos variables tienen huecos. En términos de **celdas** de la matriz, el porcentaje
+que falta es pequeño:
+
+```{r}
+sum(is.na(airquality))                          # celdas vacías
+prod(dim(airquality))                           # celdas totales
+round(mean(is.na(airquality)) * 100, 2)         # % de celdas vacías
+```
+
+## Y ahora, cuántas *filas* sobreviven
+
+Aquí está el asunto. `complete.cases()` devuelve `TRUE` para las filas que **no tienen
+ningún** faltante:
+
+```{r}
+sum(complete.cases(airquality))                 # filas completas
+sum(!complete.cases(airquality))                # filas con al menos un hueco
+round(mean(!complete.cases(airquality)) * 100, 1)   # % de filas perdidas
+```
+
+> **Ésta es la idea de la sesión.** Menos del 5 % de las celdas está vacío, pero se pierde
+> más de la cuarta parte de las filas. Y el análisis multivariante trabaja **por filas**:
+> una covarianza, una distancia de Mahalanobis o un PCA necesitan el vector completo
+> $\mathbf{x}_i = (x_{i1}, \dots, x_{ip})$. Un solo hueco tumba la observación entera.
+
+El efecto empeora con $p$. Si cada variable falta de forma independiente con probabilidad
+$\pi$, la probabilidad de que una fila esté completa es $(1-\pi)^p$:
+
+```{r}
+p <- 1:20
+plot(p, (1 - 0.05)^p, type = "b", pch = 19,
+     ylim = c(0, 1),
+     main = "Filas completas si cada variable falta un 5%",
+     xlab = "p (número de variables)",
+     ylab = "proporción de filas completas")
+abline(h = 0.5, lty = 2)
+```
+
+Con 8 variables y 5 % de faltantes por variable ya se pierde uno de cada tres registros.
+**El requisito 5 del proyecto —menos del 15 % de faltantes— sale de aquí.**
+
+## Ver el patrón, no sólo el conteo
+
+Lo que importa no es cuántos faltan sino **si faltan juntos**:
+
+```{r}
+patron <- is.na(airquality)
+head(patron)
+table(rowSums(patron))    # cuántas filas tienen 0, 1, 2… faltantes
+```
+
+```{r}
+image(t(patron[nrow(patron):1, ]), axes = FALSE,
+      col = c("grey90", "firebrick"),
+      main = "Mapa de faltantes (rojo = NA)")
+axis(1, at = seq(0, 1, length.out = ncol(patron)),
+     labels = colnames(patron), las = 2, cex.axis = 0.8)
+```
+
+Si las bandas rojas de dos variables coinciden, los faltantes están **relacionados**, y
+eliminar filas borra un subgrupo entero —no una muestra al azar.
+
+## Las tres estrategias, y cuándo sirve cada una
+
+```{r}
+# 1. Análisis de casos completos (listwise): quedarse sólo con filas sin huecos
+aire_completo <- airquality[complete.cases(airquality), ]
+dim(aire_completo)
+```
+
+```{r}
+# 2. Por pares (pairwise): cada correlación usa las filas que sirvan para ESE par
+cor(airquality[, 1:4], use = "complete.obs")     # las mismas filas para todo
+cor(airquality[, 1:4], use = "pairwise.complete.obs")  # filas distintas por celda
+```
+
+```{r}
+# 3. Imputación simple por la media (la más común y la más peligrosa)
+aire_imp <- airquality
+aire_imp$Ozone[is.na(aire_imp$Ozone)] <- mean(aire_imp$Ozone, na.rm = TRUE)
+c(sd_original = sd(airquality$Ozone, na.rm = TRUE),
+  sd_imputada = sd(aire_imp$Ozone))
+```
+
+| Estrategia | Qué hace | El costo |
+|---|---|---|
+| **Casos completos** | Borra la fila entera | Pierde $n$ y sesga si los faltantes no son aleatorios |
+| **Por pares** | Usa lo que haya en cada par | La matriz de correlación puede dejar de ser definida positiva → **PCA imposible** |
+| **Imputar por la media** | Rellena con el promedio | **Reduce artificialmente la varianza** y aplana las correlaciones |
+
+> Los tres avisos importan para el curso: el primero se paga en la unidad 5 (inferencia con
+> menos $n$), el segundo y el tercero se pagan en la **unidad 6**, porque el PCA se calcula
+> justamente sobre la matriz de covarianzas o de correlaciones.
+
+**Regla del curso:** en el informe del proyecto, la sección de faltantes se escribe *antes*
+de cualquier análisis y responde tres cosas: **cuántos**, **dónde** y **qué se hizo con ellos**.
+
+---
+
+# El sistema de ayuda
+
+Nadie recuerda los argumentos. La diferencia está en saber buscarlos.
+
+```{r eval=FALSE}
+?mean            # ayuda de una función que ya se conoce por nombre
+help(cor)        # equivalente
+??"missing data" # busca en TODOS los paquetes instalados (dos interrogaciones)
+```
+
+## Cómo se lee una página de ayuda
+
+Todas tienen la misma estructura. En la práctica se leen **tres secciones, en este orden**:
+
+1. **Usage** — la firma: qué argumentos hay y cuál es el valor por defecto de cada uno.
+2. **Arguments** — qué significa cada argumento.
+3. **Examples** — el final de la página. Casi siempre es lo único que hace falta.
+
+```{r eval=FALSE}
+example(cor)       # ejecuta los ejemplos de la ayuda
+args(cor)          # sólo la firma
+```
+
+```{r}
+args(mean.default)
+args(read.csv)
+```
+
+Fíjense en `read.csv`: ahí están `sep`, `dec`, `header`, `na.strings`. **Los cuatro
+argumentos del sábado ya están en la ayuda**, no hay que buscarlos en internet.
+
+## Buscar sin saber el nombre
+
+```{r eval=FALSE}
+apropos("cor")            # funciones cuyo nombre contiene "cor"
+help.search("normality")  # igual que ??
+vignette(package = "MASS")   # documentos largos con ejemplos completos
+```
+
+Y para saber a qué paquete pertenece algo, o qué trae un paquete:
+
+```{r eval=FALSE}
+find("prcomp")
+ls("package:stats")[1:20]
+```
+
+> **Cuando la ayuda no alcanza:** el orden es (1) `?funcion`, (2) los *Examples*,
+> (3) la viñeta del paquete, (4) buscar el **texto exacto del error** en internet.
+> Preguntar sin haber leído el error completo no cuenta.
+
+---
+
+# Errores y advertencias
+
+R avisa en tres niveles distintos. Confundirlos cuesta caro.
+
+| Nivel | Qué pasó | ¿Se detuvo? |
+|---|---|---|
+| **Error** | No se pudo ejecutar | **Sí.** No hay resultado. |
+| **Warning** | Se ejecutó, pero algo raro | **No.** Hay resultado, y puede estar mal. |
+| **Message** | Información | No. Normalmente se ignora. |
+
+**El peligroso es el warning**, porque deja un objeto en el `Environment` que parece bueno.
+
+## Anatomía de un error
+
+```{r error=TRUE}
+mean(c(1, 2, "tres"))
+```
+
+Se lee **de derecha a izquierda**: primero *qué* pasó (`argument is not numeric or logical`),
+después *dónde* (`in mean.default(...)`). La causa real viene de la semana 1: el vector
+sufrió coerción a carácter.
+
+## Anatomía de una advertencia
+
+```{r warning=TRUE}
+y <- as.numeric(c("1", "2", "tres"))
+y
+```
+
+R **no se detuvo**: devolvió un vector con un `NA` silencioso y siguió. Si nadie lee el
+warning, ese `NA` viaja hasta el PCA de noviembre.
+
+## Los cinco errores del semestre
+
+```{r error=TRUE}
+promedio_final
+```
+*Objeto que no existe. Casi siempre: un error de tipografía o un chunk que no se ejecutó.*
+
+```{r error=TRUE, warning=TRUE}
+data(iris)
+iris$Sepal.Lenght          # NULL: la columna no existe
+mean(iris$Sepal.Lenght)    # warning, y devuelve NA
+```
+*`Lenght` no es `Length`. R **no corrige** nombres ni avisa al pedir una columna inexistente:
+devuelve `NULL` calladamente, y el problema aparece una o dos líneas después. Éste es el error
+más caro del semestre porque no se ve donde se cometió.*
+
+```{r error=TRUE}
+library(estePaqueteNoExiste)
+```
+*Falta el `install.packages()`. Nótese que va **con** comillas y `library()` **sin** comillas.*
+
+```{r error=TRUE}
+read.csv("archivo_que_no_existe.csv")
+```
+*`cannot open file`: casi siempre es el **directorio de trabajo**, no el archivo. Verificar con
+`getwd()` y `list.files()` antes de acusar al archivo.*
+
+```{r error=TRUE}
+data.frame(a = 1:3, b = 1:2)
+```
+*Longitudes incompatibles. Un `data.frame` exige columnas de la misma longitud: es una matriz
+$n \times p$, no una lista suelta.*
+
+## Cómo depurar sin adivinar
+
+```{r eval=FALSE}
+traceback()          # dónde se rompió, después de un error
+class(objeto)        # ¿es lo que creo que es?
+str(objeto)          # la más útil de las tres
+```
+
+> **Protocolo de la asignatura para pedir ayuda** (aplica a WhatsApp y a Moodle):
+> 1. el **código exacto** que se ejecutó,
+> 2. el mensaje de error **completo**, copiado, no en foto,
+> 3. la salida de `str()` del objeto involucrado.
+> Sin las tres cosas no se puede responder nada útil.
+
+---
+
+# Ideas clave de la sesión
+
+1. `NA` es «no se sabe»: contagia, y se detecta con `is.na()`, **nunca con `== NA`**.
+2. Un porcentaje bajo de **celdas** vacías puede significar un porcentaje enorme de **filas**
+   perdidas, y el análisis multivariante trabaja por filas.
+3. Imputar por la media **reduce la varianza**; `pairwise` puede romper la matriz de
+   correlación. Las dos cosas se pagan en el PCA.
+4. La ayuda se lee en tres partes: *Usage*, *Arguments*, *Examples*.
+5. Un **error** detiene; un **warning** no —y por eso es más peligroso.
+
+# Sigue en esta misma sesión
+
+Segundo bloque: **importación y exportación de archivos** —`read.csv`, `read.csv2`, separadores,
+decimales, codificación, `na.strings`— en `S02_Clase_Importacion_Exportacion.Rmd`.
+
+Y al final se abre el **Taller 1 (10 %)**, que se entrega el **domingo 23 de agosto**.
