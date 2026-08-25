@@ -1,0 +1,310 @@
+---
+title: "Estadística Multidimensional — Sesión 5"
+author: "26158 · grupo 020-81 · lunes 24 de agosto de 2026"
+subtitle: Densidad kernel y diagrama de dispersión
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+```
+
+# De dónde venimos
+
+El sábado quedó una deuda. Vimos que el histograma **cambia de forma según `breaks`**: la misma
+variable parecía tres cosas distintas con 5, 20 y 60 clases. Y quedó dicho que el número de clases
+es una decisión del analista, no un hecho de los datos.
+
+Hoy se resuelve esa deuda de dos maneras:
+
+1. **La densidad kernel** reemplaza las cajas por algo continuo — pero, como veremos, no elimina la
+   decisión: la traslada a un parámetro que **sí se puede escoger con un criterio**.
+2. **El diagrama de dispersión** da el salto que la asignatura necesita: de una variable a **dos**.
+
+---
+
+# El histograma, escrito como fórmula
+
+Antes de reemplazarlo hay que ver qué es, exactamente. Un histograma con intervalos de ancho $h$
+y origen $x_0$ estima la densidad en el punto $x$ así:
+
+$$\hat f_{\text{hist}}(x) \;=\; \frac{1}{n\,h}\;\#\{\, x_i \text{ en el mismo intervalo que } x \,\}$$
+
+Es decir: **cuenta cuántos datos caen en la caja** y divide por $n\,h$ para que el área total sea 1.
+
+Tiene dos problemas, y el segundo es peor que el primero:
+
+- **Depende de $h$** — el ancho de la caja. Eso ya lo vimos.
+- **Depende de $x_0$** — dónde empieza la primera caja. Dos histogramas con el mismo ancho pero
+  corridos medio intervalo pueden verse distintos. **Y eso no tiene ninguna justificación:
+  el origen es arbitrario.**
+
+```{r hist-origen}
+set.seed(7)
+x <- c(rnorm(120, 4, 1), rnorm(80, 8, 1.2))   # dos poblaciones, a propósito
+
+par(mfrow = c(1, 2))
+hist(x, breaks = seq(0, 13, by = 1),   main = "origen en 0", xlab = "x", col = "grey85")
+hist(x, breaks = seq(0.5, 13.5, by = 1), main = "origen en 0,5", xlab = "x", col = "grey85")
+par(mfrow = c(1, 1))
+```
+
+**Mismo ancho, mismos datos, distinta lectura.** Ése es el defecto que la densidad kernel corrige.
+
+---
+
+# La densidad kernel
+
+## La idea, antes que la fórmula
+
+En vez de **contar** los datos que caen en una caja, se pone una **montañita** encima de cada dato
+y se **suman todas**. Donde haya muchos datos juntos, las montañitas se apilan y la curva sube.
+Donde haya pocos, la curva baja.
+
+Nada de cajas, nada de origen arbitrario.
+
+## La fórmula
+
+$$\boxed{\;\hat f_h(x) \;=\; \frac{1}{n\,h}\sum_{i=1}^{n} K\!\left(\frac{x - x_i}{h}\right)\;}$$
+
+Pieza por pieza:
+
+| Símbolo | Qué es | Quién lo decide |
+|---|---|---|
+| $n$ | número de observaciones | los datos |
+| $x_i$ | cada observación | los datos |
+| $K(\cdot)$ | el **kernel**: la forma de la montañita | casi da igual |
+| $h$ | el **ancho de banda**: qué tan ancha es | **usted, y decide todo** |
+
+El kernel $K$ es una función que cumple dos condiciones:
+
+$$K(u) \ge 0 \qquad\text{y}\qquad \int_{-\infty}^{\infty} K(u)\,du = 1$$
+
+es decir, **es en sí misma una densidad**. El más usado es el gaussiano:
+
+$$K(u) = \frac{1}{\sqrt{2\pi}}\,e^{-u^{2}/2}$$
+
+## Por qué el resultado también es una densidad
+
+Esto conviene verlo, porque es la razón de que la fórmula lleve $\tfrac{1}{nh}$ adelante:
+
+$$\int \hat f_h(x)\,dx
+= \frac{1}{n h}\sum_{i=1}^{n} \int K\!\left(\frac{x-x_i}{h}\right) dx
+= \frac{1}{n h}\sum_{i=1}^{n} h \int K(u)\,du
+= \frac{1}{n}\sum_{i=1}^{n} 1 = 1$$
+
+*(el cambio de variable $u = (x-x_i)/h$ trae el factor $h$, que se cancela)*
+
+**Área 1 y valores no negativos: es una densidad legítima.** No es un dibujo bonito, es un estimador.
+
+## Verlo armarse
+
+```{r kde-suma}
+xs <- c(2, 3, 3.5, 6, 6.2, 9)          # seis datos, para poder ver las montañitas
+h  <- 0.6
+rej <- seq(0, 12, length.out = 400)
+
+plot(rej, rep(0, length(rej)), type = "n", ylim = c(0, 0.35),
+     xlab = "x", ylab = "densidad",
+     main = "Seis montañitas y su suma")
+
+for (xi in xs) {                        # cada K((x - xi)/h) / (n*h)
+  lines(rej, dnorm((rej - xi)/h) / (length(xs) * h), col = "grey65", lty = 2)
+}
+suma <- sapply(rej, function(z) sum(dnorm((z - xs)/h)) / (length(xs) * h))
+lines(rej, suma, lwd = 3, col = "steelblue")
+rug(xs, lwd = 2)
+```
+
+La línea gruesa es $\hat f_h$. Las punteadas son los seis sumandos.
+
+## El ancho de banda lo decide todo
+
+$h$ es el análogo de `breaks`: no desapareció la decisión, **cambió de nombre**. Pero ahora sí hay
+criterios para escogerlo.
+
+```{r kde-h}
+par(mfrow = c(1, 3))
+for (hh in c(0.15, 0.6, 2.5)) {
+  plot(density(x, bw = hh), main = paste("h =", hh), xlab = "x", lwd = 2)
+  rug(x)
+}
+par(mfrow = c(1, 1))
+```
+
+- **$h$ pequeño** → poco sesgo, mucha varianza. Se ven picos que son ruido muestral.
+- **$h$ grande** → poca varianza, mucho sesgo. Se pierde la estructura: **las dos poblaciones se
+  funden en una**.
+
+Es el compromiso sesgo–varianza, y aquí se ve con los ojos.
+
+## Cómo se escoge $h$ sin adivinar
+
+La **regla de Silverman**, que es la que R usa por defecto:
+
+$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
+
+donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí
+para que un atípico no infle $s$ y ensanche la curva de más.
+
+```{r silverman}
+h_manual <- 0.9 * min(sd(x), IQR(x)/1.34) * length(x)^(-1/5)
+c(manual = h_manual, R = bw.nrd0(x))
+```
+
+**Es una regla, no una verdad.** Está deducida suponiendo que los datos son normales, y estos
+—dos poblaciones— no lo son. Por eso conviene mirar dos o tres valores de $h$ antes de decidir.
+
+> **Regla del curso:** todo gráfico de densidad que aparezca en un informe **declara su $h$**.
+> Un `plot(density(x))` sin decir el ancho de banda es un gráfico sin unidades.
+
+---
+
+# El salto: de una variable a dos
+
+Hasta aquí, todo ha sido **una** variable a la vez. La asignatura se llama multidimensional por lo
+que viene ahora.
+
+## El diagrama de dispersión
+
+```{r dispersion}
+data(iris)
+plot(iris$Sepal.Length, iris$Petal.Length,
+     pch = 19, col = rgb(0, 0, 0, 0.45),
+     xlab = "Largo del sépalo (cm)", ylab = "Largo del pétalo (cm)",
+     main = "Dos variables a la vez")
+```
+
+Cada punto es **una observación completa**, no un valor. Es la primera vez en el curso que un
+elemento gráfico representa una fila entera de la matriz $\mathbf{X}$.
+
+## Covarianza: la fórmula
+
+Para dos variables $j$ y $k$ medidas sobre los mismos $n$ individuos:
+
+$$\boxed{\;s_{jk} \;=\; \frac{1}{n-1}\sum_{i=1}^{n}\bigl(x_{ij}-\bar x_j\bigr)\bigl(x_{ik}-\bar x_k\bigr)\;}$$
+
+Cómo leerla: cada sumando es el producto de **dos desviaciones respecto de la media**.
+
+- Si las dos desviaciones tienen **el mismo signo** —ambas por encima o ambas por debajo—
+  el producto es **positivo**.
+- Si tienen **signos opuestos**, es **negativo**.
+
+Así que $s_{jk}$ suma evidencia a favor de «van juntas» y en contra. Si gana lo positivo, la
+covarianza es positiva.
+
+Y note que $s_{jj} = \dfrac{1}{n-1}\sum (x_{ij}-\bar x_j)^2 = s_j^2$: **la varianza es la
+covarianza de una variable consigo misma.**
+
+```{r cov}
+cov(iris$Sepal.Length, iris$Petal.Length)
+```
+
+## El problema de la covarianza, y su arreglo
+
+La covarianza **depende de las unidades**. Si el pétalo se mide en milímetros en vez de
+centímetros, la covarianza se multiplica por 10 sin que la relación haya cambiado en nada.
+
+```{r cov-unidades}
+c(cm = cov(iris$Sepal.Length, iris$Petal.Length),
+  mm = cov(iris$Sepal.Length, iris$Petal.Length * 10))
+```
+
+Por eso se divide por las dos desviaciones estándar:
+
+$$\boxed{\;r_{jk} \;=\; \frac{s_{jk}}{s_j\,s_k}
+\;=\; \frac{\sum (x_{ij}-\bar x_j)(x_{ik}-\bar x_k)}
+{\sqrt{\sum (x_{ij}-\bar x_j)^2}\;\sqrt{\sum (x_{ik}-\bar x_k)^2}}\;}$$
+
+**El coeficiente de correlación de Pearson.** Es adimensional, y siempre
+
+$$-1 \;\le\; r_{jk} \;\le\; 1$$
+
+Eso no es un capricho: es la **desigualdad de Cauchy–Schwarz** aplicada a los vectores de
+desviaciones. La igualdad $|r| = 1$ se alcanza sólo si un vector es múltiplo del otro — es decir,
+sólo si los puntos caen **exactamente sobre una recta**.
+
+```{r cor}
+c(cm = cor(iris$Sepal.Length, iris$Petal.Length),
+  mm = cor(iris$Sepal.Length, iris$Petal.Length * 10))
+```
+
+**La correlación no cambió**, como debe ser.
+
+---
+
+# Lo que la correlación no ve
+
+Aquí está el punto de la sesión, y conviene resistir la tentación de adelantarlo.
+
+El **cuarteto de Anscombe** son cuatro conjuntos de datos que vienen en R. Miremos sus resúmenes
+antes de graficarlos.
+
+```{r anscombe-numeros}
+data(anscombe)
+resumen <- data.frame(
+  conjunto = 1:4,
+  media_x  = sapply(1:4, function(i) mean(anscombe[[paste0("x", i)]])),
+  media_y  = sapply(1:4, function(i) round(mean(anscombe[[paste0("y", i)]]), 3)),
+  var_x    = sapply(1:4, function(i) var(anscombe[[paste0("x", i)]])),
+  var_y    = sapply(1:4, function(i) round(var(anscombe[[paste0("y", i)]]), 3)),
+  r        = sapply(1:4, function(i) round(cor(anscombe[[paste0("x", i)]],
+                                               anscombe[[paste0("y", i)]]), 3))
+)
+resumen
+```
+
+Mismas medias, mismas varianzas, **misma correlación**. Si sólo se miran los números, los cuatro
+conjuntos son indistinguibles.
+
+```{r anscombe-graficos}
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))
+for (i in 1:4) {
+  xi <- anscombe[[paste0("x", i)]]; yi <- anscombe[[paste0("y", i)]]
+  plot(xi, yi, pch = 19, col = "steelblue", xlim = c(3, 20), ylim = c(2, 14),
+       xlab = paste0("x", i), ylab = paste0("y", i),
+       main = paste0("Conjunto ", i, "   r = ", round(cor(xi, yi), 3)))
+  abline(lm(yi ~ xi), col = "firebrick", lwd = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+Cuatro nubes completamente distintas:
+
+1. Una relación lineal razonable — el único caso donde $r$ describe bien lo que pasa.
+2. Una **parábola perfecta**. La relación es exacta, y $r$ la ve igual que a la primera.
+3. Una recta casi exacta **con un solo atípico** que tuerce todo.
+4. Una nube vertical **y un único punto** que crea la correlación entera.
+
+> **Lo que hay que llevarse:** $r$ mide **relación lineal**, no relación. Un $r$ bajo no significa
+> que no haya estructura, y un $r$ alto no significa que la haya. **Siempre se grafica.**
+
+---
+
+# Las tres ideas
+
+1. La densidad kernel cambia **cajas** por **montañitas**: $\hat f_h(x)=\frac{1}{nh}\sum K\!\left(\frac{x-x_i}{h}\right)$.
+   Elimina el origen arbitrario, pero **no elimina la decisión**: la concentra en $h$.
+2. La correlación es **covarianza estandarizada**, y por eso no depende de las unidades:
+   $r_{jk}=s_{jk}/(s_j s_k)$, con $-1\le r\le 1$ por Cauchy–Schwarz.
+3. **Anscombe:** cuatro nubes distintas con los mismos cinco números. Los resúmenes numéricos
+   nunca reemplazan al gráfico.
+
+# Lo que viene
+
+- **Sábado 29:** los `p` gráficos de dispersión se vuelven **uno solo** — la matriz de dispersión —
+  y la matriz de correlación $\mathbf{R}$, que es el objeto sobre el que se monta el PCA de la unidad 6.
+- **Sábado 3 de octubre:** la densidad kernel **en dos dimensiones** produce contornos, y de ahí
+  sale la **distancia de Mahalanobis**: la respuesta formal al punto atípico del sábado pasado.
+
+> **Nota.** Este documento no se pudo tejer al escribirlo —no hay R en la máquina donde se redactó—.
+> Téjalo una vez antes de proyectarlo: los números de `anscombe` y de `iris` son estables, pero los
+> de la simulación dependen de `set.seed(7)`.
