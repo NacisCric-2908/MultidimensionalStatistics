@@ -28,6 +28,8 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE
 )
+# Ejecuta todos los chunks desde la raíz del proyecto (carpeta padre de analysis/)
+knitr::opts_knit$set(root.dir = "..")
 ```
 
 # Contexto y Objetivos del Análisis
@@ -47,7 +49,7 @@ Este documento desarrolla la exploración multidimensional del conjunto de datos
 Antes de cargar cualquier archivo en memoria, es una buena práctica de reproducibilidad inspeccionar sus primeras líneas en crudo para verificar delimitadores de columnas, separadores decimales y presencia de encabezados.
 
 ```{r, inspeccion_previa}
-ruta_credit <- "bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+ruta_credit <- "data/bronze/synthetic_credit_card_customer_behavior_dataset.csv"
 lineas_muestra <- readLines(ruta_credit, n = 4)
 lineas_muestra
 ```
