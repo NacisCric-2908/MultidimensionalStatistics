@@ -40,17 +40,12 @@
 ## 3. Principales Hallazgos Univariados (Módulos S01, S03)
 
 1. **Histogramas y Calibración de Cortes (`breaks`):**
-   * Se evaluó la sensibilidad de la distribución de `Credit_Score` ante 3 anchos de clase: `breaks = 5` (sobre-suavizado), `breaks = 20` (balanceado) y `breaks = 60` (ruidoso/sobreajustado).
-   * La **Regla de Sturges** ($k = 1 + \log_2(50\,000) \approx 16$) respalda una partición moderada ($k \approx 16 - 20$) que capta la forma unimodal simétrica sin picos artificiales.
+   * Se evaluó de forma general y automatizada la sensibilidad de las distribuciones ante 3 anchos de clase: `breaks = 5` (sobre-suavizado), `breaks = Sturges` (balanceado) y `breaks = 60` (ruidoso/sobreajustado) para **todas las variables numéricas**.
+   * La **Regla de Sturges** (ej. $k \approx 16$ para $n=50\,000$) respalda una partición moderada que capta la forma unimodal simétrica sin picos artificiales.
 2. **Dispersión y Criterio de Tukey (Boxplots):**
-   * Para `Monthly_Spending`, los cinco números de Tukey son:
-     * $\text{Mínimo} \approx \$1\,619$
-     * $Q_1 \approx \$20\,843$
-     * $\text{Mediana} \approx \$35\,139$
-     * $Q_3 \approx \$54\,759$
-     * $\text{Máximo} \approx \$164\,860$
-   * Límites de Tukey ($Q_1 - 1.5 \cdot RIC$ a $Q_3 + 1.5 \cdot RIC$): $[\$-30\,031, \$105\,634]$.
-   * Atípicos univariados: Al ser datos sintéticos de dispersión controlada, la proporción de valores marcados como atípicos es marginal ($< 0.5\%$).
+   * Se automatizó el cálculo de los cinco números de Tukey, los límites superior e inferior, el conteo de atípicos univariados y la generación de Boxplots para **todas las variables numéricas**.
+   * Para `Monthly_Spending`, por ejemplo, los límites de Tukey ($Q_1 - 1.5 \cdot RIC$ a $Q_3 + 1.5 \cdot RIC$) son $[\$-30\,031, \$105\,634]$.
+   * Atípicos univariados: Al ser datos sintéticos de dispersión controlada, la proporción de valores marcados como atípicos en la mayoría de las variables es marginal ($< 0.5\%$).
 3. **Comparación Multivariada Estandarizada (`scale`):**
    * Al graficar `boxplot(credit_num)` sin estandarizar, las variables en millones (`Annual_Income`, `Credit_Limit`) ocultan completamente a los ratios ($0$ a $1$).
    * La estandarización `boxplot(scale(credit_num))` permite comparar la longitud de colas y asimetría en unidades homogéneas de desviación estándar ($Z$-scores).
@@ -70,10 +65,9 @@
      * `Payment_Ratio` con `Credit_Score`: $r = 0.767$ (fuerte relación positiva: quien paga más de su saldo mensual tiene mejor scoring).
      * `Credit_Utilization` con `Credit_Score`: $r = -0.599$ (relación inversa: alta saturación del cupo disminuye la calificación).
 2. **El "Punto Imposible" (Demostración de Outlier Multivariante):**
-   * Se construyó un cliente hipotético con `Payment_Ratio = 0.95` y `Credit_Score = 460`.
-   * **Univariadamente inocente:** Ambos valores caen perfectamente dentro de los bigotes de Tukey de sus respectivas variables ($0.95 \in [0.11, 1.47]$ y $460 \in [441, 825]$).
-   * **Multivariadamente imposible:** En la nube bivariada de puntos, ningún cliente con $95\%$ de pago tiene un scoring menor a $650$. Cae en una zona de densidad cero (punto rojo destacado).
-   * **Lección central:** La normalidad marginal **no** garantiza la normalidad conjunta.
+   * Se construyeron clientes hipotéticos contradictorios para demostrar que **la normalidad marginal no garantiza la normalidad conjunta**:
+     * **Ejemplo 1 (Pago vs Score):** Un cliente con `Payment_Ratio = 0.95` y `Credit_Score = 460`. Univariadamente inocente ($0.95 \in [0.11, 1.47]$ y $460 \in [441, 825]$), pero multivariadamente imposible ya que quien paga el $95\%$ tiene scoring $>650$.
+     * **Ejemplo 2 (Ingreso vs Límite):** Un cliente con `Annual_Income = 3,000,000` y `Credit_Limit = 200`. Univariadamente normal en sus respectivos límites de Tukey, pero multivariadamente ilógico (alguien con 3M de ingresos no tendría un límite de crédito de solo 200).
 3. **La Paradoja de las 55 Dimensiones Bivariadas:**
    * Aunque se revisen todas las $\binom{p}{2}$ proyecciones 2D con `pairs()` y ninguna muestre puntos extraños, **no se puede descartar la existencia de outliers en subespacios de dimensión $\geq 3$**. Para ello se requerirá el cálculo de distancias multivariantes (Mahalanobis $D^2$) y Componentes Principales (PCA).
 
