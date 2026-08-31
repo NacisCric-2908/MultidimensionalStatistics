@@ -1,7 +1,4 @@
----
-title: Análisis exploratorio
-output: html_document
----
++--- title: Análisis exploratorio output: html_document ---
 
 ---
 title: "Estadística Multidimensional — Análisis Exploratorio Integral"
@@ -579,6 +576,19 @@ pairs(credit_num[, vars_pairs],
       main = "Matriz de Dispersion (pairs) - Variables Clave")
 ```
 
+Siguiente parte de variables de interes
+
+```{r, diagrama de dispersion a variables de interes}
+
+vars_impairs <- c("Credit_Limit", "Outstanding_Balance", "Statement_Balance", "Payment_Amount", "Reward_Points_Earned")
+
+pairs(credit[, vars_impairs],
+      pch = 16,
+      col = rgb(0.1, 0.4, 0.7, 0.15),
+      main = "Matriz de Dispersion - Variables De Interes")
+
+```
+
 ------------------------------------------------------------------------
 
 # Conclusiones del Análisis Multidimensional (Semanas 1 a 3)
@@ -586,3 +596,57 @@ pairs(credit_num[, vars_pairs],
 1.  **Conclusión Univariada (S01/S03):** Las variables de puntaje y capacidad crediticia presentan distribuciones simétricas y acotadas. El uso de la regla de Sturges ($k \approx 13$) y la calibración gráfica de los histogramas demostró que una partición moderada (`breaks = 20`) revela la forma unimodal real sin el sobreajuste que producen particiones finas.
 2.  **Conclusión Bivariada (S01/S03):** El comportamiento de pago es el principal motor del puntaje de riesgo ($r = 0.767$), mientras que la utilización del cupo actúa como factor depresor ($r = -0.599$). La demostración del punto imposible ilustra cómo un cliente con parámetros univariados plausibles puede representar una anomalía severa al romper la covarianza natural entre el ratio de pago y el riesgo.
 3.  **Conclusión Multivariada (S01/S02/S03):** La matriz $\mathbf{X}$ posee una alta interdependencia lineal y dimensionalidad efectiva reducida, evidenciada por correlaciones estructurales superiores a $0.90$. La inspección visual estandarizada (`scale`) y la matriz `pairs` confirman que las variables están preparadas para técnicas de reducción de dimensionalidad (como PCA).
+
+# Módulo 7: Densidad de Kernel (S04)
+
+## Cómo se escoge $h$ sin adivinar
+
+La **regla de Silverman**, que es la que R usa por defecto:
+
+$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
+
+donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y ensanche la curva de más.
+
+Sin embargo R nos permite encontrar el valor de $h$ haciendo uso de la funcion `h = bw.nrd0(x)`, donde x es la variable a analizar, y será la formula que utilizaremos en nuestro caso.
+
+## Densidad de Kernel aplicada a nuestras variables
+
+### Primero con una variable
+
+```{r, Densidad de Kernel}
+
+var <- credit$Credit_Score
+h <- bw.nrd0(var)
+
+plot(density(var, bw = h), main = paste("h =", round(h, 4)), xlab = "CreditScore", lwd = 2)
+rug(var)
+
+
+```
+
+### Aplicado a cada variable
+
+Siguiendo estos pasos procedemos a graficar la **DensidadKernel** para cada variable:
+
+```{r, Densidad de Kernel a cada variable}
+
+credit_num <- names(credit)[sapply(credit, is.numeric)]
+
+par(mfrow = c(1, 1))
+
+for (credit_col in credit_num){
+    
+  var_aux <- credit[[credit_col]]
+  h_aux <- bw.nrd0(var_aux)
+  
+  plot(density(var_aux, bw = h_aux), main = paste ("h =", round(h_aux, 4)), xlab   = credit_col, lwd = 2)
+  rug(var_aux)
+  
+}
+```
+
+Como podemos observar con las graficas de **Densidad de Kernel** en los lugares donde se encuentran la mayor cantidad de datos es donde la curva o montaña crece e inversamente donde menos datos existen es donde esta misma decrece.
+
+# Conclusiones Ánalisis Multivariante Semana 4
+
+1.  **Densidad de Kernel:** La gráfica de Densidad de Kernel es otro modo de nosotros poder observar y analizar la distribucion que tienen los datos de las diferentes variables, podemos ver donde se encuentra la mayor cantidad de datos como tambien donde no existen casi datos, la gran diferencia con los histogramas o boxplots es que aqui no es necesario escoger un origen arbitrario o por conveniencia, aquí todo depende el ancho de banda $h$ el cual es un valor que definimos utilizando la formula o la funcion que trae R.

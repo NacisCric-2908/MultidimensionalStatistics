@@ -5,6 +5,9 @@ output:
   html_document:
     toc: true
     toc_depth: 2
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -13,16 +16,18 @@ knitr::opts_chunk$set(echo = TRUE, comment = "#>", eval = FALSE)
 
 **Trabajo en parejas · no calificable · dos partes**
 
-Escriban las respuestas como comentarios (`#`) dentro del mismo script y guárdenlo como
-`S02_[código1]_[código2].R`. Se sube a **Moodle**.
+Escriban las respuestas como comentarios (`#`) dentro del mismo script y
+guárdenlo como `S02_[código1]_[código2].R`. Se sube a **Moodle**.
 
-> Esta actividad no tiene nota, pero **el Taller 1 se parece mucho**: quien la haga bien tiene
-> medio taller resuelto. La **Parte A** es trabajo autónomo de la sesión del sábado 15;
-> la **Parte B** se enuncia en clase el sábado 15 y **se resuelve en casa**: el aula 404 no es sala
-> de informática y la sesión se dicta por demostración en vivo. Lo que sí se hace en el salón es ver
-> el error en pantalla y diagnosticarlo entre todos.
+> Esta actividad no tiene nota, pero **el Taller 1 se parece mucho**:
+> quien la haga bien tiene medio taller resuelto. La **Parte A** es
+> trabajo autónomo de la sesión del sábado 15; la **Parte B** se enuncia
+> en clase el sábado 15 y **se resuelve en casa**: el aula 404 no es
+> sala de informática y la sesión se dicta por demostración en vivo. Lo
+> que sí se hace en el salón es ver el error en pantalla y
+> diagnosticarlo entre todos.
 
----
+------------------------------------------------------------------------
 
 # PARTE A — trabajo autónomo (sesión del sábado 15)
 
@@ -32,32 +37,40 @@ Escriban las respuestas como comentarios (`#`) dentro del mismo script y guárde
 data(airquality)
 ```
 
-1. ¿Cuánto valen $n$ y $p$?
-2. ¿Cuántos `NA` hay **en total** en la matriz? ¿Qué porcentaje de las celdas es?
-3. ¿Cuántos `NA` tiene **cada** variable? ¿Cuántas variables no tienen ninguno?
-4. ¿Cuántas **filas** están completas? ¿Qué porcentaje de las filas se pierde si nos
-   quedamos sólo con ellas?
-5. Comparen la respuesta de 2 con la de 4. **Escriban en una frase por qué son tan distintas.**
+1.  ¿Cuánto valen $n$ y $p$?
+2.  ¿Cuántos `NA` hay **en total** en la matriz? ¿Qué porcentaje de las
+    celdas es?
+3.  ¿Cuántos `NA` tiene **cada** variable? ¿Cuántas variables no tienen
+    ninguno?
+4.  ¿Cuántas **filas** están completas? ¿Qué porcentaje de las filas se
+    pierde si nos quedamos sólo con ellas?
+5.  Comparen la respuesta de 2 con la de 4. **Escriban en una frase por
+    qué son tan distintas.**
 
-*Pistas:* `dim()`, `is.na()`, `sum()`, `colSums()`, `mean()`, `complete.cases()`.
+*Pistas:* `dim()`, `is.na()`, `sum()`, `colSums()`, `mean()`,
+`complete.cases()`.
 
 ## A2. El patrón, no el conteo
 
-1. ¿Cuántas filas tienen exactamente 0 faltantes, cuántas 1 y cuántas 2?
-2. ¿Hay filas a las que les falten `Ozone` **y** `Solar.R` al tiempo? ¿Cuántas?
-3. Miren en qué **meses** se concentran los faltantes de `Ozone`:
+1.  ¿Cuántas filas tienen exactamente 0 faltantes, cuántas 1 y cuántas
+    2?
+2.  ¿Hay filas a las que les falten `Ozone` **y** `Solar.R` al tiempo?
+    ¿Cuántas?
+3.  Miren en qué **meses** se concentran los faltantes de `Ozone`:
 
 ```{r}
 table(airquality$Month[is.na(airquality$Ozone)])
 ```
 
-4. **Pregunta clave:** si los faltantes se concentran en unos meses, ¿qué le pasa al análisis
-   cuando se borran las filas incompletas? Contesten en dos frases, en términos de **qué
-   subpoblación desaparece**.
+4.  **Pregunta clave:** si los faltantes se concentran en unos meses,
+    ¿qué le pasa al análisis cuando se borran las filas incompletas?
+    Contesten en dos frases, en términos de **qué subpoblación
+    desaparece**.
 
 ## A3. Tres estrategias, tres resultados distintos
 
-Calculen la media de `Ozone` de estas tres formas y anoten los tres valores:
+Calculen la media de `Ozone` de estas tres formas y anoten los tres
+valores:
 
 ```{r}
 mean(airquality$Ozone)
@@ -65,35 +78,42 @@ mean(airquality$Ozone, na.rm = TRUE)
 mean(airquality$Ozone[complete.cases(airquality)])
 ```
 
-1. ¿Por qué la primera da `NA`?
-2. ¿Por qué la segunda y la tercera **no** dan lo mismo, si las dos ignoran faltantes?
-3. Ahora la correlación entre las cuatro primeras variables, de dos maneras:
+1.  ¿Por qué la primera da `NA`?
+2.  ¿Por qué la segunda y la tercera **no** dan lo mismo, si las dos
+    ignoran faltantes?
+3.  Ahora la correlación entre las cuatro primeras variables, de dos
+    maneras:
 
 ```{r}
 cor(airquality[, 1:4], use = "complete.obs")
 cor(airquality[, 1:4], use = "pairwise.complete.obs")
 ```
 
-   ¿Coinciden todas las celdas? Señalen una que cambie y expliquen por qué.
+¿Coinciden todas las celdas? Señalen una que cambie y expliquen por qué.
 
-4. Imputen `Ozone` por su media y comparen la desviación estándar antes y después.
-   ¿Subió o bajó? **¿Por qué eso es un problema para el PCA de la unidad 6?**
+4.  Imputen `Ozone` por su media y comparen la desviación estándar antes
+    y después. ¿Subió o bajó? **¿Por qué eso es un problema para el PCA
+    de la unidad 6?**
 
 ## A4. Leer la ayuda en vez de preguntar
 
 Sin buscar en internet, **sólo con `?`**:
 
-1. En `?mean`, ¿qué hace el argumento `trim`? Calculen `mean(airquality$Ozone, trim = 0.1, na.rm = TRUE)`
-   y digan en qué se diferencia de la media normal.
-2. En `?cor`, ¿cuántos valores admite el argumento `method`? ¿Cuál es el que trae por defecto?
-3. En `?complete.cases`, ¿qué tipos de objeto acepta además de un `data.frame`?
-4. Usen `??` o `apropos()` para encontrar una función que sirva para **contar valores faltantes
-   por columna** sin escribirla ustedes. ¿Existe en R base?
+1.  En `?mean`, ¿qué hace el argumento `trim`? Calculen
+    `mean(airquality$Ozone, trim = 0.1, na.rm = TRUE)` y digan en qué se
+    diferencia de la media normal.
+2.  En `?cor`, ¿cuántos valores admite el argumento `method`? ¿Cuál es
+    el que trae por defecto?
+3.  En `?complete.cases`, ¿qué tipos de objeto acepta además de un
+    `data.frame`?
+4.  Usen `??` o `apropos()` para encontrar una función que sirva para
+    **contar valores faltantes por columna** sin escribirla ustedes.
+    ¿Existe en R base?
 
 ## A5. Cuatro errores, cuatro diagnósticos
 
-Ejecuten cada línea, copien el mensaje **completo** y escriban en una frase qué está diciendo
-y cómo se arregla:
+Ejecuten cada línea, copien el mensaje **completo** y escriban en una
+frase qué está diciendo y cómo se arregla:
 
 ```{r}
 airquality$Ozon
@@ -103,24 +123,26 @@ data.frame(a = 1:5, b = 1:3)
 as.numeric(c("3,5", "4,1"))
 ```
 
-> La última no da error: **da un warning y devuelve `NA`s**. Ésa es la peligrosa.
-> ¿Qué tiene de malo `"3,5"` para R, y qué habría que hacer antes de convertir?
+> La última no da error: **da un warning y devuelve `NA`s**. Ésa es la
+> peligrosa. ¿Qué tiene de malo `"3,5"` para R, y qué habría que hacer
+> antes de convertir?
 
----
+------------------------------------------------------------------------
 
 # PARTE B — se enuncia el sábado 15, se resuelve en casa
 
 ## B1. Mirar antes de leer
 
-El archivo está en `datos/encuesta_sucia.csv`, en la carpeta de la semana.
+El archivo está en `datos/encuesta_sucia.csv`, en la carpeta de la
+semana.
 
 ```{r}
 readLines("datos/encuesta_sucia.csv", n = 3)
 ```
 
-1. ¿Cuál es el separador de columnas? ¿Cuál es el separador decimal?
-2. ¿La primera fila son nombres de variable?
-3. Según eso, ¿`read.csv` o `read.csv2`?
+1.  ¿Cuál es el separador de columnas? ¿Cuál es el separador decimal?
+2.  ¿La primera fila son nombres de variable?
+3.  Según eso, ¿`read.csv` o `read.csv2`?
 
 ## B2. Importar mal, a propósito
 
@@ -130,8 +152,9 @@ dim(enc_mal)
 str(enc_mal)
 ```
 
-1. ¿Cuántas columnas cree R que hay? ¿Cuántas hay de verdad?
-2. **¿Dio error?** ¿Qué implica eso sobre confiar en que «no salió nada rojo»?
+1.  ¿Cuántas columnas cree R que hay? ¿Cuántas hay de verdad?
+2.  **¿Dio error?** ¿Qué implica eso sobre confiar en que «no salió nada
+    rojo»?
 
 ## B3. Importar bien, por etapas
 
@@ -140,49 +163,60 @@ enc <- read.csv2("datos/encuesta_sucia.csv")
 str(enc)
 ```
 
-1. `dim()`: ¿cuántas filas y columnas?
-2. `str()`: hay **dos** columnas que deberían ser numéricas y quedaron como texto.
-   ¿Cuáles son y por qué quedó así cada una? (las dos razones son distintas)
-3. Vuelvan a leer el archivo usando `na.strings` para arreglar la primera. Verifiquen con `str()`.
-4. La segunda no se arregla con `na.strings`. Arréglenla con `gsub()` y `as.numeric()`,
-   y expliquen en un comentario qué tenía de malo ese valor.
+1.  `dim()`: ¿cuántas filas y columnas?
+2.  `str()`: hay **dos** columnas que deberían ser numéricas y quedaron
+    como texto. ¿Cuáles son y por qué quedó así cada una? (las dos
+    razones son distintas)
+3.  Vuelvan a leer el archivo usando `na.strings` para arreglar la
+    primera. Verifiquen con `str()`.
+4.  La segunda no se arregla con `na.strings`. Arréglenla con `gsub()` y
+    `as.numeric()`, y expliquen en un comentario qué tenía de malo ese
+    valor.
 
 ## B4. La revisión obligatoria
 
 Sobre el `data.frame` ya corregido:
 
-1. `summary()` de todas las variables. **Miren los mínimos.** ¿Hay algún valor imposible?
-   ¿Qué representa? Recodifíquenlo a `NA`.
-2. `table(enc$programa)`: ¿cuántos programas distintos hay realmente? ¿Cuántos ve R?
-   Arréglenlo con `tolower()` y `trimws()`.
-3. ¿Hay filas duplicadas? ¿Hay `id` repetidos? Elimínenlos y digan cuántas filas quedaron.
-4. `colSums(is.na())` y `sum(!complete.cases())`: ¿cuántas **celdas** faltan y cuántas
-   **filas** se perderían? Comparen los dos porcentajes —es la misma lección de la parte A.
+1.  `summary()` de todas las variables. **Miren los mínimos.** ¿Hay
+    algún valor imposible? ¿Qué representa? Recodifíquenlo a `NA`.
+2.  `table(enc$programa)`: ¿cuántos programas distintos hay realmente?
+    ¿Cuántos ve R? Arréglenlo con `tolower()` y `trimws()`.
+3.  ¿Hay filas duplicadas? ¿Hay `id` repetidos? Elimínenlos y digan
+    cuántas filas quedaron.
+4.  `colSums(is.na())` y `sum(!complete.cases())`: ¿cuántas **celdas**
+    faltan y cuántas **filas** se perderían? Comparen los dos
+    porcentajes —es la misma lección de la parte A.
 
 ## B5. Análisis y exportación
 
 Con la tabla ya limpia:
 
-1. Construyan `enc_num` con las variables numéricas de análisis
-   (`edad`, `horas_estudio`, `horas_trabajo`, `promedio`, `transporte_min`, `satisfaccion`).
-   Ojo: `id` y `semestre` **no** son variables de análisis. Justifiquen por qué en un comentario.
-2. Matriz de correlación con `use = "complete.obs"`.
-3. ¿Qué par de variables está más correlacionado? ¿Tiene sentido con lo que miden?
-4. Exporten la tabla limpia a `datos/encuesta_limpia.csv` con `row.names = FALSE`.
-5. Vuelvan a leerla con `read.csv()` y comprueben con `str()` que quedó bien.
-   **¿Por qué ahora sí funciona `read.csv` y no `read.csv2`?**
+1.  Construyan `enc_num` con las variables numéricas de análisis
+    (`edad`, `horas_estudio`, `horas_trabajo`, `promedio`,
+    `transporte_min`, `satisfaccion`). Ojo: `id` y `semestre` **no** son
+    variables de análisis. Justifiquen por qué en un comentario.
+2.  Matriz de correlación con `use = "complete.obs"`.
+3.  ¿Qué par de variables está más correlacionado? ¿Tiene sentido con lo
+    que miden?
+4.  Exporten la tabla limpia a `datos/encuesta_limpia.csv` con
+    `row.names = FALSE`.
+5.  Vuelvan a leerla con `read.csv()` y comprueben con `str()` que quedó
+    bien. **¿Por qué ahora sí funciona `read.csv` y no `read.csv2`?**
 
 ## B6. Extra (para quien vaya adelantado)
 
 Abran `../../../04_DATASETS/DANEPoblacion.csv`.
 
-1. El nombre del archivo dice una cosa y el contenido dice otra. ¿Qué contiene realmente?
-2. Impórtenlo correctamente y apliquen la lista de chequeo de las 8 verificaciones.
-3. `table()` de la variable `Fabrica` muestra un nivel que no debería existir.
-   Encuéntrenlo, expliquen **cómo se produjo** y corríjanlo por código.
-4. ¿Cuántos cereales quedan por fabricante después de la corrección?
+1.  El nombre del archivo dice una cosa y el contenido dice otra. ¿Qué
+    contiene realmente?
+2.  Impórtenlo correctamente y apliquen la lista de chequeo de las 8
+    verificaciones.
+3.  `table()` de la variable `Fabrica` muestra un nivel que no debería
+    existir. Encuéntrenlo, expliquen **cómo se produjo** y corríjanlo
+    por código.
+4.  ¿Cuántos cereales quedan por fabricante después de la corrección?
 
----
+------------------------------------------------------------------------
 
 # Entrega
 
@@ -192,4 +226,5 @@ Un solo archivo `.R` por pareja, subido a **Moodle**, con:
 - las respuestas como comentarios,
 - los nombres y códigos de ambos al inicio.
 
-Las dos partes van en el mismo archivo, subido **antes de la sesión del sábado 22 de agosto**.
+Las dos partes van en el mismo archivo, subido **antes de la sesión del
+sábado 22 de agosto**.
