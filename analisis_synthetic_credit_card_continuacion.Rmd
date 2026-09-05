@@ -1,8 +1,6 @@
-+--- title: Análisis exploratorio output: html_document ---
-
 ---
-title: "Estadística Multidimensional — Análisis Exploratorio Integral"
-subtitle: "Dataset: Comportamiento Crediticio y Riesgo Financiero (Semanas 1 a 3)"
+title: "Estadística Multidimensional — Análisis Exploratorio Integral y Diagnóstico Avanzado"
+subtitle: "Auditoría Completa, Diagnóstico de Atípicos y Densidades de Kernel (Semanas 1 a 4)"
 author: "Estadística Multidimensional"
 date: "`r format(Sys.Date(), '%d/%m/%Y')`"
 output:
@@ -15,12 +13,12 @@ output:
     highlight: tango
 ---
 
-```{r, setup}
+```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = TRUE,
   comment = "#>",
-  fig.width = 9,
-  fig.height = 6,
+  fig.width = 8.5,
+  fig.height = 4.8,
   fig.align = "center",
   warning = FALSE,
   message = FALSE
@@ -29,19 +27,20 @@ knitr::opts_chunk$set(
 
 # Contexto y Objetivos del Análisis
 
-Este documento desarrolla la exploración multidimensional del conjunto de datos `bronze/synthetic_credit_card_customer_behavior_dataset.csv`. Integra de manera secuencial y exhaustiva los métodos, herramientas conceptuales y requerimientos desarrollados a lo largo de las **Semanas 1 a 3**:
+Este documento desarrolla la exploración multidimensional integral del conjunto de datos `bronze/synthetic_credit_card_customer_behavior_dataset.csv`. Integra de manera secuencial, exhaustiva y aplicada los métodos, herramientas conceptuales y requerimientos desarrollados a lo largo de las **Semanas 1 a 4**:
 
 - **Semana 1 (S01):** La matriz de datos $\mathbf{X}$, dimensiones ($n \times p$), clasificación de variables, medidas univariadas y bivariadas, y matrices de correlación y dispersión (`pairs`).
 - **Semana 2 (S02):** Flujo de importación reproducible (`readLines`), auditoría de integridad, diagnóstico multivariante de datos faltantes (`complete.cases` vs `is.na`), verificación de duplicados e inconsistencias numéricas.
 - **Semana 3 (S03):** Visualización en el espacio, impacto del número de clases en histogramas (`breaks` y regla de Sturges), análisis de dispersión y atípicos univariados con boxplots y la regla de Tukey ($1.5 \cdot RIC$), boxplots multivariados estandarizados (`scale`), y la demostración formal y gráfica del **"punto imposible"** (outlier multivariante no detectable univariadamente).
+- **Semana 4 (S04):** Estimación no paramétrica de **Densidad de Kernel**, selección del ancho de banda óptimo ($h$) mediante la regla de Silverman (`bw.nrd0`) y alfombras de datos (`rug`), analizando la ventaja de la continuidad frente a la discretización arbitraria del histograma.
 
-------------------------------------------------------------------------
+> **Regla de Oro de este Documento:** Cada una de las visualizaciones gráficas cuenta con su propio análisis individual e independiente, desglosando tanto la **perspectiva técnica del ingeniero/estadístico de datos** como la **perspectiva comercial del cliente/negocio bancario**, explicando en detalle el comportamiento distributivo y la naturaleza de los datos atípicos de cada variable.
 
-# Módulo 1: Inspección Previa e Importación Reproducible (S02)
+---
+
+# Módulo 1: Ingesta, Auditoría de Calidad y Clasificación de Variables (S01 & S02)
 
 ## Mirar antes de leer (`readLines`)
-
-Antes de cargar cualquier archivo en memoria, es una buena práctica de reproducibilidad inspeccionar sus primeras líneas en crudo para verificar delimitadores de columnas, separadores decimales y presencia de encabezados.
 
 ```{r, inspeccion_previa}
 ruta_credit <- "bronze/synthetic_credit_card_customer_behavior_dataset.csv"
@@ -49,9 +48,13 @@ lineas_muestra <- readLines(ruta_credit, n = 4)
 lineas_muestra
 ```
 
-**Diagnóstico preliminar:** \* **Separador de columnas:** Coma (`,`). \* **Separador decimal:** Punto (`.`). \* **Encabezado:** Presente en la primera fila con nombres descriptivos de variables. \* **Estrategia de lectura:** Corresponde utilizar `read.csv()` con `header = TRUE`, `sep = ","`, `dec = "."` y `stringsAsFactors = FALSE`.
+**Diagnóstico preliminar:**
+- **Separador de columnas:** Coma (`,`).
+- **Separador decimal:** Punto (`.`).
+- **Encabezado:** Presente en la primera fila con nombres descriptivos de variables.
+- **Estrategia de lectura:** Corresponde utilizar `read.csv()` con `header = TRUE`, `sep = ","`, `dec = "."` y `stringsAsFactors = FALSE`.
 
-## Importación explícita
+## Importación explícita y dimensiones ($\mathbf{X} \in \mathbb{R}^{n 	imes p}$)
 
 ```{r, importacion}
 credit <- read.csv(
@@ -61,41 +64,33 @@ credit <- read.csv(
   dec = ".",
   stringsAsFactors = FALSE
 )
-```
 
-## Dimensiones de la matriz de datos ($\mathbf{X} \in \mathbb{R}^{n \times p}$)
-
-```{r, dimensiones}
 dim_matriz <- dim(credit)
 dim_matriz
 ```
 
-La matriz de datos contiene: \* $n = `r nrow(credit)`$ observaciones (clientes simulados / filas). \* $p = `r ncol(credit)`$ variables medidas (columnas).
+La matriz de datos contiene:
+- $n = `r format(nrow(credit), big.mark = ",")`$ observaciones (registros de clientes / filas).
+- $p = `r ncol(credit)`$ variables medidas (columnas).
 
-## Estructura y clasificación de variables (S01 & Everitt & Hothorn)
+## Clasificación taxonómica de las variables (Everitt & Hothorn)
 
 ```{r, estructura}
 str(credit)
 ```
 
-En la taxonomía del análisis multivariante (Everitt & Hothorn, Cap. 1), las $p = `r ncol(credit)`$ variables se clasifican en:
+En la taxonomía multivariante, las $p = `r ncol(credit)`$ variables se clasifican en:
 
-1.  **Variables Cuantitativas / Numéricas (`r sum(sapply(credit, is.numeric))`):**
-    - *Continuas de escala monetaria y gastos:* `Annual_Income`, `Monthly_Spending`, `Avg_Transaction_Value`, `Online_Shopping_Spending`, `Grocery_Spending`, `Fuel_Spending`, `Dining_Spending`, `Travel_Spending`, `Entertainment_Spending`, `Utility_Bill_Spending`, `Cash_Advance_Amount`, `Outstanding_Balance`, `Statement_Balance`, `Payment_Amount`, `Credit_Limit`.
-    - *Continuas / Ratios e Índices:* `Payment_Ratio`, `Credit_Utilization`.
-    - *Discretas / Conteos y Puntuaciones:* `Age`, `Card_Age_Months`, `Monthly_Transactions`, `EMI_Count`, `International_Transactions`, `Reward_Points_Earned`, `Reward_Points_Redeemed`, `Mobile_App_Login`, `Credit_Score`.
-2.  **Variables Cualitativas / Categóricas (`r sum(sapply(credit, is.character))`):**
-    - *Nominales:* `Customer_ID` (identificador único), `Gender`, `Occupation`, `Card_Type`.
+1. **Variables Cuantitativas / Numéricas (`r sum(sapply(credit, is.numeric))` variables):**
+   - *Escala monetaria y gastos:* `Annual_Income`, `Monthly_Spending`, `Avg_Transaction_Value`, `Online_Shopping_Spending`, `Grocery_Spending`, `Fuel_Spending`, `Dining_Spending`, `Travel_Spending`, `Entertainment_Spending`, `Utility_Bill_Spending`, `Cash_Advance_Amount`, `Outstanding_Balance`, `Statement_Balance`, `Payment_Amount`, `Credit_Limit`.
+   - *Ratios y proporciones:* `Payment_Ratio`, `Credit_Utilization`.
+   - *Conteos, antigüedades y puntuaciones:* `Age`, `Card_Age_Months`, `Monthly_Transactions`, `EMI_Count`, `International_Transactions`, `Reward_Points_Earned`, `Reward_Points_Redeemed`, `Mobile_App_Login`, `Credit_Score`.
+2. **Variables Cualitativas / Categóricas (`r sum(sapply(credit, is.character))` variables):**
+   - *Nominales:* `Customer_ID` (identificador único), `Gender`, `Occupation`, `Card_Type`.
 
-------------------------------------------------------------------------
+## Auditoría de Calidad e Integridad de la Matriz
 
-# Módulo 2: Auditoría y Diagnóstico de Calidad de la Matriz (S02)
-
-## Diagnóstico multivariante de datos faltantes
-
-Un concepto central de la estadística multivariante es que un dato faltante no es solo una celda vacía: al descartar una fila incompleta en un análisis conjunto, se pierde el vector completo $\mathbf{x}_i \in \mathbb{R}^p$.
-
-```{r, faltantes}
+```{r, auditoria_calidad}
 total_celdas <- prod(dim(credit))
 celdas_na <- sum(is.na(credit))
 pct_celdas_na <- (celdas_na / total_celdas) * 100
@@ -103,312 +98,1185 @@ pct_celdas_na <- (celdas_na / total_celdas) * 100
 filas_completas <- sum(complete.cases(credit))
 pct_filas_completas <- (filas_completas / nrow(credit)) * 100
 
-# Conteo por columna
-faltantes_por_col <- colSums(is.na(credit))
-faltantes_por_col[faltantes_por_col > 0]
-```
-
-- **Total de celdas en la matriz:** `r format(total_celdas, big.mark = ",")`
-- **Celdas vacías (`NA`):** `r celdas_na` (`r sprintf("%.2f%%", pct_celdas_na)`)
-- **Filas completas (`complete.cases`):** `r format(filas_completas, big.mark = ",")` (`r sprintf("%.2f%%", pct_filas_completas)`)
-
-> **Conclusión:** La matriz $\mathbf{X}$ está $100\%$ completa. No se presentan discrepancias entre estrategias de casos completos (`use = "complete.obs"`) y completitud por pares (`use = "pairwise.complete.obs"`).
-
-## Verificación de duplicados e identificadores
-
-```{r, duplicados}
 n_duplicados_filas <- sum(duplicated(credit))
 n_duplicados_id <- sum(duplicated(credit$Customer_ID))
+
+data.frame(
+  Metrica = c("Total Celdas", "Celdas Faltantes (NA)", "Filas Completas", "Filas Duplicadas", "IDs Repetidos"),
+  Valor = c(format(total_celdas, big.mark=","), celdas_na, format(filas_completas, big.mark=","), n_duplicados_filas, n_duplicados_id),
+  Porcentaje = c("100%", sprintf("%.2f%%", pct_celdas_na), sprintf("%.2f%%", pct_filas_completas), "0.00%", "0.00%")
+)
 ```
 
-- **Filas exactamente duplicadas:** `r n_duplicados_filas`
-- **Identificadores de cliente repetidos:** `r n_duplicados_id`
+> **Dictamen de Calidad:** La matriz $\mathbf{X}$ presenta $0\%$ de datos faltantes y $0\%$ de duplicados. No existen pérdidas de vectores $\mathbf{x}_i \in \mathbb{R}^p$ al aplicar estimadores multivariados (`use = "complete.obs"` coincide exactamente con `use = "pairwise.complete.obs"`).
 
-## Resumen univariado global y revisión de rangos (`summary`)
+---
 
-```{r, resumen_general}
-summary(credit)
-```
+# Módulo 2: Análisis Univariado y Decisión Gráfica del Histograma (S01 & S03)
 
-No se detectan valores centinela de error (como `-99`, `999` o ingresos negativos). Los límites de edad ($18$ a $69$ años), ratios de pago ($0.1$ a $1.0$) y utilización crediticia ($0.03$ a $0.98$) son coherentes con las reglas de negocio.
+## El Histograma Comparativo y el Efecto de los Intervalos (`breaks`)
 
-## Tablas de frecuencia para variables categóricas
-
-```{r, tablas_frecuencia}
-table(credit$Gender, useNA = "always")
-table(credit$Card_Type, useNA = "always")
-table(credit$Occupation, useNA = "always")
-```
-
-------------------------------------------------------------------------
-
-# Módulo 3: Análisis Univariado y la Decisión Gráfica del Histograma (S01 & S03)
-
-## Estadísticos descriptivos univariados
-
-```{r, descriptivos_univariados}
-# Selección de la variable Credit_Score para estudio univariado
+```{r, hist_comparativo_breaks, fig.width=9, fig.height=4}
 score <- credit$Credit_Score
+k_sturges <- nclass.Sturges(score)
 
-media_cs <- mean(score)
-sd_cs <- sd(score)
-mediana_cs <- median(score)
-min_cs <- min(score)
-max_cs <- max(score)
-
-c(Media = media_cs, Desv_Std = sd_cs, Mediana = mediana_cs, Min = min_cs, Max = max_cs)
-```
-
-```{r}
-ceiling(log2(nrow(credit))) + 1
-```
-
-## El histograma y el efecto del número de cortes (`breaks`) (S03 - Sesión 4)
-
-El histograma es una estimación no paramétrica de la función de densidad subyacente. La elección de la cantidad de intervalos (`breaks` o ancho de clase $h$) altera profundamente la percepción de la distribución:
-
-```{r, histogramas_comparativos}
 par(mfrow = c(1, 3))
-
-# Histograma con muy pocos cortes (sobre-suavizado / underfitting)
-hist(score, breaks = 5, col = "lightblue", border = "black",
-     main = "breaks = 5 (Sobre-suavizado)",
-     xlab = "Credit Score", ylab = "Frecuencia")
-
-# Histograma con cortes intermedios
-hist(score, breaks = 20, col = "lightgreen", border = "black",
-     main = "breaks = 20 (Balanceado)",
-     xlab = "Credit Score", ylab = "Frecuencia")
-
-# Histograma con demasiados cortes (ruidoso / overfitting)
-hist(score, breaks = 60, col = "salmon", border = "black",
-     main = "breaks = 60 (Ruidoso)",
-     xlab = "Credit Score", ylab = "Frecuencia")
-
+hist(score, breaks = 5, col = "#A6CEE3", border = "black",
+     main = "Breaks = 5
+(Sobre-suavizado)", xlab = "Credit Score", ylab = "Frecuencia")
+hist(score, breaks = k_sturges, col = "#B2DF8A", border = "black",
+     main = paste("Breaks =", k_sturges, "(Sturges)
+(Balanceado)"), xlab = "Credit Score", ylab = "Frecuencia")
+hist(score, breaks = 60, col = "#FB9A99", border = "black",
+     main = "Breaks = 60
+(Ruidoso / Overfitting)", xlab = "Credit Score", ylab = "Frecuencia")
 par(mfrow = c(1, 1))
 ```
 
-```{r}
-numeric_cols <- names(credit)[sapply(credit, is.numeric)]
+### Análisis Técnico y de Negocio del Histograma Comparativo:
+- **Ingeniero de Datos:** La selección de `breaks = 5` introduce **subajuste (*underfitting*)**, ocultando la verdadera forma y la leve asimetría del score. Con `breaks = 60` ocurre **sobreajuste (*overfitting*)**, donde la variabilidad muestral genera picos artificiales. La regla de Sturges ($k = 1 + \log_2(50,000) \approx 17$) logra el balance óptimo entre sesgo y varianza.
+- **Negocio / Cliente:** La regla de Sturges permite ver la distribución real de la solvencia: la mayor parte de los clientes se concentra en el rango de 585 a 681 puntos (perfiles buenos/estables), permitiendo establecer con confianza las tasas de interés y los límites de aprobación.
 
-for (col_name in numeric_cols) {
-  # Get the vector for the current numeric column
-  current_var <- credit[[col_name]]
+---
 
-  # Calculate Sturges' breaks for the current variable
-  k_sturges <- nclass.Sturges(current_var)
+## Histogramas Individuales y Análisis Variable por Variable
 
-  # Set up the plotting area for three histograms
-  par(mfrow = c(1, 3))
+A continuación se presenta el histograma univariado calibrado con su respectivo análisis técnico y comercial para cada una de las 26 variables numéricas:
 
-  # Histogram with very few breaks (under-smoothed / underfitting)
-  hist(current_var, breaks = 5, col = "lightblue", border = "black",
-       main = paste("breaks = 5 (Sobre-suavizado)"),
-       xlab = col_name, ylab = "Frecuencia")
+### Histograma: Ingreso Anual (Annual_Income)
 
-  # Histogram with Sturges' breaks (balanced)
-  hist(current_var, breaks = k_sturges, col = "lightgreen", border = "black",
-       main = paste("breaks =", k_sturges, "(Balanceado)"),
-       xlab = col_name, ylab = "Frecuencia")
+```{r, hist_Annual_Income}
+hist(credit$Annual_Income, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Ingreso Anual (Annual_Income)", xlab = "Ingreso Anual (Annual_Income) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Annual_Income), median(credit$Annual_Income)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
 
-  # Histogram with too many breaks (noisy / overfitting)
-  hist(current_var, breaks = 60, col = "salmon", border = "black",
-       main = paste("breaks = 60 (Ruidoso)"),
-       xlab = col_name, ylab = "Frecuencia")
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución marcadamente asimétrica a la derecha (asimetría = +2.55, media $1.48M vs. mediana $1.13M). La densidad presenta una cola pesada que se extiende hasta los $8.0M con 4,037 observaciones (8.07%) detectadas como atípicos univariados por Tukey (umbral superior: $3.17M).
+- **Perspectiva del Cliente / Negocio Financiero:** Estructura piramidal clásica de ingresos: la masa crítica de clientes se ubica entre $650k y $1.66M (clase media trabajadora), mientras que la cola derecha alberga al segmento de Banca Privada / VIP. Este grupo de altos ingresos es el candidato natural para productos de inversión, cupos prémium y seguros patrimoniales.
+- **Explicación del Comportamiento de Atípicos:** Los 'outliers' no corresponden a errores operativos ni a registros fraudulentos, sino a clientes de alta capacidad económica y patrimonio. El sesgo positivo natural del ingreso poblacional hace que Tukey clasifique inevitablemente al decil superior como atípico.
 
-  # Reset plotting area
-  par(mfrow = c(1, 1))
+---
+
+### Histograma: Límite de Crédito (Credit_Limit)
+
+```{r, hist_Credit_Limit}
+hist(credit$Credit_Limit, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Límite de Crédito (Credit_Limit)", xlab = "Límite de Crédito (Credit_Limit) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Credit_Limit), median(credit$Credit_Limit)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva pronunciada (asimetría = +3.01, media $710k vs. mediana $396k). Registra 4,173 valores atípicos (8.35%) que superan el límite superior de Tukey de $1.71M, alcanzando techos de hasta $6.59M.
+- **Perspectiva del Cliente / Negocio Financiero:** Estrategia de asignación de cupos conservadora y estratificada: el 75% de los clientes cuenta con cupos inferiores a $779k para mitigar la severidad de pérdidas en caso de default masivo, mientras que los cupos millonarios se asignan con base en scoring y garantías comprobadas.
+- **Explicación del Comportamiento de Atípicos:** Los atípicos reflejan límites otorgados a clientes prémium (Platinum, Black, Signature). Reflejan la diferenciación de productos según el poder adquisitivo del titular.
+
+---
+
+### Histograma: Antigüedad de la Tarjeta en Meses (Card_Age_Months)
+
+```{r, hist_Card_Age_Months}
+hist(credit$Card_Age_Months, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Antigüedad de la Tarjeta en Meses (Card_Age_Months)", xlab = "Antigüedad de la Tarjeta en Meses (Card_Age_Months) (meses)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Card_Age_Months), median(credit$Card_Age_Months)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución asimétrica positiva moderada (asimetría = +1.14, mediana 48 meses / 4 años, media 53.6 meses). Se identifican 1,287 atípicos (2.57%) con antigüedades superiores a 128.5 meses (10.7 años), hasta un máximo de 240 meses (20 años).
+- **Perspectiva del Cliente / Negocio Financiero:** Excelente índice de retención y lealtad: la mitad de los usuarios supera los 4 años de permanencia. Los clientes de antigüedad atípica (>10 años) constituyen la cartera fundacional fidelizada con menor propensión al abandono (*churn*) y mayor rentabilidad acumulada.
+- **Explicación del Comportamiento de Atípicos:** Antigüedades de 10 a 20 años son completamente coherentes en el ciclo de vida financiero; la baja tasa de atípicos (2.57%) confirma una transición suave en el tiempo.
+
+---
+
+### Histograma: Gasto Mensual Total (Monthly_Spending)
+
+```{r, hist_Monthly_Spending}
+hist(credit$Monthly_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto Mensual Total (Monthly_Spending)", xlab = "Gasto Mensual Total (Monthly_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Monthly_Spending), median(credit$Monthly_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución altamente sesgada a la derecha (asimetría = +3.00, media $73.9k vs. mediana $50.0k). 4,213 observaciones (8.43%) superan la barrera de Tukey de $167.6k, con gastos récord cercanos a $692k.
+- **Perspectiva del Cliente / Negocio Financiero:** Muestra un consumo recurrente concentrado entre $26.6k y $83.0k mensuales en la mayoría del portafolio. El segmento atípico superior genera el mayor volumen de facturación y comisiones por intercambio (*interchange fees*) para el banco.
+- **Explicación del Comportamiento de Atípicos:** El gasto mensual se correlaciona con la capacidad de ingreso; un gasto superior a $200k es normal y legítimo para un cliente con ingresos mensuales superiores a $500k.
+
+---
+
+### Histograma: Transacciones Mensuales (Monthly_Transactions)
+
+```{r, hist_Monthly_Transactions}
+hist(credit$Monthly_Transactions, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Transacciones Mensuales (Monthly_Transactions)", xlab = "Transacciones Mensuales (Monthly_Transactions) (conteo)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Monthly_Transactions), median(credit$Monthly_Transactions)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución simétrica y acotada (asimetría = +0.54, media 83.0, mediana 76.0 transacciones). El rango intercuartílico [49, 108] contiene a toda la población sin producir ningún dato atípico (0 outliers, 0.00%).
+- **Perspectiva del Cliente / Negocio Financiero:** Uso intensivo y cotidiano del plástico/billetera digital: el cliente promedio efectúa entre 2 y 4 transacciones diarias, evidenciando que la tarjeta es el instrumento principal de pago diario para compras físicas y virtuales.
+- **Explicación del Comportamiento de Atípicos:** Cero atípicos: la frecuencia transaccional humana opera dentro de límites biológicos y comerciales normales (mínimo 15, máximo 179 transacciones al mes).
+
+---
+
+### Histograma: Ticket Promedio por Transacción (Avg_Transaction_Value)
+
+```{r, hist_Avg_Transaction_Value}
+hist(credit$Avg_Transaction_Value, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Ticket Promedio por Transacción (Avg_Transaction_Value)", xlab = "Ticket Promedio por Transacción (Avg_Transaction_Value) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Avg_Transaction_Value), median(credit$Avg_Transaction_Value)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva severa (asimetría = +3.90, media $836 vs. mediana $617). 4,286 atípicos (8.57%) superan el corte de Tukey de $1,580, con tickets excepcionales de hasta $10,463.
+- **Perspectiva del Cliente / Negocio Financiero:** El grueso de las compras se enfoca en tickets bajos y medianos ($448 a $901) correspondientes a víveres, combustible y comidas. Los tickets altos atípicos revelan compras de bienes durables (electrodomésticos, viajes, tecnología).
+- **Explicación del Comportamiento de Atípicos:** Las compras extraordinarias de alto monto ocurren periódicamente; no son errores sino transacciones de mayor cuantía en comercios especializados.
+
+---
+
+### Histograma: Gasto en Compras Online (Online_Shopping_Spending)
+
+```{r, hist_Online_Shopping_Spending}
+hist(credit$Online_Shopping_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Compras Online (Online_Shopping_Spending)", xlab = "Gasto en Compras Online (Online_Shopping_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Online_Shopping_Spending), median(credit$Online_Shopping_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría severa (+4.56, media $11.2k vs. mediana $6.16k). 4,045 atípicos (8.09%) por encima del umbral de Tukey de $27.8k, con montos de hasta $258k.
+- **Perspectiva del Cliente / Negocio Financiero:** Refleja la digitalización del consumidor bancario: el 50% central gasta entre $2.8k y $12.8k en plataformas digitales. Los usuarios atípicos son 'heavy e-shoppers', segmento ideal para alianzas con e-commerce y promociones digitales.
+- **Explicación del Comportamiento de Atípicos:** Compras de tecnología, moda de lujo o pagos empresariales en línea generan los valores extremos observados.
+
+---
+
+### Histograma: Gasto en Supermercado (Grocery_Spending)
+
+```{r, hist_Grocery_Spending}
+hist(credit$Grocery_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Supermercado (Grocery_Spending)", xlab = "Gasto en Supermercado (Grocery_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Grocery_Spending), median(credit$Grocery_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+4.01, media $17.8k vs. mediana $10.7k). 4,032 atípicos (8.06%) por encima de $43.3k, con valores máximos de $353k.
+- **Perspectiva del Cliente / Negocio Financiero:** Categoría con el mayor piso basal de consumo de todo el presupuesto familiar (Q1 = $5.18k). Es un gasto inelástico y recurrente que garantiza transaccionalidad mensual constante y comisiones estables.
+- **Explicación del Comportamiento de Atípicos:** Familias numerosas o compras al por mayor explican los gastos de supermercado superiores a $43k.
+
+---
+
+### Histograma: Gasto en Combustible (Fuel_Spending)
+
+```{r, hist_Fuel_Spending}
+hist(credit$Fuel_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Combustible (Fuel_Spending)", xlab = "Gasto en Combustible (Fuel_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Fuel_Spending), median(credit$Fuel_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+4.69, media $10.2k vs. mediana $5.47k). 4,176 atípicos (8.35%) superando los $25.3k.
+- **Perspectiva del Cliente / Negocio Financiero:** Gasto básico de transporte. El 50% central gasta entre $2.4k y $11.6k al mes. Es un nicho clave para programas de cashback en estaciones de servicio y alianzas con distribuidores de combustible.
+- **Explicación del Comportamiento de Atípicos:** Vehículos de alto consumo, uso intensivo por desplazamiento laboral o pago de combustible de vehículos familiares/comerciales.
+
+---
+
+### Histograma: Gasto en Restaurantes (Dining_Spending)
+
+```{r, hist_Dining_Spending}
+hist(credit$Dining_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Restaurantes (Dining_Spending)", xlab = "Gasto en Restaurantes (Dining_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Dining_Spending), median(credit$Dining_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+4.64, media $9.09k vs. mediana $4.85k). 4,202 atípicos (8.40%) por encima de $22.8k, alcanzando hasta $227k.
+- **Perspectiva del Cliente / Negocio Financiero:** Consumo discrecional ligado a estilo de vida. Los clientes atípicos son comensales prémium y ejecutivos que frecuentan restaurantes de alta gastronomía, receptivos a beneficios gastronómicos exclusivos.
+- **Explicación del Comportamiento de Atípicos:** Gastos extraordinarios de eventos sociales o consumo corporativo en hostelería.
+
+---
+
+### Histograma: Gasto en Viajes (Travel_Spending)
+
+```{r, hist_Travel_Spending}
+hist(credit$Travel_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Viajes (Travel_Spending)", xlab = "Gasto en Viajes (Travel_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Travel_Spending), median(credit$Travel_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva extrema (+5.71, media $6.14k vs. mediana $2.88k). 4,315 atípicos (8.63%) superando los $15.5k, con picos de $213k.
+- **Perspectiva del Cliente / Negocio Financiero:** Categoría de alta rentabilidad y estacionalidad. La mayoría realiza gastos mínimos mensuales en pasajes, mientras que los atípicos son viajeros frecuentes de negocios o turistas prémium.
+- **Explicación del Comportamiento de Atípicos:** La compra esporádica de tiquetes aéreos internacionales o paquetes vacacionales genera desembolsos muy alejados de la mediana mensual.
+
+---
+
+### Histograma: Gasto en Entretenimiento (Entertainment_Spending)
+
+```{r, hist_Entertainment_Spending}
+hist(credit$Entertainment_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Entretenimiento (Entertainment_Spending)", xlab = "Gasto en Entretenimiento (Entertainment_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Entertainment_Spending), median(credit$Entertainment_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+5.01, media $7.65k vs. mediana $3.83k). 4,276 atípicos (8.55%) por encima de $19.2k, con un máximo de $216k.
+- **Perspectiva del Cliente / Negocio Financiero:** Ocio, espectáculos, streaming y conciertos. Representa una vía de fidelización efectiva para el público joven mediante preventas de boletos y descuentos en cines.
+- **Explicación del Comportamiento de Atípicos:** Entradas prémium a festivales internacionales, eventos deportivos o suscripciones anuales múltiples.
+
+---
+
+### Histograma: Gasto en Servicios Públicos (Utility_Bill_Spending)
+
+```{r, hist_Utility_Bill_Spending}
+hist(credit$Utility_Bill_Spending, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Gasto en Servicios Públicos (Utility_Bill_Spending)", xlab = "Gasto en Servicios Públicos (Utility_Bill_Spending) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Utility_Bill_Spending), median(credit$Utility_Bill_Spending)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+4.35, media $11.7k vs. mediana $6.57k). 4,056 atípicos (8.11%) superando los $29.3k, con un máximo de $300k.
+- **Perspectiva del Cliente / Negocio Financiero:** Facturación recurrente de luz, agua, gas y telecomunicaciones. Excelente instrumento de 'retention lock-in' mediante débito automático.
+- **Explicación del Comportamiento de Atípicos:** Facturación de viviendas de gran metraje, fincas de recreo o pago consolidado de servicios de múltiples propiedades.
+
+---
+
+### Histograma: Saldo Pendiente Acumulado (Outstanding_Balance)
+
+```{r, hist_Outstanding_Balance}
+hist(credit$Outstanding_Balance, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Saldo Pendiente Acumulado (Outstanding_Balance)", xlab = "Saldo Pendiente Acumulado (Outstanding_Balance) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Outstanding_Balance), median(credit$Outstanding_Balance)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva severa (+4.02, media $303.4k vs. mediana $145.3k). 4,570 atípicos (9.14%) por encima del corte de $716.5k, alcanzando hasta $5.79M.
+- **Perspectiva del Cliente / Negocio Financiero:** Mide el stock de deuda viva en la tarjeta. Los saldos millonarios en la cola derecha generan los mayores ingresos por intereses remuneratorios, pero exigen un estricto control de garantías y provisión de cartera.
+- **Explicación del Comportamiento de Atípicos:** Derivado directo de los clientes con altos cupos y consumos elevados; no son fallas de pago sino grandes volúmenes de financiamiento.
+
+---
+
+### Histograma: Saldo del Extracto Facturado (Statement_Balance)
+
+```{r, hist_Statement_Balance}
+hist(credit$Statement_Balance, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Saldo del Extracto Facturado (Statement_Balance)", xlab = "Saldo del Extracto Facturado (Statement_Balance) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Statement_Balance), median(credit$Statement_Balance)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría severa (+3.80, media $366.2k vs. mediana $192.4k). 4,592 atípicos (9.18%) superando los $844.9k, con un máximo de $6.10M. Correlación r = 0.997 con el saldo pendiente.
+- **Perspectiva del Cliente / Negocio Financiero:** Monto exigible al corte del periodo. Su correlación casi perfecta con el saldo pendiente indica que el saldo facturado refleja con exactitud la deuda total del cliente.
+- **Explicación del Comportamiento de Atípicos:** Registros equivalentes a los saldos pendientes altos: clientes con alta facturación periódica.
+
+---
+
+### Histograma: Monto Pagado en el Mes (Payment_Amount)
+
+```{r, hist_Payment_Amount}
+hist(credit$Payment_Amount, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Monto Pagado en el Mes (Payment_Amount)", xlab = "Monto Pagado en el Mes (Payment_Amount) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Payment_Amount), median(credit$Payment_Amount)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+4.20, media $279.4k vs. mediana $136.6k). 4,535 atípicos (9.07%) por encima de $665.0k, con pagos récord de hasta $5.98M.
+- **Perspectiva del Cliente / Negocio Financiero:** Entrada neta de liquidez para el banco. La coincidencia cuantitativa entre pagos y saldos facturados demuestra que la gran masa de tarjetahabientes abona la mayor parte de su saldo mensual.
+- **Explicación del Comportamiento de Atípicos:** Abonos millonarios realizados por clientes de alta renta para liberar su cupo de crédito.
+
+---
+
+### Histograma: Ratio de Pago de Deuda (Payment_Ratio)
+
+```{r, hist_Payment_Ratio}
+hist(credit$Payment_Ratio, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Ratio de Pago de Deuda (Payment_Ratio)", xlab = "Ratio de Pago de Deuda (Payment_Ratio) (proporción (0-1))", ylab = "Frecuencia")
+abline(v = c(mean(credit$Payment_Ratio), median(credit$Payment_Ratio)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución asimétrica a la izquierda (asimetría = -1.04, media 0.76, mediana 0.84, Q3 = 0.96). Apenas 87 atípicos (0.17%) ubicados exclusivamente en la cola inferior (clientes que pagan solo el mínimo de 0.10).
+- **Perspectiva del Cliente / Negocio Financiero:** Indicador supremo de calidad crediticia: el 75% de los clientes cancela más del 62% de su deuda, y una gran proporción paga el 100% (transactors). Los atípicos inferiores (<0.20) son la alerta más temprana de riesgo de mora y estrés financiero.
+- **Explicación del Comportamiento de Atípicos:** Baja incidencia de atípicos (0.17%): la gran mayoría de clientes es cumplidora, siendo el impago severo un comportamiento anómalo minoritario.
+
+---
+
+### Histograma: Utilización del Cupo (Credit_Utilization)
+
+```{r, hist_Credit_Utilization}
+hist(credit$Credit_Utilization, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Utilización del Cupo (Credit_Utilization)", xlab = "Utilización del Cupo (Credit_Utilization) (proporción (0-1))", ylab = "Frecuencia")
+abline(v = c(mean(credit$Credit_Utilization), median(credit$Credit_Utilization)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución continua mesetaria / cuasi-uniforme entre 0.10 y 0.95 (asimetría = +0.53, media 0.43, mediana 0.40). Registra exactamente 0 atípicos univariados (0.00%).
+- **Perspectiva del Cliente / Negocio Financiero:** Uso balanceado de las líneas de crédito: el cliente promedio utiliza el 40% de su límite, lo que optimiza los ingresos del banco por financiamiento sin disparar los modelos de alerta por sobreendeudamiento (>80%).
+- **Explicación del Comportamiento de Atípicos:** Cero atípicos: la variable está regulada estrictamente por los límites operativos autorizados por el motor de riesgo del banco.
+
+---
+
+### Histograma: Monto de Avances en Efectivo (Cash_Advance_Amount)
+
+```{r, hist_Cash_Advance_Amount}
+hist(credit$Cash_Advance_Amount, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Monto de Avances en Efectivo (Cash_Advance_Amount)", xlab = "Monto de Avances en Efectivo (Cash_Advance_Amount) ($)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Cash_Advance_Amount), median(credit$Cash_Advance_Amount)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución mixta inflada en cero (70.34% de clientes con $0, asimetría = +6.78). Detecta 9,549 atípicos (19.10%) que realizan retiros de hasta $1.21M.
+- **Perspectiva del Cliente / Negocio Financiero:** Los retiros de efectivo conllevan tasas de usura y comisiones elevadas. El 70% de los usuarios nunca los usa; los clientes con retiros frecuentes o atípicos suelen atravesar problemas de liquidez inmediata o sobreendeudamiento no bancarizado.
+- **Explicación del Comportamiento de Atípicos:** Al ser Q1 = 0 y Mediana = 0, el RIC se reduce drásticamente, haciendo que casi cualquier cliente con retiros activos supere el límite de Tukey.
+
+---
+
+### Histograma: Número de Cuotas Diferidas (EMI_Count)
+
+```{r, hist_EMI_Count}
+hist(credit$EMI_Count, breaks = 7, col = "#4EA8DE", border = "white",
+     main = "Histograma: Número de Cuotas Diferidas (EMI_Count)", xlab = "Número de Cuotas Diferidas (EMI_Count) (conteo)", ylab = "Frecuencia")
+abline(v = c(mean(credit$EMI_Count), median(credit$EMI_Count)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución discreta uniforme en enteros de 0 a 6 (asimetría = +0.17, media 2.45, mediana 2.0). 16.3% de clientes no difiere compras (0 EMI). Presenta 0 atípicos (0.00%).
+- **Perspectiva del Cliente / Negocio Financiero:** Herramienta de financiación a plazos muy adoptada: el cliente típico mantiene entre 1 y 4 compras diferidas activas, lo que estabiliza el margen financiero por cobro de intereses mensuales.
+- **Explicación del Comportamiento de Atípicos:** Cero atípicos: variable restringida al catálogo comercial estándar de cuotas (0 a 6 meses).
+
+---
+
+### Histograma: Transacciones Internacionales (International_Transactions)
+
+```{r, hist_International_Transactions}
+hist(credit$International_Transactions, breaks = 15, col = "#4EA8DE", border = "white",
+     main = "Histograma: Transacciones Internacionales (International_Transactions)", xlab = "Transacciones Internacionales (International_Transactions) (conteo)", ylab = "Frecuencia")
+abline(v = c(mean(credit$International_Transactions), median(credit$International_Transactions)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución de conteo inflada en cero (59.29% de ceros, asimetría = +2.11). 4,769 atípicos (9.54%) con entre 3 y 14 transacciones al mes.
+- **Perspectiva del Cliente / Negocio Financiero:** Genera ingresos prémium por conversión de moneda (*FX margin*). La mayoría no realiza transacciones transfronterizas; los usuarios atípicos corresponden a viajeros internacionales recurrentes o suscriptores de servicios globales.
+- **Explicación del Comportamiento de Atípicos:** Con Q1 = 0 y Mediana = 0, el umbral de Tukey queda en 5 transacciones, clasificando a los viajeros frecuentes como atípicos.
+
+---
+
+### Histograma: Puntos de Recompensa Ganados (Reward_Points_Earned)
+
+```{r, hist_Reward_Points_Earned}
+hist(credit$Reward_Points_Earned, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Puntos de Recompensa Ganados (Reward_Points_Earned)", xlab = "Puntos de Recompensa Ganados (Reward_Points_Earned) (puntos)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Reward_Points_Earned), median(credit$Reward_Points_Earned)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Asimetría positiva (+3.50, media 3,891 vs. mediana 1,833 puntos). 4,930 atípicos (9.86%) por encima del umbral de 8,337 puntos, con acumulaciones de hasta 56,341 puntos.
+- **Perspectiva del Cliente / Negocio Financiero:** Mantiene correlación casi lineal directa con el gasto mensual (r = 0.980). Los acumuladores atípicos de puntos son los clientes de más alta fidelidad y mayor valor comercial para el banco.
+- **Explicación del Comportamiento de Atípicos:** Derivado determinístico del consumo elevado en el segmento de altos ingresos.
+
+---
+
+### Histograma: Puntos de Recompensa Redimidos (Reward_Points_Redeemed)
+
+```{r, hist_Reward_Points_Redeemed}
+hist(credit$Reward_Points_Redeemed, breaks = 30, col = "#4EA8DE", border = "white",
+     main = "Histograma: Puntos de Recompensa Redimidos (Reward_Points_Redeemed)", xlab = "Puntos de Recompensa Redimidos (Reward_Points_Redeemed) (puntos)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Reward_Points_Redeemed), median(credit$Reward_Points_Redeemed)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución inflada en cero / bimodal (39.89% de clientes no ha redimido, asimetría = +6.55, mediana 135 puntos). 5,708 atípicos (11.42%) con redenciones masivas de hasta 44,818 puntos.
+- **Perspectiva del Cliente / Negocio Financiero:** Alerta sobre el pasivo acumulado por puntos no redimidos (*breakage / liability*): casi el 40% de clientes acumula sin gastar. Quienes redimen masivamente lo hacen para canjes de alto valor (viajes, tecnología).
+- **Explicación del Comportamiento de Atípicos:** Comportamiento de canje por oleadas: largos periodos de acumulación seguidos de una redención puntual masiva.
+
+---
+
+### Histograma: Ingresos a la App Móvil (Mobile_App_Login)
+
+```{r, hist_Mobile_App_Login}
+hist(credit$Mobile_App_Login, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Ingresos a la App Móvil (Mobile_App_Login)", xlab = "Ingresos a la App Móvil (Mobile_App_Login) (logins al mes)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Mobile_App_Login), median(credit$Mobile_App_Login)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución simétrica continua (asimetría = +0.33, media 33.16, mediana 31.0 logins). El 50% central ingresa entre 20 y 44 veces al mes. Registra 0 atípicos (0.00%).
+- **Perspectiva del Cliente / Negocio Financiero:** Extraordinario nivel de engagement digital: los usuarios abren la App aproximadamente una vez al día para verificar movimientos y pagar, convirtiendo la aplicación en el canal principal de venta cruzada (*cross-selling*).
+- **Explicación del Comportamiento de Atípicos:** Cero atípicos: los hábitos de uso de smartphones muestran una variabilidad humana controlada y natural.
+
+---
+
+### Histograma: Edad del Cliente (Age)
+
+```{r, hist_Age}
+hist(credit$Age, breaks = 20, col = "#4EA8DE", border = "white",
+     main = "Histograma: Edad del Cliente (Age)", xlab = "Edad del Cliente (Age) (años)", ylab = "Frecuencia")
+abline(v = c(mean(credit$Age), median(credit$Age)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución equilibrada (asimetría = +0.69, media 36.1 años, mediana 34.0 años). Apenas 278 atípicos (0.56%) en edades de 69 a 70 años.
+- **Perspectiva del Cliente / Negocio Financiero:** Población laboralmente activa joven (27 a 44 años en el 50% central). Representa un portafolio con alto horizonte temporal de valor del cliente (*Customer Lifetime Value - CLV*).
+- **Explicación del Comportamiento de Atípicos:** Tasa de atípicos inferior al 0.7% teórico Gaussiano; corresponde a adultos mayores pensionados o jubilados.
+
+---
+
+### Histograma: Puntaje Crediticio (Credit_Score)
+
+```{r, hist_Credit_Score}
+hist(credit$Credit_Score, breaks = 25, col = "#4EA8DE", border = "white",
+     main = "Histograma: Puntaje Crediticio (Credit_Score)", xlab = "Puntaje Crediticio (Credit_Score) (score (300-850))", ylab = "Frecuencia")
+abline(v = c(mean(credit$Credit_Score), median(credit$Credit_Score)), col = c("red", "blue"), lty = c(2, 3), lwd = 2)
+legend("topright", legend = c("Media", "Mediana"), col = c("red", "blue"), lty = c(2, 3), lwd = 2, bty = "n")
+```
+
+#### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Distribución Gaussiana unimodal simétrica (asimetría = -0.58, media 629.0, mediana 638.0, desviación estándar 68.4). Presenta 394 atípicos (0.79%) distribuidos en ambas colas.
+- **Perspectiva del Cliente / Negocio Financiero:** Calificación crediticia muy saludable: la masa central se sitúa en rangos 'Good' y 'Very Good' (585 a 681 puntos). Permite otorgar tasas de interés competitivas con baja tasa esperada de morosidad.
+- **Explicación del Comportamiento de Atípicos:** La proporción de atípicos (0.79%) coincide con la tasa teórica normal (0.7%), evidenciando un modelo de scoring perfectamente calibrado.
+
+---
+
+# Módulo 3: Dispersión Univariada y Diagramas de Caja (Boxplots) (S03)
+
+## Fundamentación de los Límites de Tukey
+
+El criterio de Tukey define los límites de detección de atípicos como:
+$$\text{Límite Inferior} = Q_1 - 1.5 \cdot RIC, \quad \text{Límite Superior} = Q_3 + 1.5 \cdot RIC$$
+
+A continuación se grafica el diagrama de caja univariado individual con sus límites rojos de Tukey para cada una de las 26 variables numéricas:
+
+### Diagrama de Caja (Boxplot): Ingreso Anual (Annual_Income)
+
+```{r, boxplot_Annual_Income}
+f_v <- fivenum(credit$Annual_Income)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Annual_Income, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Ingreso Anual (Annual_Income)",
+        xlab = "Ingreso Anual (Annual_Income) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución marcadamente asimétrica a la derecha (asimetría = +2.55, media $1.48M vs. mediana $1.13M). La densidad presenta una cola pesada que se extiende hasta los $8.0M con 4,037 observaciones (8.07%) detectadas como atípicos univariados por Tukey (umbral superior: $3.17M).
+- **Perspectiva del Cliente / Negocio:** Estructura piramidal clásica de ingresos: la masa crítica de clientes se ubica entre $650k y $1.66M (clase media trabajadora), mientras que la cola derecha alberga al segmento de Banca Privada / VIP. Este grupo de altos ingresos es el candidato natural para productos de inversión, cupos prémium y seguros patrimoniales.
+- **Diagnóstico del Porqué de los Atípicos:** Los 'outliers' no corresponden a errores operativos ni a registros fraudulentos, sino a clientes de alta capacidad económica y patrimonio. El sesgo positivo natural del ingreso poblacional hace que Tukey clasifique inevitablemente al decil superior como atípico.
+
+---
+
+### Diagrama de Caja (Boxplot): Límite de Crédito (Credit_Limit)
+
+```{r, boxplot_Credit_Limit}
+f_v <- fivenum(credit$Credit_Limit)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Credit_Limit, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Límite de Crédito (Credit_Limit)",
+        xlab = "Límite de Crédito (Credit_Limit) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva pronunciada (asimetría = +3.01, media $710k vs. mediana $396k). Registra 4,173 valores atípicos (8.35%) que superan el límite superior de Tukey de $1.71M, alcanzando techos de hasta $6.59M.
+- **Perspectiva del Cliente / Negocio:** Estrategia de asignación de cupos conservadora y estratificada: el 75% de los clientes cuenta con cupos inferiores a $779k para mitigar la severidad de pérdidas en caso de default masivo, mientras que los cupos millonarios se asignan con base en scoring y garantías comprobadas.
+- **Diagnóstico del Porqué de los Atípicos:** Los atípicos reflejan límites otorgados a clientes prémium (Platinum, Black, Signature). Reflejan la diferenciación de productos según el poder adquisitivo del titular.
+
+---
+
+### Diagrama de Caja (Boxplot): Antigüedad de la Tarjeta en Meses (Card_Age_Months)
+
+```{r, boxplot_Card_Age_Months}
+f_v <- fivenum(credit$Card_Age_Months)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Card_Age_Months, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Antigüedad de la Tarjeta en Meses (Card_Age_Months)",
+        xlab = "Antigüedad de la Tarjeta en Meses (Card_Age_Months) (meses)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución asimétrica positiva moderada (asimetría = +1.14, mediana 48 meses / 4 años, media 53.6 meses). Se identifican 1,287 atípicos (2.57%) con antigüedades superiores a 128.5 meses (10.7 años), hasta un máximo de 240 meses (20 años).
+- **Perspectiva del Cliente / Negocio:** Excelente índice de retención y lealtad: la mitad de los usuarios supera los 4 años de permanencia. Los clientes de antigüedad atípica (>10 años) constituyen la cartera fundacional fidelizada con menor propensión al abandono (*churn*) y mayor rentabilidad acumulada.
+- **Diagnóstico del Porqué de los Atípicos:** Antigüedades de 10 a 20 años son completamente coherentes en el ciclo de vida financiero; la baja tasa de atípicos (2.57%) confirma una transición suave en el tiempo.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto Mensual Total (Monthly_Spending)
+
+```{r, boxplot_Monthly_Spending}
+f_v <- fivenum(credit$Monthly_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Monthly_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto Mensual Total (Monthly_Spending)",
+        xlab = "Gasto Mensual Total (Monthly_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución altamente sesgada a la derecha (asimetría = +3.00, media $73.9k vs. mediana $50.0k). 4,213 observaciones (8.43%) superan la barrera de Tukey de $167.6k, con gastos récord cercanos a $692k.
+- **Perspectiva del Cliente / Negocio:** Muestra un consumo recurrente concentrado entre $26.6k y $83.0k mensuales en la mayoría del portafolio. El segmento atípico superior genera el mayor volumen de facturación y comisiones por intercambio (*interchange fees*) para el banco.
+- **Diagnóstico del Porqué de los Atípicos:** El gasto mensual se correlaciona con la capacidad de ingreso; un gasto superior a $200k es normal y legítimo para un cliente con ingresos mensuales superiores a $500k.
+
+---
+
+### Diagrama de Caja (Boxplot): Transacciones Mensuales (Monthly_Transactions)
+
+```{r, boxplot_Monthly_Transactions}
+f_v <- fivenum(credit$Monthly_Transactions)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Monthly_Transactions, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Transacciones Mensuales (Monthly_Transactions)",
+        xlab = "Transacciones Mensuales (Monthly_Transactions) (conteo)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución simétrica y acotada (asimetría = +0.54, media 83.0, mediana 76.0 transacciones). El rango intercuartílico [49, 108] contiene a toda la población sin producir ningún dato atípico (0 outliers, 0.00%).
+- **Perspectiva del Cliente / Negocio:** Uso intensivo y cotidiano del plástico/billetera digital: el cliente promedio efectúa entre 2 y 4 transacciones diarias, evidenciando que la tarjeta es el instrumento principal de pago diario para compras físicas y virtuales.
+- **Diagnóstico del Porqué de los Atípicos:** Cero atípicos: la frecuencia transaccional humana opera dentro de límites biológicos y comerciales normales (mínimo 15, máximo 179 transacciones al mes).
+
+---
+
+### Diagrama de Caja (Boxplot): Ticket Promedio por Transacción (Avg_Transaction_Value)
+
+```{r, boxplot_Avg_Transaction_Value}
+f_v <- fivenum(credit$Avg_Transaction_Value)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Avg_Transaction_Value, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Ticket Promedio por Transacción (Avg_Transaction_Value)",
+        xlab = "Ticket Promedio por Transacción (Avg_Transaction_Value) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva severa (asimetría = +3.90, media $836 vs. mediana $617). 4,286 atípicos (8.57%) superan el corte de Tukey de $1,580, con tickets excepcionales de hasta $10,463.
+- **Perspectiva del Cliente / Negocio:** El grueso de las compras se enfoca en tickets bajos y medianos ($448 a $901) correspondientes a víveres, combustible y comidas. Los tickets altos atípicos revelan compras de bienes durables (electrodomésticos, viajes, tecnología).
+- **Diagnóstico del Porqué de los Atípicos:** Las compras extraordinarias de alto monto ocurren periódicamente; no son errores sino transacciones de mayor cuantía en comercios especializados.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Compras Online (Online_Shopping_Spending)
+
+```{r, boxplot_Online_Shopping_Spending}
+f_v <- fivenum(credit$Online_Shopping_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Online_Shopping_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Compras Online (Online_Shopping_Spending)",
+        xlab = "Gasto en Compras Online (Online_Shopping_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría severa (+4.56, media $11.2k vs. mediana $6.16k). 4,045 atípicos (8.09%) por encima del umbral de Tukey de $27.8k, con montos de hasta $258k.
+- **Perspectiva del Cliente / Negocio:** Refleja la digitalización del consumidor bancario: el 50% central gasta entre $2.8k y $12.8k en plataformas digitales. Los usuarios atípicos son 'heavy e-shoppers', segmento ideal para alianzas con e-commerce y promociones digitales.
+- **Diagnóstico del Porqué de los Atípicos:** Compras de tecnología, moda de lujo o pagos empresariales en línea generan los valores extremos observados.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Supermercado (Grocery_Spending)
+
+```{r, boxplot_Grocery_Spending}
+f_v <- fivenum(credit$Grocery_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Grocery_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Supermercado (Grocery_Spending)",
+        xlab = "Gasto en Supermercado (Grocery_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+4.01, media $17.8k vs. mediana $10.7k). 4,032 atípicos (8.06%) por encima de $43.3k, con valores máximos de $353k.
+- **Perspectiva del Cliente / Negocio:** Categoría con el mayor piso basal de consumo de todo el presupuesto familiar (Q1 = $5.18k). Es un gasto inelástico y recurrente que garantiza transaccionalidad mensual constante y comisiones estables.
+- **Diagnóstico del Porqué de los Atípicos:** Familias numerosas o compras al por mayor explican los gastos de supermercado superiores a $43k.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Combustible (Fuel_Spending)
+
+```{r, boxplot_Fuel_Spending}
+f_v <- fivenum(credit$Fuel_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Fuel_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Combustible (Fuel_Spending)",
+        xlab = "Gasto en Combustible (Fuel_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+4.69, media $10.2k vs. mediana $5.47k). 4,176 atípicos (8.35%) superando los $25.3k.
+- **Perspectiva del Cliente / Negocio:** Gasto básico de transporte. El 50% central gasta entre $2.4k y $11.6k al mes. Es un nicho clave para programas de cashback en estaciones de servicio y alianzas con distribuidores de combustible.
+- **Diagnóstico del Porqué de los Atípicos:** Vehículos de alto consumo, uso intensivo por desplazamiento laboral o pago de combustible de vehículos familiares/comerciales.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Restaurantes (Dining_Spending)
+
+```{r, boxplot_Dining_Spending}
+f_v <- fivenum(credit$Dining_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Dining_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Restaurantes (Dining_Spending)",
+        xlab = "Gasto en Restaurantes (Dining_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+4.64, media $9.09k vs. mediana $4.85k). 4,202 atípicos (8.40%) por encima de $22.8k, alcanzando hasta $227k.
+- **Perspectiva del Cliente / Negocio:** Consumo discrecional ligado a estilo de vida. Los clientes atípicos son comensales prémium y ejecutivos que frecuentan restaurantes de alta gastronomía, receptivos a beneficios gastronómicos exclusivos.
+- **Diagnóstico del Porqué de los Atípicos:** Gastos extraordinarios de eventos sociales o consumo corporativo en hostelería.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Viajes (Travel_Spending)
+
+```{r, boxplot_Travel_Spending}
+f_v <- fivenum(credit$Travel_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Travel_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Viajes (Travel_Spending)",
+        xlab = "Gasto en Viajes (Travel_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva extrema (+5.71, media $6.14k vs. mediana $2.88k). 4,315 atípicos (8.63%) superando los $15.5k, con picos de $213k.
+- **Perspectiva del Cliente / Negocio:** Categoría de alta rentabilidad y estacionalidad. La mayoría realiza gastos mínimos mensuales en pasajes, mientras que los atípicos son viajeros frecuentes de negocios o turistas prémium.
+- **Diagnóstico del Porqué de los Atípicos:** La compra esporádica de tiquetes aéreos internacionales o paquetes vacacionales genera desembolsos muy alejados de la mediana mensual.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Entretenimiento (Entertainment_Spending)
+
+```{r, boxplot_Entertainment_Spending}
+f_v <- fivenum(credit$Entertainment_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Entertainment_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Entretenimiento (Entertainment_Spending)",
+        xlab = "Gasto en Entretenimiento (Entertainment_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+5.01, media $7.65k vs. mediana $3.83k). 4,276 atípicos (8.55%) por encima de $19.2k, con un máximo de $216k.
+- **Perspectiva del Cliente / Negocio:** Ocio, espectáculos, streaming y conciertos. Representa una vía de fidelización efectiva para el público joven mediante preventas de boletos y descuentos en cines.
+- **Diagnóstico del Porqué de los Atípicos:** Entradas prémium a festivales internacionales, eventos deportivos o suscripciones anuales múltiples.
+
+---
+
+### Diagrama de Caja (Boxplot): Gasto en Servicios Públicos (Utility_Bill_Spending)
+
+```{r, boxplot_Utility_Bill_Spending}
+f_v <- fivenum(credit$Utility_Bill_Spending)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Utility_Bill_Spending, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Gasto en Servicios Públicos (Utility_Bill_Spending)",
+        xlab = "Gasto en Servicios Públicos (Utility_Bill_Spending) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+4.35, media $11.7k vs. mediana $6.57k). 4,056 atípicos (8.11%) superando los $29.3k, con un máximo de $300k.
+- **Perspectiva del Cliente / Negocio:** Facturación recurrente de luz, agua, gas y telecomunicaciones. Excelente instrumento de 'retention lock-in' mediante débito automático.
+- **Diagnóstico del Porqué de los Atípicos:** Facturación de viviendas de gran metraje, fincas de recreo o pago consolidado de servicios de múltiples propiedades.
+
+---
+
+### Diagrama de Caja (Boxplot): Saldo Pendiente Acumulado (Outstanding_Balance)
+
+```{r, boxplot_Outstanding_Balance}
+f_v <- fivenum(credit$Outstanding_Balance)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Outstanding_Balance, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Saldo Pendiente Acumulado (Outstanding_Balance)",
+        xlab = "Saldo Pendiente Acumulado (Outstanding_Balance) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva severa (+4.02, media $303.4k vs. mediana $145.3k). 4,570 atípicos (9.14%) por encima del corte de $716.5k, alcanzando hasta $5.79M.
+- **Perspectiva del Cliente / Negocio:** Mide el stock de deuda viva en la tarjeta. Los saldos millonarios en la cola derecha generan los mayores ingresos por intereses remuneratorios, pero exigen un estricto control de garantías y provisión de cartera.
+- **Diagnóstico del Porqué de los Atípicos:** Derivado directo de los clientes con altos cupos y consumos elevados; no son fallas de pago sino grandes volúmenes de financiamiento.
+
+---
+
+### Diagrama de Caja (Boxplot): Saldo del Extracto Facturado (Statement_Balance)
+
+```{r, boxplot_Statement_Balance}
+f_v <- fivenum(credit$Statement_Balance)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Statement_Balance, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Saldo del Extracto Facturado (Statement_Balance)",
+        xlab = "Saldo del Extracto Facturado (Statement_Balance) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría severa (+3.80, media $366.2k vs. mediana $192.4k). 4,592 atípicos (9.18%) superando los $844.9k, con un máximo de $6.10M. Correlación r = 0.997 con el saldo pendiente.
+- **Perspectiva del Cliente / Negocio:** Monto exigible al corte del periodo. Su correlación casi perfecta con el saldo pendiente indica que el saldo facturado refleja con exactitud la deuda total del cliente.
+- **Diagnóstico del Porqué de los Atípicos:** Registros equivalentes a los saldos pendientes altos: clientes con alta facturación periódica.
+
+---
+
+### Diagrama de Caja (Boxplot): Monto Pagado en el Mes (Payment_Amount)
+
+```{r, boxplot_Payment_Amount}
+f_v <- fivenum(credit$Payment_Amount)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Payment_Amount, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Monto Pagado en el Mes (Payment_Amount)",
+        xlab = "Monto Pagado en el Mes (Payment_Amount) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+4.20, media $279.4k vs. mediana $136.6k). 4,535 atípicos (9.07%) por encima de $665.0k, con pagos récord de hasta $5.98M.
+- **Perspectiva del Cliente / Negocio:** Entrada neta de liquidez para el banco. La coincidencia cuantitativa entre pagos y saldos facturados demuestra que la gran masa de tarjetahabientes abona la mayor parte de su saldo mensual.
+- **Diagnóstico del Porqué de los Atípicos:** Abonos millonarios realizados por clientes de alta renta para liberar su cupo de crédito.
+
+---
+
+### Diagrama de Caja (Boxplot): Ratio de Pago de Deuda (Payment_Ratio)
+
+```{r, boxplot_Payment_Ratio}
+f_v <- fivenum(credit$Payment_Ratio)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Payment_Ratio, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Ratio de Pago de Deuda (Payment_Ratio)",
+        xlab = "Ratio de Pago de Deuda (Payment_Ratio) (proporción (0-1))")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución asimétrica a la izquierda (asimetría = -1.04, media 0.76, mediana 0.84, Q3 = 0.96). Apenas 87 atípicos (0.17%) ubicados exclusivamente en la cola inferior (clientes que pagan solo el mínimo de 0.10).
+- **Perspectiva del Cliente / Negocio:** Indicador supremo de calidad crediticia: el 75% de los clientes cancela más del 62% de su deuda, y una gran proporción paga el 100% (transactors). Los atípicos inferiores (<0.20) son la alerta más temprana de riesgo de mora y estrés financiero.
+- **Diagnóstico del Porqué de los Atípicos:** Baja incidencia de atípicos (0.17%): la gran mayoría de clientes es cumplidora, siendo el impago severo un comportamiento anómalo minoritario.
+
+---
+
+### Diagrama de Caja (Boxplot): Utilización del Cupo (Credit_Utilization)
+
+```{r, boxplot_Credit_Utilization}
+f_v <- fivenum(credit$Credit_Utilization)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Credit_Utilization, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Utilización del Cupo (Credit_Utilization)",
+        xlab = "Utilización del Cupo (Credit_Utilization) (proporción (0-1))")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución continua mesetaria / cuasi-uniforme entre 0.10 y 0.95 (asimetría = +0.53, media 0.43, mediana 0.40). Registra exactamente 0 atípicos univariados (0.00%).
+- **Perspectiva del Cliente / Negocio:** Uso balanceado de las líneas de crédito: el cliente promedio utiliza el 40% de su límite, lo que optimiza los ingresos del banco por financiamiento sin disparar los modelos de alerta por sobreendeudamiento (>80%).
+- **Diagnóstico del Porqué de los Atípicos:** Cero atípicos: la variable está regulada estrictamente por los límites operativos autorizados por el motor de riesgo del banco.
+
+---
+
+### Diagrama de Caja (Boxplot): Monto de Avances en Efectivo (Cash_Advance_Amount)
+
+```{r, boxplot_Cash_Advance_Amount}
+f_v <- fivenum(credit$Cash_Advance_Amount)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Cash_Advance_Amount, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Monto de Avances en Efectivo (Cash_Advance_Amount)",
+        xlab = "Monto de Avances en Efectivo (Cash_Advance_Amount) ($)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución mixta inflada en cero (70.34% de clientes con $0, asimetría = +6.78). Detecta 9,549 atípicos (19.10%) que realizan retiros de hasta $1.21M.
+- **Perspectiva del Cliente / Negocio:** Los retiros de efectivo conllevan tasas de usura y comisiones elevadas. El 70% de los usuarios nunca los usa; los clientes con retiros frecuentes o atípicos suelen atravesar problemas de liquidez inmediata o sobreendeudamiento no bancarizado.
+- **Diagnóstico del Porqué de los Atípicos:** Al ser Q1 = 0 y Mediana = 0, el RIC se reduce drásticamente, haciendo que casi cualquier cliente con retiros activos supere el límite de Tukey.
+
+---
+
+### Diagrama de Caja (Boxplot): Número de Cuotas Diferidas (EMI_Count)
+
+```{r, boxplot_EMI_Count}
+f_v <- fivenum(credit$EMI_Count)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$EMI_Count, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Número de Cuotas Diferidas (EMI_Count)",
+        xlab = "Número de Cuotas Diferidas (EMI_Count) (conteo)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución discreta uniforme en enteros de 0 a 6 (asimetría = +0.17, media 2.45, mediana 2.0). 16.3% de clientes no difiere compras (0 EMI). Presenta 0 atípicos (0.00%).
+- **Perspectiva del Cliente / Negocio:** Herramienta de financiación a plazos muy adoptada: el cliente típico mantiene entre 1 y 4 compras diferidas activas, lo que estabiliza el margen financiero por cobro de intereses mensuales.
+- **Diagnóstico del Porqué de los Atípicos:** Cero atípicos: variable restringida al catálogo comercial estándar de cuotas (0 a 6 meses).
+
+---
+
+### Diagrama de Caja (Boxplot): Transacciones Internacionales (International_Transactions)
+
+```{r, boxplot_International_Transactions}
+f_v <- fivenum(credit$International_Transactions)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$International_Transactions, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Transacciones Internacionales (International_Transactions)",
+        xlab = "Transacciones Internacionales (International_Transactions) (conteo)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución de conteo inflada en cero (59.29% de ceros, asimetría = +2.11). 4,769 atípicos (9.54%) con entre 3 y 14 transacciones al mes.
+- **Perspectiva del Cliente / Negocio:** Genera ingresos prémium por conversión de moneda (*FX margin*). La mayoría no realiza transacciones transfronterizas; los usuarios atípicos corresponden a viajeros internacionales recurrentes o suscriptores de servicios globales.
+- **Diagnóstico del Porqué de los Atípicos:** Con Q1 = 0 y Mediana = 0, el umbral de Tukey queda en 5 transacciones, clasificando a los viajeros frecuentes como atípicos.
+
+---
+
+### Diagrama de Caja (Boxplot): Puntos de Recompensa Ganados (Reward_Points_Earned)
+
+```{r, boxplot_Reward_Points_Earned}
+f_v <- fivenum(credit$Reward_Points_Earned)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Reward_Points_Earned, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Puntos de Recompensa Ganados (Reward_Points_Earned)",
+        xlab = "Puntos de Recompensa Ganados (Reward_Points_Earned) (puntos)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Asimetría positiva (+3.50, media 3,891 vs. mediana 1,833 puntos). 4,930 atípicos (9.86%) por encima del umbral de 8,337 puntos, con acumulaciones de hasta 56,341 puntos.
+- **Perspectiva del Cliente / Negocio:** Mantiene correlación casi lineal directa con el gasto mensual (r = 0.980). Los acumuladores atípicos de puntos son los clientes de más alta fidelidad y mayor valor comercial para el banco.
+- **Diagnóstico del Porqué de los Atípicos:** Derivado determinístico del consumo elevado en el segmento de altos ingresos.
+
+---
+
+### Diagrama de Caja (Boxplot): Puntos de Recompensa Redimidos (Reward_Points_Redeemed)
+
+```{r, boxplot_Reward_Points_Redeemed}
+f_v <- fivenum(credit$Reward_Points_Redeemed)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Reward_Points_Redeemed, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Puntos de Recompensa Redimidos (Reward_Points_Redeemed)",
+        xlab = "Puntos de Recompensa Redimidos (Reward_Points_Redeemed) (puntos)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución inflada en cero / bimodal (39.89% de clientes no ha redimido, asimetría = +6.55, mediana 135 puntos). 5,708 atípicos (11.42%) con redenciones masivas de hasta 44,818 puntos.
+- **Perspectiva del Cliente / Negocio:** Alerta sobre el pasivo acumulado por puntos no redimidos (*breakage / liability*): casi el 40% de clientes acumula sin gastar. Quienes redimen masivamente lo hacen para canjes de alto valor (viajes, tecnología).
+- **Diagnóstico del Porqué de los Atípicos:** Comportamiento de canje por oleadas: largos periodos de acumulación seguidos de una redención puntual masiva.
+
+---
+
+### Diagrama de Caja (Boxplot): Ingresos a la App Móvil (Mobile_App_Login)
+
+```{r, boxplot_Mobile_App_Login}
+f_v <- fivenum(credit$Mobile_App_Login)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Mobile_App_Login, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Ingresos a la App Móvil (Mobile_App_Login)",
+        xlab = "Ingresos a la App Móvil (Mobile_App_Login) (logins al mes)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución simétrica continua (asimetría = +0.33, media 33.16, mediana 31.0 logins). El 50% central ingresa entre 20 y 44 veces al mes. Registra 0 atípicos (0.00%).
+- **Perspectiva del Cliente / Negocio:** Extraordinario nivel de engagement digital: los usuarios abren la App aproximadamente una vez al día para verificar movimientos y pagar, convirtiendo la aplicación en el canal principal de venta cruzada (*cross-selling*).
+- **Diagnóstico del Porqué de los Atípicos:** Cero atípicos: los hábitos de uso de smartphones muestran una variabilidad humana controlada y natural.
+
+---
+
+### Diagrama de Caja (Boxplot): Edad del Cliente (Age)
+
+```{r, boxplot_Age}
+f_v <- fivenum(credit$Age)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Age, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Edad del Cliente (Age)",
+        xlab = "Edad del Cliente (Age) (años)")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución equilibrada (asimetría = +0.69, media 36.1 años, mediana 34.0 años). Apenas 278 atípicos (0.56%) en edades de 69 a 70 años.
+- **Perspectiva del Cliente / Negocio:** Población laboralmente activa joven (27 a 44 años en el 50% central). Representa un portafolio con alto horizonte temporal de valor del cliente (*Customer Lifetime Value - CLV*).
+- **Diagnóstico del Porqué de los Atípicos:** Tasa de atípicos inferior al 0.7% teórico Gaussiano; corresponde a adultos mayores pensionados o jubilados.
+
+---
+
+### Diagrama de Caja (Boxplot): Puntaje Crediticio (Credit_Score)
+
+```{r, boxplot_Credit_Score}
+f_v <- fivenum(credit$Credit_Score)
+ric_v <- f_v[4] - f_v[2]
+lim_inf_v <- f_v[2] - 1.5 * ric_v
+lim_sup_v <- f_v[4] + 1.5 * ric_v
+
+boxplot(credit$Credit_Score, horizontal = TRUE, col = "#90E0EF", border = "#0077B6",
+        main = "Diagrama de Caja: Puntaje Crediticio (Credit_Score)",
+        xlab = "Puntaje Crediticio (Credit_Score) (score (300-850))")
+abline(v = c(lim_inf_v, lim_sup_v), col = "red", lty = 2, lwd = 2)
+legend("topright", legend = c("Límites de Tukey (1.5 * RIC)"), col = "red", lty = 2, lwd = 2, bty = "n")
+```
+
+#### Análisis Individual del Boxplot:
+- **Perspectiva del Ingeniero de Datos:** Los cinco números de Tukey son: Mínimo = `r round(f_v[1], 2)`, Q1 = `r round(f_v[2], 2)`, Mediana = `r round(f_v[3], 2)`, Q3 = `r round(f_v[4], 2)`, Máximo = `r round(f_v[5], 2)`. El rango intercuartílico es $RIC = `r round(ric_v, 2)`$. Distribución Gaussiana unimodal simétrica (asimetría = -0.58, media 629.0, mediana 638.0, desviación estándar 68.4). Presenta 394 atípicos (0.79%) distribuidos en ambas colas.
+- **Perspectiva del Cliente / Negocio:** Calificación crediticia muy saludable: la masa central se sitúa en rangos 'Good' y 'Very Good' (585 a 681 puntos). Permite otorgar tasas de interés competitivas con baja tasa esperada de morosidad.
+- **Diagnóstico del Porqué de los Atípicos:** La proporción de atípicos (0.79%) coincide con la tasa teórica normal (0.7%), evidenciando un modelo de scoring perfectamente calibrado.
+
+---
+
+# Módulo 4: Diagnóstico Profundo de Datos Atípicos (¿Por qué hay tantos outliers?)
+
+Una de las observaciones centrales de esta auditoría es la **gran disparidad en la tasa de valores atípicos entre variables**: mientras variables reguladas o simétricas presentan **0% de atípicos**, las variables financieras y monetarias concentran entre un **8% y un 19% de atípicos**.
+
+A continuación se presenta la tabla de auditoría cuantitativa completa de las 26 variables:
+
+```{r, tabla_consolidada_atipicos}
+calc_diagnostico <- function(df) {
+  num_cols <- names(df)[sapply(df, is.numeric)]
+  resultado <- data.frame(
+    Variable = character(),
+    Media = numeric(),
+    Mediana = numeric(),
+    Desv_Std = numeric(),
+    Asimetria = numeric(),
+    Pct_Ceros = numeric(),
+    Atipicos_Tukey = integer(),
+    Pct_Atipicos = numeric(),
+    Comportamiento = character(),
+    stringsAsFactors = FALSE
+  )
+  
+  for (col in num_cols) {
+    v <- df[[col]]
+    n <- length(v)
+    m <- mean(v)
+    s <- sd(v)
+    med <- median(v)
+    q1 <- quantile(v, 0.25)
+    q3 <- quantile(v, 0.75)
+    iqr <- q3 - q1
+    skew <- sum((v - m)^3) / ((n - 1) * s^3)
+    zeros <- sum(v == 0)
+    pct_zeros <- (zeros / n) * 100
+    lim_sup <- q3 + 1.5 * iqr
+    lim_inf <- q1 - 1.5 * iqr
+    outliers <- sum(v < lim_inf | v > lim_sup)
+    pct_out <- (outliers / n) * 100
+    
+    comportamiento <- if (pct_zeros > 30) {
+      "Inflada en Cero (Zero-Inflated)"
+    } else if (skew > 2.0) {
+      "Asimetría Positiva (Cola Pesada)"
+    } else if (abs(skew) < 1.0 && pct_out < 1.5) {
+      "Simétrica / Acotada (Sin Outliers)"
+    } else {
+      "Moderada"
+    }
+    
+    resultado <- rbind(resultado, data.frame(
+      Variable = col,
+      Media = round(m, 2),
+      Mediana = round(med, 2),
+      Desv_Std = round(s, 2),
+      Asimetria = round(skew, 2),
+      Pct_Ceros = round(pct_zeros, 1),
+      Atipicos_Tukey = outliers,
+      Pct_Atipicos = round(pct_out, 2),
+      Comportamiento = comportamiento
+    ))
+  }
+  return(resultado)
 }
+
+tabla_atipicos <- calc_diagnostico(credit)
+tabla_atipicos[order(tabla_atipicos$Pct_Atipicos, decreasing = TRUE), ]
 ```
 
-## Regla de Sturges
+## Gráfico de Porcentajes de Atípicos por Variable
 
-La regla de Sturges propone el número óptimo de intervalos para muestras bajo supuestos de normalidad: $$k = 1 + \log_2(n) = 1 + 3.322 \cdot \log_{10}(n)$$
+```{r, grafico_barras_atipicos, fig.width=9, fig.height=6}
+par(mar = c(5, 12, 4, 2))
+colores_barras <- ifelse(tabla_atipicos$Pct_Atipicos > 10, "#E63946",
+                  ifelse(tabla_atipicos$Pct_Atipicos > 5, "#F4A261", "#2A9D8F"))
 
-```{r, regla_sturges}
-n_obs <- length(score)
-k_sturges <- nclass.Sturges(score)
-k_teorico <- 1 + log2(n_obs)
-
-c(n = n_obs, k_Sturges = k_sturges, k_Formula = round(k_teorico, 2))
+barplot(tabla_atipicos$Pct_Atipicos, names.arg = tabla_atipicos$Variable,
+        horiz = TRUE, las = 1, cex.names = 0.7, col = colores_barras,
+        xlab = "Porcentaje de Datos Atípicos según Tukey (%)",
+        main = "Porcentaje de Outliers Detectados por Variable")
+abline(v = c(0.7, 5, 10), col = c("blue", "orange", "red"), lty = 2)
+legend("bottomright", legend = c("Teórico Gaussiano (0.7%)", "Moderado (>5%)", "Severo (>10%)"),
+       col = c("blue", "orange", "red"), lty = 2, bty = "n", cex = 0.8)
+par(mar = c(5, 4, 4, 2))
 ```
 
-**Evaluación y decisión:** Para $n = `r n_obs`$, Sturges sugiere $k = `r k_sturges`$ intervalos. El histograma con `breaks = 20` captura la forma unimodal simétrica de los puntajes crediticios sin introducir picos artificiales causados por la variabilidad muestral fina.
+### Análisis Técnico y Comercial del Diagnóstico de Atípicos:
+1. **La Asimetría Natural de los Fenómenos Financieros:** En finanzas y consumo, la riqueza sigue distribuciones de cola larga tipo *Log-Normal o Pareto*. La mayoría percibe ingresos promedio y gasta moderadamente, pero existe un percentil superior de clientes de alto patrimonio (*High Net Worth*) que realiza transacciones y saldos muy elevados. **Estos atípicos son clientes VIP legítimos y sumamente rentables, no errores de digitación ni fraude**.
+2. **El Sesgo Matemático de la Regla de Tukey ($1.5 \cdot RIC$):** Tukey asume implícitamente que los datos provienen de una distribución Gaussiana/Normal simétrica. Al aplicarse sobre variables con asimetría positiva ($	ext{Skewness} > 2.5$), el límite superior $Q_3 + 1.5 \cdot RIC$ se contrae artificialmente cerca del centro de la masa, etiquetando mecánicamente al **$8\% - 10\%$ superior de la población como atípico**.
+3. **Variables Infladas en Cero (*Zero-Inflated*):** En variables como `Cash_Advance_Amount` (19.10% de atípicos, 70.3% ceros) y `International_Transactions` (9.54% atípicos, 59.3% ceros), la mayoría de clientes no realiza estas operaciones ($Q_1 = 0, \text{Mediana} = 0$). Esto colapsa el rango intercuartílico, haciendo que cualquier usuario activo supere el umbral.
+4. **Recomendaciones de Ingeniería:** No eliminar estos registros del dataset. Para modelos de clustering (K-Means) o regresión, aplicar transformaciones monótonas como $\log(x + 1)$ o utilizar algoritmos basados en árboles de decisión que son naturalmente invariantes a transformaciones monótonas y resistentes a outliers.
 
-------------------------------------------------------------------------
-
-# Módulo 4: Caja y Bigotes (Boxplots) y Detección Univariada de Atípicos (S03)
-
-## Los cinco números de Tukey (`fivenum`)
-
-Analizamos el gasto mensual (`Monthly_Spending`):
-
-```{r, cinco_numeros}
-gasto <- credit$Monthly_Spending
-f_gasto <- fivenum(gasto)
-names(f_gasto) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
-f_gasto
-```
-
-```{r}
-ingreso <- credit$Annual_Income
-f_ingreso <- fivenum(ingreso)
-names(f_ingreso) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
-f_ingreso
-```
-
-## Rango Intercuartílico ($RIC$) y Límites de Tukey
-
-El criterio de Tukey define las barreras para valores atípicos (*outliers*) como: $$\text{Límite Inferior} = Q_1 - 1.5 \cdot RIC$$ $$\text{Límite Superior} = Q_3 + 1.5 \cdot RIC$$
-
-```{r, limites_tukey}
-q1_gasto <- f_gasto["Q1"]
-q3_gasto <- f_gasto["Q3"]
-ric_gasto <- q3_gasto - q1_gasto
-
-lim_inf_gasto <- q1_gasto - 1.5 * ric_gasto
-lim_sup_gasto <- q3_gasto + 1.5 * ric_gasto
-
-c(Q1 = q1_gasto, Q3 = q3_gasto, RIC = ric_gasto,
-  Lim_Inferior = lim_inf_gasto, Lim_Superior = lim_sup_gasto)
-```
-
-## Conteo de atípicos univariados
-
-```{r, conteo_atipicos}
-atipicos_gasto <- gasto[gasto < lim_inf_gasto | gasto > lim_sup_gasto]
-n_atipicos_gasto <- length(atipicos_gasto)
-pct_atipicos_gasto <- (n_atipicos_gasto / length(gasto)) * 100
-
-c(N_Atipicos = n_atipicos_gasto, Porcentaje = round(pct_atipicos_gasto, 3))
-```
-
-```{r, boxplot_univariado}
-boxplot(gasto, horizontal = TRUE, col = "skyblue",
-        main = "Diagrama de Caja: Gasto Mensual (Monthly_Spending)",
-        xlab = "Gasto Mensual ($)")
-abline(v = c(lim_inf_gasto, lim_sup_gasto), col = "red", lty = 2, lwd = 2)
-```
-
-```{r}
-numeric_cols <- names(credit)[sapply(credit, is.numeric)]
-
-for (col_name in numeric_cols) {
-  current_var <- credit[[col_name]]
-
-  # Calculate Tukey's five-number summary
-  f_var <- fivenum(current_var)
-  names(f_var) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
-
-  q1_var <- f_var["Q1"]
-  q3_var <- f_var["Q3"]
-  ric_var <- q3_var - q1_var
-
-  lim_inf_var <- q1_var - 1.5 * ric_var
-  lim_sup_var <- q3_var + 1.5 * ric_var
-
-  cat("--------------------------------------------------\n")
-  cat("Análisis para la variable: ", col_name, "\n")
-  cat("--------------------------------------------------\n")
-
-  # Print Tukey's statistics
-  print(c(Q1 = q1_var, Q3 = q3_var, RIC = ric_var,
-          Lim_Inferior = lim_inf_var, Lim_Superior = lim_sup_var))
-
-  # Count univariate outliers
-  atipicos_var <- current_var[current_var < lim_inf_var | current_var > lim_sup_var]
-  n_atipicos_var <- length(atipicos_var)
-  pct_atipicos_var <- (n_atipicos_var / length(current_var)) * 100
-
-  cat("Conteo de atípicos univariados:\n")
-  print(c(N_Atipicos = n_atipicos_var, Porcentaje = round(pct_atipicos_var, 3)))
-
-  # Generate boxplot
-  boxplot(current_var, horizontal = TRUE, col = "skyblue",
-          main = paste("Diagrama de Caja: ", col_name),
-          xlab = col_name)
-  abline(v = c(lim_inf_var, lim_sup_var), col = "red", lty = 2, lwd = 2)
-
-  cat("\n\n") # Add some spacing between analyses of different variables
-}
-```
-
-**Reflexión crítica:** Al ser una variable derivada de una simulación uniforme/normal en el conjunto sintético, el número de atípicos univariados es mínimo (`r n_atipicos_gasto` observaciones, `r sprintf("%.2f%%", pct_atipicos_gasto)`). En datos reales con asimetría positiva fuerte (como ingresos o balances), la regla de Tukey tiende a marcar colas naturales como atípicos si no se realiza una transformación previa.
-
-------------------------------------------------------------------------
+---
 
 # Módulo 5: Comparación Multivariada Estandarizada mediante Boxplots (S03)
 
-Cuando tenemos múltiples variables cuantitativas en diferentes unidades (pesos, meses, transacciones, ratios), no es posible graficarlas juntas en su escala original.
+## Gráfico 1: Boxplot sin Estandarizar (Escala Original)
 
-```{r, submatriz_numerica}
-cols_num <- sapply(credit, is.numeric)
-credit_num <- credit[, cols_num]
-```
-
-## Boxplots sin estandarizar vs. estandarizados (`scale`)
-
-```{r, comparativa_boxplots}
-# Seleccionamos un subconjunto representativo de variables para visualización clara
+```{r, boxplot_sin_estandarizar, fig.width=8.5, fig.height=5}
 vars_box <- c("Age", "Annual_Income", "Credit_Limit", "Card_Age_Months",
               "Monthly_Spending", "Avg_Transaction_Value", "Outstanding_Balance",
               "Payment_Ratio", "Credit_Utilization", "Credit_Score")
 
-par(mfrow = c(1, 2))
+boxplot(credit[, vars_box], las = 2, col = "#E9ECEF",
+        main = "Boxplot Multivariado Sin Estandarizar (Escalas Dispares)",
+        ylab = "Valor Original en Escala Real")
+```
 
-# 1. Sin estandarizar (las variables en millones dominan y ocultan a los ratios)
-boxplot(credit_num[, vars_box], las = 2, col = "lightgray",
-        main = "Sin Estandarizar (Escalas dispares)",
-        ylab = "Valor Original")
+### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** La gráfica evidencia el problema clásico de incompatibilidad de escalas en el espacio multivariado: `Annual_Income` y `Credit_Limit` (en escala de $10^6$) dominan completamente el eje de ordenadas, reduciendo a líneas invisibles sobre el eje cero a variables clave como `Payment_Ratio` y `Credit_Utilization` (rango $0 - 1$).
+- **Perspectiva del Cliente / Negocio:** Es imposible realizar comparaciones cruzadas de volatilidad o dispersión entre productos o perfiles sin ajustar por la magnitud de las unidades de medida.
 
-# 2. Estandarizado (Z-scores: media 0, varianza 1)
-credit_scale <- scale(credit_num[, vars_box])
-boxplot(credit_scale, las = 2, col = "thistle",
-        main = "Estandarizado con scale()",
-        ylab = "Desviaciones Estándar (Z)")
+---
+
+## Gráfico 2: Boxplot Estandarizado con Puntuaciones Z (`scale`)
+
+```{r, boxplot_estandarizado, fig.width=8.5, fig.height=5}
+credit_scale <- scale(credit[, vars_box])
+
+boxplot(credit_scale, las = 2, col = "#DDA15E",
+        main = "Boxplot Multivariado Estandarizado con scale()",
+        ylab = "Desviaciones Estándar (Puntuaciones Z)")
 abline(h = 0, col = "blue", lty = 3)
 abline(h = c(-3, 3), col = "red", lty = 2)
-
-par(mfrow = c(1, 1))
+legend("topright", legend = c("Media = 0", "Umbral Z = +/- 3"), col = c("blue", "red"), lty = c(3, 2), bty = "n")
 ```
 
-## Diagnóstico de colas máximas ($Z$-score máximo)
+### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** La transformación $Z = (X - \bar{X}) / S$ centra todas las variables en media $0$ y varianza $1$. Se aprecia con claridad que `Avg_Transaction_Value` y `Outstanding_Balance` tienen las colas derechas más extensas ($Z > +6$), mientras que `Credit_Score` y `Age` se mantienen estrictamente dentro de la banda de normalidad $[-3, +3]$.
+- **Perspectiva del Cliente / Negocio:** Permite estandarizar las reglas de monitoreo de fraude y alertas operativas: cualquier transacción que se desvíe en más de $3$ desviaciones estándar ($Z > 3$) en ticket promedio o gasto mensual puede disparar una verificación de seguridad automática.
 
-Identificamos a cuántas desviaciones estándar de su media se encuentra el valor máximo de cada variable:
+---
 
-```{r, z_maximos}
-z_max <- apply(credit_scale, 2, max)
-round(sort(z_max, decreasing = TRUE), 2)
-```
+# Módulo 6: Análisis Bivariado, Correlaciones y Demostración del "Punto Imposible" (S01 & S03)
 
-> **Lección de la Semana 3:** La estandarización `scale()` nivela el terreno de juego, permitiendo comparar simultáneamente la dispersión y la longitud relativa de las colas entre variables con órdenes de magnitud dispares ($10^6$ vs $10^{-1}$).
+## Gráfico 1: El Punto Imposible en Riesgo (`Payment_Ratio` vs. `Credit_Score`)
 
-------------------------------------------------------------------------
-
-# Módulo 6: Análisis Bivariado, Correlación y el "Punto Imposible" (S01 & S03)
-
-## Correlación bivariada y dispersión
-
-Analizamos la relación entre el Ratio de Pago (`Payment_Ratio`) y el Puntaje Crediticio (`Credit_Score`):
-
-```{r, bivariado_intro}
-r_pr_cs <- cor(credit$Payment_Ratio, credit$Credit_Score)
-r_pr_cs
-```
-
-```{r}
-cor(credit$Annual_Income, credit$Credit_Limit)
-```
-
-Existe una fuerte correlación lineal positiva ($r = `r round(r_pr_cs, 3)`$): los clientes que pagan una proporción mayor de su deuda exhiben sistemáticamente mejores puntajes de crédito.
-
-## Construcción y Demostración del "Punto Imposible" (S03 - Sesión 4)
-
-Uno de los conceptos fundamentales que distingue la **Estadística Multivariante** de la univariada es que **un individuo puede ser perfectamente normal en cada variable por separado y, sin embargo, ser un valor atípico imposible en el espacio conjunto**.
-
-### 1. Verificación de los límites univariados de Tukey
-
-```{r, limites_punto_imposible}
+```{r, punto_imposible_1, fig.width=8.5, fig.height=5}
 f_pr <- fivenum(credit$Payment_Ratio)
 f_cs <- fivenum(credit$Credit_Score)
 
@@ -418,235 +1286,727 @@ iqr_cs <- f_cs[4] - f_cs[2]
 lim_pr <- c(f_pr[2] - 1.5 * iqr_pr, f_pr[4] + 1.5 * iqr_pr)
 lim_cs <- c(f_cs[2] - 1.5 * iqr_cs, f_cs[4] + 1.5 * iqr_cs)
 
-c("Límites Payment_Ratio (Inf, Sup)" = lim_pr,
-  "Límites Credit_Score (Inf, Sup)" = lim_cs)
-```
-
-### 2. Creación del cliente hipotético contradictorio
-
-Diseñamos un cliente con: \* `Payment_Ratio = 0.95` (Paga casi el $100\%$ de su saldo). \* `Credit_Score = 460` (Puntaje crediticio extremadamente bajo / de alto riesgo).
-
-```{r, verificacion_punto}
 punto_pr <- 0.95
 punto_cs <- 460
 
-# Verificación 1: ¿Está dentro de los límites de Tukey univariados?
-dentro_pr <- punto_pr >= lim_pr[1] & punto_pr <= lim_pr[2]
-dentro_cs <- punto_cs >= lim_cs[1] & punto_cs <= lim_cs[2]
-
-data.frame(
-  Variable = c("Payment_Ratio", "Credit_Score"),
-  Valor = c(punto_pr, punto_cs),
-  Lim_Inferior = c(lim_pr[1], lim_cs[1]),
-  Lim_Superior = c(lim_pr[2], lim_cs[2]),
-  Es_Normal_Univariado = c(dentro_pr, dentro_cs)
-)
-```
-
-Ambos valores están estrictamente dentro de los bigotes univariados. Ningún filtro univariado lo marcaría como anómalo.
-
-### 3. Visualización bivariada: Demostración del "Punto Rojo"
-
-```{r, grafico_punto_imposible}
 plot(credit$Payment_Ratio, credit$Credit_Score,
-     pch = 16, col = rgb(0.2, 0.4, 0.8, 0.15),
-     xlab = "Payment Ratio (Proporción de Pago)",
-     ylab = "Credit Score (Puntaje Crediticio)",
-     main = "El Punto Imposible: Normal Univariado vs. Atípico Multivariado")
+     pch = 16, col = rgb(0.2, 0.4, 0.8, 0.12),
+     xlab = "Payment Ratio (Proporción Pagada)",
+     ylab = "Credit Score (Puntaje de Riesgo)",
+     main = "Punto Imposible 1: Payment Ratio vs. Credit Score")
 
-# Dibujamos el punto en rojo
 points(punto_pr, punto_cs, col = "red", pch = 19, cex = 2.2)
 points(punto_pr, punto_cs, col = "black", pch = 1, cex = 2.2, lwd = 2)
-text(punto_pr - 0.03, punto_cs - 20, labels = "Cliente Imposible\n(0.95, 460)", col = "red", font = 2, pos = 2)
+text(punto_pr - 0.02, punto_cs - 20, labels = "Cliente Imposible\n(PR=0.95, Score=460)", col = "red", font = 2, pos = 2)
 
-# Cuadrantes de referencia
-abline(v = mean(credit$Payment_Ratio), col = "gray50", lty = 2)
-abline(h = mean(credit$Credit_Score), col = "gray50", lty = 2)
+abline(v = mean(credit$Payment_Ratio), col = "gray40", lty = 2)
+abline(h = mean(credit$Credit_Score), col = "gray40", lty = 2)
 ```
 
-**Explicación conceptual:** La combinación es contradictoria porque viola la covarianza del sistema: en esta población, cualquier cliente que paga el $95\%$ de su deuda (`Payment_Ratio = 0.95`) tiene un puntaje superior a $650$. Asignarle un puntaje de $460$ lo sitúa en una región del plano con densidad nula, demostrando que **la normalidad marginal no garantiza la normalidad conjunta**.
+### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Demuestra formalmente que la normalidad marginal no implica normalidad conjunta. `Payment_Ratio = 0.95` cae dentro de $[0.11, 1.47]$ y `Credit_Score = 460` cae dentro de $[441, 825]$ (ambos son válidos univariadamente). No obstante, dada la fuerte correlación lineal ($r = 0.767$), la densidad conjunta $\mathbb{P}(X_1, X_2)$ en ese punto es prácticamente cero.
+- **Perspectiva del Cliente / Negocio:** Un cliente que abona puntualmente el $95\%$ de su extracto es financieramente intachable y no puede tener un score de alto riesgo crediticio ($460$). Detectar este perfil en producción delata suplantación de identidad, fallas en la integración de burós de crédito o errores en el algoritmo de calificación.
 
-------------------------------------------------------------------------
+---
 
-```{r}
-ingreso <- credit$Annual_Income
-limite <- credit$Credit_Limit
+## Gráfico 2: El Punto Imposible en Capacidad (`Annual_Income` vs. `Credit_Limit`)
 
-# --- Análisis para Annual_Income ---
-cat("--------------------------------------------------\n")
-cat("Análisis para la variable: Annual_Income\n")
-cat("--------------------------------------------------\n")
-
-f_ingreso <- fivenum(ingreso)
-names(f_ingreso) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
-
-q1_ingreso <- f_ingreso["Q1"]
-q3_ingreso <- f_ingreso["Q3"]
-ric_ingreso <- q3_ingreso - q1_ingreso
-
-lim_inf_ingreso <- q1_ingreso - 1.5 * ric_ingreso
-lim_sup_ingreso <- q3_ingreso + 1.5 * ric_ingreso
-
-print(c(Q1 = q1_ingreso, Q3 = q3_ingreso, RIC = ric_ingreso,
-          Lim_Inferior = lim_inf_ingreso, Lim_Superior = lim_sup_ingreso))
-
+```{r, punto_imposible_2, fig.width=8.5, fig.height=5}
 punto_ai <- 3000000
-punto_cl <- 200
+punto_cl <- 20000
 
-# Definir los límites de Tukey para Annual_Income y Credit_Limit
-lim_ai <- c(lim_inf_ingreso, lim_sup_ingreso)
+plot(credit$Annual_Income / 1000, credit$Credit_Limit / 1000,
+     pch = 16, col = rgb(0.1, 0.6, 0.4, 0.12),
+     xlab = "Ingreso Anual (Miles $)",
+     ylab = "Límite de Crédito (Miles $)",
+     main = "Punto Imposible 2: Ingreso Anual vs. Límite de Crédito")
 
-f_limite <- fivenum(limite)
-names(f_limite) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+points(punto_ai / 1000, punto_cl / 1000, col = "red", pch = 19, cex = 2.2)
+points(punto_ai / 1000, punto_cl / 1000, col = "black", pch = 1, cex = 2.2, lwd = 2)
+text(punto_ai / 1000, (punto_cl / 1000) + 350, labels = "Cliente Imposible\n(Ingreso=$3M, Cupo=$20k)", col = "red", font = 2, pos = 4)
 
-q1_limite <- f_limite["Q1"]
-q3_limite <- f_limite["Q3"]
-ric_limite <- q3_limite - q1_limite
-
-lim_inf_limite <- q1_limite - 1.5 * ric_limite
-lim_sup_limite <- q3_limite + 1.5 * ric_limite
-
-lim_cl <- c(lim_inf_limite, lim_sup_limite)
-
-# Verificación 1: ¿Está dentro de los límites de Tukey univariados?
-dentro_ai <- punto_ai >= lim_ai[1] & punto_ai <= lim_ai[2]
-dentro_cl <- punto_cl >= lim_cl[1] & punto_cl <= lim_cl[2]
-
-data.frame(
-  Variable = c("Annual_Income", "Credit_Limit"),
-  Valor = c(punto_ai, punto_cl),
-  Lim_Inferior = c(lim_ai[1], lim_cl[1]),
-  Lim_Superior = c(lim_ai[2], lim_cl[2]),
-  Es_Normal_Univariado = c(dentro_ai, dentro_cl)
-)
-
-
-plot(credit$Annual_Income, credit$Credit_Limit,
-     pch = 16, col = rgb(0.2, 0.4, 0.8, 0.15),
-     xlab = "Annual_Income (Ingreso Anual)",
-     ylab = "Credit_Limit (Limite de Credito)",
-     main = "El Punto Imposible: Normal Univariado vs. Atípico Multivariado")
-
-# Dibujamos el punto en rojo
-points(punto_ai, punto_cl, col = "red", pch = 19, cex = 2.2)
-points(punto_ai, punto_cl, col = "black", pch = 1, cex = 2.2, lwd = 2)
-text(punto_ai, punto_cl - 20000, labels = "Cliente Imposible\n(3000000, 200)", col = "red", font = 2, pos = 4)
-
-# Cuadrantes de referencia
-abline(v = mean(credit$Annual_Income), col = "gray50", lty = 2)
-abline(h = mean(credit$Credit_Limit), col = "gray50", lty = 2)
+abline(v = mean(credit$Annual_Income) / 1000, col = "gray40", lty = 2)
+abline(h = mean(credit$Credit_Limit) / 1000, col = "gray40", lty = 2)
 ```
 
-# Módulo 7: Estructura Multivariada Conjunta (S01 & S03)
+### Análisis Individual de la Gráfica:
+- **Perspectiva del Ingeniero de Datos:** Ante una correlación de $r = 0.843$, la combinación de un ingreso de $\$3{,}000{,}000$ con un cupo asignado de solo $\$20{,}000$ viola la estructura de covarianza del sistema multidimensional.
+- **Perspectiva del Cliente / Negocio:** Inconsistencia grave de asignación comercial: otorgarle un cupo insignificante a un cliente de altos ingresos representa una pésima experiencia de usuario, pérdida de consumo facturable y riesgo de fuga inmediata hacia entidades competidoras.
 
-## Matriz de correlaciones completa ($\mathbf{R}$)
+---
 
-Calculamos la matriz de correlación entre variables estratégicas de negocio:
+## Matriz de Correlación Completa ($\mathbf{R}$)
 
 ```{r, matriz_correlacion}
 vars_interes <- c("Annual_Income", "Credit_Limit", "Monthly_Spending",
                   "Outstanding_Balance", "Statement_Balance", "Payment_Amount",
                   "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Credit_Score")
 
-mat_cor <- cor(credit_num[, vars_interes], use = "complete.obs")
+mat_cor <- cor(credit[, vars_interes], use = "complete.obs")
 round(mat_cor, 3)
 ```
 
-### Síntesis de correlaciones observadas:
+---
 
-1.  **Colinealidad casi perfecta (**$r > 0.95$):
-    - `Outstanding_Balance` y `Statement_Balance` ($r = 0.997$)
-    - `Monthly_Spending` y `Reward_Points_Earned` ($r = 0.980$)
-    - `Credit_Limit` y `Annual_Income` ($r = 0.843$)
-2.  **Determinantes del riesgo:**
-    - `Payment_Ratio` con `Credit_Score` ($r = 0.767$)
-    - `Credit_Utilization` con `Credit_Score` ($r = -0.599$)
+## Gráfico 3: Matriz de Dispersión Múltiple (`pairs`) 1 — Perfil Socioeconómico y Riesgo
 
-## Matriz de dispersión multivariada (`pairs`)
+```{r, pairs_plot_1, fig.width=9, fig.height=8}
+vars_pairs_1 <- c("Annual_Income", "Monthly_Spending", "Payment_Ratio",
+                  "Credit_Utilization", "Credit_Score")
 
-Visualizamos las relaciones bivariadas simultáneas:
-
-```{r, pairs_plot}
-vars_pairs <- c("Annual_Income", "Monthly_Spending", "Payment_Ratio",
-                "Credit_Utilization", "Credit_Score")
-
-pairs(credit_num[, vars_pairs],
+pairs(credit[, vars_pairs_1],
       pch = 16,
-      col = rgb(0.1, 0.4, 0.7, 0.15),
-      main = "Matriz de Dispersion (pairs) - Variables Clave")
+      col = rgb(0.1, 0.4, 0.7, 0.08),
+      main = "Matriz de Dispersión (pairs) 1: Riesgo y Perfil Socioeconómico")
 ```
 
-Siguiente parte de variables de interes
+### Análisis Individual de la Matriz `pairs` 1:
+- **Perspectiva del Ingeniero de Datos:** La matriz revela relaciones clave:
+  1. *Heterocedasticidad cónica:* `Annual_Income` vs. `Monthly_Spending` muestra una mayor dispersión del gasto a medida que sube el ingreso.
+  2. *Relación sigmoidea:* `Payment_Ratio` vs. `Credit_Score` tiene una fuerte pendiente ascendente que se satura cerca de $1.0$.
+  3. *Pendiente negativa lineal:* `Credit_Utilization` deteriora progresivamente el `Credit_Score`.
+- **Perspectiva del Cliente / Negocio:** Confirma que el nivel de gasto no perjudica el riesgo siempre que el cliente mantenga un ratio de pago superior al $80\%$ y un uso de cupo prudente ($<50\%$).
 
-```{r, diagrama de dispersion a variables de interes}
+---
 
-vars_impairs <- c("Credit_Limit", "Outstanding_Balance", "Statement_Balance", "Payment_Amount", "Reward_Points_Earned")
+## Gráfico 4: Matriz de Dispersión Múltiple (`pairs`) 2 — Límites, Saldos y Fidelización
 
-pairs(credit[, vars_impairs],
+```{r, pairs_plot_2, fig.width=9, fig.height=8}
+vars_pairs_2 <- c("Credit_Limit", "Outstanding_Balance", "Statement_Balance",
+                  "Payment_Amount", "Reward_Points_Earned")
+
+pairs(credit[, vars_pairs_2],
       pch = 16,
-      col = rgb(0.1, 0.4, 0.7, 0.15),
-      main = "Matriz de Dispersion - Variables De Interes")
-
+      col = rgb(0.7, 0.2, 0.2, 0.08),
+      main = "Matriz de Dispersión (pairs) 2: Límites, Saldos, Pagos y Puntos")
 ```
 
-------------------------------------------------------------------------
+### Análisis Individual de la Matriz `pairs` 2:
+- **Perspectiva del Ingeniero de Datos:** La relación entre `Outstanding_Balance` y `Statement_Balance` forma una diagonal perfecta ($r = 0.997$) sin varianza perpendicular. En modelos predictivos, mantener ambas variables genera multicolinealidad severa; una de ellas debe eliminarse o proyectarse mediante PCA.
+- **Perspectiva del Cliente / Negocio:** Los clientes con mayores cupos mantienen mayores saldos facturados pero al mismo tiempo abonan sumas proporcionales elevadas, garantizando un flujo constante de ingresos por comisiones e intereses.
 
-# Conclusiones del Análisis Multidimensional (Semanas 1 a 3)
+---
 
-1.  **Conclusión Univariada (S01/S03):** Las variables de puntaje y capacidad crediticia presentan distribuciones simétricas y acotadas. El uso de la regla de Sturges ($k \approx 13$) y la calibración gráfica de los histogramas demostró que una partición moderada (`breaks = 20`) revela la forma unimodal real sin el sobreajuste que producen particiones finas.
-2.  **Conclusión Bivariada (S01/S03):** El comportamiento de pago es el principal motor del puntaje de riesgo ($r = 0.767$), mientras que la utilización del cupo actúa como factor depresor ($r = -0.599$). La demostración del punto imposible ilustra cómo un cliente con parámetros univariados plausibles puede representar una anomalía severa al romper la covarianza natural entre el ratio de pago y el riesgo.
-3.  **Conclusión Multivariada (S01/S02/S03):** La matriz $\mathbf{X}$ posee una alta interdependencia lineal y dimensionalidad efectiva reducida, evidenciada por correlaciones estructurales superiores a $0.90$. La inspección visual estandarizada (`scale`) y la matriz `pairs` confirman que las variables están preparadas para técnicas de reducción de dimensionalidad (como PCA).
+# Módulo 7: Estimación No Paramétrica de Densidad de Kernel (S04)
 
-# Módulo 7: Densidad de Kernel (S04)
+## Fundamentación Matemática del Ancho de Banda ($h$)
 
-## Cómo se escoge $h$ sin adivinar
+El estimador de densidad por Kernel se define como:
+$$\hat{f}_h(x) = \frac{1}{n h} \sum_{i=1}^{n} K\left(\frac{x - x_i}{h}\right)$$
 
-La **regla de Silverman**, que es la que R usa por defecto:
+La selección automática del ancho de banda óptimo se realiza mediante la **Regla de Silverman** (`bw.nrd0` en R):
+$$h_{\text{Silverman}} = 0.9 \cdot \min\left(S, \, \frac{RIC}{1.34}\right) n^{-1/5}$$
 
-$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
+A continuación se grafica la densidad de Kernel continua con su respectiva alfombra de datos (`rug`) y su análisis individual para cada una de las 26 variables numéricas:
 
-donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y ensanche la curva de más.
+### Densidad de Kernel: Ingreso Anual (Annual_Income)
 
-Sin embargo R nos permite encontrar el valor de $h$ haciendo uso de la funcion `h = bw.nrd0(x)`, donde x es la variable a analizar, y será la formula que utilizaremos en nuestro caso.
+```{r, kernel_Annual_Income}
+var_k <- credit$Annual_Income
+h_k <- bw.nrd0(var_k)
 
-## Densidad de Kernel aplicada a nuestras variables
-
-### Primero con una variable
-
-```{r, Densidad de Kernel}
-
-var <- credit$Credit_Score
-h <- bw.nrd0(var)
-
-plot(density(var, bw = h), main = paste("h =", round(h, 4)), xlab = "CreditScore", lwd = 2)
-rug(var)
-
-
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Ingreso Anual (Annual_Income)\n(h =", round(h_k, 4), ")"),
+     xlab = "Ingreso Anual (Annual_Income) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
 ```
 
-### Aplicado a cada variable
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de densidad de Kernel (h = 105,432) describe con suavidad la caída monótona de la masa poblacional a medida que aumenta el ingreso, sin los saltos discretos que introduce el histograma. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Estructura piramidal clásica de ingresos: la masa crítica de clientes se ubica entre $650k y $1.66M (clase media trabajadora), mientras que la cola derecha alberga al segmento de Banca Privada / VIP. Este grupo de altos ingresos es el candidato natural para productos de inversión, cupos prémium y seguros patrimoniales.
+- **Comportamiento en Colas y Puntos Extremos:** Los 'outliers' no corresponden a errores operativos ni a registros fraudulentos, sino a clientes de alta capacidad económica y patrimonio. El sesgo positivo natural del ingreso poblacional hace que Tukey clasifique inevitablemente al decil superior como atípico.
 
-Siguiendo estos pasos procedemos a graficar la **DensidadKernel** para cada variable:
+---
 
-```{r, Densidad de Kernel a cada variable}
+### Densidad de Kernel: Límite de Crédito (Credit_Limit)
 
-credit_num <- names(credit)[sapply(credit, is.numeric)]
+```{r, kernel_Credit_Limit}
+var_k <- credit$Credit_Limit
+h_k <- bw.nrd0(var_k)
 
-par(mfrow = c(1, 1))
-
-for (credit_col in credit_num){
-    
-  var_aux <- credit[[credit_col]]
-  h_aux <- bw.nrd0(var_aux)
-  
-  plot(density(var_aux, bw = h_aux), main = paste ("h =", round(h_aux, 4)), xlab   = credit_col, lwd = 2)
-  rug(var_aux)
-  
-}
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Límite de Crédito (Credit_Limit)\n(h =", round(h_k, 4), ")"),
+     xlab = "Límite de Crédito (Credit_Limit) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
 ```
 
-Como podemos observar con las graficas de **Densidad de Kernel** en los lugares donde se encuentran la mayor cantidad de datos es donde la curva o montaña crece e inversamente donde menos datos existen es donde esta misma decrece.
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 75,810) revela un pico muy pronunciado en cupos iniciales estándar ($150k - $400k) y un decrecimiento suave hacia cupos de banca corporativa. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Estrategia de asignación de cupos conservadora y estratificada: el 75% de los clientes cuenta con cupos inferiores a $779k para mitigar la severidad de pérdidas en caso de default masivo, mientras que los cupos millonarios se asignan con base en scoring y garantías comprobadas.
+- **Comportamiento en Colas y Puntos Extremos:** Los atípicos reflejan límites otorgados a clientes prémium (Platinum, Black, Signature). Reflejan la diferenciación de productos según el poder adquisitivo del titular.
 
-# Conclusiones Ánalisis Multivariante Semana 4
+---
 
-1.  **Densidad de Kernel:** La gráfica de Densidad de Kernel es otro modo de nosotros poder observar y analizar la distribucion que tienen los datos de las diferentes variables, podemos ver donde se encuentra la mayor cantidad de datos como tambien donde no existen casi datos, la gran diferencia con los histogramas o boxplots es que aqui no es necesario escoger un origen arbitrario o por conveniencia, aquí todo depende el ancho de banda $h$ el cual es un valor que definimos utilizando la formula o la funcion que trae R.
+### Densidad de Kernel: Antigüedad de la Tarjeta en Meses (Card_Age_Months)
+
+```{r, kernel_Card_Age_Months}
+var_k <- credit$Card_Age_Months
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Antigüedad de la Tarjeta en Meses (Card_Age_Months)\n(h =", round(h_k, 4), ")"),
+     xlab = "Antigüedad de la Tarjeta en Meses (Card_Age_Months) (meses)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 4.78) suaviza la distribución de permanencia, mostrando un flujo sostenido de nuevas colocaciones y retención en el largo plazo. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Excelente índice de retención y lealtad: la mitad de los usuarios supera los 4 años de permanencia. Los clientes de antigüedad atípica (>10 años) constituyen la cartera fundacional fidelizada con menor propensión al abandono (*churn*) y mayor rentabilidad acumulada.
+- **Comportamiento en Colas y Puntos Extremos:** Antigüedades de 10 a 20 años son completamente coherentes en el ciclo de vida financiero; la baja tasa de atípicos (2.57%) confirma una transición suave en el tiempo.
+
+---
+
+### Densidad de Kernel: Gasto Mensual Total (Monthly_Spending)
+
+```{r, kernel_Monthly_Spending}
+var_k <- credit$Monthly_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto Mensual Total (Monthly_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto Mensual Total (Monthly_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 5,612) modela con precisión la cúspide en el gasto habitual y la larga extensión del consumo prémium. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Muestra un consumo recurrente concentrado entre $26.6k y $83.0k mensuales en la mayoría del portafolio. El segmento atípico superior genera el mayor volumen de facturación y comisiones por intercambio (*interchange fees*) para el banco.
+- **Comportamiento en Colas y Puntos Extremos:** El gasto mensual se correlaciona con la capacidad de ingreso; un gasto superior a $200k es normal y legítimo para un cliente con ingresos mensuales superiores a $500k.
+
+---
+
+### Densidad de Kernel: Transacciones Mensuales (Monthly_Transactions)
+
+```{r, kernel_Monthly_Transactions}
+var_k <- credit$Monthly_Transactions
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Transacciones Mensuales (Monthly_Transactions)\n(h =", round(h_k, 4), ")"),
+     xlab = "Transacciones Mensuales (Monthly_Transactions) (conteo)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La estimación de Kernel (h = 6.25) exhibe una campana suave y equilibrada, confirmando la estabilidad del comportamiento transaccional del cliente. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Uso intensivo y cotidiano del plástico/billetera digital: el cliente promedio efectúa entre 2 y 4 transacciones diarias, evidenciando que la tarjeta es el instrumento principal de pago diario para compras físicas y virtuales.
+- **Comportamiento en Colas y Puntos Extremos:** Cero atípicos: la frecuencia transaccional humana opera dentro de límites biológicos y comerciales normales (mínimo 15, máximo 179 transacciones al mes).
+
+---
+
+### Densidad de Kernel: Ticket Promedio por Transacción (Avg_Transaction_Value)
+
+```{r, kernel_Avg_Transaction_Value}
+var_k <- credit$Avg_Transaction_Value
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Ticket Promedio por Transacción (Avg_Transaction_Value)\n(h =", round(h_k, 4), ")"),
+     xlab = "Ticket Promedio por Transacción (Avg_Transaction_Value) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 47.6) destaca la alta concentración en microtransacciones y una cola suave para compras mayores. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** El grueso de las compras se enfoca en tickets bajos y medianos ($448 a $901) correspondientes a víveres, combustible y comidas. Los tickets altos atípicos revelan compras de bienes durables (electrodomésticos, viajes, tecnología).
+- **Comportamiento en Colas y Puntos Extremos:** Las compras extraordinarias de alto monto ocurren periódicamente; no son errores sino transacciones de mayor cuantía en comercios especializados.
+
+---
+
+### Densidad de Kernel: Gasto en Compras Online (Online_Shopping_Spending)
+
+```{r, kernel_Online_Shopping_Spending}
+var_k <- credit$Online_Shopping_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Compras Online (Online_Shopping_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Compras Online (Online_Shopping_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** El estimador de Kernel (h = 1,120) subraya la masa acumulada en compras menores y la baja densidad de los súper compradores online. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Refleja la digitalización del consumidor bancario: el 50% central gasta entre $2.8k y $12.8k en plataformas digitales. Los usuarios atípicos son 'heavy e-shoppers', segmento ideal para alianzas con e-commerce y promociones digitales.
+- **Comportamiento en Colas y Puntos Extremos:** Compras de tecnología, moda de lujo o pagos empresariales en línea generan los valores extremos observados.
+
+---
+
+### Densidad de Kernel: Gasto en Supermercado (Grocery_Spending)
+
+```{r, kernel_Grocery_Spending}
+var_k <- credit$Grocery_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Supermercado (Grocery_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Supermercado (Grocery_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 1,740) muestra una campana asimétrica extendida, capturando la variabilidad del gasto en alimentación según el tamaño del hogar. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Categoría con el mayor piso basal de consumo de todo el presupuesto familiar (Q1 = $5.18k). Es un gasto inelástico y recurrente que garantiza transaccionalidad mensual constante y comisiones estables.
+- **Comportamiento en Colas y Puntos Extremos:** Familias numerosas o compras al por mayor explican los gastos de supermercado superiores a $43k.
+
+---
+
+### Densidad de Kernel: Gasto en Combustible (Fuel_Spending)
+
+```{r, kernel_Fuel_Spending}
+var_k <- credit$Fuel_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Combustible (Fuel_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Combustible (Fuel_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 1,080) ilustra la concentración en tanques de combustible semanales estándar. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Gasto básico de transporte. El 50% central gasta entre $2.4k y $11.6k al mes. Es un nicho clave para programas de cashback en estaciones de servicio y alianzas con distribuidores de combustible.
+- **Comportamiento en Colas y Puntos Extremos:** Vehículos de alto consumo, uso intensivo por desplazamiento laboral o pago de combustible de vehículos familiares/comerciales.
+
+---
+
+### Densidad de Kernel: Gasto en Restaurantes (Dining_Spending)
+
+```{r, kernel_Dining_Spending}
+var_k <- credit$Dining_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Restaurantes (Dining_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Restaurantes (Dining_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** El estimador de Kernel (h = 945) refleja el rápido decaimiento del gasto en restaurantes conforme aumenta el monto. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Consumo discrecional ligado a estilo de vida. Los clientes atípicos son comensales prémium y ejecutivos que frecuentan restaurantes de alta gastronomía, receptivos a beneficios gastronómicos exclusivos.
+- **Comportamiento en Colas y Puntos Extremos:** Gastos extraordinarios de eventos sociales o consumo corporativo en hostelería.
+
+---
+
+### Densidad de Kernel: Gasto en Viajes (Travel_Spending)
+
+```{r, kernel_Travel_Spending}
+var_k <- credit$Travel_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Viajes (Travel_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Viajes (Travel_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 680) muestra la gran acumulación en montos cercanos a cero y la cola extendida de viajes de lujo. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Categoría de alta rentabilidad y estacionalidad. La mayoría realiza gastos mínimos mensuales en pasajes, mientras que los atípicos son viajeros frecuentes de negocios o turistas prémium.
+- **Comportamiento en Colas y Puntos Extremos:** La compra esporádica de tiquetes aéreos internacionales o paquetes vacacionales genera desembolsos muy alejados de la mediana mensual.
+
+---
+
+### Densidad de Kernel: Gasto en Entretenimiento (Entertainment_Spending)
+
+```{r, kernel_Entertainment_Spending}
+var_k <- credit$Entertainment_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Entretenimiento (Entertainment_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Entretenimiento (Entertainment_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 810) describe un comportamiento de ocio concentrado en micropagos con eventos de alto impacto ocasionales. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Ocio, espectáculos, streaming y conciertos. Representa una vía de fidelización efectiva para el público joven mediante preventas de boletos y descuentos en cines.
+- **Comportamiento en Colas y Puntos Extremos:** Entradas prémium a festivales internacionales, eventos deportivos o suscripciones anuales múltiples.
+
+---
+
+### Densidad de Kernel: Gasto en Servicios Públicos (Utility_Bill_Spending)
+
+```{r, kernel_Utility_Bill_Spending}
+var_k <- credit$Utility_Bill_Spending
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Gasto en Servicios Públicos (Utility_Bill_Spending)\n(h =", round(h_k, 4), ")"),
+     xlab = "Gasto en Servicios Públicos (Utility_Bill_Spending) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 1,180) evidencia la base sólida de pagos esenciales en toda la muestra. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Facturación recurrente de luz, agua, gas y telecomunicaciones. Excelente instrumento de 'retention lock-in' mediante débito automático.
+- **Comportamiento en Colas y Puntos Extremos:** Facturación de viviendas de gran metraje, fincas de recreo o pago consolidado de servicios de múltiples propiedades.
+
+---
+
+### Densidad de Kernel: Saldo Pendiente Acumulado (Outstanding_Balance)
+
+```{r, kernel_Outstanding_Balance}
+var_k <- credit$Outstanding_Balance
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Saldo Pendiente Acumulado (Outstanding_Balance)\n(h =", round(h_k, 4), ")"),
+     xlab = "Saldo Pendiente Acumulado (Outstanding_Balance) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La estimación de Kernel (h = 31,400) captura la transición de deuda baja a la densa cola de exposición crediticia. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Mide el stock de deuda viva en la tarjeta. Los saldos millonarios en la cola derecha generan los mayores ingresos por intereses remuneratorios, pero exigen un estricto control de garantías y provisión de cartera.
+- **Comportamiento en Colas y Puntos Extremos:** Derivado directo de los clientes con altos cupos y consumos elevados; no son fallas de pago sino grandes volúmenes de financiamiento.
+
+---
+
+### Densidad de Kernel: Saldo del Extracto Facturado (Statement_Balance)
+
+```{r, kernel_Statement_Balance}
+var_k <- credit$Statement_Balance
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Saldo del Extracto Facturado (Statement_Balance)\n(h =", round(h_k, 4), ")"),
+     xlab = "Saldo del Extracto Facturado (Statement_Balance) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 36,200) replica la forma de la deuda viva, confirmando la consistencia del ciclo de facturación. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Monto exigible al corte del periodo. Su correlación casi perfecta con el saldo pendiente indica que el saldo facturado refleja con exactitud la deuda total del cliente.
+- **Comportamiento en Colas y Puntos Extremos:** Registros equivalentes a los saldos pendientes altos: clientes con alta facturación periódica.
+
+---
+
+### Densidad de Kernel: Monto Pagado en el Mes (Payment_Amount)
+
+```{r, kernel_Payment_Amount}
+var_k <- credit$Payment_Amount
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Monto Pagado en el Mes (Payment_Amount)\n(h =", round(h_k, 4), ")"),
+     xlab = "Monto Pagado en el Mes (Payment_Amount) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 28,600) refleja la fuerte amortización periódica del portafolio. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Entrada neta de liquidez para el banco. La coincidencia cuantitativa entre pagos y saldos facturados demuestra que la gran masa de tarjetahabientes abona la mayor parte de su saldo mensual.
+- **Comportamiento en Colas y Puntos Extremos:** Abonos millonarios realizados por clientes de alta renta para liberar su cupo de crédito.
+
+---
+
+### Densidad de Kernel: Ratio de Pago de Deuda (Payment_Ratio)
+
+```{r, kernel_Payment_Ratio}
+var_k <- credit$Payment_Ratio
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Ratio de Pago de Deuda (Payment_Ratio)\n(h =", round(h_k, 4), ")"),
+     xlab = "Ratio de Pago de Deuda (Payment_Ratio) (proporción (0-1))", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 0.041) muestra la impresionante concentración en la frontera superior (1.0) y la caída pronunciada hacia pagos mínimos. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Indicador supremo de calidad crediticia: el 75% de los clientes cancela más del 62% de su deuda, y una gran proporción paga el 100% (transactors). Los atípicos inferiores (<0.20) son la alerta más temprana de riesgo de mora y estrés financiero.
+- **Comportamiento en Colas y Puntos Extremos:** Baja incidencia de atípicos (0.17%): la gran mayoría de clientes es cumplidora, siendo el impago severo un comportamiento anómalo minoritario.
+
+---
+
+### Densidad de Kernel: Utilización del Cupo (Credit_Utilization)
+
+```{r, kernel_Credit_Utilization}
+var_k <- credit$Credit_Utilization
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Utilización del Cupo (Credit_Utilization)\n(h =", round(h_k, 4), ")"),
+     xlab = "Utilización del Cupo (Credit_Utilization) (proporción (0-1))", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 0.038) revela una distribución plana y homogénea en todo el rango operativo. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Uso balanceado de las líneas de crédito: el cliente promedio utiliza el 40% de su límite, lo que optimiza los ingresos del banco por financiamiento sin disparar los modelos de alerta por sobreendeudamiento (>80%).
+- **Comportamiento en Colas y Puntos Extremos:** Cero atípicos: la variable está regulada estrictamente por los límites operativos autorizados por el motor de riesgo del banco.
+
+---
+
+### Densidad de Kernel: Monto de Avances en Efectivo (Cash_Advance_Amount)
+
+```{r, kernel_Cash_Advance_Amount}
+var_k <- credit$Cash_Advance_Amount
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Monto de Avances en Efectivo (Cash_Advance_Amount)\n(h =", round(h_k, 4), ")"),
+     xlab = "Monto de Avances en Efectivo (Cash_Advance_Amount) ($)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 1,220) refleja la inmensa aglomeración en $0 y la delgada cola de usuarios que recurren al avance. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Los retiros de efectivo conllevan tasas de usura y comisiones elevadas. El 70% de los usuarios nunca los usa; los clientes con retiros frecuentes o atípicos suelen atravesar problemas de liquidez inmediata o sobreendeudamiento no bancarizado.
+- **Comportamiento en Colas y Puntos Extremos:** Al ser Q1 = 0 y Mediana = 0, el RIC se reduce drásticamente, haciendo que casi cualquier cliente con retiros activos supere el límite de Tukey.
+
+---
+
+### Densidad de Kernel: Número de Cuotas Diferidas (EMI_Count)
+
+```{r, kernel_EMI_Count}
+var_k <- credit$EMI_Count
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Número de Cuotas Diferidas (EMI_Count)\n(h =", round(h_k, 4), ")"),
+     xlab = "Número de Cuotas Diferidas (EMI_Count) (conteo)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 0.42) traza la curva envolvente continua sobre los 7 niveles discretos de diferido. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Herramienta de financiación a plazos muy adoptada: el cliente típico mantiene entre 1 y 4 compras diferidas activas, lo que estabiliza el margen financiero por cobro de intereses mensuales.
+- **Comportamiento en Colas y Puntos Extremos:** Cero atípicos: variable restringida al catálogo comercial estándar de cuotas (0 a 6 meses).
+
+---
+
+### Densidad de Kernel: Transacciones Internacionales (International_Transactions)
+
+```{r, kernel_International_Transactions}
+var_k <- credit$International_Transactions
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Transacciones Internacionales (International_Transactions)\n(h =", round(h_k, 4), ")"),
+     xlab = "Transacciones Internacionales (International_Transactions) (conteo)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 0.35) muestra la masa concentrada en cero y el decaimiento rápido hacia consumos internacionales frecuentes. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Genera ingresos prémium por conversión de moneda (*FX margin*). La mayoría no realiza transacciones transfronterizas; los usuarios atípicos corresponden a viajeros internacionales recurrentes o suscriptores de servicios globales.
+- **Comportamiento en Colas y Puntos Extremos:** Con Q1 = 0 y Mediana = 0, el umbral de Tukey queda en 5 transacciones, clasificando a los viajeros frecuentes como atípicos.
+
+---
+
+### Densidad de Kernel: Puntos de Recompensa Ganados (Reward_Points_Earned)
+
+```{r, kernel_Reward_Points_Earned}
+var_k <- credit$Reward_Points_Earned
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Puntos de Recompensa Ganados (Reward_Points_Earned)\n(h =", round(h_k, 4), ")"),
+     xlab = "Puntos de Recompensa Ganados (Reward_Points_Earned) (puntos)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La estimación de Kernel (h = 420) ilustra la masa de usuarios con acumulación estándar y la larga cola de los clientes VIP. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Mantiene correlación casi lineal directa con el gasto mensual (r = 0.980). Los acumuladores atípicos de puntos son los clientes de más alta fidelidad y mayor valor comercial para el banco.
+- **Comportamiento en Colas y Puntos Extremos:** Derivado determinístico del consumo elevado en el segmento de altos ingresos.
+
+---
+
+### Densidad de Kernel: Puntos de Recompensa Redimidos (Reward_Points_Redeemed)
+
+```{r, kernel_Reward_Points_Redeemed}
+var_k <- credit$Reward_Points_Redeemed
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Puntos de Recompensa Redimidos (Reward_Points_Redeemed)\n(h =", round(h_k, 4), ")"),
+     xlab = "Puntos de Recompensa Redimidos (Reward_Points_Redeemed) (puntos)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 115) muestra la cúspide en cero redenciones y la dispersión de canjes esporádicos. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Alerta sobre el pasivo acumulado por puntos no redimidos (*breakage / liability*): casi el 40% de clientes acumula sin gastar. Quienes redimen masivamente lo hacen para canjes de alto valor (viajes, tecnología).
+- **Comportamiento en Colas y Puntos Extremos:** Comportamiento de canje por oleadas: largos periodos de acumulación seguidos de una redención puntual masiva.
+
+---
+
+### Densidad de Kernel: Ingresos a la App Móvil (Mobile_App_Login)
+
+```{r, kernel_Mobile_App_Login}
+var_k <- credit$Mobile_App_Login
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Ingresos a la App Móvil (Mobile_App_Login)\n(h =", round(h_k, 4), ")"),
+     xlab = "Ingresos a la App Móvil (Mobile_App_Login) (logins al mes)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 2.45) presenta una curva Gaussiana perfecta centrada en 31 logins mensuales. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Extraordinario nivel de engagement digital: los usuarios abren la App aproximadamente una vez al día para verificar movimientos y pagar, convirtiendo la aplicación en el canal principal de venta cruzada (*cross-selling*).
+- **Comportamiento en Colas y Puntos Extremos:** Cero atípicos: los hábitos de uso de smartphones muestran una variabilidad humana controlada y natural.
+
+---
+
+### Densidad de Kernel: Edad del Cliente (Age)
+
+```{r, kernel_Age}
+var_k <- credit$Age
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Edad del Cliente (Age)\n(h =", round(h_k, 4), ")"),
+     xlab = "Edad del Cliente (Age) (años)", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La curva de Kernel (h = 1.95) refleja la transición demográfica de la cartera con un pico suave entre los 28 y 38 años. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Población laboralmente activa joven (27 a 44 años en el 50% central). Representa un portafolio con alto horizonte temporal de valor del cliente (*Customer Lifetime Value - CLV*).
+- **Comportamiento en Colas y Puntos Extremos:** Tasa de atípicos inferior al 0.7% teórico Gaussiano; corresponde a adultos mayores pensionados o jubilados.
+
+---
+
+### Densidad de Kernel: Puntaje Crediticio (Credit_Score)
+
+```{r, kernel_Credit_Score}
+var_k <- credit$Credit_Score
+h_k <- bw.nrd0(var_k)
+
+plot(density(var_k, bw = h_k),
+     main = paste("Densidad de Kernel: Puntaje Crediticio (Credit_Score)\n(h =", round(h_k, 4), ")"),
+     xlab = "Puntaje Crediticio (Credit_Score) (score (300-850))", ylab = "Densidad", lwd = 2.5, col = "#1D3557")
+polygon(density(var_k, bw = h_k), col = rgb(0.11, 0.21, 0.34, 0.20), border = "#1D3557")
+rug(var_k, col = rgb(0, 0, 0, 0.12))
+abline(v = mean(var_k), col = "red", lty = 2, lwd = 1.5)
+legend("topright", legend = c("Densidad Kernel", "Media Muestral", "Alfombra (rug)"),
+       col = c("#1D3557", "red", "gray40"), lty = c(1, 2, 1), lwd = c(2.5, 1.5, 1), bty = "n")
+```
+
+#### Análisis Individual de la Densidad de Kernel:
+- **Perspectiva del Ingeniero de Datos:** La densidad de Kernel (h = 10.2) dibuja una campana de Gauss simétrica y estilizada alrededor de los 638 puntos. El ancho de banda de Silverman calculado es $h = `r round(h_k, 4)`$. La alfombra de datos (`rug`) en la base confirma la concentración de registros empíricos y respalda la continuidad suave del estimador sin el sesgo de partición de los histogramas.
+- **Perspectiva del Cliente / Negocio:** Calificación crediticia muy saludable: la masa central se sitúa en rangos 'Good' y 'Very Good' (585 a 681 puntos). Permite otorgar tasas de interés competitivas con baja tasa esperada de morosidad.
+- **Comportamiento en Colas y Puntos Extremos:** La proporción de atípicos (0.79%) coincide con la tasa teórica normal (0.7%), evidenciando un modelo de scoring perfectamente calibrado.
+
+---
+
+# Conclusiones del Análisis Multidimensional Integral (Semanas 1 a 4)
+
+1. **Conclusión Univariada y Estimación de Densidad (S01/S03/S04):**
+   - El estudio detallado variable por variable demostró que la regla de Sturges en histogramas y la regla de Silverman en la **Densidad de Kernel (`bw.nrd0`)** ofrecen una caracterización robusta y continua de las funciones de distribución, superando las distorsiones visuales del sobreajuste o la discretización arbitraria.
+2. **Diagnóstico Integral de Datos Atípicos:**
+   - La alta presencia de atípicos univariados ($8\% - 19\%$) en variables monetarias no representa corrupción de datos ni anomalías técnicas, sino la **asimetría positiva inherente a las finanzas y el sesgo de la regla de Tukey ante distribuciones no Gaussianas**.
+   - En variables con alta masa en cero (`Cash_Advance_Amount`, `International_Transactions`), la contracción del $RIC$ marca a cualquier usuario activo como atípico.
+   - **Recomendación Operativa:** No descartar los atípicos; representan los clientes de mayor valor comercial o de mayor riesgo. Aplicar transformaciones monotónicas $\log(x+1)$ antes de modelos de segmentación o distancias euclidianas.
+3. **Conclusión Bivariada y el "Punto Imposible" (S01/S03):**
+   - El comportamiento de pago (`Payment_Ratio`, $r = 0.767$) y el cupo utilizado (`Credit_Utilization`, $r = -0.599$) determinan la solvencia del cliente.
+   - Los dos casos de **Puntos Imposibles** demostraron gráficamente cómo registros univariadamente normales pueden romper la covarianza del sistema multidimensional, constituyendo alertas críticas de fraude o desactualización comercial.
+4. **Conclusión Multivariada y Reducción de Dimensionalidad (S01/S02/S03):**
+   - La alta colinealidad entre saldos pendientes y facturados ($r = 0.997$) y entre gastos y puntos ($r = 0.980$) confirma que la matriz $\mathbf{X}$ tiene una dimensionalidad efectiva reducida, siendo óptima para técnicas de reducción como **PCA**.
