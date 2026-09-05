@@ -10,8 +10,23 @@ output:
     number_sections: true
 ---
 
+<<<<<<< HEAD:analisis_synthetic_credit_card_ipynb.Rmd
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5)
+=======
+```{r, setup}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#>",
+  fig.width = 9,
+  fig.height = 6,
+  fig.align = "center",
+  warning = FALSE,
+  message = FALSE
+)
+# Ejecuta todos los chunks desde la raíz del proyecto (carpeta padre de analysis/)
+knitr::opts_knit$set(root.dir = "..")
+>>>>>>> c0116d12c0192e334bec977f6a65af9fa243a776:analysis/analisis_synthetic_credit_card_desde_ipynb.Rmd
 ```
 
 # De dónde venimos, y el salto de hoy
@@ -38,11 +53,18 @@ aquí.
 Los $p(p-1)/2$ diagramas de dispersión, organizados en una rejilla de $p \times p$. En la posición
 $(j,k)$ está el gráfico de la variable $j$ contra la $k$.
 
+<<<<<<< HEAD:analisis_synthetic_credit_card_ipynb.Rmd
 ```{r pairs-basico}
 vino <- read.csv(
   "../../../04_DATASETS/winequality-red.csv", sep = ";")   # ojo: separador ";"
 
 str(vino)
+=======
+```{r, inspeccion_previa}
+ruta_credit <- "data/bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+lineas_muestra <- readLines(ruta_credit, n = 4)
+lineas_muestra
+>>>>>>> c0116d12c0192e334bec977f6a65af9fa243a776:analysis/analisis_synthetic_credit_card_desde_ipynb.Rmd
 ```
 
 ```{r pairs, fig.width=9, fig.height=9}

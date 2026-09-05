@@ -197,3 +197,17 @@ pyrightconfig.json
 .Rproj.user/
 .RData
 .Rhistory
+.Rapp.history
+.Ruserdata
+
+# Salidas intermedias de knitr / rmarkdown (se regeneran al hacer knit)
+*_cache/
+/analysis/*_files/
+/analysis/*.knit.md
+/analysis/*.utf8.md
+
+# Datos derivados: solo se versiona data/bronze/ (crudo). silver/ y gold/ se regeneran.
+/data/silver/*
+/data/gold/*
+!/data/silver/.gitkeep
+!/data/gold/.gitkeep
