@@ -199,6 +199,8 @@ pyrightconfig.json
 .Rhistory
 .Rapp.history
 .Ruserdata
+*.gitkeep
+*.sh
 
 # Salidas intermedias de knitr / rmarkdown (se regeneran al hacer knit)
 *_cache/
