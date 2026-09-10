@@ -9,6 +9,9 @@ output:
     toc_depth: 2
     number_sections: true
     df_print: paged
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE}
@@ -17,17 +20,20 @@ knitr::opts_chunk$set(echo = TRUE, comment = "#>")
 
 # Por qué esta sesión decide el semestre
 
-Hasta ahora todos los datos venían de fábrica: `iris`, `USArrests`, `airquality`. Ya están
-limpios, ya son numéricos, ya tienen nombres. **El dataset del proyecto no va a estar así.**
+Hasta ahora todos los datos venían de fábrica: `iris`, `USArrests`,
+`airquality`. Ya están limpios, ya son numéricos, ya tienen nombres.
+**El dataset del proyecto no va a estar así.**
 
-En la práctica profesional, *importar bien* se lleva más tiempo que analizar. Y un archivo mal
-importado no falla: **se importa mal en silencio** y todo lo que sigue sale mal sin avisar.
+En la práctica profesional, *importar bien* se lleva más tiempo que
+analizar. Y un archivo mal importado no falla: **se importa mal en
+silencio** y todo lo que sigue sale mal sin avisar.
 
----
+------------------------------------------------------------------------
 
 # Antes de leer nada: dónde estoy parado
 
-El error `cannot open file` casi nunca es del archivo. Es del **directorio de trabajo**.
+El error `cannot open file` casi nunca es del archivo. Es del
+**directorio de trabajo**.
 
 ```{r}
 getwd()
@@ -39,9 +45,10 @@ list.files("datos")          # qué hay en la subcarpeta datos/
 file.exists("datos/encuesta_sucia.csv")
 ```
 
-**Regla del curso:** trabajar siempre dentro de un **proyecto de RStudio** (`.Rproj`) y usar
-**rutas relativas**. Una ruta como `C:/Users/juan/Desktop/datos.csv` sólo funciona en el
-computador de Juan; en la entrega del proyecto es motivo de descuento porque rompe la
+**Regla del curso:** trabajar siempre dentro de un **proyecto de
+RStudio** (`.Rproj`) y usar **rutas relativas**. Una ruta como
+`C:/Users/juan/Desktop/datos.csv` sólo funciona en el computador de
+Juan; en la entrega del proyecto es motivo de descuento porque rompe la
 reproducibilidad.
 
 ```{r eval=FALSE}
@@ -52,14 +59,14 @@ datos <- read.csv("C:/Users/juan/Desktop/datos.csv")
 datos <- read.csv("datos/encuesta.csv")
 ```
 
----
+------------------------------------------------------------------------
 
 # Los cinco argumentos que hay que entender
 
 Toda la sesión cabe en esta tabla. Están todos en `?read.table`.
 
 | Argumento | Qué controla | Valor típico en Colombia |
-|---|---|---|
+|------------------------|------------------------|------------------------|
 | `sep` | Qué separa las columnas | `";"` |
 | `dec` | Cuál es el separador decimal | `","` |
 | `header` | Si la primera fila son nombres | `TRUE` |
@@ -74,19 +81,21 @@ args(read.table)
 
 Son la misma función con distintos valores por defecto:
 
-| Función | `sep` | `dec` | Cuándo |
-|---|---|---|---|
-| `read.csv` | `,` | `.` | Archivos en formato anglosajón |
-| `read.csv2` | `;` | `,` | **Archivos exportados de Excel en español** |
+| Función     | `sep` | `dec` | Cuándo                                      |
+|-------------|-------|-------|---------------------------------------------|
+| `read.csv`  | `,`   | `.`   | Archivos en formato anglosajón              |
+| `read.csv2` | `;`   | `,`   | **Archivos exportados de Excel en español** |
 
-Esto no es un detalle regional: un Excel configurado en español guarda `4,5` y separa con `;`.
-Si eso se lee con `read.csv`, R ve una sola columna de texto o convierte 4,5 en 45.
+Esto no es un detalle regional: un Excel configurado en español guarda
+`4,5` y separa con `;`. Si eso se lee con `read.csv`, R ve una sola
+columna de texto o convierte 4,5 en 45.
 
----
+------------------------------------------------------------------------
 
 # Caso 1 — Un archivo limpio
 
-`winequality-red.csv` está en formato anglosajón: coma como separador, punto decimal.
+`winequality-red.csv` está en formato anglosajón: coma como separador,
+punto decimal.
 
 ```{r eval=FALSE}
 vino <- read.csv("../../../04_DATASETS/winequality-red.csv")
@@ -101,8 +110,8 @@ vino <- if (file.exists(ruta_vino)) read.csv(ruta_vino) else NULL
 if (!is.null(vino)) { dim(vino); str(vino) }
 ```
 
-El **protocolo de las cuatro funciones**, que ya se usó en la semana 1 y que ahora se aplica
-a todo archivo que entre:
+El **protocolo de las cuatro funciones**, que ya se usó en la semana 1 y
+que ahora se aplica a todo archivo que entre:
 
 ```{r eval=FALSE}
 dim(vino)        # ¿n y p son los que esperaba?
@@ -111,32 +120,34 @@ summary(vino)    # ¿los rangos tienen sentido? ¿hay NA?
 head(vino)       # ¿los nombres quedaron bien?
 ```
 
-> Si `str()` muestra `chr` en una columna que debería ser numérica, **la importación falló**.
-> No siga adelante: arréglelo ahí.
+> Si `str()` muestra `chr` en una columna que debería ser numérica, **la
+> importación falló**. No siga adelante: arréglelo ahí.
 
----
+------------------------------------------------------------------------
 
 # Caso 2 — Un archivo real y sucio
 
-Ahora `DANEPoblacion.csv`, del repositorio de la asignatura. Primera lección: **el nombre del
-archivo miente**. No tiene datos de población del DANE: son 65 cereales con su información
-nutricional. Nunca se confía en el nombre; se abre y se mira.
+Ahora `DANEPoblacion.csv`, del repositorio de la asignatura. Primera
+lección: **el nombre del archivo miente**. No tiene datos de población
+del DANE: son 65 cereales con su información nutricional. Nunca se
+confía en el nombre; se abre y se mira.
 
 ## Mirarlo **antes** de leerlo
 
-Con un archivo desconocido, lo primero no es `read.csv` sino leer las tres primeras líneas
-como texto plano:
+Con un archivo desconocido, lo primero no es `read.csv` sino leer las
+tres primeras líneas como texto plano:
 
 ```{r eval=FALSE}
 readLines("../../../04_DATASETS/DANEPoblacion.csv", n = 3)
 ```
 
-```
+```         
 [1] "Cereal;Fabrica;Calorias;Proteina;Grasa;Sodio;..."
 [2] "100% Bran;N;212,12121;12,1212121;3,030303;393,93939;..."
 ```
 
-Ahí se ve todo lo que hace falta: separador `;`, decimal `,`, y hay encabezado.
+Ahí se ve todo lo que hace falta: separador `;`, decimal `,`, y hay
+encabezado.
 
 ## La forma incorrecta
 
@@ -146,8 +157,8 @@ dim(cereal_mal)   # 1 sola columna
 str(cereal_mal)   # todo carácter
 ```
 
-R **no da error**: entrega un `data.frame` de una columna de texto. Perfectamente inútil y
-perfectamente silencioso.
+R **no da error**: entrega un `data.frame` de una columna de texto.
+Perfectamente inútil y perfectamente silencioso.
 
 ## La forma correcta
 
@@ -164,8 +175,8 @@ cereal <- if (file.exists(ruta_cereal)) read.csv2(ruta_cereal) else NULL
 if (!is.null(cereal)) { dim(cereal); str(cereal) }
 ```
 
-Equivalente, escribiéndolo explícito —que es lo que conviene hacer en el informe, para que se
-vea qué decisiones se tomaron:
+Equivalente, escribiéndolo explícito —que es lo que conviene hacer en el
+informe, para que se vea qué decisiones se tomaron:
 
 ```{r eval=FALSE}
 cereal <- read.table("../../../04_DATASETS/DANEPoblacion.csv",
@@ -174,9 +185,10 @@ cereal <- read.table("../../../04_DATASETS/DANEPoblacion.csv",
 
 ## La fila rota
 
-Este archivo trae un defecto de verdad. La marca del cereal *Fruit & Fibre: Dates, Walnuts and
-Oats* tiene comas en el nombre, y en algún momento alguien convirtió el archivo de comas a
-punto y coma sin proteger ese campo:
+Este archivo trae un defecto de verdad. La marca del cereal *Fruit &
+Fibre: Dates, Walnuts and Oats* tiene comas en el nombre, y en algún
+momento alguien convirtió el archivo de comas a punto y coma sin
+proteger ese campo:
 
 ```{r}
 if (!is.null(cereal)) cereal[cereal$Fabrica == "s   P", c("Cereal", "Fabrica")]
@@ -186,8 +198,9 @@ if (!is.null(cereal)) cereal[cereal$Fabrica == "s   P", c("Cereal", "Fabrica")]
 if (!is.null(cereal)) table(cereal$Fabrica)
 ```
 
-Aparece un fabricante `"s   P"` que no existe. **Un `table()` de cada variable categórica
-detecta esto en un segundo**; un `summary()` general no.
+Aparece un fabricante `"s   P"` que no existe. **Un `table()` de cada
+variable categórica detecta esto en un segundo**; un `summary()` general
+no.
 
 Se corrige y se **documenta la corrección**:
 
@@ -199,15 +212,16 @@ if (!is.null(cereal)) {
 }
 ```
 
-> **En el informe del proyecto, toda corrección va escrita en código, nunca a mano en Excel.**
-> Si se arregla en Excel, nadie —incluidos ustedes en noviembre— puede reconstruir qué se cambió.
+> **En el informe del proyecto, toda corrección va escrita en código,
+> nunca a mano en Excel.** Si se arregla en Excel, nadie —incluidos
+> ustedes en noviembre— puede reconstruir qué se cambió.
 
----
+------------------------------------------------------------------------
 
 # Caso 3 — Códigos de faltante y acentos
 
-`datos/encuesta_sucia.csv`, en esta misma carpeta, reúne a propósito los defectos que van a
-encontrar en la vida real.
+`datos/encuesta_sucia.csv`, en esta misma carpeta, reúne a propósito los
+defectos que van a encontrar en la vida real.
 
 ```{r}
 enc_mal <- read.csv2("datos/encuesta_sucia.csv")
@@ -233,9 +247,10 @@ enc <- read.csv2("datos/encuesta_sucia.csv",
 str(enc)
 ```
 
-`horas_trabajo` ya es numérica. `promedio` sigue siendo texto: el problema ahí no es un código
-de faltante sino **un decimal escrito con punto en un archivo de decimal coma**. Se arregla
-sustituyendo y convirtiendo:
+`horas_trabajo` ya es numérica. `promedio` sigue siendo texto: el
+problema ahí no es un código de faltante sino **un decimal escrito con
+punto en un archivo de decimal coma**. Se arregla sustituyendo y
+convirtiendo:
 
 ```{r}
 enc$promedio <- as.numeric(gsub(",", ".", enc$promedio))
@@ -244,8 +259,8 @@ str(enc$promedio)
 
 ## Códigos numéricos de faltante
 
-El más traicionero: `-99`, `999`, `0` usados como «no respondió». R los lee como números
-válidos y arruinan cualquier media.
+El más traicionero: `-99`, `999`, `0` usados como «no respondió». R los
+lee como números válidos y arruinan cualquier media.
 
 ```{r}
 summary(enc$edad)     # el mínimo delata el problema
@@ -256,8 +271,9 @@ enc$edad[enc$edad == -99] <- NA
 summary(enc$edad)
 ```
 
-> **`summary()` de todas las variables numéricas, mirando mínimos y máximos, es la revisión
-> obligatoria después de importar.** Una edad de −99, un promedio de 50 o un peso de 0 se ven ahí.
+> **`summary()` de todas las variables numéricas, mirando mínimos y
+> máximos, es la revisión obligatoria después de importar.** Una edad de
+> −99, un promedio de 50 o un peso de 0 se ven ahí.
 
 ## Categorías que parecen distintas y no lo son
 
@@ -265,8 +281,8 @@ summary(enc$edad)
 table(enc$programa)
 ```
 
-`Sistemas`, `sistemas` y `Sistemas ` (con espacio) son tres niveles para R y uno solo para
-el mundo:
+`Sistemas`, `sistemas` y `Sistemas` (con espacio) son tres niveles para
+R y uno solo para el mundo:
 
 ```{r}
 enc$programa <- factor(trimws(tolower(enc$programa)))
@@ -290,22 +306,24 @@ colSums(is.na(enc))
 sum(!complete.cases(enc))
 ```
 
----
+------------------------------------------------------------------------
 
 # La lista de chequeo de importación
 
 Siempre, en este orden. Cinco minutos que ahorran una semana.
 
-1. `readLines(archivo, n = 3)` — ver separador, decimal y encabezado **antes** de leer.
-2. Leer con `sep`, `dec` y `na.strings` explícitos.
-3. `dim()` — ¿$n$ y $p$ son los esperados?
-4. `str()` — **¿alguna columna numérica quedó `chr`?**
-5. `summary()` — ¿mínimos y máximos plausibles? ¿códigos tipo −99?
-6. `table()` de cada variable categórica — ¿niveles repetidos o basura?
-7. `colSums(is.na())` y `sum(!complete.cases())` — cuántas celdas y cuántas **filas**.
-8. `duplicated()` — ¿registros repetidos?
+1.  `readLines(archivo, n = 3)` — ver separador, decimal y encabezado
+    **antes** de leer.
+2.  Leer con `sep`, `dec` y `na.strings` explícitos.
+3.  `dim()` — ¿$n$ y $p$ son los esperados?
+4.  `str()` — **¿alguna columna numérica quedó `chr`?**
+5.  `summary()` — ¿mínimos y máximos plausibles? ¿códigos tipo −99?
+6.  `table()` de cada variable categórica — ¿niveles repetidos o basura?
+7.  `colSums(is.na())` y `sum(!complete.cases())` — cuántas celdas y
+    cuántas **filas**.
+8.  `duplicated()` — ¿registros repetidos?
 
----
+------------------------------------------------------------------------
 
 # Otros formatos
 
@@ -318,13 +336,14 @@ datos <- read_excel("datos/archivo.xlsx", sheet = 1)
 datos <- as.data.frame(datos)     # read_excel devuelve un tibble
 ```
 
-> Se puede leer Excel directamente, pero **para el proyecto se exige el `.csv`**: es texto
-> plano, se versiona, y no esconde fórmulas ni celdas con formato.
+> Se puede leer Excel directamente, pero **para el proyecto se exige el
+> `.csv`**: es texto plano, se versiona, y no esconde fórmulas ni celdas
+> con formato.
 
 ## Archivos grandes
 
-`PruebaSaber1.csv` tiene 10.000 filas y 78 columnas, y está codificado en Latin‑1 (no UTF‑8),
-que es lo que exporta un Windows en español:
+`PruebaSaber1.csv` tiene 10.000 filas y 78 columnas, y está codificado
+en Latin‑1 (no UTF‑8), que es lo que exporta un Windows en español:
 
 ```{r eval=FALSE}
 saber <- read.csv2("../../../04_DATASETS/PruebaSaber1.csv",
@@ -332,11 +351,13 @@ saber <- read.csv2("../../../04_DATASETS/PruebaSaber1.csv",
 dim(saber)
 ```
 
-Si los acentos salen como `Ã±` o `�`, el problema es la codificación, no los datos.
-Se prueba `fileEncoding = "latin1"` y `"UTF-8"`: una de las dos es.
+Si los acentos salen como `Ã±` o `�`, el problema es la codificación, no
+los datos. Se prueba `fileEncoding = "latin1"` y `"UTF-8"`: una de las
+dos es.
 
-Para archivos de millones de filas (`university_big_dataset_1M.csv`), `read.csv` se vuelve
-lento. Ahí sirve `data.table::fread()`, que además detecta el separador solo:
+Para archivos de millones de filas (`university_big_dataset_1M.csv`),
+`read.csv` se vuelve lento. Ahí sirve `data.table::fread()`, que además
+detecta el separador solo:
 
 ```{r eval=FALSE}
 install.packages("data.table")
@@ -350,10 +371,11 @@ url <- "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data
 iris_web <- read.csv(url, header = FALSE)
 ```
 
-> Sirve para explorar, pero **en el informe del proyecto el archivo va incluido en la carpeta**.
-> Una URL que hoy responde puede no responder el día de la sustentación.
+> Sirve para explorar, pero **en el informe del proyecto el archivo va
+> incluido en la carpeta**. Una URL que hoy responde puede no responder
+> el día de la sustentación.
 
----
+------------------------------------------------------------------------
 
 # Exportación
 
@@ -365,8 +387,9 @@ write.csv(enc, "datos/encuesta_limpia.csv", row.names = FALSE)
 write.csv2(enc, "datos/encuesta_limpia_es.csv", row.names = FALSE)
 ```
 
-`row.names = FALSE` casi siempre: si no, R agrega una primera columna `X` con el número de
-fila, y al reimportar aparece como una variable más.
+`row.names = FALSE` casi siempre: si no, R agrega una primera columna
+`X` con el número de fila, y al reimportar aparece como una variable
+más.
 
 ## Guardar objetos de R
 
@@ -378,8 +401,9 @@ save(enc, cereal, file = "datos/sesion.RData")  # varios
 load("datos/sesion.RData")
 ```
 
-`.rds` conserva tipos y factores exactamente; el `.csv` los pierde y hay que reconstruirlos.
-Para intercambiar, `.csv`; para retomar el trabajo mañana, `.rds`.
+`.rds` conserva tipos y factores exactamente; el `.csv` los pierde y hay
+que reconstruirlos. Para intercambiar, `.csv`; para retomar el trabajo
+mañana, `.rds`.
 
 ## Exportar tablas de resultados
 
@@ -389,27 +413,34 @@ R <- cor(enc[, c("edad", "horas_estudio", "horas_trabajo", "promedio")],
 write.csv(round(R, 3), "resultados/correlaciones.csv")
 ```
 
-> **Nunca `write.csv` sobre el archivo original.** El dato crudo no se toca: se lee de
-> `datos/crudo/` y se escribe en `datos/limpio/`. Si se sobrescribe el original, el error
-> de limpieza que se descubra después ya no tiene vuelta atrás.
+> **Nunca `write.csv` sobre el archivo original.** El dato crudo no se
+> toca: se lee de `datos/crudo/` y se escribe en `datos/limpio/`. Si se
+> sobrescribe el original, el error de limpieza que se descubra después
+> ya no tiene vuelta atrás.
 
----
+------------------------------------------------------------------------
 
 # Ideas clave de la sesión
 
-1. La importación falla **en silencio**: hay que verificarla, no suponerla.
-2. `read.csv2` para archivos en español (`;` y `,`); `read.csv` para los anglosajones.
-3. `na.strings` convierte los códigos de texto; los códigos numéricos (−99) se detectan
-   con `summary()` y se recodifican a mano.
-4. `str()` es el juez: una columna numérica que quedó `chr` es una importación rota.
-5. Toda limpieza va **en código**, con el archivo crudo intacto.
-6. Rutas **relativas** dentro de un proyecto: es requisito de reproducibilidad del informe.
+1.  La importación falla **en silencio**: hay que verificarla, no
+    suponerla.
+2.  `read.csv2` para archivos en español (`;` y `,`); `read.csv` para
+    los anglosajones.
+3.  `na.strings` convierte los códigos de texto; los códigos numéricos
+    (−99) se detectan con `summary()` y se recodifican a mano.
+4.  `str()` es el juez: una columna numérica que quedó `chr` es una
+    importación rota.
+5.  Toda limpieza va **en código**, con el archivo crudo intacto.
+6.  Rutas **relativas** dentro de un proyecto: es requisito de
+    reproducibilidad del informe.
 
 # Lo que viene
 
-**Sábado 22 de agosto (unidad 2):** visualización de datos multivariantes —boxplot, histograma y
-densidad kernel. El lunes 17 es festivo, así que ésa es la **única sesión** de esa semana.
+**Sábado 22 de agosto (unidad 2):** visualización de datos
+multivariantes —boxplot, histograma y densidad kernel. El lunes 17 es
+festivo, así que ésa es la **única sesión** de esa semana.
 
-**Domingo 23:** entrega del **Taller 1 (10 %)**.
-**Sábado 29:** entrega de la **propuesta de datasets** del proyecto: **cuatro candidatos** por grupo. Todo lo de hoy —importar,
-verificar, contar faltantes con `complete.cases()`— es la herramienta para producirla.
+**Domingo 23:** entrega del **Taller 1 (10 %)**. **Sábado 29:** entrega
+de la **propuesta de datasets** del proyecto: **cuatro candidatos** por
+grupo. Todo lo de hoy —importar, verificar, contar faltantes con
+`complete.cases()`— es la herramienta para producirla.

@@ -1,0 +1,239 @@
+---
+title: "Estadística Multidimensional — Sesión 7"
+subtitle: "Medidas de localización multivariantes: el vector de medias"
+author: "26158 · grupo 020-81 · lunes 31 de agosto de 2026 · Aula 404"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+```
+
+# De dónde venimos
+
+El sábado convertimos $p$ variables en **una matriz**: $\mathbf{R}$, de $p \times p$, con diagonal de
+unos, simétrica y semidefinida positiva.
+
+Hoy vamos por lo otro que hace falta para describir una nube de puntos. Porque una nube tiene dos
+cosas: **dónde está** y **qué tan regada**. La matriz de correlación describe la forma. Hoy toca
+**el centro**.
+
+> Este material continúa la sección 9.1 del archivo del semestre pasado
+> (`U2_Datos_multivariantes/03_Clase3_Datos_Multivariantes_Visualizacion_y_Medidas.Rmd`), donde
+> `colMeans()` aparecía como una línea. Hoy esa línea se abre.
+
+---
+
+# La matriz de datos
+
+Todo lo que sigue se apoya en una sola idea: **los datos son una matriz $\mathbf{X}$ de $n \times p$**.
+
+$$\mathbf{X} = \begin{pmatrix}
+x_{11} & x_{12} & \cdots & x_{1p}\\
+x_{21} & x_{22} & \cdots & x_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+x_{n1} & x_{n2} & \cdots & x_{np}
+\end{pmatrix}$$
+
+- Cada **fila** $\mathbf{x}_i' = (x_{i1},\dots,x_{ip})$ es **una observación**: un punto en $\mathbb{R}^p$.
+- Cada **columna** es **una variable**: $n$ mediciones de lo mismo.
+
+Esa doble lectura —filas como puntos, columnas como variables— es la que hay que tener presente
+todo el semestre.
+
+```{r matriz}
+X <- as.matrix(iris[, 1:4])
+dim(X)           # n x p
+head(X, 3)
+```
+
+---
+
+# El vector de medias
+
+## Definición
+
+$$\bar{\mathbf{x}} = \begin{pmatrix}\bar x_1\\ \bar x_2\\ \vdots\\ \bar x_p\end{pmatrix},
+\qquad \bar x_j = \frac{1}{n}\sum_{i=1}^{n} x_{ij}$$
+
+Es decir: **la media de cada columna, apiladas en un vector**. Nada más.
+
+```{r medias}
+colMeans(X)
+```
+
+## La forma matricial
+
+Con $\mathbf{1}$ el vector de $n$ unos:
+
+$$\bar{\mathbf{x}} = \frac{1}{n}\,\mathbf{X}'\mathbf{1}$$
+
+Vale la pena verificarlo, porque esta escritura es la que reaparece en toda la teoría:
+
+```{r medias-matricial}
+n   <- nrow(X)
+uno <- rep(1, n)
+
+media_matricial <- (1/n) * t(X) %*% uno
+cbind(colMeans = colMeans(X), matricial = as.vector(media_matricial))
+```
+
+## Qué es geométricamente
+
+$\bar{\mathbf{x}}$ es el **centroide**: el centro de gravedad de la nube de $n$ puntos en
+$\mathbb{R}^p$. Si cada observación pesara un gramo, el centroide es donde la nube se equilibra.
+
+```{r centroide, fig.width=6.5, fig.height=5.5}
+plot(X[, 1], X[, 2], pch = 19, cex = 0.6, col = rgb(0, 0, 0, 0.35),
+     xlab = "Sepal.Length", ylab = "Sepal.Width",
+     main = "La nube y su centroide")
+points(mean(X[, 1]), mean(X[, 2]), pch = 4, cex = 2.2, lwd = 3, col = "#B0442F")
+legend("topright", "centroide", pch = 4, col = "#B0442F", pt.lwd = 3, bty = "n")
+```
+
+## La propiedad que lo define
+
+El centroide es **el punto que minimiza la suma de distancias al cuadrado** a todas las
+observaciones:
+
+$$\bar{\mathbf{x}} = \arg\min_{\mathbf{a}} \sum_{i=1}^{n} \lVert \mathbf{x}_i - \mathbf{a}\rVert^2$$
+
+No es una definición alternativa bonita: **es la razón por la que el promedio es el promedio**, y es
+la misma propiedad sobre la que se monta el método de k-medias.
+
+```{r verificar-minimo}
+suma_cuad <- function(a) sum(rowSums(sweep(X, 2, a)^2))
+
+centro <- colMeans(X)
+c(en_el_centroide = suma_cuad(centro),
+  corrido_0.2     = suma_cuad(centro + 0.2),
+  corrido_menos   = suma_cuad(centro - 0.2))
+```
+
+> Cualquier desplazamiento aumenta la suma. **El mínimo está exactamente en $\bar{\mathbf{x}}$.**
+
+---
+
+# Tres advertencias
+
+## 1. El centroide puede no parecerse a nadie
+
+```{r centroide-irreal}
+centro <- colMeans(X)
+
+# ¿que tan lejos esta la flor mas parecida al centroide?
+d <- sqrt(rowSums(sweep(X, 2, centro)^2))
+round(rbind(centroide = centro, flor_mas_cercana = X[which.min(d), ]), 2)
+```
+
+El centroide de `iris` cae **entre las tres especies**, en una zona donde casi no hay flores. Es un
+promedio de cosas distintas: **describe al conjunto y no representa a ningún individuo**.
+
+```{r por-grupo}
+medias_grupo <- aggregate(. ~ Species, data = iris, FUN = mean)
+medias_grupo
+```
+
+> **Regla práctica del curso:** antes de reportar un vector de medias, preguntarse si la nube tiene
+> **un** centro o **varios**. Si hay grupos, el vector global es una ficción estadística — y la
+> pregunta de si esos centros difieren de verdad la contesta **MANOVA**, en la unidad 5.
+
+## 2. La media no resiste atípicos
+
+```{r atipico}
+Xc <- X
+Xc[1, 1] <- 500          # un error de digitacion: 5.1 -> 500
+
+rbind(original  = colMeans(X),
+      con_error = colMeans(Xc))
+```
+
+Un solo valor mal digitado, de 150, **movió la media de la primera variable casi tres unidades**.
+La media tiene **punto de ruptura 0**: una observación basta para llevarla a donde sea.
+
+## 3. Alternativas robustas
+
+```{r robustas}
+mediana_marginal <- apply(X, 2, median)
+media_recortada  <- apply(X, 2, mean, trim = 0.10)   # bota el 10% de cada cola
+
+round(rbind(media    = colMeans(Xc),
+            recortada = apply(Xc, 2, mean, trim = 0.10),
+            mediana  = apply(Xc, 2, median)), 2)
+```
+
+**La mediana marginal ni se enteró del error.** Pero hay una sutileza que sí importa:
+
+> La mediana **marginal** —una por columna— no es la mediana multivariante. Se calcula variable por
+> variable, así que **el punto resultante puede no ser ninguna observación y puede caer fuera de la
+> nube**. Es robusta y es útil, pero no es el análogo exacto del centroide.
+
+---
+
+# La distancia al centro, y por qué la euclidiana no sirve
+
+Con un centro definido, la pregunta natural es **qué tan lejos está cada observación**. La respuesta
+obvia —distancia euclidiana— falla, y falla por una razón que vale la clase entera.
+
+```{r euclidiana, fig.width=6.5, fig.height=5.5}
+Y <- as.matrix(iris[, c(1, 3)])          # Sepal.Length y Petal.Length
+cen <- colMeans(Y)
+
+plot(Y, pch = 19, cex = 0.6, col = rgb(0, 0, 0, 0.3),
+     xlab = "Sepal.Length", ylab = "Petal.Length",
+     main = "Dos puntos, la misma distancia euclidiana al centro")
+points(cen[1], cen[2], pch = 4, cex = 2, lwd = 3, col = "#B0442F")
+
+a <- cen + c(1.0, 2.2)      # en la direccion de la nube
+b <- cen + c(1.0, -2.2)     # en contra de la nube
+points(rbind(a, b), pch = 19, cex = 1.5, col = c("#1E7F63", "#B0442F"))
+text(rbind(a, b), c("A", "B"), pos = 4, font = 2)
+
+round(c(dist_A = sqrt(sum((a - cen)^2)), dist_B = sqrt(sum((b - cen)^2))), 3)
+```
+
+**A y B están a la misma distancia euclidiana del centro. Pero A es una flor perfectamente normal y
+B es un caso rarísimo**, porque las dos variables están correlacionadas y B va en contra de esa
+relación.
+
+La distancia euclidiana **ignora la forma de la nube**. Corregir eso exige la matriz de covarianzas
+$\mathbf{S}$, y da la **distancia de Mahalanobis**:
+
+$$d_M(\mathbf{x}) = \sqrt{(\mathbf{x}-\bar{\mathbf{x}})'\,\mathbf{S}^{-1}(\mathbf{x}-\bar{\mathbf{x}})}$$
+
+```{r mahalanobis}
+S <- cov(Y)
+round(c(mahal_A = sqrt(mahalanobis(t(a), cen, S)),
+        mahal_B = sqrt(mahalanobis(t(b), cen, S))), 3)
+```
+
+> Misma distancia euclidiana, **distancias de Mahalanobis muy distintas**. Ese $\mathbf{S}^{-1}$ del
+> medio es lo que entra el **sábado 5**: la matriz de covarianzas. Hoy queda claro **para qué sirve**
+> antes de definirla.
+
+---
+
+# Las tres ideas
+
+1. $\bar{\mathbf{x}} = \frac{1}{n}\mathbf{X}'\mathbf{1}$ es el **centroide**, y es el punto que
+   **minimiza la suma de distancias al cuadrado** a la nube.
+2. **Describe al conjunto, no a los individuos.** Si hay grupos, el centro global no representa a
+   nadie; y un solo atípico lo mueve donde sea.
+3. La distancia al centro **no puede medirse con la regla euclidiana**, porque la nube tiene forma.
+   Esa forma es $\mathbf{S}$, y es lo que sigue.
+
+# Lo que viene
+
+- **Sábado 5:** la matriz de covarianzas $\mathbf{S}$, su relación exacta con $\mathbf{R}$
+  ($\mathbf{R} = \mathbf{D}^{-1/2}\mathbf{S}\,\mathbf{D}^{-1/2}$), y el cierre de la unidad 2.
+  **Taller 2 (10 %)** sobre el dataset propio.
+- **Unidad 5:** si los centros de los grupos difieren de verdad — MANOVA.
+- **Unidad 6:** los valores propios de $\mathbf{S}$ — componentes principales.
+
+> **Nota.** No se pudo tejer al escribirlo (no hay R en esa máquina). Téjalo una vez antes de
+> proyectarlo. Todo corre con R base: no requiere ningún paquete adicional.
