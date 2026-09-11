@@ -1,0 +1,228 @@
+---
+title: "Estadística Multidimensional — Sesión 6"
+subtitle: "Matriz de dispersión, matriz de correlación y coordenadas paralelas"
+author: "26158 · grupo 020-81 · sábado 29 de agosto de 2026 · sesión virtual"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+<<<<<<< HEAD:analisis_synthetic_credit_card_ipynb.Rmd
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7.5, fig.height = 5)
+=======
+```{r, setup}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#>",
+  fig.width = 9,
+  fig.height = 6,
+  fig.align = "center",
+  warning = FALSE,
+  message = FALSE
+)
+# Ejecuta todos los chunks desde la raíz del proyecto (carpeta padre de analysis/)
+knitr::opts_knit$set(root.dir = "..")
+>>>>>>> c0116d12c0192e334bec977f6a65af9fa243a776:analysis/analisis_synthetic_credit_card_desde_ipynb.Rmd
+```
+
+# De dónde venimos, y el salto de hoy
+
+El lunes miramos **dos** variables a la vez: un diagrama de dispersión y un número, $r$.
+Y quedó Anscombe: cuatro nubes distintas con la misma correlación.
+
+Pero un dataset real no tiene dos variables, tiene $p$. Con $p = 11$ hay
+
+$$\binom{11}{2} = \frac{11 \cdot 10}{2} = 55$$
+
+pares posibles. **Nadie mira 55 gráficos uno por uno.** Hoy los convertimos en **un solo objeto**.
+
+Y ese objeto —la matriz de correlación $\mathbf{R}$— no es un resumen cualquiera: es
+**exactamente sobre lo que se monta el PCA de la unidad 6**. Todo lo que sigue en el curso pasa por
+aquí.
+
+---
+
+# La matriz de dispersión
+
+## Qué es
+
+Los $p(p-1)/2$ diagramas de dispersión, organizados en una rejilla de $p \times p$. En la posición
+$(j,k)$ está el gráfico de la variable $j$ contra la $k$.
+
+<<<<<<< HEAD:analisis_synthetic_credit_card_ipynb.Rmd
+```{r pairs-basico}
+vino <- read.csv(
+  "../../../04_DATASETS/winequality-red.csv", sep = ";")   # ojo: separador ";"
+
+str(vino)
+=======
+```{r, inspeccion_previa}
+ruta_credit <- "data/bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+lineas_muestra <- readLines(ruta_credit, n = 4)
+lineas_muestra
+>>>>>>> c0116d12c0192e334bec977f6a65af9fa243a776:analysis/analisis_synthetic_credit_card_desde_ipynb.Rmd
+```
+
+```{r pairs, fig.width=9, fig.height=9}
+pairs(vino[, 1:6],
+      pch = 19, cex = 0.35, col = rgb(0, 0, 0, 0.25),
+      main = "Seis variables, quince gráficos, una figura")
+```
+
+**Qué se busca aquí, y no es «mirar todo»:**
+
+- **Nubes alargadas** — relación lineal fuerte.
+- **Curvas** — relación no lineal, la que $r$ no ve. Es Anscombe otra vez.
+- **Puntos separados de la nube** — atípicos multivariantes.
+- **Bandas o rejillas** — la variable es discreta aunque esté guardada como numérica.
+
+## La versión que sirve de verdad
+
+`pairs()` acepta funciones propias en cada panel. Poniendo la correlación en el triángulo superior
+y un histograma en la diagonal, **la figura pasa de decorativa a útil**.
+
+```{r pairs-pro, fig.width=9, fig.height=9}
+panel.cor <- function(x, y, ...) {
+  usr <- par("usr"); on.exit(par(usr = usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- cor(x, y, use = "pairwise.complete.obs")
+  txt <- format(round(r, 2), nsmall = 2)
+  text(0.5, 0.5, txt, cex = 0.8 + 1.6 * abs(r))    # tamaño proporcional a |r|
+}
+
+panel.hist <- function(x, ...) {
+  usr <- par("usr"); on.exit(par(usr = usr))
+  par(usr = c(usr[1:2], 0, 1.5))
+  h <- hist(x, plot = FALSE)
+  rect(h$breaks[-length(h$breaks)], 0, h$breaks[-1],
+       h$counts / max(h$counts), col = "grey80", border = "white")
+}
+
+pairs(vino[, 1:6],
+      lower.panel = function(x, y, ...) points(x, y, pch = 19, cex = 0.3,
+                                               col = rgb(0, 0, 0, 0.22)),
+      upper.panel = panel.cor,
+      diag.panel  = panel.hist,
+      main = "Abajo la nube, arriba el número, en la diagonal la forma")
+```
+
+> **El tamaño del número es proporcional a $|r|$.** No es adorno: hace que las relaciones fuertes
+> salten a la vista sin leer la matriz celda por celda.
+
+---
+
+# La matriz de correlación
+
+## Definición
+
+Para $p$ variables, $\mathbf{R}$ es la matriz $p \times p$ cuyo elemento $(j,k)$ es
+
+$$r_{jk} = \frac{s_{jk}}{s_j\,s_k}$$
+
+Tres propiedades que se deducen de la definición, y conviene verlas:
+
+1. **Diagonal de unos.** $r_{jj} = s_{jj}/(s_j s_j) = s_j^2/s_j^2 = 1$.
+2. **Simétrica.** $r_{jk} = r_{kj}$, porque el producto de las desviaciones no depende del orden.
+3. **Semidefinida positiva.** Sus valores propios son $\ge 0$ — y **esos valores propios son las
+   varianzas de las componentes principales de la unidad 6**.
+
+```{r matriz-R}
+R <- cor(vino[, 1:11], use = "pairwise.complete.obs")
+round(R, 2)
+```
+
+```{r propiedades-R}
+c(diagonal_toda_uno = all(abs(diag(R) - 1) < 1e-12),
+  es_simetrica      = isSymmetric(R),
+  valores_propios_no_negativos = all(eigen(R)$values > -1e-10))
+```
+
+## Leerla sin leer 121 números
+
+```{r pares-fuertes}
+pares <- as.data.frame(as.table(R))
+names(pares) <- c("v1", "v2", "r")
+pares <- pares[as.character(pares$v1) < as.character(pares$v2), ]   # mitad de arriba
+pares <- pares[order(-abs(pares$r)), ]
+head(pares, 8)
+```
+
+**Los cinco pares más correlacionados dicen casi todo.** El resto es ruido de fondo.
+
+## El mapa de calor
+
+```{r heatmap, fig.width=7.5, fig.height=6.5}
+orden <- hclust(as.dist(1 - abs(R)))$order    # agrupa lo parecido
+Ro <- R[orden, orden]
+
+par(mar = c(8, 8, 3, 2))
+image(1:ncol(Ro), 1:ncol(Ro), t(Ro[ncol(Ro):1, ]),
+      col = colorRampPalette(c("#B0442F", "white", "#1E7F63"))(41),
+      zlim = c(-1, 1), axes = FALSE, xlab = "", ylab = "",
+      main = "Matriz de correlación, reordenada por similitud")
+axis(1, 1:ncol(Ro), colnames(Ro), las = 2, cex.axis = 0.7)
+axis(2, 1:ncol(Ro), rev(colnames(Ro)), las = 2, cex.axis = 0.7)
+box()
+```
+
+> **Lo importante es el reordenamiento.** Al agrupar las variables parecidas, los **bloques** de
+> color se hacen visibles — y cada bloque es un conjunto de variables que miden casi lo mismo.
+> **Ese bloque es, adelantado, el primer componente principal.**
+
+---
+
+# Coordenadas paralelas
+
+El problema de la matriz de dispersión: **solo mira de a dos**. Un patrón que involucre cinco
+variables a la vez no aparece en ningún panel.
+
+Las coordenadas paralelas resuelven eso: un eje vertical por variable, y **cada observación es una
+línea quebrada** que los cruza todos.
+
+```{r parcoord, fig.width=9.5, fig.height=5}
+library(MASS)
+cal <- cut(vino$quality, breaks = c(0, 5, 6, 10),
+           labels = c("baja", "media", "alta"))
+col <- c("#B0442F", "grey75", "#1E7F63")[as.integer(cal)]
+
+parcoord(vino[, 1:11], col = col, lwd = 0.7,
+         main = "Cada línea es un vino · rojo = calidad baja, verde = alta")
+```
+
+**Cómo se lee:**
+
+- **Líneas paralelas entre dos ejes** → esas dos variables están correlacionadas positivamente.
+- **Líneas que se cruzan en X** → correlación negativa.
+- **Un haz de líneas del mismo color separado del resto** → **ese grupo se distingue**, y esa es la
+  pregunta que la unidad 5 contesta formalmente con MANOVA.
+
+> **El eje es lo que hay que declarar.** `parcoord` normaliza cada variable a [0, 1] por su cuenta.
+> Sin esa normalización la figura no se puede leer — y con ella, **las magnitudes originales se
+> pierden**. Es una decisión, y va dicha en el informe.
+
+---
+
+# Las tres ideas
+
+1. La matriz de dispersión convierte $\binom{p}{2}$ gráficos en **una figura**, y se lee buscando
+   cuatro cosas: nubes alargadas, curvas, puntos sueltos y bandas.
+2. $\mathbf{R}$ tiene **diagonal de unos, es simétrica y es semidefinida positiva**. Esa última
+   propiedad es la que hace posible el PCA: sus valores propios son las varianzas de las componentes.
+3. Las **coordenadas paralelas** son la única de las tres que ve patrones de más de dos variables
+   a la vez.
+
+# Lo que viene
+
+- **Lunes 31:** el vector de medias $\bar{\mathbf{x}}$ — el centro de la nube de $p$ dimensiones.
+- **Sábado 5:** la matriz de covarianzas $\mathbf{S}$ y su relación exacta con $\mathbf{R}$.
+  Ahí se cierra la unidad 2, y con el **Taller 2** sobre el dataset propio.
+- **Unidad 6:** los valores propios de $\mathbf{R}$ dejan de ser una propiedad y pasan a ser
+  el resultado.
+
+> **Nota.** No se pudo tejer al escribirlo —no hay R en la máquina donde se redactó—. Téjalo una vez
+> antes de proyectarlo. `MASS` viene con R; si `winequality-red.csv` no está en `04_DATASETS/`,
+> ajuste la ruta del primer chunk.

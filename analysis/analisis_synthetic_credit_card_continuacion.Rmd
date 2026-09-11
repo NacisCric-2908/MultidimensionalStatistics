@@ -1,0 +1,831 @@
+---
+title: "Estadística Multidimensional — Análisis Exploratorio Integral"
+subtitle: "Dataset: Comportamiento Crediticio y Riesgo Financiero (Semanas 1 a 3)"
+author: "Estadística Multidimensional"
+date: "`r format(Sys.Date(), '%d/%m/%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    df_print: paged
+    theme: readable
+    highlight: tango
+---
+
+```{r, setup}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  comment = "#>",
+  fig.width = 9,
+  fig.height = 6,
+  fig.align = "center",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+# Contexto y Objetivos del Análisis
+
+Este documento desarrolla la exploración multidimensional del conjunto de datos `bronze/synthetic_credit_card_customer_behavior_dataset.csv`. Integra de manera secuencial y exhaustiva los métodos, herramientas conceptuales y requerimientos desarrollados a lo largo de las **Semanas 1 a 3**:
+
+- **Semana 1 (S01):** La matriz de datos $\mathbf{X}$, dimensiones ($n \times p$), clasificación de variables, medidas univariadas y bivariadas, y matrices de correlación y dispersión (`pairs`).
+- **Semana 2 (S02):** Flujo de importación reproducible (`readLines`), auditoría de integridad, diagnóstico multivariante de datos faltantes (`complete.cases` vs `is.na`), verificación de duplicados e inconsistencias numéricas.
+- **Semana 3 (S03):** Visualización en el espacio, impacto del número de clases en histogramas (`breaks` y regla de Sturges), análisis de dispersión y atípicos univariados con boxplots y la regla de Tukey ($1.5 \cdot RIC$), boxplots multivariados estandarizados (`scale`), y la demostración formal y gráfica del **"punto imposible"** (outlier multivariante no detectable univariadamente).
+
+------------------------------------------------------------------------
+
+# Módulo 1: Inspección Previa e Importación Reproducible (S02)
+
+## Mirar antes de leer (`readLines`)
+
+Antes de cargar cualquier archivo en memoria, es una buena práctica de reproducibilidad inspeccionar sus primeras líneas en crudo para verificar delimitadores de columnas, separadores decimales y presencia de encabezados.
+
+```{r, inspeccion_previa}
+ruta_credit <- "bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+lineas_muestra <- readLines(ruta_credit, n = 4)
+lineas_muestra
+```
+
+**Diagnóstico preliminar:** \* **Separador de columnas:** Coma (`,`). \* **Separador decimal:** Punto (`.`). \* **Encabezado:** Presente en la primera fila con nombres descriptivos de variables. \* **Estrategia de lectura:** Corresponde utilizar `read.csv()` con `header = TRUE`, `sep = ","`, `dec = "."` y `stringsAsFactors = FALSE`.
+
+## Importación explícita
+
+```{r, importacion}
+credit <- read.csv(
+  file = ruta_credit,
+  header = TRUE,
+  sep = ",",
+  dec = ".",
+  stringsAsFactors = FALSE
+)
+```
+
+## Dimensiones de la matriz de datos ($\mathbf{X} \in \mathbb{R}^{n \times p}$)
+
+```{r, dimensiones}
+dim_matriz <- dim(credit)
+dim_matriz
+```
+
+La matriz de datos contiene: \* $n = `r nrow(credit)`$ observaciones (clientes simulados / filas). \* $p = `r ncol(credit)`$ variables medidas (columnas).
+
+## Estructura y clasificación de variables (S01 & Everitt & Hothorn)
+
+```{r, estructura}
+str(credit)
+```
+
+En la taxonomía del análisis multivariante (Everitt & Hothorn, Cap. 1), las $p = `r ncol(credit)`$ variables se clasifican en:
+
+1.  **Variables Cuantitativas / Numéricas (`r sum(sapply(credit, is.numeric))`):**
+    - *Continuas de escala monetaria y gastos:* `Annual_Income`, `Monthly_Spending`, `Avg_Transaction_Value`, `Online_Shopping_Spending`, `Grocery_Spending`, `Fuel_Spending`, `Dining_Spending`, `Travel_Spending`, `Entertainment_Spending`, `Utility_Bill_Spending`, `Cash_Advance_Amount`, `Outstanding_Balance`, `Statement_Balance`, `Payment_Amount`, `Credit_Limit`.
+    - *Continuas / Ratios e Índices:* `Payment_Ratio`, `Credit_Utilization`.
+    - *Discretas / Conteos y Puntuaciones:* `Age`, `Card_Age_Months`, `Monthly_Transactions`, `EMI_Count`, `International_Transactions`, `Reward_Points_Earned`, `Reward_Points_Redeemed`, `Mobile_App_Login`, `Credit_Score`.
+2.  **Variables Cualitativas / Categóricas (`r sum(sapply(credit, is.character))`):**
+    - *Nominales:* `Customer_ID` (identificador único), `Gender`, `Occupation`, `Card_Type`.
+
+------------------------------------------------------------------------
+
+# Módulo 2: Auditoría y Diagnóstico de Calidad de la Matriz (S02)
+
+## Diagnóstico multivariante de datos faltantes
+
+Un concepto central de la estadística multivariante es que un dato faltante no es solo una celda vacía: al descartar una fila incompleta en un análisis conjunto, se pierde el vector completo $\mathbf{x}_i \in \mathbb{R}^p$.
+
+```{r, faltantes}
+total_celdas <- prod(dim(credit))
+celdas_na <- sum(is.na(credit))
+pct_celdas_na <- (celdas_na / total_celdas) * 100
+
+filas_completas <- sum(complete.cases(credit))
+pct_filas_completas <- (filas_completas / nrow(credit)) * 100
+
+# Conteo por columna
+faltantes_por_col <- colSums(is.na(credit))
+faltantes_por_col[faltantes_por_col > 0]
+```
+
+- **Total de celdas en la matriz:** `r format(total_celdas, big.mark = ",")`
+- **Celdas vacías (`NA`):** `r celdas_na` (`r sprintf("%.2f%%", pct_celdas_na)`)
+- **Filas completas (`complete.cases`):** `r format(filas_completas, big.mark = ",")` (`r sprintf("%.2f%%", pct_filas_completas)`)
+
+> **Conclusión:** La matriz $\mathbf{X}$ está $100\%$ completa. No se presentan discrepancias entre estrategias de casos completos (`use = "complete.obs"`) y completitud por pares (`use = "pairwise.complete.obs"`).
+
+## Verificación de duplicados e identificadores
+
+```{r, duplicados}
+n_duplicados_filas <- sum(duplicated(credit))
+n_duplicados_id <- sum(duplicated(credit$Customer_ID))
+```
+
+- **Filas exactamente duplicadas:** `r n_duplicados_filas`
+- **Identificadores de cliente repetidos:** `r n_duplicados_id`
+
+## Resumen univariado global y revisión de rangos (`summary`)
+
+```{r, resumen_general}
+summary(credit)
+```
+
+No se detectan valores centinela de error (como `-99`, `999` o ingresos negativos). Los límites de edad ($18$ a $69$ años), ratios de pago ($0.1$ a $1.0$) y utilización crediticia ($0.03$ a $0.98$) son coherentes con las reglas de negocio.
+
+## Tablas de frecuencia para variables categóricas
+
+```{r, tablas_frecuencia}
+table(credit$Gender, useNA = "always")
+table(credit$Card_Type, useNA = "always")
+table(credit$Occupation, useNA = "always")
+```
+
+------------------------------------------------------------------------
+
+# Módulo 3: Análisis Univariado y la Decisión Gráfica del Histograma (S01 & S03)
+
+## Estadísticos descriptivos univariados
+
+```{r, descriptivos_univariados}
+# Selección de la variable Credit_Score para estudio univariado
+score <- credit$Credit_Score
+
+media_cs <- mean(score)
+sd_cs <- sd(score)
+mediana_cs <- median(score)
+min_cs <- min(score)
+max_cs <- max(score)
+
+c(Media = media_cs, Desv_Std = sd_cs, Mediana = mediana_cs, Min = min_cs, Max = max_cs)
+```
+
+```{r}
+ceiling(log2(nrow(credit))) + 1
+```
+
+## El histograma y el efecto del número de cortes (`breaks`) (S03 - Sesión 4)
+
+El histograma es una estimación no paramétrica de la función de densidad subyacente. La elección de la cantidad de intervalos (`breaks` o ancho de clase $h$) altera profundamente la percepción de la distribución:
+
+```{r, histogramas_comparativos}
+par(mfrow = c(1, 3))
+
+# Histograma con muy pocos cortes (sobre-suavizado / underfitting)
+hist(score, breaks = 5, col = "lightblue", border = "black",
+     main = "breaks = 5 (Sobre-suavizado)",
+     xlab = "Credit Score", ylab = "Frecuencia")
+
+# Histograma con cortes intermedios
+hist(score, breaks = 20, col = "lightgreen", border = "black",
+     main = "breaks = 20 (Balanceado)",
+     xlab = "Credit Score", ylab = "Frecuencia")
+
+# Histograma con demasiados cortes (ruidoso / overfitting)
+hist(score, breaks = 60, col = "salmon", border = "black",
+     main = "breaks = 60 (Ruidoso)",
+     xlab = "Credit Score", ylab = "Frecuencia")
+
+par(mfrow = c(1, 1))
+```
+
+## Histogramas de todas las variables numéricas
+
+Para no repetir el mismo texto en cada gráfica, definimos primero qué mide cada variable y por qué su distribución toma la forma que toma. Estos textos se imprimen automáticamente debajo de cada gráfico en los tres módulos siguientes (histogramas, boxplots y densidad).
+
+```{r, descripciones_variables, echo = FALSE}
+# Qué mide cada variable (en lenguaje del negocio)
+que_es <- c(
+  Age = "la edad del titular en años",
+  Annual_Income = "el ingreso anual declarado por el cliente",
+  Credit_Limit = "el cupo total aprobado en la tarjeta",
+  Card_Age_Months = "la antigüedad de la tarjeta en meses",
+  Monthly_Spending = "el gasto mensual total, que es la suma de las siete categorías de consumo",
+  Monthly_Transactions = "el número de compras realizadas en el mes",
+  Avg_Transaction_Value = "el ticket promedio, es decir el gasto mensual dividido entre el número de transacciones",
+  Online_Shopping_Spending = "el gasto mensual en compras por internet",
+  Grocery_Spending = "el gasto mensual en supermercado",
+  Fuel_Spending = "el gasto mensual en combustible",
+  Dining_Spending = "el gasto mensual en restaurantes",
+  Travel_Spending = "el gasto mensual en viajes",
+  Entertainment_Spending = "el gasto mensual en entretenimiento",
+  Utility_Bill_Spending = "el gasto mensual en servicios públicos pagados con la tarjeta",
+  Outstanding_Balance = "el saldo que el cliente aún debe",
+  Statement_Balance = "el saldo facturado en el último corte del extracto",
+  Payment_Amount = "el monto que el cliente pagó en el mes",
+  Payment_Ratio = "la proporción del saldo facturado que el cliente efectivamente pagó",
+  Credit_Utilization = "la proporción del cupo que el cliente tiene usada",
+  Cash_Advance_Amount = "el monto retirado como avance en efectivo",
+  EMI_Count = "el número de compras diferidas a cuotas que el cliente tiene vigentes",
+  International_Transactions = "el número de compras hechas en el exterior",
+  Reward_Points_Earned = "los puntos de recompensa acumulados, que el banco calcula a partir del gasto",
+  Reward_Points_Redeemed = "los puntos de recompensa que el cliente ya redimió",
+  Mobile_App_Login = "el número de ingresos del cliente a la aplicación móvil en el mes",
+  Credit_Score = "el puntaje crediticio asignado al cliente"
+)
+
+# Por qué la distribución tiene esa forma
+por_que <- c(
+  Age = "La forma es casi simétrica con una leve inclinación hacia la derecha: la cartera se concentra entre los 27 y los 44 años y se adelgaza hacia los 70, porque hay pocos titulares mayores y ninguno menor de 18.",
+  Annual_Income = "La cola larga hacia la derecha es lo esperable en cualquier variable de ingreso: la mayoría gana alrededor de la mediana y unos pocos ganan varias veces más, lo que empuja la media muy por encima de la mediana.",
+  Credit_Limit = "El cupo se asigna en función del ingreso, así que hereda la misma cola derecha; además solo toma valores redondeados (múltiplos de mil), por eso el histograma se ve escalonado y no continuo.",
+  Card_Age_Months = "Hay más tarjetas nuevas que antiguas, así que la masa se acumula en los primeros años y decae hacia los 240 meses: es el perfil de una cartera que sigue creciendo y captando clientes.",
+  Monthly_Spending = "Al ser la suma de siete categorías que ya vienen sesgadas a la derecha, acumula todas esas colas: la mayoría gasta cerca de la mediana y un grupo pequeño gasta un orden de magnitud más.",
+  Monthly_Transactions = "Es un conteo acotado por lo que una persona alcanza a hacer en un mes (entre 15 y 179 compras), por eso la forma es prácticamente simétrica y sin colas largas.",
+  Avg_Transaction_Value = "Es un cociente entre dos variables, y como el numerador tiene cola derecha y el denominador está acotado, el resultado queda fuertemente sesgado: dominan los tickets pequeños del día a día y unos pocos compradores de tickets altos estiran la cola.",
+  Online_Shopping_Spending = "Como todo gasto por categoría, la mayoría de clientes gasta poco y unos pocos gastan mucho, lo que produce el pico pegado al origen y la cola larga hacia la derecha.",
+  Grocery_Spending = "Es la categoría con la mediana más alta de todas: el mercado es un gasto recurrente que casi todos hacen, por eso el pico está más desplazado del origen que en las demás categorías, aunque conserva la cola derecha.",
+  Fuel_Spending = "El gasto en combustible depende de si el cliente tiene vehículo y cuánto se desplaza, así que convive un grupo grande de gasto bajo con una minoría de gasto alto que alarga la cola.",
+  Dining_Spending = "Comer fuera es un gasto discrecional: la mayoría lo hace de forma moderada y una minoría concentra montos muy altos, de ahí el sesgo pronunciado a la derecha.",
+  Travel_Spending = "Es el gasto más esporádico de todos (la mediana es la más baja de las categorías): la mayoría viaja poco o nada en el mes, y los pocos que viajan lo hacen con montos grandes, lo que produce la cola más larga del grupo.",
+  Entertainment_Spending = "Gasto discrecional y ocasional: se concentra en montos bajos con una cola derecha marcada correspondiente a quienes consumen ocio de forma intensiva.",
+  Utility_Bill_Spending = "Domiciliar los servicios públicos en la tarjeta es una práctica frecuente pero de monto acotado, así que la masa está en valores bajos y la cola derecha viene de hogares con facturas altas.",
+  Outstanding_Balance = "La deuda pendiente sigue la misma lógica del gasto y del cupo: casi todos deben montos moderados y unos pocos arrastran saldos muy grandes, lo que estira la cola derecha.",
+  Statement_Balance = "Es prácticamente la misma magnitud que el saldo pendiente medida en el corte de facturación, por eso su forma es casi idéntica a la de aquella variable.",
+  Payment_Amount = "El pago es proporcional a lo facturado, así que reproduce la forma sesgada del saldo: pagos moderados en la mayoría y pagos muy grandes en la minoría con saldos altos.",
+  Payment_Ratio = "Es la única variable con la cola hacia la izquierda: está acotada en 1 (nadie paga más del 100%) y la mayoría paga casi todo su saldo, así que la masa se apila contra el techo y los pagadores parciales quedan como cola inferior.",
+  Credit_Utilization = "Es una proporción acotada entre 0 y 1 por construcción, y las políticas de cupo evitan que los clientes lleguen al tope, por eso la forma es compacta, sin colas y sin ningún dato fuera de los bigotes.",
+  Cash_Advance_Amount = "Más de la mitad de los clientes nunca hace avances, así que la distribución tiene un bloque enorme en cero y una cola larga formada por la minoría que sí los usa: es una variable inflada en cero, no una distribución continua clásica.",
+  EMI_Count = "Solo toma siete valores enteros (de 0 a 6 cuotas vigentes), por eso el histograma se ve como barras separadas y no como una curva: es un conteo discreto de rango muy corto.",
+  International_Transactions = "La mayoría de clientes no compra en el exterior, así que el valor típico es cero y las pocas decenas de compras internacionales aparecen como cola derecha discreta.",
+  Reward_Points_Earned = "Los puntos se calculan como función del gasto, así que la gráfica es esencialmente la del gasto mensual reescalada: mismo pico bajo y misma cola derecha.",
+  Reward_Points_Redeemed = "Muchos clientes acumulan puntos pero no los redimen, por eso hay una acumulación en cero y una cola derecha correspondiente a quienes sí los usan, normalmente en redenciones grandes y puntuales.",
+  Mobile_App_Login = "Es un conteo acotado de sesiones al mes (entre 2 y 71) y refleja un hábito de consulta bastante uniforme, así que la forma es casi simétrica y sin atípicos.",
+  Credit_Score = "El puntaje está acotado por diseño en un rango estrecho y la mayoría de clientes cae en la zona media-alta; la cola corta hacia la izquierda corresponde a la minoría de perfiles de alto riesgo."
+)
+
+# Arma el párrafo de análisis que se imprime debajo de cada gráfica
+parrafo <- function(v, tipo = c("hist", "box", "dens")) {
+  tipo <- match.arg(tipo)
+  x <- credit[[v]]
+  f <- fivenum(x)
+  ric <- f[4] - f[2]
+  lim_inf <- f[2] - 1.5 * ric
+  lim_sup <- f[4] + 1.5 * ric
+  n_bajo <- sum(x < lim_inf)
+  n_alto <- sum(x > lim_sup)
+  n_out <- n_bajo + n_alto
+  pct <- 100 * n_out / length(x)
+
+  encabezado <- paste0("**", v, "** mide ", que_es[v], ". ")
+
+  cuerpo <- switch(
+    tipo,
+    hist = paste0(
+      por_que[v],
+      " Por eso la versión con `breaks = 5` aplana la forma y esconde el detalle,",
+      " la de `breaks = 60` la fragmenta en picos que son ruido muestral,",
+      " y la de Sturges es la que la muestra sin deformarla."
+    ),
+    box = paste0(
+      por_que[v],
+      if (n_out == 0) {
+        " La regla de Tukey no marca ningún dato fuera de los bigotes: la variable está acotada por su propia naturaleza."
+      } else {
+        sprintf(
+          " La regla de Tukey deja %s datos fuera de los bigotes (%.2f%%), todos en la cola %s; no son errores de captura sino la parte extrema de esa misma cola.",
+          format(n_out, big.mark = "."), pct,
+          if (n_alto >= n_bajo) "derecha" else "izquierda"
+        )
+      }
+    ),
+    dens = {
+      d_var <- density(x, bw = bw.nrd0(x))
+      moda <- d_var$x[which.max(d_var$y)]
+      paste0(
+        por_que[v],
+        sprintf(
+          " La curva es la versión suavizada de ese histograma: alcanza su punto más alto cerca de %s y desciende siguiendo la misma cola, sin depender del origen arbitrario de los intervalos.",
+          formatC(moda, format = "f", digits = 1, big.mark = ".", decimal.mark = ",")
+        )
+      )
+    }
+  )
+
+  paste0("\n\n", encabezado, cuerpo, "\n\n")
+}
+```
+
+```{r, histogramas_por_variable, results = 'asis'}
+numeric_cols <- names(credit)[sapply(credit, is.numeric)]
+
+for (col_name in numeric_cols) {
+  # Get the vector for the current numeric column
+  current_var <- credit[[col_name]]
+
+  # Calculate Sturges' breaks for the current variable
+  k_sturges <- nclass.Sturges(current_var)
+
+  # Set up the plotting area for three histograms
+  par(mfrow = c(1, 3))
+
+  # Histogram with very few breaks (under-smoothed / underfitting)
+  hist(current_var, breaks = 5, col = "lightblue", border = "black",
+       main = paste("breaks = 5 (Sobre-suavizado)"),
+       xlab = col_name, ylab = "Frecuencia")
+
+  # Histogram with Sturges' breaks (balanced)
+  hist(current_var, breaks = k_sturges, col = "lightgreen", border = "black",
+       main = paste("breaks =", k_sturges, "(Balanceado)"),
+       xlab = col_name, ylab = "Frecuencia")
+
+  # Histogram with too many breaks (noisy / overfitting)
+  hist(current_var, breaks = 60, col = "salmon", border = "black",
+       main = paste("breaks = 60 (Ruidoso)"),
+       xlab = col_name, ylab = "Frecuencia")
+
+  # Reset plotting area
+  par(mfrow = c(1, 1))
+
+  # Análisis corto de la variable y de la forma de su histograma
+  cat(parrafo(col_name, "hist"))
+}
+```
+
+## Regla de Sturges
+
+La regla de Sturges propone el número óptimo de intervalos para muestras bajo supuestos de normalidad: $$k = 1 + \log_2(n) = 1 + 3.322 \cdot \log_{10}(n)$$
+
+```{r, regla_sturges}
+n_obs <- length(score)
+k_sturges <- nclass.Sturges(score)
+k_teorico <- 1 + log2(n_obs)
+
+c(n = n_obs, k_Sturges = k_sturges, k_Formula = round(k_teorico, 2))
+```
+
+**Evaluación y decisión:** Para $n = `r n_obs`$, Sturges sugiere $k = `r k_sturges`$ intervalos. El histograma con `breaks = 20` captura la forma unimodal simétrica de los puntajes crediticios sin introducir picos artificiales causados por la variabilidad muestral fina.
+
+------------------------------------------------------------------------
+
+# Módulo 4: Caja y Bigotes (Boxplots) y Detección Univariada de Atípicos (S03)
+
+## Los cinco números de Tukey (`fivenum`)
+
+Analizamos el gasto mensual (`Monthly_Spending`):
+
+```{r, cinco_numeros}
+gasto <- credit$Monthly_Spending
+f_gasto <- fivenum(gasto)
+names(f_gasto) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+f_gasto
+```
+
+```{r}
+ingreso <- credit$Annual_Income
+f_ingreso <- fivenum(ingreso)
+names(f_ingreso) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+f_ingreso
+```
+
+## Rango Intercuartílico ($RIC$) y Límites de Tukey
+
+El criterio de Tukey define las barreras para valores atípicos (*outliers*) como: $$\text{Límite Inferior} = Q_1 - 1.5 \cdot RIC$$ $$\text{Límite Superior} = Q_3 + 1.5 \cdot RIC$$
+
+```{r, limites_tukey}
+q1_gasto <- f_gasto["Q1"]
+q3_gasto <- f_gasto["Q3"]
+ric_gasto <- q3_gasto - q1_gasto
+
+lim_inf_gasto <- q1_gasto - 1.5 * ric_gasto
+lim_sup_gasto <- q3_gasto + 1.5 * ric_gasto
+
+c(Q1 = q1_gasto, Q3 = q3_gasto, RIC = ric_gasto,
+  Lim_Inferior = lim_inf_gasto, Lim_Superior = lim_sup_gasto)
+```
+
+## Conteo de atípicos univariados
+
+```{r, conteo_atipicos}
+atipicos_gasto <- gasto[gasto < lim_inf_gasto | gasto > lim_sup_gasto]
+n_atipicos_gasto <- length(atipicos_gasto)
+pct_atipicos_gasto <- (n_atipicos_gasto / length(gasto)) * 100
+
+c(N_Atipicos = n_atipicos_gasto, Porcentaje = round(pct_atipicos_gasto, 3))
+```
+
+```{r, boxplot_univariado}
+boxplot(gasto, horizontal = TRUE, col = "skyblue",
+        main = "Diagrama de Caja: Gasto Mensual (Monthly_Spending)",
+        xlab = "Gasto Mensual ($)")
+abline(v = c(lim_inf_gasto, lim_sup_gasto), col = "red", lty = 2, lwd = 2)
+```
+
+```{r, boxplots_por_variable, results = 'asis'}
+numeric_cols <- names(credit)[sapply(credit, is.numeric)]
+
+for (col_name in numeric_cols) {
+  current_var <- credit[[col_name]]
+
+  # Calculate Tukey's five-number summary
+  f_var <- fivenum(current_var)
+  names(f_var) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+
+  q1_var <- f_var["Q1"]
+  q3_var <- f_var["Q3"]
+  ric_var <- q3_var - q1_var
+
+  lim_inf_var <- q1_var - 1.5 * ric_var
+  lim_sup_var <- q3_var + 1.5 * ric_var
+
+  # Salida de consola dentro de un bloque de código
+  cat("\n\n```\n")
+  cat("--------------------------------------------------\n")
+  cat("Análisis para la variable: ", col_name, "\n")
+  cat("--------------------------------------------------\n")
+
+  # Print Tukey's statistics
+  print(c(Q1 = q1_var, Q3 = q3_var, RIC = ric_var,
+          Lim_Inferior = lim_inf_var, Lim_Superior = lim_sup_var))
+
+  # Count univariate outliers
+  atipicos_var <- current_var[current_var < lim_inf_var | current_var > lim_sup_var]
+  n_atipicos_var <- length(atipicos_var)
+  pct_atipicos_var <- (n_atipicos_var / length(current_var)) * 100
+
+  cat("Conteo de atípicos univariados:\n")
+  print(c(N_Atipicos = n_atipicos_var, Porcentaje = round(pct_atipicos_var, 3)))
+  cat("```\n\n")
+
+  # Generate boxplot
+  boxplot(current_var, horizontal = TRUE, col = "skyblue",
+          main = paste("Diagrama de Caja: ", col_name),
+          xlab = col_name)
+  abline(v = c(lim_inf_var, lim_sup_var), col = "red", lty = 2, lwd = 2)
+
+  # Análisis corto de la variable y de lo que muestra su boxplot
+  cat(parrafo(col_name, "box"))
+}
+```
+
+**Reflexión crítica:** Al ser una variable derivada de una simulación uniforme/normal en el conjunto sintético, el número de atípicos univariados es mínimo (`r n_atipicos_gasto` observaciones, `r sprintf("%.2f%%", pct_atipicos_gasto)`). En datos reales con asimetría positiva fuerte (como ingresos o balances), la regla de Tukey tiende a marcar colas naturales como atípicos si no se realiza una transformación previa.
+
+------------------------------------------------------------------------
+
+# Módulo 5: Comparación Multivariada Estandarizada mediante Boxplots (S03)
+
+Cuando tenemos múltiples variables cuantitativas en diferentes unidades (pesos, meses, transacciones, ratios), no es posible graficarlas juntas en su escala original.
+
+```{r, submatriz_numerica}
+cols_num <- sapply(credit, is.numeric)
+credit_num <- credit[, cols_num]
+```
+
+## Boxplots sin estandarizar vs. estandarizados (`scale`)
+
+```{r, comparativa_boxplots}
+# Seleccionamos un subconjunto representativo de variables para visualización clara
+vars_box <- c("Age", "Annual_Income", "Credit_Limit", "Card_Age_Months",
+              "Monthly_Spending", "Avg_Transaction_Value", "Outstanding_Balance",
+              "Payment_Ratio", "Credit_Utilization", "Credit_Score")
+
+par(mfrow = c(1, 2))
+
+# 1. Sin estandarizar (las variables en millones dominan y ocultan a los ratios)
+boxplot(credit_num[, vars_box], las = 2, col = "lightgray",
+        main = "Sin Estandarizar (Escalas dispares)",
+        ylab = "Valor Original")
+
+# 2. Estandarizado (Z-scores: media 0, varianza 1)
+credit_scale <- scale(credit_num[, vars_box])
+boxplot(credit_scale, las = 2, col = "thistle",
+        main = "Estandarizado con scale()",
+        ylab = "Desviaciones Estándar (Z)")
+abline(h = 0, col = "blue", lty = 3)
+abline(h = c(-3, 3), col = "red", lty = 2)
+
+par(mfrow = c(1, 1))
+```
+
+## Diagnóstico de colas máximas ($Z$-score máximo)
+
+Identificamos a cuántas desviaciones estándar de su media se encuentra el valor máximo de cada variable:
+
+```{r, z_maximos}
+z_max <- apply(credit_scale, 2, max)
+round(sort(z_max, decreasing = TRUE), 2)
+```
+
+> **Lección de la Semana 3:** La estandarización `scale()` nivela el terreno de juego, permitiendo comparar simultáneamente la dispersión y la longitud relativa de las colas entre variables con órdenes de magnitud dispares ($10^6$ vs $10^{-1}$).
+
+------------------------------------------------------------------------
+
+# Módulo 6: Análisis Bivariado, Correlación y el "Punto Imposible" (S01 & S03)
+
+## Correlación bivariada y dispersión
+
+Analizamos la relación entre el Ratio de Pago (`Payment_Ratio`) y el Puntaje Crediticio (`Credit_Score`):
+
+```{r, bivariado_intro}
+r_pr_cs <- cor(credit$Payment_Ratio, credit$Credit_Score)
+r_pr_cs
+```
+
+```{r}
+cor(credit$Annual_Income, credit$Credit_Limit)
+```
+
+Existe una fuerte correlación lineal positiva ($r = `r round(r_pr_cs, 3)`$): los clientes que pagan una proporción mayor de su deuda exhiben sistemáticamente mejores puntajes de crédito.
+
+## Construcción y Demostración del "Punto Imposible" (S03 - Sesión 4)
+
+Uno de los conceptos fundamentales que distingue la **Estadística Multivariante** de la univariada es que **un individuo puede ser perfectamente normal en cada variable por separado y, sin embargo, ser un valor atípico imposible en el espacio conjunto**.
+
+### 1. Verificación de los límites univariados de Tukey
+
+```{r, limites_punto_imposible}
+f_pr <- fivenum(credit$Payment_Ratio)
+f_cs <- fivenum(credit$Credit_Score)
+
+iqr_pr <- f_pr[4] - f_pr[2]
+iqr_cs <- f_cs[4] - f_cs[2]
+
+lim_pr <- c(f_pr[2] - 1.5 * iqr_pr, f_pr[4] + 1.5 * iqr_pr)
+lim_cs <- c(f_cs[2] - 1.5 * iqr_cs, f_cs[4] + 1.5 * iqr_cs)
+
+c("Límites Payment_Ratio (Inf, Sup)" = lim_pr,
+  "Límites Credit_Score (Inf, Sup)" = lim_cs)
+```
+
+### 2. Creación del cliente hipotético contradictorio
+
+Diseñamos un cliente con: \* `Payment_Ratio = 0.95` (Paga casi el $100\%$ de su saldo). \* `Credit_Score = 460` (Puntaje crediticio extremadamente bajo / de alto riesgo).
+
+```{r, verificacion_punto}
+punto_pr <- 0.95
+punto_cs <- 460
+
+# Verificación 1: ¿Está dentro de los límites de Tukey univariados?
+dentro_pr <- punto_pr >= lim_pr[1] & punto_pr <= lim_pr[2]
+dentro_cs <- punto_cs >= lim_cs[1] & punto_cs <= lim_cs[2]
+
+data.frame(
+  Variable = c("Payment_Ratio", "Credit_Score"),
+  Valor = c(punto_pr, punto_cs),
+  Lim_Inferior = c(lim_pr[1], lim_cs[1]),
+  Lim_Superior = c(lim_pr[2], lim_cs[2]),
+  Es_Normal_Univariado = c(dentro_pr, dentro_cs)
+)
+```
+
+Ambos valores están estrictamente dentro de los bigotes univariados. Ningún filtro univariado lo marcaría como anómalo.
+
+### 3. Visualización bivariada: Demostración del "Punto Rojo"
+
+```{r, grafico_punto_imposible}
+plot(credit$Payment_Ratio, credit$Credit_Score,
+     pch = 16, col = rgb(0.2, 0.4, 0.8, 0.15),
+     xlab = "Payment Ratio (Proporción de Pago)",
+     ylab = "Credit Score (Puntaje Crediticio)",
+     main = "El Punto Imposible: Normal Univariado vs. Atípico Multivariado")
+
+# Dibujamos el punto en rojo
+points(punto_pr, punto_cs, col = "red", pch = 19, cex = 2.2)
+points(punto_pr, punto_cs, col = "black", pch = 1, cex = 2.2, lwd = 2)
+text(punto_pr - 0.03, punto_cs - 20, labels = "Cliente Imposible\n(0.95, 460)", col = "red", font = 2, pos = 2)
+
+# Cuadrantes de referencia
+abline(v = mean(credit$Payment_Ratio), col = "gray50", lty = 2)
+abline(h = mean(credit$Credit_Score), col = "gray50", lty = 2)
+```
+
+**Explicación conceptual:** La combinación es contradictoria porque viola la covarianza del sistema: en esta población, cualquier cliente que paga el $95\%$ de su deuda (`Payment_Ratio = 0.95`) tiene un puntaje superior a $650$. Asignarle un puntaje de $460$ lo sitúa en una región del plano con densidad nula, demostrando que **la normalidad marginal no garantiza la normalidad conjunta**.
+
+------------------------------------------------------------------------
+
+```{r}
+ingreso <- credit$Annual_Income
+limite <- credit$Credit_Limit
+
+# --- Análisis para Annual_Income ---
+cat("--------------------------------------------------\n")
+cat("Análisis para la variable: Annual_Income\n")
+cat("--------------------------------------------------\n")
+
+f_ingreso <- fivenum(ingreso)
+names(f_ingreso) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+
+q1_ingreso <- f_ingreso["Q1"]
+q3_ingreso <- f_ingreso["Q3"]
+ric_ingreso <- q3_ingreso - q1_ingreso
+
+lim_inf_ingreso <- q1_ingreso - 1.5 * ric_ingreso
+lim_sup_ingreso <- q3_ingreso + 1.5 * ric_ingreso
+
+print(c(Q1 = q1_ingreso, Q3 = q3_ingreso, RIC = ric_ingreso,
+          Lim_Inferior = lim_inf_ingreso, Lim_Superior = lim_sup_ingreso))
+
+punto_ai <- 3000000
+punto_cl <- 200
+
+# Definir los límites de Tukey para Annual_Income y Credit_Limit
+lim_ai <- c(lim_inf_ingreso, lim_sup_ingreso)
+
+f_limite <- fivenum(limite)
+names(f_limite) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+
+q1_limite <- f_limite["Q1"]
+q3_limite <- f_limite["Q3"]
+ric_limite <- q3_limite - q1_limite
+
+lim_inf_limite <- q1_limite - 1.5 * ric_limite
+lim_sup_limite <- q3_limite + 1.5 * ric_limite
+
+lim_cl <- c(lim_inf_limite, lim_sup_limite)
+
+# Verificación 1: ¿Está dentro de los límites de Tukey univariados?
+dentro_ai <- punto_ai >= lim_ai[1] & punto_ai <= lim_ai[2]
+dentro_cl <- punto_cl >= lim_cl[1] & punto_cl <= lim_cl[2]
+
+data.frame(
+  Variable = c("Annual_Income", "Credit_Limit"),
+  Valor = c(punto_ai, punto_cl),
+  Lim_Inferior = c(lim_ai[1], lim_cl[1]),
+  Lim_Superior = c(lim_ai[2], lim_cl[2]),
+  Es_Normal_Univariado = c(dentro_ai, dentro_cl)
+)
+
+
+plot(credit$Annual_Income, credit$Credit_Limit,
+     pch = 16, col = rgb(0.2, 0.4, 0.8, 0.15),
+     xlab = "Annual_Income (Ingreso Anual)",
+     ylab = "Credit_Limit (Limite de Credito)",
+     main = "El Punto Imposible: Normal Univariado vs. Atípico Multivariado")
+
+# Dibujamos el punto en rojo
+points(punto_ai, punto_cl, col = "red", pch = 19, cex = 2.2)
+points(punto_ai, punto_cl, col = "black", pch = 1, cex = 2.2, lwd = 2)
+text(punto_ai, punto_cl - 20000, labels = "Cliente Imposible\n(3000000, 200)", col = "red", font = 2, pos = 4)
+
+# Cuadrantes de referencia
+abline(v = mean(credit$Annual_Income), col = "gray50", lty = 2)
+abline(h = mean(credit$Credit_Limit), col = "gray50", lty = 2)
+```
+
+# Módulo 7: Estructura Multivariada Conjunta (S01 & S03)
+
+## Matriz de correlaciones completa ($\mathbf{R}$)
+
+Calculamos la matriz de correlación entre variables estratégicas de negocio:
+
+```{r, matriz_correlacion}
+vars_interes <- c("Annual_Income", "Credit_Limit", "Monthly_Spending",
+                  "Outstanding_Balance", "Statement_Balance", "Payment_Amount",
+                  "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Credit_Score")
+
+mat_cor <- cor(credit_num[, vars_interes], use = "complete.obs")
+round(mat_cor, 3)
+```
+
+### Síntesis de correlaciones observadas:
+
+1.  **Colinealidad casi perfecta (**$r > 0.95$):
+    - `Outstanding_Balance` y `Statement_Balance` ($r = 0.997$)
+    - `Monthly_Spending` y `Reward_Points_Earned` ($r = 0.980$)
+    - `Credit_Limit` y `Annual_Income` ($r = 0.843$)
+2.  **Determinantes del riesgo:**
+    - `Payment_Ratio` con `Credit_Score` ($r = 0.767$)
+    - `Credit_Utilization` con `Credit_Score` ($r = -0.599$)
+
+## Matriz de dispersión multivariada (`pairs`)
+
+Visualizamos las relaciones bivariadas simultáneas:
+
+```{r, pairs_plot}
+vars_pairs <- c("Annual_Income", "Monthly_Spending", "Payment_Ratio",
+                "Credit_Utilization", "Credit_Score")
+
+pairs(credit_num[, vars_pairs],
+      pch = 16,
+      col = rgb(0.1, 0.4, 0.7, 0.15),
+      main = "Matriz de Dispersion (pairs) - Variables Clave")
+```
+
+Siguiente parte de variables de interes
+
+```{r, diagrama de dispersion a variables de interes}
+
+vars_impairs <- c("Credit_Limit", "Outstanding_Balance", "Statement_Balance", "Payment_Amount", "Reward_Points_Earned")
+
+pairs(credit[, vars_impairs],
+      pch = 16,
+      col = rgb(0.1, 0.4, 0.7, 0.15),
+      main = "Matriz de Dispersion - Variables De Interes")
+
+```
+
+------------------------------------------------------------------------
+
+# Conclusiones del Análisis Multidimensional (Semanas 1 a 3)
+
+1.  **Conclusión Univariada (S01/S03):** Las variables de puntaje y capacidad crediticia presentan distribuciones simétricas y acotadas. El uso de la regla de Sturges ($k \approx 13$) y la calibración gráfica de los histogramas demostró que una partición moderada (`breaks = 20`) revela la forma unimodal real sin el sobreajuste que producen particiones finas.
+2.  **Conclusión Bivariada (S01/S03):** El comportamiento de pago es el principal motor del puntaje de riesgo ($r = 0.767$), mientras que la utilización del cupo actúa como factor depresor ($r = -0.599$). La demostración del punto imposible ilustra cómo un cliente con parámetros univariados plausibles puede representar una anomalía severa al romper la covarianza natural entre el ratio de pago y el riesgo.
+3.  **Conclusión Multivariada (S01/S02/S03):** La matriz $\mathbf{X}$ posee una alta interdependencia lineal y dimensionalidad efectiva reducida, evidenciada por correlaciones estructurales superiores a $0.90$. La inspección visual estandarizada (`scale`) y la matriz `pairs` confirman que las variables están preparadas para técnicas de reducción de dimensionalidad (como PCA).
+
+# Módulo 7: Densidad de Kernel (S04)
+
+## Cómo se escoge $h$ sin adivinar
+
+La **regla de Silverman**, que es la que R usa por defecto:
+
+$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
+
+donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y ensanche la curva de más.
+
+Sin embargo R nos permite encontrar el valor de $h$ haciendo uso de la funcion `h = bw.nrd0(x)`, donde x es la variable a analizar, y será la formula que utilizaremos en nuestro caso.
+
+## Densidad de Kernel aplicada a nuestras variables
+
+### Primero con una variable
+
+```{r, Densidad de Kernel}
+
+var <- credit$Credit_Score
+h <- bw.nrd0(var)
+
+plot(density(var, bw = h), main = paste("h =", round(h, 4)), xlab = "CreditScore", lwd = 2)
+rug(var)
+
+
+```
+
+### Aplicado a cada variable
+
+Siguiendo estos pasos procedemos a graficar la **DensidadKernel** para cada variable:
+
+```{r, Densidad de Kernel a cada variable, results = 'asis'}
+
+credit_num <- names(credit)[sapply(credit, is.numeric)]
+
+par(mfrow = c(1, 1))
+
+for (credit_col in credit_num){
+
+  var_aux <- credit[[credit_col]]
+  h_aux <- bw.nrd0(var_aux)
+
+  plot(density(var_aux, bw = h_aux), main = paste ("h =", round(h_aux, 4)), xlab   = credit_col, lwd = 2)
+  rug(var_aux)
+
+  # Análisis corto de la variable y de lo que muestra su curva de densidad
+  cat(parrafo(credit_col, "dens"))
+
+}
+```
+
+Como podemos observar con las graficas de **Densidad de Kernel** en los lugares donde se encuentran la mayor cantidad de datos es donde la curva o montaña crece e inversamente donde menos datos existen es donde esta misma decrece.
+
+# Conclusiones Ánalisis Multivariante Semana 4
+
+1.  **Densidad de Kernel:** La gráfica de Densidad de Kernel es otro modo de nosotros poder observar y analizar la distribucion que tienen los datos de las diferentes variables, podemos ver donde se encuentra la mayor cantidad de datos como tambien donde no existen casi datos, la gran diferencia con los histogramas o boxplots es que aqui no es necesario escoger un origen arbitrario o por conveniencia, aquí todo depende el ancho de banda $h$ el cual es un valor que definimos utilizando la formula o la funcion que trae R.
+
+
+
+
+
+# Módulo 8: Verificación de la Matriz para la Distancia de Mahalanobis
+
+Antes de calcular covarianzas y distancias de Mahalanobis es necesario verificar que la submatriz numérica sea invertible. La siguiente función revisa los cinco puntos críticos: variables numéricas utilizadas, relación $n/p$, datos faltantes, existencia de estructura correlacional y redundancia (número de condición sobre datos estandarizados).
+
+```{r, verificacion_mahalanobis}
+revisar <- function(ruta, quitar = character(0)) {
+  d <- read.csv(ruta)
+  X <- d[, sapply(d, is.numeric), drop = FALSE]
+  X <- X[, !(names(X) %in% quitar), drop = FALSE]
+  n <- nrow(X); p <- ncol(X)
+  
+  cat("=====", ruta, "=====\n")
+  cat("1. variables numéricas usadas:", p, "\n   ", paste(names(X), collapse = ", "), "\n\n")
+  cat("2. n =", n, "| p =", p, "| n/p =", round(n/p, 1),
+      ifelse(n/p >= 10, " OK", ifelse(n/p >= 5, " justo", " PROBLEMA")), "\n\n")
+  cat("3. faltantes:", round(100*mean(is.na(X)), 1), "% | filas completas:",
+      sum(complete.cases(X)), ifelse(sum(complete.cases(X)) >= 100, " OK", " PROBLEMA"), "\n\n")
+  
+  R <- cor(X, use = "pairwise.complete.obs"); diag(R) <- NA
+  rmax <- max(abs(R), na.rm = TRUE)
+  cat("4. |r| máxima:", round(rmax, 2),
+      ifelse(rmax >= 0.5, " OK", ifelse(rmax >= 0.3, " justo", " PROBLEMA")), "\n")
+  cat("   pares con |r|>0.5:", sum(abs(R) > 0.5, na.rm = TRUE)/2, "\n\n")
+  
+  Xs <- scale(X)   # estandarizar: evita que la escala infle el numero de condicion
+  S <- cov(Xs, use = "pairwise.complete.obs")
+  vp <- eigen(S)$values
+  cond <- max(vp)/min(vp)
+  cat("5. número de condición (sobre datos estandarizados):", format(cond, digits = 3),
+      ifelse(cond < 1000, " OK", ifelse(cond < 1e5, " revisar", " REDUNDANCIA")), "\n")
+  if (cond >= 1000) {
+    R2 <- abs(cor(X, use = "pairwise.complete.obs")); diag(R2) <- 0
+    par <- which(R2 > 0.95, arr.ind = TRUE)
+    if (nrow(par) > 0) {
+      cat("   pares casi idénticos:\n")
+      for (i in seq_len(nrow(par))) if (par[i,1] < par[i,2])
+        cat("    ", names(X)[par[i,1]], "<->", names(X)[par[i,2]], "\n")
+    }
+  }
+  invisible(NULL)
+}
+
+
+revisar("bronze/synthetic_credit_card_customer_behavior_dataset.csv",
+        quitar = c("Monthly_Spending", "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Outstanding_Balance"))
+```
+
+**Lectura del resultado:** se excluyen `Monthly_Spending` (es la suma exacta de las siete categorías de gasto), `Payment_Ratio` (= `Payment_Amount` / `Statement_Balance`) y `Credit_Utilization` (= `Outstanding_Balance` / `Credit_Limit`) porque son columnas derivadas que no aportan información nueva y vuelven singular la matriz de covarianzas. `Reward_Points_Earned` y `Outstanding_Balance` se retiran por su correlación casi perfecta con el gasto y con el saldo facturado, respectivamente. El número de condición se calcula sobre datos estandarizados, porque en su escala original las variables monetarias (cientos de miles) y los conteos (0 a 30) lo inflan artificialmente sin que exista redundancia real.
+

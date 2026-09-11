@@ -249,3 +249,4 @@ rsconnect/
 ### R.Bookdown Stack ###
 # R package: bookdown caching files
 /*_files/
+*convertirRmd-ipynb.sh
