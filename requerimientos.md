@@ -44,5 +44,5 @@
 - [ ]  Vector de medias
 - [ ]  La forma matrcial (centroide)
 - [ ]  Mediana marginal
-- [x] verificacion de distancia
+- [x]  verificacion de distancia
 - [ ]  Mahalanobis
