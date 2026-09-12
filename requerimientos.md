@@ -14,15 +14,14 @@
 
 ## S03
 
-- [ ] fivenum() 
 - [x]  Histograma
   - [x]  brakes
-- [ ]  bloxplot (cajabigotes)
-    - [ ]  Comparar bivariante
+- [x]  bloxplot (cajabigotes)
+    - [x] Bloxplot univariable
     - [ ]  Todas las variales juntas
-- [ ]  fivenum()
-- [ ]  RIC
-- [ ]  Q3 y Q2
+- [x]  fivenum()
+- [x]  RIC
+- [x]  Q3 y Q2
 - [X]  Estandarizar
    - [x]  Bloxplot   
 - [x]  Punto imposible
@@ -30,15 +29,14 @@
 ## S04
 
 - [x]  Densidad de kernel
-- [ ]  Disperción
-- [ ]  Correlación
+- [x]  Disperción x2 variables
+- [x]  Correlación
 
 ## S05
-
 - [x]  Matriz de dispersión (pairs)
 - [x]  Matriz de correlación
-- [ ]  Mapa de calor
-- [ ]  Cordenadas Paralelas
+- [x]  Mapa de calor
+- [x]  Cordenadas Paralelas
 
 ## S06
 

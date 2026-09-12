@@ -1,6 +1,5 @@
 ---
 title: "Estadística Multidimensional — Análisis Exploratorio Integral"
-subtitle: "Dataset: Comportamiento Crediticio y Riesgo Financiero (Semanas 1 a 3)"
 author: "Estadística Multidimensional"
 date: "`r format(Sys.Date(), '%d/%m/%Y')`"
 output:
@@ -11,6 +10,10 @@ output:
     df_print: paged
     theme: readable
     highlight: tango
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+subtitle: 'Dataset: Comportamiento Crediticio y Riesgo Financiero (Semanas 1 a 3)'
 ---
 
 ```{r, setup}
@@ -24,6 +27,7 @@ knitr::opts_chunk$set(
   message = FALSE
 )
 ```
+
 
 # Contexto y Objetivos del Análisis
 
@@ -42,7 +46,7 @@ Este documento desarrolla la exploración multidimensional del conjunto de datos
 Antes de cargar cualquier archivo en memoria, es una buena práctica de reproducibilidad inspeccionar sus primeras líneas en crudo para verificar delimitadores de columnas, separadores decimales y presencia de encabezados.
 
 ```{r, inspeccion_previa}
-ruta_credit <- "bronze/synthetic_credit_card_customer_behavior_dataset.csv"
+ruta_credit <- "../data/bronze/synthetic_credit_card_customer_behavior_dataset.csv"
 lineas_muestra <- readLines(ruta_credit, n = 4)
 lineas_muestra
 ```
@@ -414,16 +418,16 @@ numeric_cols <- names(credit)[sapply(credit, is.numeric)]
 for (col_name in numeric_cols) {
   current_var <- credit[[col_name]]
 
-  # Calculate Tukey's five-number summary
+  # Calculate Tukey's five-number summary (Igual a tu función parrafo)
   f_var <- fivenum(current_var)
   names(f_var) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
+  q1_var = f_var[2]
+  q3_var = f_var[4]
 
-  q1_var <- f_var["Q1"]
-  q3_var <- f_var["Q3"]
-  ric_var <- q3_var - q1_var
+  ric_var <- f_var[4] - f_var[2]
 
-  lim_inf_var <- q1_var - 1.5 * ric_var
-  lim_sup_var <- q3_var + 1.5 * ric_var
+  lim_inf_var <- f_var[2] - 1.5 * ric_var
+  lim_sup_var <- f_var[4] + 1.5 * ric_var
 
   # Salida de consola dentro de un bloque de código
   cat("\n\n```\n")
@@ -435,25 +439,45 @@ for (col_name in numeric_cols) {
   print(c(Q1 = q1_var, Q3 = q3_var, RIC = ric_var,
           Lim_Inferior = lim_inf_var, Lim_Superior = lim_sup_var))
 
-  # Count univariate outliers
-  atipicos_var <- current_var[current_var < lim_inf_var | current_var > lim_sup_var]
-  n_atipicos_var <- length(atipicos_var)
+  # Count univariate outliers con la lógica exacta de fivenum
+  n_bajo <- sum(current_var < lim_inf_var)
+  n_alto <- sum(current_var > lim_sup_var)
+  n_atipicos_var <- n_bajo + n_alto
   pct_atipicos_var <- (n_atipicos_var / length(current_var)) * 100
 
   cat("Conteo de atípicos univariados:\n")
   print(c(N_Atipicos = n_atipicos_var, Porcentaje = round(pct_atipicos_var, 3)))
   cat("```\n\n")
 
-  # Generate boxplot
-  boxplot(current_var, horizontal = TRUE, col = "skyblue",
-          main = paste("Diagrama de Caja: ", col_name),
-          xlab = col_name)
+  # TRUCO CLAVE: Forzar al boxplot a graficar según los límites exactos de fivenum
+  # Pasamos los límites calculados al argumento 'range = 0' y 'range' personalizado indirectamente
+  # O mejor aún: recalculamos la estructura gráfica para que dibuje solo lo que fivenum dicta
+  bp_data <- boxplot(current_var, plot = FALSE)
+  bp_data$stats[1, 1] <- lim_inf_var
+  bp_data$stats[5, 1] <- lim_sup_var
+  
+  # Filtramos los puntos atípicos del gráfico para que correspondan a fivenum
+  atipicos_fivenum <- current_var[current_var < lim_inf_var | current_var > lim_sup_var]
+  bp_data$out <- atipicos_fivenum
+  
+  if(length(atipicos_fivenum) == 0) {
+    bp_data$out <- numeric(0)
+  }
+
+  # Dibujar el Boxplot modificado con la estructura fivenum
+  bxp(bp_data, horizontal = TRUE, col = "skyblue",
+      main = paste("Diagrama de Caja: ", col_name),
+      xlab = col_name)
+  
   abline(v = c(lim_inf_var, lim_sup_var), col = "red", lty = 2, lwd = 2)
 
-  # Análisis corto de la variable y de lo que muestra su boxplot
+  # Líneas rojas punteadas en los límites de fivenum
+  # Análisis corto de la variable y de lo que muestra su boxplot (Llamada original)
   cat(parrafo(col_name, "box"))
 }
 ```
+
+
 
 **Reflexión crítica:** Al ser una variable derivada de una simulación uniforme/normal en el conjunto sintético, el número de atípicos univariados es mínimo (`r n_atipicos_gasto` observaciones, `r sprintf("%.2f%%", pct_atipicos_gasto)`). En datos reales con asimetría positiva fuerte (como ingresos o balances), la regla de Tukey tiende a marcar colas naturales como atípicos si no se realiza una transformación previa.
 
@@ -590,14 +614,12 @@ abline(h = mean(credit$Credit_Score), col = "gray50", lty = 2)
 
 ------------------------------------------------------------------------
 
-```{r}
+```{r punto_imposible_annual_income_vs_Credit_limit}
 ingreso <- credit$Annual_Income
 limite <- credit$Credit_Limit
 
-# --- Análisis para Annual_Income ---
-cat("--------------------------------------------------\n")
+#Análisis para Annual_Income 
 cat("Análisis para la variable: Annual_Income\n")
-cat("--------------------------------------------------\n")
 
 f_ingreso <- fivenum(ingreso)
 names(f_ingreso) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
@@ -674,6 +696,63 @@ mat_cor <- cor(credit_num[, vars_interes], use = "complete.obs")
 round(mat_cor, 3)
 ```
 
+## Mapa de calor de correlaciones
+
+```{r, mapa_calor_correlaciones, fig.width=12, fig.height=10}
+
+# ---------------------------------------------------------
+# 1. Seleccionar únicamente variables numéricas
+# ---------------------------------------------------------
+
+vars_numericas <- names(credit)[sapply(credit, is.numeric)]
+
+credit_num <- credit[, vars_numericas]
+
+
+# ---------------------------------------------------------
+# 2. Calcular matriz de correlaciones
+# ---------------------------------------------------------
+
+matriz_cor <- cor(
+  credit_num,
+  use = "complete.obs",
+  method = "pearson"
+)
+
+
+# ---------------------------------------------------------
+# 3. Instalar/cargar corrplot
+# ---------------------------------------------------------
+
+if (!requireNamespace("corrplot", quietly = TRUE)) {
+  install.packages("corrplot")
+}
+
+library(corrplot)
+
+
+# ---------------------------------------------------------
+# 4. Mapa de calor
+# ---------------------------------------------------------
+
+corrplot(
+  matriz_cor,
+  method = "color",
+  type = "upper",
+  order = "hclust",
+  tl.col = "black",
+  tl.cex = 0.75,
+  tl.srt = 45,
+  addCoef.col = "black",
+  number.cex = 0.55,
+  diag = FALSE,
+  title = "Mapa de calor de correlaciones entre variables numéricas",
+  mar = c(0, 0, 2, 0)
+)
+
+```
+
+
 ### Síntesis de correlaciones observadas:
 
 1.  **Colinealidad casi perfecta (**$r > 0.95$):
@@ -683,6 +762,137 @@ round(mat_cor, 3)
 2.  **Determinantes del riesgo:**
     - `Payment_Ratio` con `Credit_Score` ($r = 0.767$)
     - `Credit_Utilization` con `Credit_Score` ($r = -0.599$)
+    
+### Relaciones Fuertes y Positivas (Valores cercanos a 1.00)
+**Ingresos y Capacidad Financiera**: Existe una correlación altísima entre ___Annual_Income___ (Ingresos Anuales), ___Credit_Limit___ (Límite de Crédito, 0.974) y ___Monthly_Spending___ (Gasto Mensual, 0.945). Esto indica que a mayores ingresos, los clientes reciben un límite de crédito proporcionalmente más alto y gastan más dinero mensualmente.
+
+**Deuda y Saldos**: ___Outstanding_Balance___ (Saldo Pendiente) y ___Statement_Balance___ (Saldo del Estado de Cuenta) tienen una correlación casi perfecta de 0.997. Además, ambas tienen una relación muy fuerte con ___Payment_Amount___ (Monto de Pago, ~0.93), lo que significa que quienes acumulan más saldo también realizan pagos más grandes.
+
+**Puntos de Recompensa y Gasto**: ___Reward_Points_Earned___ está fuertemente ligada a ___Monthly_Spending___ (0.980) y ___Credit_Limit___ (0.958). El sistema de recompensas funciona de manera lineal: a mayor gasto y mayor límite de tarjeta, se acumulan muchos más puntos.
+
+### Relaciones Moderadas a Fuertes Negativas (Camino Inverso)
+**Historial Crediticio vs. Uso de la Tarjeta***: La correlación entre ___Credit_Score___ (Puntaje de Crédito) y ___Credit_Utilization___ (Utilización del Crédito) es de -0.599. Esta relación negativa moderada/fuerte confirma la teoría financiera: a mayor porcentaje de uso de tu línea de crédito, menor tiende a ser tu puntaje crediticio.
+
+### El Factor Clave del "Credit Score" (Puntaje de Crédito)
+**El Ratio de Pago es Vital**: La correlación más alta y positiva con ___Credit_Score___ es ___Payment_Ratio___ (0.767). Esto demuestra que lo más efectivo para tener un buen puntaje no es cuánto ganas, sino el porcentaje de tu deuda que pagas a tiempo.
+
+**Independencia de los Ingresos y Gastos**: Sorprendentemente, ___Annual_Income___ (0.032), ___Credit_Limit___ (0.035) y ___Monthly_Spending___ (0.033) tienen correlaciones casi nulas (cercanas a 0) con el puntaje. Tener mucho dinero o gastar mucho no garantiza un buen ___Credit Score___.
+
+### Variables Prácticamente Aisladas
+___Payment_Ratio___ y ___Credit_Utilization___ tienen correlaciones cercanas a 0.00 con casi todas las variables de volumen de dinero (Ingresos, Límites, Gastos). Esto significa que el comportamiento de pago de una persona (si paga el total o solo el mínimo, o qué porcentaje de su tarjeta usa) es independiente de si es de ingresos altos o bajos.
+
+### Cordenadas paralelas
+
+```{r coordenadas_paralelas_riesgo, fig.width=14, fig.height=8}
+
+if (!requireNamespace("MASS", quietly = TRUE)) {
+  install.packages("MASS")
+}
+
+library(MASS)
+
+# Variables seleccionadas para el análisis
+vars_paralelas <- c(
+  "Annual_Income",
+  "Credit_Limit",
+  "Monthly_Spending",
+  "Monthly_Transactions",
+  "Avg_Transaction_Value",
+  "Outstanding_Balance",
+  "Statement_Balance",
+  "Payment_Amount",
+  "Payment_Ratio",
+  "Credit_Utilization",
+  "Cash_Advance_Amount",
+  "Credit_Score"
+)
+
+# Submatriz
+X_par <- credit[, vars_paralelas, drop = FALSE]
+
+# Estandarización
+X_par_scaled <- scale(X_par)
+
+# Clasificación por Credit Score
+cal <- cut(
+  credit$Credit_Score,
+  breaks = c(-Inf, 579, 669, Inf),
+  labels = c("Bajo", "Medio", "Alto"),
+  include.lowest = TRUE
+)
+
+# Colores
+col <- c(
+  "Bajo"  = "#B0442FA0",  # Rojo semi-transparente
+  "Medio" = "#BEBEBE15",  # Gris muy transparente (para que no estorbe)
+  "Alto"  = "#1E7F63A0"   # Verde semi-transparente
+)
+col_clientes <- col[as.character(cal)]
+
+# 2. Ajustamos los márgenes del gráfico para que quepan los textos rotados
+# (abajo, izquierda, arriba, derecha)
+par(mar = c(7, 4, 4, 2) + 0.1)
+
+# 3. Graficamos SIN el eje X por defecto para poder personalizarlo
+parcoord(
+  X_par_scaled,
+  col = col_clientes,
+  lwd = 0.4,
+  main = "Coordenadas paralelas — Comportamiento financiero y riesgo",
+  xaxt = "n" # Oculta el eje X por defecto
+)
+
+# Dibujamos el eje X rotado a 45 grados para que aparezcan las 12 variables
+text(
+  x = 1:ncol(X_par_scaled), 
+  y = par("usr")[3] - 0.1, 
+  labels = colnames(X_par_scaled), 
+  srt = 45, 
+  adj = 1, 
+  xpd = TRUE, 
+  cex = 0.8
+)
+
+# Coordenadas paralelas
+title(
+  xlab = "Variables",
+  ylab = "Valor estandarizado (z-score)"
+)
+
+legend(
+  "topright",
+  legend = c(
+    "Credit Score bajo",
+    "Credit Score medio",
+    "Credit Score alto"
+  ),
+  col = c(
+    "#B0442F",
+    "grey75",
+    "#1E7F63"
+  ),
+  lwd = 2,
+  bty = "n"
+)
+```
+
+### ¿Qué se puede interpretar de ahí?
+
+A pesar del desorden, las coordenadas paralelas son excelentes para detectar patrones extremos y comportamientos grupales. al mirar los extremos de los colores, vemos conclusiones valiosas:
+
+**El grupo de "Credit Score Bajo" (Rojo) está concentrado abajo en variables clave**:
+
+* Hacia el final del gráfico (lado derecho), se nota una masa roja muy densa que cae drásticamente hacia el suelo en la última variable ( ___Credit_Score___ ).
+
+* En puntos intermedios como ___Payment_Ratio___ (porcentaje de la deuda que pagan al mes), la gran masa roja se queda abajo. Esto significa que los clientes con peor score pagan muy poco de sus saldos pendientes.
+
+**El grupo de "Credit Score Alto" (Verde) domina las partes altas de estabilidad**:
+
+* Las líneas verdes suben con fuerza al final hacia el tope de ___Credit_Score___. 
+
+* En variables de comportamiento como ___Payment_Ratio___, puedes ver picos verdes que logran subir, indicando que este grupo liquida un porcentaje mucho mayor de sus deudas.
+
+**El solapamiento central**: En las variables del medio (como saldos de estados de cuenta o valores promedio de transacciones), los tres colores están sumamente mezclados. Esto te dice que el gasto mensual por sí solo o el saldo de la tarjeta no discriminan de forma tan directa si alguien es de alto o bajo riesgo; lo que importa es la relación entre lo que gastan, lo que ganan y cómo lo pagan.
 
 ## Matriz de dispersión multivariada (`pairs`)
 
@@ -698,6 +908,25 @@ pairs(credit_num[, vars_pairs],
       main = "Matriz de Dispersion (pairs) - Variables Clave")
 ```
 
+### Relaciones Lineales y Fuertes (Patrones con diagonal hacia arriba)
+**Annual_Income vs. Monthly_Spending (Esquina superior izquierda)**: Muestra una relación lineal positiva perfecta. Es una "banda" muy apretada que sube de izquierda a derecha. Esto visualiza de forma directa que a medida que suben los ingresos del cliente, su capacidad y volumen de gasto mensual aumentan de forma totalmente proporcional.
+
+**Payment_Ratio vs. Credit_Score (Penúltima fila, última columna)**: Es una banda diagonal ascendente muy bien definida. Visualmente nos confirma que a mayor ratio de pago, mayor es el puntaje de crédito. La forma compacta de la banda demuestra que es una de las variables con mayor peso e impacto directo para predecir el score.
+
+### Relaciones Negativas (Patrones con diagonal hacia abajo)
+**Credit_Utilization vs. Credit_Score (Cuarta fila, última columna)**: Es una banda diagonal descendente perfecta. Visualmente es la prueba reina de que un mayor uso de la línea de crédito destruye el puntaje crediticio. Al ser una banda limpia sin mucha dispersión hacia los lados, demuestra una regla estricta en el algoritmo del score.
+
+**Payment_Ratio vs. Credit_Utilization (Intersección de la 3ra y 4ta variable)**: Al mirar fijamente el cruce de estas dos variables, se nota una ligera dispersión o caída en diagonal invertida en las esquinas, lo que indica que quienes tienen ratios de utilización muy extremos tienden a comportarse de forma inversa con sus ratios de pago.
+
+### Distribuciones en Bloque Cuadrado (Sin Relación / Independencia)
+**Annual_Income y Monthly_Spending vs. Credit_Score**: Hay un bloque rectangular perfecto, esto significa que puedes encontrar personas con puntajes de crédito excelentes (800) o pésimos (400) sin importar si ganan mucho o poco dinero. El dinero que ingresa no define la responsabilidad financiera.
+
+**Annual_Income y Monthly_Spending vs. Payment_Ratio / Credit_Utilization**: Los bloques son completamente cuadrados y uniformes. El nivel de ingresos de un cliente no influye en qué porcentaje de su tarjeta decide gastar o en qué porcentaje de su deuda decide pagar mes a mes.
+
+### Patrones de "Efecto Embudo" o Techo
+
+**Monthly_Spending vs. Payment_Ratio**: Se observa un comportamiento donde los puntos se concentran fuertemente en la parte inferior cuando el gasto es muy alto. Esto sugiere que a volúmenes de gasto extremadamente altos, es más difícil para los usuarios mantener un Payment_Ratio perfecto de 1.0, creando un sutil efecto de dispersión o "embudo".
+
 Siguiente parte de variables de interes
 
 ```{r, diagrama de dispersion a variables de interes}
@@ -710,6 +939,19 @@ pairs(credit[, vars_impairs],
       main = "Matriz de Dispersion - Variables De Interes")
 
 ```
+
+### Relación Lineal Perfecta (Línea recta exacta)
+**Outstanding_Balance vs. Statement_Balance (Fila 2, Columna 3 y viceversa)**:Los puntos forman una línea recta diagonal perfecta y ultra delgada. Esto confirma visualmente la correlación de 0.997 que vimos en el primer análisis. El balance acumulado (___Outstanding_Balance___) y el saldo de corte del estado de cuenta (___Statement_Balance__) reflejan exactamente la misma información económica. **Tener ambas variables** en un modelo predictivo causaría un problema grave de multicolinealidad (**redundancia**).
+
+### Patrones de "Cuña" o "Triángulo Inferior" (Límite Físico)
+En varios gráficos, los puntos llenan un triángulo pero dejan un espacio vacío perfecto en la mitad superior o inferior. Esto indica que una variable actúa como un techo o límite insuperable para la otra.
+
+**Credit_Limit vs. Saldos y Gastos (Fila 1 con Columnas 2, 3 y 4)**:Al cruzar el límite de crédito (___Credit_Limit___) con el saldo pendiente, saldo de cuenta y montos de pago, la gráfica dibuja una cuña con una base diagonal recta. Esto significa que los saldos y los pagos pueden ser bajos o altos, pero están estrictamente topados por el límite de crédito asignado. Nadie puede deber ni pagar más del límite que el banco le otorgó.
+
+**Saldos vs. Payment_Amount (Intersecciones entre filas 2/3 y columna 4)**:Muestra un comportamiento similar. El monto pagado (___Payment_Amount___) crece a medida que crece la deuda, pero hay un vacío en la parte superior porque los clientes rara vez o nunca pagan más dinero del que deben en su saldo total.
+
+### El Efecto Especial de los Puntos de Recompensa (Última Fila / Columna)
+**Reward_Points_Earned vs. Credit_Limit / Saldos**:Si observas la última fila, los gráficos muestran una dispersión que se asemeja a una aleta de tiburón o una curva que se expande hacia la derecha. Los puntos de recompensa acumulados crecen a medida que aumentan el límite de crédito y los saldos. Sin embargo, la dispersión se vuelve más ancha al final, lo que significa que en los segmentos de líneas de crédito muy altas, los comportamientos de acumulación de puntos se vuelven más variables entre los usuarios.
 
 ------------------------------------------------------------------------
 
@@ -823,8 +1065,8 @@ revisar <- function(ruta, quitar = character(0)) {
 }
 
 
-revisar("bronze/synthetic_credit_card_customer_behavior_dataset.csv",
-        quitar = c("Monthly_Spending", "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Outstanding_Balance"))
+#revisar("bronze/synthetic_credit_card_customer_behavior_dataset.csv",
+#       quitar = c("Monthly_Spending", "Payment_Ratio", "Credit_Utilization", "Reward_Points_Earned", "Outstanding_Balance"))
 ```
 
 **Lectura del resultado:** se excluyen `Monthly_Spending` (es la suma exacta de las siete categorías de gasto), `Payment_Ratio` (= `Payment_Amount` / `Statement_Balance`) y `Credit_Utilization` (= `Outstanding_Balance` / `Credit_Limit`) porque son columnas derivadas que no aportan información nueva y vuelven singular la matriz de covarianzas. `Reward_Points_Earned` y `Outstanding_Balance` se retiran por su correlación casi perfecta con el gasto y con el saldo facturado, respectivamente. El número de condición se calcula sobre datos estandarizados, porque en su escala original las variables monetarias (cientos de miles) y los conteos (0 a 30) lo inflan artificialmente sin que exista redundancia real.
