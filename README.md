@@ -29,7 +29,10 @@ El proyecto integra de forma secuencial y acumulativa los contenidos desarrollad
 │   ├── analisis_synthetic_credit_card.Rmd         # Documento maestro reproducible en R Markdown (11 módulos)
 │   └── analisis_synthetic_credit_card.html        # Render HTML completo del reporte técnico
 │
-├── Clase/                                         # Material de apoyo, talleres y sesiones de clase (S01 a S06)
+├── Clase/                                         # Material de apoyo, talleres y sesiones de clase
+│   ├── S01/ … S06/                                # Una carpeta por semana (clase, actividad, trabajo autónomo)
+│   ├── S02/datos/                                 # Datasets pequeños usados solo en los ejercicios de S02
+│   └── Extra_Mineria_Datos/                        # Sesión complementaria (Python/scikit-learn): train/test y métricas
 │
 ├── resumen_analisis_synthetic_credit_card.md      # Guía técnica detallada y banco de preguntas de sustentación
 ├── requerimientos.md                              # Lista de chequeo metodológica por semanas del curso

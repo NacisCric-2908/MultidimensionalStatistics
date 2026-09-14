@@ -40,7 +40,7 @@ $(j,k)$ está el gráfico de la variable $j$ contra la $k$.
 
 ```{r pairs-basico}
 vino <- read.csv(
-  "../../../04_DATASETS/winequality-red.csv", sep = ";")   # ojo: separador ";"
+  "../../../../04_DATASETS/winequality-red.csv", sep = ";")   # ojo: separador ";"
 
 str(vino)
 ```

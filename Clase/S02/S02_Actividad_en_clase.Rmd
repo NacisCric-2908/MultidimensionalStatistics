@@ -205,7 +205,7 @@ Con la tabla ya limpia:
 
 ## B6. Extra (para quien vaya adelantado)
 
-Abran `../../../04_DATASETS/DANEPoblacion.csv`.
+Abran `../../../../04_DATASETS/DANEPoblacion.csv`.
 
 1.  El nombre del archivo dice una cosa y el contenido dice otra. ¿Qué
     contiene realmente?

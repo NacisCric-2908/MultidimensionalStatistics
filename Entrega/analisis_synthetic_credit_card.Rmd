@@ -1673,7 +1673,7 @@ credit_num <- credit[, vars_numericas]
 matriz_cor <- cor(credit_num, use = "complete.obs", method = "pearson")
 
 if (!requireNamespace("corrplot", quietly = TRUE)) {
-  install.packages("corrplot")
+  install.packages("corrplot", repos = "https://cloud.r-project.org")
 }
 library(corrplot)
 

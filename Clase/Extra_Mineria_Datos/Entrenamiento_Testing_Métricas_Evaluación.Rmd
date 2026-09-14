@@ -1,0 +1,170 @@
+---
+title: "Minería de Datos — Entrenamiento, Testing y Métricas de Evaluación"
+subtitle: "Clase Completa (2 Horas)"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: false
+    theme: readable
+    highlight: tango
+---
+
+> Esta clase se dio originalmente como un notebook de Python (scikit-learn). El archivo
+> quedó guardado en un formato corrupto (un volcado plano de la estructura interna del
+> notebook, sin sintaxis de Markdown ni de código) y se reconstruyó a partir de ese volcado
+> para recuperar el contenido real. El código se muestra en bloques de Python con resaltado
+> de sintaxis, a modo de referencia — para ejecutarlo se necesita un entorno de Python con
+> `scikit-learn`, `pandas` y `matplotlib` (por ejemplo Jupyter), no R.
+
+
+Notebook diseñado para clase universitaria con teoría, ejemplos, ejercicios y práctica guiada.
+
+
+## Agenda de Clase
+1. ¿Qué significa entrenar un modelo?
+2. Generalización y problema de sobreajuste
+3. Train / Validation / Test Split
+4. Data Leakage
+5. Matriz de Confusión
+6. Métricas de Clasificación
+7. Caso práctico completo
+8. Discusión y preguntas de cierre
+
+
+## 1. ¿Qué significa entrenar un modelo?
+Un modelo de ML aprende patrones a partir de datos históricos para generalizar sobre datos no vistos.
+
+
+## 2. Overfitting vs Underfitting
+- **Overfitting:** memoriza el entrenamiento, falla en nuevos datos.
+- **Underfitting:** modelo demasiado simple.
+
+### Analogía
+Memorizar respuestas del parcial vs entender la materia.
+
+
+## 3. División de Datos
+- Train: aprendizaje
+- Validation: ajuste de hiperparámetros
+- Test: evaluación final
+
+
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+import pandas as pd
+
+data = load_breast_cancer()
+X = pd.DataFrame(data.data, columns=data.feature_names)
+y = pd.Series(data.target)
+
+X_train, X_temp, y_train, y_temp = train_test_split(
+    X, y, test_size=0.30, random_state=42, stratify=y
+)
+
+X_val, X_test, y_val, y_test = train_test_split(
+    X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp
+)
+
+print("Train:", X_train.shape)
+print("Validation:", X_val.shape)
+print("Test:", X_test.shape)
+```
+
+
+## 4. Data Leakage
+Ocurre cuando información del test influye en el entrenamiento.
+
+### Ejemplos comunes
+- Escalar antes de dividir
+- Imputar usando todo el dataset
+- Variables derivadas del target
+
+
+## 5. Primer Modelo Base
+Usaremos Regresión Logística como baseline de clasificación.
+
+
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+
+pipeline = Pipeline([
+    ('scaler', StandardScaler()),
+    ('model', LogisticRegression(max_iter=500))
+])
+
+pipeline.fit(X_train, y_train)
+```
+
+
+## 6. Predicción y Matriz de Confusión
+
+
+```python
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import matplotlib.pyplot as plt
+
+y_pred = pipeline.predict(X_test)
+
+cm = confusion_matrix(y_test, y_pred)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=data.target_names)
+disp.plot()
+plt.show()
+```
+
+
+## 7. Métricas de Evaluación
+
+### Accuracy
+\[
+Accuracy = \frac{TP + TN}{TP + TN + FP + FN}
+\]
+
+### Precision
+\[
+Precision = \frac{TP}{TP + FP}
+\]
+
+### Recall
+\[
+Recall = \frac{TP}{TP + FN}
+\]
+
+### F1-Score
+\[
+F1 = 2\frac{Precision \cdot Recall}{Precision + Recall}
+\]
+
+
+```python
+from sklearn.metrics import classification_report
+
+print(classification_report(y_test, y_pred, target_names=data.target_names))
+```
+
+
+## 8. Discusión de Negocio
+- En medicina suele importar más Recall.
+- En detección de spam puede importar más Precision.
+- Accuracy sola puede ser engañosa.
+
+
+## 9. Ejercicio Guiado para Estudiantes
+1. ¿Qué pasa si entrenamos y evaluamos sobre train?
+2. Cambie test_size a 0.40 y compare métricas.
+3. Investigue qué métrica usaría en fraude bancario y por qué.
+
+
+```python
+y_train_pred = pipeline.predict(X_train)
+print(classification_report(y_train, y_train_pred, target_names=data.target_names))
+```
+
+
+## 10. Cierre de Clase
+Con esto los estudiantes quedan preparados para la siguiente sesión:
+**Regresión Logística en profundidad / Árboles de Decisión**
+

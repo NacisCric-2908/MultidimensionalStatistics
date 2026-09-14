@@ -5,7 +5,7 @@
 - [x]  Descripción
 - [x]  Tipos de variables
 - [x]  Diagnostico NA
-    - [x]  Falatantes %
+    - [x]  Faltantes %
     - [x]  Faltantes por columna
     - [x]  Imputación (no tenemos que hacer)
 - [x]  Duplicados
@@ -15,34 +15,34 @@
 ## S03
 
 - [x]  Histograma
-  - [x]  brakes
-- [x]  bloxplot (cajabigotes)
-    - [x] Bloxplot univariable
-    - [ ]  Todas las variales juntas
+  - [x]  breaks
+- [x]  boxplot (cajabigotes)
+    - [x] Boxplot univariable
+    - [x]  Todas las variables juntas
 - [x]  fivenum()
 - [x]  RIC
 - [x]  Q3 y Q2
-- [X]  Estandarizar
-   - [x]  Bloxplot   
+- [x]  Estandarizar
+   - [x]  Boxplot
 - [x]  Punto imposible
 
 ## S04
 
 - [x]  Densidad de kernel
-- [x]  Disperción x2 variables
+- [x]  Dispersión x2 variables
 - [x]  Correlación
 
 ## S05
 - [x]  Matriz de dispersión (pairs)
 - [x]  Matriz de correlación
 - [x]  Mapa de calor
-- [x]  Cordenadas Paralelas
+- [x]  Coordenadas Paralelas
 
 ## S06
 
-- [ ]  Matriz de datos
-- [ ]  Vector de medias
-- [ ]  La forma matrcial (centroide)
-- [ ]  Mediana marginal
-- [x]  verificacion de distancia
-- [ ]  Mahalanobis
+- [x]  Matriz de datos
+- [x]  Vector de medias
+- [x]  La forma matricial (centroide)
+- [x]  Mediana marginal
+- [x]  verificación de distancia
+- [x]  Mahalanobis
