@@ -58,7 +58,11 @@ Este documento desarrolla la exploración multidimensional del conjunto de datos
 - **Módulo 8 (S04):** densidad de kernel como alternativa al histograma.
 - **Módulo 9 (S06):** vector de medias, centroide y distancia de Mahalanobis — el centro de la nube y la distancia correcta para medir qué tan lejos está cada cliente de él.
 - **Módulo 10:** pruebas de hipótesis formales — normalidad univariada y multivariante, y significancia de las correlaciones ya usadas en los Módulos 6 y 7.
-- **Módulo 11:** preparación de los datos para las siguientes etapas del proyecto (PCA y *clustering*) — qué transformación aplicar a cada variable y con cuáles nos quedamos.
+- **Módulo 11:** preparación de los datos para las siguientes etapas del proyecto (PCA y *clustering*) — qué transformación aplicar a cada variable y con cuáles nos 
+
+##Contexto Economico del Análisis sobre el Dataset
+
+El presente análisis se desarrolla en el contexto económico de la India, utilizando la rupia india (INR/₹) como unidad monetaria. Los datos corresponden al comportamiento de clientes que utilizan tarjetas de crédito, incluyendo variables relacionadas con sus ingresos, límites de crédito, gastos mensuales, saldos pendientes y pagos realizados. Por tanto, los valores monetarios analizados deben interpretarse en rupias indias, permitiendo contextualizar el comportamiento financiero de los clientes dentro del sistema económico indio.
 
 ------------------------------------------------------------------------
 
@@ -337,6 +341,24 @@ c(Media = media_cs, Desv_Std = sd_cs, Mediana = mediana_cs, Min = min_cs, Max = 
 
 **Lectura:** la media (`r round(media_cs,1)`) queda por **debajo** de la mediana (`r mediana_cs`), una diferencia de `r round(mediana_cs - media_cs,1)` puntos — la primera señal numérica, antes de graficar nada, de que la distribución no es perfectamente simétrica sino que tiene una cola hacia la izquierda (los perfiles de alto riesgo arrastran la media hacia abajo). La desviación estándar de `r round(sd_cs,1)` puntos, sobre un rango de `r min_cs` a `r max_cs`, dice que la cartera está razonablemente concentrada: la mayoría de los puntajes vive dentro de una o dos desviaciones de la media, no dispersa en todo el rango posible.
 
+## Regla de Sturges
+
+La comparación anterior dejó una pregunta sin responder: ¿por qué 17 y no cualquier otro número entre 5 y 60? Hace falta un criterio que no dependa de "probar hasta que se vea bien". La regla de Sturges da ese criterio: propone el número de intervalos como función únicamente de $n$ (el tamaño de la muestra), bajo el supuesto de que los datos son aproximadamente normales —
+
+$$k = 1 + \log_2(n) = 1 + 3.322 \cdot \log_{10}(n)$$
+
+La intuición es que $k$ crece con $n$, pero **logarítmicamente**, no proporcionalmente: duplicar el tamaño de la muestra no debería duplicar el número de barras, porque cada barra necesita suficientes observaciones dentro para que su altura sea informativa y no solo ruido de muestreo.
+
+```{r, regla_sturges}
+n_obs <- length(score)
+k_sturges <- nclass.Sturges(score)
+k_teorico <- 1 + log2(n_obs)
+
+c(n = n_obs, k_Sturges = k_sturges, k_Formula = round(k_teorico, 2))
+```
+
+**Evaluación y decisión:** para $n = `r format(n_obs, big.mark=".")`$, la fórmula da $k = `r round(k_teorico,2)`$ y `nclass.Sturges()` la redondea a $k = `r k_sturges`$ intervalos — el valor que ya se usó como el panel "Balanceado" de la comparación anterior, no una coincidencia sino la justificación formal de por qué ese panel y no el de `breaks = 5` o `breaks = 60` es el que se declara en el informe. Nótese también que $k$ **no depende de la variable** — es la misma fórmula para las 26 variables numéricas del Módulo 1, porque solo usa $n$, que es común a todas; lo que sí cambia de una variable a otra es el ancho de cada barra ($h = \text{rango}/k$), que ya se hizo explícito variable por variable en la sección anterior.
+
 ## El histograma y el efecto del número de cortes (`breaks`) (S03 - Sesión 4)
 
 El histograma es una estimación no paramétrica de la función de densidad subyacente: cuenta cuántas observaciones caen en cada intervalo de ancho $h$ y dibuja esa cuenta como una barra. El número de intervalos (`breaks`) no es un detalle estético, es una decisión que cambia lo que el gráfico *dice* sobre los mismos datos — la vamos a hacer explícita graficando la misma variable tres veces, con un número de cortes deliberadamente insuficiente, uno intermedio y uno excesivo:
@@ -362,7 +384,7 @@ hist(score, breaks = 60, col = "salmon", border = "black",
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** con `breaks = 5` las barras son tan anchas (cerca de 85 puntos cada una) que la distribución parece casi uniforme y se pierde por completo la asimetría hacia la izquierda que ya habían anunciado la media y la mediana. Con `breaks = 60` cada barra cubre apenas 7 puntos, y la cartera de 50.000 clientes ya no alcanza a llenarlas de forma pareja: aparecen dientes y huecos que son ruido de muestreo, no estructura real. Con 17 cortes —el valor que la regla de Sturges sugiere para este tamaño de muestra, justificada a continuación— se ve la forma real sin aplanarla ni fragmentarla: unimodal, centrada cerca de 640 y con la cola izquierda que la media por debajo de la mediana ya había anticipado numéricamente.
+**Lectura:** con `breaks = 5` las barras son tan anchas (cerca de 85 puntos cada una) que la distribución parece casi uniforme y se pierde por completo la asimetría hacia la izquierda que ya habían anunciado la media y la mediana. Con `breaks = 60` cada barra cubre apenas 7 puntos, y la cartera de 50.000 clientes ya no alcanza a llenarlas de forma pareja: aparecen dientes y huecos que son ruido de muestreo, no estructura real. Con 17 cortes (el valor que la regla de Sturges sugiere para este tamaño de muestra, justificada anteriormente) se ve la forma real sin aplanarla ni fragmentarla: unimodal, centrada cerca de 640 y con la cola izquierda que la media por debajo de la mediana ya había anticipado numéricamente. El histograma nos muestra que la mayor parte de los clientes tienen un puntaje de credito entre 500 y 700 puntos.
 
 ## Histogramas de todas las variables numéricas
 
@@ -390,7 +412,7 @@ hist(credit$Annual_Income, breaks = 60, col = "salmon", border = "black", main =
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** `Annual_Income` es el ingreso anual declarado. La asimetría de 2,55 es de las más altas del dataset, y se nota: con `breaks = 5` casi toda la masa cae en la primera barra (\$100.050 a \$1.679.166) y el resto del eje queda vacío; con 17 cortes se distingue la mediana (\$1.127.630) muy por debajo de la media (\$1.479.318), la firma clásica de una cola de altos ingresos; con `breaks = 60` esa cola se disuelve en barras de una sola observación, imposibles de interpretar.
+**Lectura:** `Annual_Income` es el ingreso anual declarado. La asimetría de 2,55 es de las más altas del dataset, y se nota: con `breaks = 5` casi toda la masa cae en la primera barra (100.050(₹) a 1.679.166(₹)) y el resto del eje queda vacío; con 17 cortes se distingue la mediana (1.127.630(₹)) muy por debajo de la media (1.479.318(₹)), la firma clásica de una cola de altos ingresos; con `breaks = 60` esa cola se disuelve en barras de una sola observación, imposibles de interpretar. A simple vista se observa que la gran mayoria de las personas tienen ingresos bajos a moderados y una parte tienen ingresos bastante elevados en relación a la mediana.
 
 ### `Credit_Limit`
 
@@ -426,7 +448,7 @@ hist(credit$Monthly_Spending, breaks = 60, col = "salmon", border = "black", mai
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** `Monthly_Spending` es la suma de las siete categorías de gasto de abajo, así que acumula la cola derecha de las siete a la vez (asimetría 3,00, más alta que la de cualquier categoría individual). Con `breaks = 5` esa acumulación es invisible; con `breaks = 17` se ve una masa concentrada entre \$26.646 y \$83.032 (el rango intercuartílico) y una cola larga hasta \$691.688; es la variable ya usada como caso de estudio del Módulo 4, y este histograma es la contraparte visual de esos mismos números.
+**Lectura:** `Monthly_Spending` es la suma de las siete categorías de gasto de abajo, así que acumula la cola derecha de las siete a la vez (asimetría 3,00, más alta que la de cualquier categoría individual). Con `breaks = 5` esa acumulación es invisible; con `breaks = 17` se ve una masa concentrada entre 26.646(₹) y 83.032(₹) (el rango intercuartílico) y una cola larga hasta 691.688(₹); es la variable ya usada como caso de estudio del Módulo 4, y este histograma es la contraparte visual de esos mismos números. A modo de observación la gráfica nos sugiere que la mayoria de los clientes tienen un gasto mensual moderado a bajo y una parte tiene gastos mensuales muy elevados.
 
 ### `Monthly_Transactions`
 
@@ -450,7 +472,7 @@ hist(credit$Avg_Transaction_Value, breaks = 60, col = "salmon", border = "black"
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** `Avg_Transaction_Value` es el gasto mensual dividido entre el número de transacciones, y hereda la asimetría del numerador (3,90): con `breaks = 17` la mayoría de los tickets caen entre \$448 y \$901 (rango intercuartílico), pero el máximo (\$10.460) está a más de 12 desviaciones estándar de la media — un cociente entre una variable sesgada y una acotada produce, aquí, la cola más extrema de todas las variables de transacción individual.
+**Lectura:** `Avg_Transaction_Value` es el gasto mensual dividido entre el número de transacciones, y hereda la asimetría del numerador (3,90): con `breaks = 17` la mayoría de los tickets caen entre 448(₹) y 901(₹) (rango intercuartílico), pero el máximo (10.460(₹)) está a más de 12 desviaciones estándar de la media — un cociente entre una variable sesgada y una acotada produce, aquí, la cola más extrema de todas las variables de transacción individual.
 
 ### `Online_Shopping_Spending`
 
@@ -462,7 +484,7 @@ hist(credit$Online_Shopping_Spending, breaks = 60, col = "salmon", border = "bla
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** el gasto en compras por internet tiene mediana \$6.163, menos de un tercio de su media (\$11.240) — la brecha media/mediana más amplia, en términos relativos, de las siete categorías de gasto. Con `breaks = 5` esa brecha ni se nota; con 17 cortes el pico pegado al origen y la cola larga hasta \$258.200 quedan claramente separados.
+**Lectura:** el gasto en compras por internet tiene mediana 6.163(₹), menos de un tercio de su media (11.240(₹)) — la brecha media/mediana más amplia, en términos relativos, de las siete categorías de gasto. Con `breaks = 5` esa brecha ni se nota; con 17 cortes el pico pegado al origen y la cola larga hasta 258.200(₹) quedan claramente separados.
 
 ### `Grocery_Spending`
 
@@ -474,7 +496,7 @@ hist(credit$Grocery_Spending, breaks = 60, col = "salmon", border = "black", mai
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** `Grocery_Spending` tiene la mediana más alta de las siete categorías de gasto (\$10.650) porque el mercado es un gasto recurrente que casi todos hacen. Con `breaks = 17` el pico del histograma queda visiblemente más alejado del origen que en `Travel_Spending` o `Entertainment_Spending` (comparar más abajo), aunque conserva la misma forma de cola derecha (asimetría 4,01).
+**Lectura:** `Grocery_Spending` tiene la mediana más alta de las siete categorías de gasto (10.650(₹)) porque el mercado es un gasto recurrente que casi todos hacen. Con `breaks = 17` el pico del histograma queda visiblemente más alejado del origen que en `Travel_Spending` o `Entertainment_Spending` (comparar más abajo), aunque conserva la misma forma de cola derecha (asimetría 4,01).
 
 ### `Fuel_Spending`
 
@@ -486,7 +508,7 @@ hist(credit$Fuel_Spending, breaks = 60, col = "salmon", border = "black", main =
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** el gasto en combustible depende de si el cliente tiene vehículo, así que conviven un grupo grande de gasto bajo con una minoría de gasto alto (asimetría 4,69, mediana \$5.466 frente a un máximo de \$235.600). Con `breaks = 60` esa minoría se dispersa en barras de 1 o 2 observaciones cada una — visualmente parece "más información" pero es exactamente el ruido de muestreo que la regla de Sturges busca evitar.
+**Lectura:** el gasto en combustible depende de si el cliente tiene vehículo, así que conviven un grupo grande de gasto bajo con una minoría de gasto alto (asimetría 4,69, mediana 5.466(₹) frente a un máximo de 235.600(₹)). Con `breaks = 60` esa minoría se dispersa en barras de 1 o 2 observaciones cada una — visualmente parece "más información" pero es exactamente el ruido de muestreo que la regla de Sturges busca evitar.
 
 ### `Dining_Spending`
 
@@ -498,7 +520,7 @@ hist(credit$Dining_Spending, breaks = 60, col = "salmon", border = "black", main
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** comer fuera es un gasto discrecional: la mediana (\$4.847) es menos de la mitad de la media (\$9.090), y con `breaks = 17` se distingue bien el grueso de clientes que gastan de forma moderada frente a la minoría que concentra montos muy altos (hasta \$227.400). Es, en escala, casi un calco de `Online_Shopping_Spending` — otra señal de que varias categorías de gasto discrecional comparten el mismo mecanismo generador.
+**Lectura:** comer fuera es un gasto discrecional: la mediana (4.847(₹)) es menos de la mitad de la media (9.090(₹)), y con `breaks = 17` se distingue bien el grueso de clientes que gastan de forma moderada frente a la minoría que concentra montos muy altos (hasta 227.400(₹)). Es, en escala, casi un calco de `Online_Shopping_Spending` — otra señal de que varias categorías de gasto discrecional comparten el mismo mecanismo generador.
 
 ### `Travel_Spending`
 
@@ -510,7 +532,7 @@ hist(credit$Travel_Spending, breaks = 60, col = "salmon", border = "black", main
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** `Travel_Spending` tiene la asimetría más alta de las siete categorías de gasto (5,71) y ya había aparecido en el Módulo 5 como la variable con el $Z$-máximo más extremo de todo el dataset (19,4 $\sigma$). Con `breaks = 17` casi toda la masa se aplasta contra el origen (mediana \$2.883) y la cola visible hacia \$213.100 es literalmente un puñado de clientes: la mayoría no viaja o viaja poco, y quienes sí lo hacen gastan un orden de magnitud más.
+**Lectura:** `Travel_Spending` tiene la asimetría más alta de las siete categorías de gasto (5,71) y ya había aparecido en el Módulo 5 como la variable con el $Z$-máximo más extremo de todo el dataset (19,4 $\sigma$). Con `breaks = 17` casi toda la masa se aplasta contra el origen (mediana 2.883(₹)) y la cola visible hacia 213.100(₹) es literalmente un puñado de clientes: la mayoría no viaja o viaja poco, y quienes sí lo hacen gastan un orden de magnitud más.
 
 ### `Entertainment_Spending`
 
@@ -522,7 +544,7 @@ hist(credit$Entertainment_Spending, breaks = 60, col = "salmon", border = "black
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** gasto discrecional y ocasional, con asimetría 5,01 — la segunda más alta después de `Travel_Spending`. Con `breaks = 17` el pico queda pegado al origen (mediana \$3.830) con una cola derecha marcada que corresponde a quienes consumen ocio de forma intensiva; con `breaks = 60` esa cola se vuelve un rastro de barras casi vacías, sin información adicional real.
+**Lectura:** gasto discrecional y ocasional, con asimetría 5,01 — la segunda más alta después de `Travel_Spending`. Con `breaks = 17` el pico queda pegado al origen (mediana 3.830(₹)) con una cola derecha marcada que corresponde a quienes consumen ocio de forma intensiva; con `breaks = 60` esa cola se vuelve un rastro de barras casi vacías, sin información adicional real.
 
 ### `Utility_Bill_Spending`
 
@@ -534,7 +556,7 @@ hist(credit$Utility_Bill_Spending, breaks = 60, col = "salmon", border = "black"
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** domiciliar servicios públicos en la tarjeta es una práctica frecuente pero de monto acotado: con `breaks = 17` la masa vive en valores bajos (mediana \$6.574) y la cola derecha, más corta que la de `Travel_Spending` o `Fuel_Spending` (asimetría 4,35, la más baja de las siete categorías de gasto), corresponde a hogares con facturas altas, no a un grupo tan extremo como en las demás categorías.
+**Lectura:** domiciliar servicios públicos en la tarjeta es una práctica frecuente pero de monto acotado: con `breaks = 17` la masa vive en valores bajos (mediana 6.574(₹)) y la cola derecha, más corta que la de `Travel_Spending` o `Fuel_Spending` (asimetría 4,35, la más baja de las siete categorías de gasto), corresponde a hogares con facturas altas, no a un grupo tan extremo como en las demás categorías.
 
 ### `Outstanding_Balance`
 
@@ -546,7 +568,7 @@ hist(credit$Outstanding_Balance, breaks = 60, col = "salmon", border = "black", 
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** el saldo pendiente sigue la lógica del gasto y del cupo: con `breaks = 17` la mediana (\$145.300) queda muy por debajo de la media (\$303.400), y el máximo (\$5.790.000) es casi 19 veces la media. Es, junto con `Statement_Balance`, la variable con la que comparte casi toda su información ($r = 0{,}997$, Módulo 7) — el histograma de una es, en la práctica, el histograma de la otra reescalado.
+**Lectura:** el saldo pendiente sigue la lógica del gasto y del cupo: con `breaks = 17` la mediana (145.300(₹)) queda muy por debajo de la media (303.400(₹)), y el máximo (5.790.000(₹)) es casi 19 veces la media. Es, junto con `Statement_Balance`, la variable con la que comparte casi toda su información ($r = 0{,}997$, Módulo 7) — el histograma de una es, en la práctica, el histograma de la otra reescalado.
 
 ### `Statement_Balance`
 
@@ -558,7 +580,7 @@ hist(credit$Statement_Balance, breaks = 60, col = "salmon", border = "black", ma
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** el saldo del último corte de facturación tiene una forma prácticamente idéntica a `Outstanding_Balance` en los tres paneles — misma cola derecha, misma sensibilidad a `breaks = 60` —, consistente con ser casi la misma magnitud económica medida en dos momentos distintos del ciclo de facturación (mediana \$192.400, máximo \$6.103.000).
+**Lectura:** el saldo del último corte de facturación tiene una forma prácticamente idéntica a `Outstanding_Balance` en los tres paneles — misma cola derecha, misma sensibilidad a `breaks = 60` —, consistente con ser casi la misma magnitud económica medida en dos momentos distintos del ciclo de facturación (mediana 192.400(₹), máximo 6.103.000(₹)).
 
 ### `Payment_Amount`
 
@@ -570,7 +592,7 @@ hist(credit$Payment_Amount, breaks = 60, col = "salmon", border = "black", main 
 par(mfrow = c(1, 1))
 ```
 
-**Lectura:** el monto pagado es proporcional a lo facturado, así que reproduce la misma forma sesgada del saldo (mediana \$136.600, media \$279.400): con `breaks = 17` se distinguen bien los pagos moderados de la mayoría frente a los pagos muy grandes de la minoría con saldos altos, sin el ruido que introduce `breaks = 60` en la cola.
+**Lectura:** el monto pagado es proporcional a lo facturado, así que reproduce la misma forma sesgada del saldo (mediana 136.600(₹), media 279.400(₹)): con `breaks = 17` se distinguen bien los pagos moderados de la mayoría frente a los pagos muy grandes de la minoría con saldos altos, sin el ruido que introduce `breaks = 60` en la cola.
 
 ### `Payment_Ratio`
 
@@ -680,33 +702,312 @@ par(mfrow = c(1, 1))
 
 **Lectura:** `Credit_Score` ya recibió un análisis completo al comienzo de este módulo (4.1 y 4.2) como variable de referencia; se repite aquí solo para que las 26 queden documentadas de manera uniforme. Lo único que añade este repaso es el contraste con el resto de la cartera: es la única variable, junto con `Payment_Ratio`, con asimetría negativa (-0,58), y su rango (367 a 792) es corto comparado con las variables de dinero — por diseño, un puntaje crediticio no puede dispararse en órdenes de magnitud como sí lo hace un ingreso o un saldo.
 
-## Regla de Sturges
-
-La comparación anterior dejó una pregunta sin responder: ¿por qué 17 y no cualquier otro número entre 5 y 60? Hace falta un criterio que no dependa de "probar hasta que se vea bien". La regla de Sturges da ese criterio: propone el número de intervalos como función únicamente de $n$ (el tamaño de la muestra), bajo el supuesto de que los datos son aproximadamente normales —
-
-$$k = 1 + \log_2(n) = 1 + 3.322 \cdot \log_{10}(n)$$
-
-La intuición es que $k$ crece con $n$, pero **logarítmicamente**, no proporcionalmente: duplicar el tamaño de la muestra no debería duplicar el número de barras, porque cada barra necesita suficientes observaciones dentro para que su altura sea informativa y no solo ruido de muestreo.
-
-```{r, regla_sturges}
-n_obs <- length(score)
-k_sturges <- nclass.Sturges(score)
-k_teorico <- 1 + log2(n_obs)
-
-c(n = n_obs, k_Sturges = k_sturges, k_Formula = round(k_teorico, 2))
-```
-
-**Evaluación y decisión:** para $n = `r format(n_obs, big.mark=".")`$, la fórmula da $k = `r round(k_teorico,2)`$ y `nclass.Sturges()` la redondea a $k = `r k_sturges`$ intervalos — el valor que ya se usó como el panel "Balanceado" de la comparación anterior, no una coincidencia sino la justificación formal de por qué ese panel y no el de `breaks = 5` o `breaks = 60` es el que se declara en el informe. Nótese también que $k$ **no depende de la variable** — es la misma fórmula para las 26 variables numéricas del Módulo 1, porque solo usa $n$, que es común a todas; lo que sí cambia de una variable a otra es el ancho de cada barra ($h = \text{rango}/k$), que ya se hizo explícito variable por variable en la sección anterior.
-
 ## Conclusión del módulo
 
 1. `Credit_Score` tiene media `r round(media_cs,1)` por debajo de su mediana (`r mediana_cs`), la primera señal de asimetría izquierda que el histograma con Sturges (k = `r k_sturges`) confirma visualmente sin exagerarla ni esconderla.
 2. El número de clases de un histograma es una decisión del analista, no un hecho de los datos: `breaks = 5` esconde la asimetría y `breaks = 60` la disuelve en ruido de muestreo; la regla de Sturges da un criterio objetivo, basado solo en $n$, para fijar ese número — aquí $k = `r k_sturges`$ para las 26 variables numéricas.
-3. Esa misma comparación de tres anchos, con el ancho de barra ya expresado en las unidades propias de cada variable, se repitió sobre las 26 variables numéricas de la cartera; el detalle de cada una queda documentado en la sección anterior.
+3. Esa misma comparación de tres anchos, con el ancho de barra ya expresado en las unidades propias de cada variable, se repitió sobre las 26 variables numéricas de la cartera; el detalle de cada una queda documentado en la sección 
+
 
 ------------------------------------------------------------------------
 
-# Módulo 4: Caja y Bigotes (Boxplots) y Detección Univariada de Atípicos (S03)
+# Módulo 4: Densidad de Kernel (S04)
+
+El Módulo 3 dejó una deuda pendiente: el histograma depende no solo del número de cortes (`breaks`), sino de dónde empieza la primera caja — dos histogramas con el mismo ancho pero corridos medio intervalo pueden verse distintos, sin ninguna justificación de por qué. La densidad de kernel resuelve ese segundo problema reemplazando las cajas por una curva continua, construida sumando una "montañita" (el kernel) centrada en cada observación. La decisión sobre cuántos cortes usar no desaparece: se traslada íntegramente al ancho de banda $h$.
+
+## Cómo se escoge $h$ sin adivinar
+
+La **regla de Silverman**, que es la que R usa por defecto:
+
+$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
+
+donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y ensanche la curva de más — la misma preocupación que llevó a preferir `fivenum()` sobre la media en el Módulo 4. R implementa esta fórmula en `bw.nrd0(x)`, y es la que usamos en todo este módulo en vez de adivinar un valor.
+
+## Densidad de Kernel aplicada a nuestras variables
+
+### Primero con una variable
+
+Igual que en el Módulo 3, empezamos con `Credit_Score` — la variable de riesgo de referencia de todo el informe — antes de repetir el procedimiento sobre las 26:
+
+```{r, densidad_kernel_credit_score}
+var <- credit$Credit_Score
+h <- bw.nrd0(var)
+
+plot(density(var, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit Score", lwd = 2)
+rug(var)
+```
+
+**Lectura:** con $h = `r round(h,3)`$, la curva confirma sin ambigüedad lo que el histograma del Módulo 3 ya insinuaba con `breaks = 17`: una forma unimodal con una cola ligeramente más larga hacia la izquierda — pero ahora sin la arbitrariedad del origen de las cajas, porque una curva de densidad no tiene "primera caja".
+
+### Aplicado a cada variable
+
+Repetimos el procedimiento —calcular $h$ con `bw.nrd0()`, graficar la densidad, marcar los datos individuales con `rug()`— sobre las 25 variables numéricas restantes, cada una en su propio bloque de código y con una lectura específica de lo que su curva muestra.
+
+### `Age`
+
+```{r, dens_Age}
+h <- bw.nrd0(credit$Age)
+plot(density(credit$Age, bw = h), main = paste("h =", round(h, 4)), xlab = "Age", lwd = 2)
+rug(credit$Age)
+```
+
+**Lectura:** con $h = 1{,}27$ años, la curva confirma la forma casi simétrica que ya mostró el histograma, con su punto más alto cerca de 31,9 años y una cola derecha suave hacia los 70 — sin las 60 barras del histograma, la ligera inclinación se ve incluso más limpia.
+
+### `Annual_Income`
+
+```{r, dens_Annual_Income}
+h <- bw.nrd0(credit$Annual_Income)
+plot(density(credit$Annual_Income, bw = h), main = paste("h =", round(h, 4)), xlab = "Annual_Income", lwd = 2)
+rug(credit$Annual_Income)
+```
+
+**Lectura:** $h \approx 77.600(₹)$ — un ancho de banda grande, coherente con una variable cuya dispersión (1.407.257(₹) de desviación estándar) es de las mayores del dataset. La curva alcanza su punto más alto cerca de 1.045.364(₹), muy por debajo de la media (1.479.318(₹)): la moda, a diferencia de la media, no se deja arrastrar por la cola de altos ingresos.
+
+### `Credit_Limit`
+
+```{r, dens_Credit_Limit}
+h <- bw.nrd0(credit$Credit_Limit)
+plot(density(credit$Credit_Limit, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit_Limit", lwd = 2)
+rug(credit$Credit_Limit)
+```
+
+**Lectura:** la moda (86.922(₹)) queda muy cerca del mínimo de la escala de cupos usuales, y muy lejos de la media (709.677(₹)) — la curva deja ver, mejor que el histograma escalonado, que la mayoría de la cartera tiene cupos modestos y una minoría con cupos de varios millones estira la curva hacia la derecha sin levantarla.
+
+### `Card_Age_Months`
+
+```{r, dens_Card_Age_Months}
+h <- bw.nrd0(credit$Card_Age_Months)
+plot(density(credit$Card_Age_Months, bw = h), main = paste("h =", round(h, 4)), xlab = "Card_Age_Months", lwd = 2)
+rug(credit$Card_Age_Months)
+```
+
+**Lectura:** con $h = 3$ meses, la curva tiene su pico cerca de los 35 meses (menos de 3 años) y decae de forma suave hasta los 240 — una cartera de tarjetas mayoritariamente jóvenes, sin el segundo pico que tendría una cartera con una generación antigua de tarjetahabientes y otra reciente.
+
+### `Monthly_Spending`
+
+```{r, dens_Monthly_Spending}
+h <- bw.nrd0(credit$Monthly_Spending)
+plot(density(credit$Monthly_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Monthly_Spending", lwd = 2)
+rug(credit$Monthly_Spending)
+```
+
+**Lectura:** con $h \approx 4.350(₹)$, la curva de densidad confirma la marcada asimetría hacia la derecha (asimetría 3,00) que acumula las colas de las siete categorías de gasto: la moda de la curva cae cerca de 18.592(₹), muy por debajo de la mediana (50.022(₹)) y de la media (73.872(₹)), mostrando con una curva continua cómo la gran mayoría de la cartera tiene consumos mensuales contenidos mientras un grupo reducido se extiende hasta más de 600.000(₹).
+
+### `Monthly_Transactions`
+
+```{r, dens_Monthly_Transactions}
+h <- bw.nrd0(credit$Monthly_Transactions)
+plot(density(credit$Monthly_Transactions, bw = h), main = paste("h =", round(h, 4)), xlab = "Monthly_Transactions", lwd = 2)
+rug(credit$Monthly_Transactions)
+```
+
+**Lectura:** curva unimodal y razonablemente simétrica, con la moda (64,1) cerca de la mediana (76) y la media (83,0) — la variable con menor asimetría (0,54) de todo el dataset junto con `Mobile_App_Login`, y su densidad lo confirma sin las asperezas que sí tienen las variables de gasto.
+
+### `Avg_Transaction_Value`
+
+```{r, dens_Avg_Transaction_Value}
+h <- bw.nrd0(credit$Avg_Transaction_Value)
+plot(density(credit$Avg_Transaction_Value, bw = h), main = paste("h =", round(h, 4)), xlab = "Avg_Transaction_Value", lwd = 2)
+rug(credit$Avg_Transaction_Value)
+```
+
+**Lectura:** moda cerca de 472(₹), casi calcada de su propia mediana (617(₹)) — el `rug()` en la parte baja del eje se ve denso y casi continuo, mientras que hacia el máximo (10.460(₹)) las marcas se separan tanto que son casi invisibles: la representación más directa de un cociente con cola pesada.
+
+### `Online_Shopping_Spending`
+
+```{r, dens_Online_Shopping_Spending}
+h <- bw.nrd0(credit$Online_Shopping_Spending)
+plot(density(credit$Online_Shopping_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Online_Shopping_Spending", lwd = 2)
+rug(credit$Online_Shopping_Spending)
+```
+
+**Lectura:** con $h \approx 773(₹)$, la curva sube rápido cerca del origen (moda 2.323(₹)) y desciende con una cola larga y suave — el mismo patrón "pico bajo, cola larga" de todas las categorías de gasto discrecional, aquí sin el escalonado que el histograma sí mostraba.
+
+### `Grocery_Spending`
+
+```{r, dens_Grocery_Spending}
+h <- bw.nrd0(credit$Grocery_Spending)
+plot(density(credit$Grocery_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Grocery_Spending", lwd = 2)
+rug(credit$Grocery_Spending)
+```
+
+**Lectura:** la moda (3.600(₹)) es la más alta de las siete categorías de gasto, consistente con ser también la de mediana más alta (10.650(₹), Módulo 4): el mercado es el único gasto que casi toda la cartera hace de forma sustancial, y la curva lo refleja con un pico desplazado del origen.
+
+### `Fuel_Spending`
+
+```{r, dens_Fuel_Spending}
+h <- bw.nrd0(credit$Fuel_Spending)
+plot(density(credit$Fuel_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Fuel_Spending", lwd = 2)
+rug(credit$Fuel_Spending)
+```
+
+**Lectura:** moda cerca de 1.653(₹), con una cola visible pero no tan extendida como la de `Travel_Spending` o `Entertainment_Spending` — la curva sube y baja de forma más simétrica en su primer tramo, coherente con que el combustible es un gasto de necesidad para quien tiene vehículo, no puramente discrecional.
+
+### `Dining_Spending`
+
+```{r, dens_Dining_Spending}
+h <- bw.nrd0(credit$Dining_Spending)
+plot(density(credit$Dining_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Dining_Spending", lwd = 2)
+rug(credit$Dining_Spending)
+```
+
+**Lectura:** con moda cerca de 1.707(₹) y $h \approx 640(₹)$, la curva es visualmente casi un calco de la de `Online_Shopping_Spending` (moda 2.323(₹), $h \approx 773(₹)$) — dos categorías de gasto discrecional distintas que comparten el mismo mecanismo generador de "mayoría moderada, minoría intensiva".
+
+### `Travel_Spending`
+
+```{r, dens_Travel_Spending}
+h <- bw.nrd0(credit$Travel_Spending)
+plot(density(credit$Travel_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Travel_Spending", lwd = 2)
+rug(credit$Travel_Spending)
+```
+
+**Lectura:** de las siete categorías de gasto, es la que tiene la curva más apretada contra el origen (moda 773(₹), la más baja del grupo) y la cola más extendida y plana — coherente con ser la variable de mayor asimetría (5,71) y mayor $Z$-máximo (19,4 $\sigma$) de todo el dataset: la mayoría casi no viaja, y el `rug()` muestra marcas aisladas muy lejos del grueso de la cartera.
+
+### `Entertainment_Spending`
+
+```{r, dens_Entertainment_Spending}
+h <- bw.nrd0(credit$Entertainment_Spending)
+plot(density(credit$Entertainment_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Entertainment_Spending", lwd = 2)
+rug(credit$Entertainment_Spending)
+```
+
+**Lectura:** moda cerca de \$954, entre la de `Travel_Spending` (773(₹)) y la de `Dining_Spending` (1.707(₹)) — un gasto discrecional y ocasional que el `rug()` muestra denso hasta unos pocos miles de Rupias (₹) y disperso mucho más allá.
+
+### `Utility_Bill_Spending`
+
+```{r, dens_Utility_Bill_Spending}
+h <- bw.nrd0(credit$Utility_Bill_Spending)
+plot(density(credit$Utility_Bill_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Utility_Bill_Spending", lwd = 2)
+rug(credit$Utility_Bill_Spending)
+```
+
+**Lectura:** moda cerca de 2.358(₹), la más alta después de `Grocery_Spending` entre las categorías de gasto — coherente con tener también la asimetría más baja del grupo (4,35, Módulo 3): domiciliar servicios públicos es una práctica recurrente y de monto relativamente acotado, no tan discrecional como entretenimiento o viajes.
+
+### `Outstanding_Balance`
+
+```{r, dens_Outstanding_Balance}
+h <- bw.nrd0(credit$Outstanding_Balance)
+plot(density(credit$Outstanding_Balance, bw = h), main = paste("h =", round(h, 4)), xlab = "Outstanding_Balance", lwd = 2)
+rug(credit$Outstanding_Balance)
+```
+
+**Lectura:** con $h \approx 20.390(₹)$, la moda (32.949(₹)) queda muy por debajo de la mediana (145.300(₹)) y de la media (303.400(₹)) — tres medidas de centro que se alejan cada vez más entre sí, la firma de una cola derecha larga y pesada.
+
+### `Statement_Balance`
+
+```{r, dens_Statement_Balance}
+h <- bw.nrd0(credit$Statement_Balance)
+plot(density(credit$Statement_Balance, bw = h), main = paste("h =", round(h, 4)), xlab = "Statement_Balance", lwd = 2)
+rug(credit$Statement_Balance)
+```
+
+**Lectura:** curva casi indistinguible de la de `Outstanding_Balance` en su forma general (moda 55.687(₹) frente a 32.949(₹), ambas muy por debajo de sus medias) — la contraparte visual, otra vez, de compartir prácticamente la misma información ($r = 0{,}997$).
+
+### `Payment_Amount`
+
+```{r, dens_Payment_Amount}
+h <- bw.nrd0(credit$Payment_Amount)
+plot(density(credit$Payment_Amount, bw = h), main = paste("h =", round(h, 4)), xlab = "Payment_Amount", lwd = 2)
+rug(credit$Payment_Amount)
+```
+
+**Lectura:** moda cerca de 39.820(₹), con una cola que se extiende hasta cerca de 6.000.000(₹) — la misma familia de forma que `Outstanding_Balance` y `Statement_Balance`, coherente con que el pago mensual es proporcional a lo que el cliente debe.
+
+### `Payment_Ratio`
+
+```{r, dens_Payment_Ratio}
+h <- bw.nrd0(credit$Payment_Ratio)
+plot(density(credit$Payment_Ratio, bw = h), main = paste("h =", round(h, 4)), xlab = "Payment_Ratio", lwd = 2)
+rug(credit$Payment_Ratio)
+```
+
+**Lectura:** con $h \approx 0{,}025$ (el ancho de banda más pequeño entre las variables de dinero/ratio, porque su rango es corto), la curva sube hasta un pico cerca de 0,97 y cae abruptamente después — la única variable de las 26 cuya moda está pegada al borde superior de su rango posible, la contraparte visual exacta de su asimetría negativa.
+
+### `Credit_Utilization`
+
+```{r, dens_Credit_Utilization}
+h <- bw.nrd0(credit$Credit_Utilization)
+plot(density(credit$Credit_Utilization, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit_Utilization", lwd = 2)
+rug(credit$Credit_Utilization)
+```
+
+**Lectura:** curva suave y unimodal con pico cerca de 0,38, sin ninguna de las asperezas de las variables de dinero — el ancho de banda más pequeño de todo el dataset ($h \approx 0{,}021$), consistente con ser de las variables menos dispersas (desviación estándar 0,206).
+
+### `Cash_Advance_Amount`
+
+```{r, dens_Cash_Advance_Amount}
+h <- bw.nrd0(credit$Cash_Advance_Amount)
+plot(density(credit$Cash_Advance_Amount, bw = h), main = paste("h =", round(h, 4)), xlab = "Cash_Advance_Amount", lwd = 2)
+rug(credit$Cash_Advance_Amount)
+```
+
+**Lectura:** aquí la densidad de kernel muestra su límite: el 70,3 % de los clientes tiene exactamente cero, pero `density()` no sabe dibujar una masa puntual — la dibuja como una curva continua con un pico pronunciado cerca de cero (moda 369,6) que en realidad representa una barra de altura finita en un histograma. La curva es útil para ver la forma de la cola de quienes sí usan avances, pero engañosa si se lee como "la probabilidad de gastar exactamente 370(₹)".
+
+### `EMI_Count`
+
+```{r, dens_EMI_Count}
+h <- bw.nrd0(credit$EMI_Count)
+plot(density(credit$EMI_Count, bw = h), main = paste("h =", round(h, 4)), xlab = "EMI_Count", lwd = 2)
+rug(credit$EMI_Count)
+```
+
+**Lectura:** con solo 7 valores enteros posibles, la densidad de kernel dibuja una curva continua sobre una variable que en realidad no lo es — el `rug()` muestra 7 columnas de marcas apiladas, no un continuo, y la curva suave entre ellas (pico cerca de 2) es una aproximación conveniente, no una descripción literal de cómo se distribuyen los datos.
+
+### `International_Transactions`
+
+```{r, dens_International_Transactions}
+h <- bw.nrd0(credit$International_Transactions)
+plot(density(credit$International_Transactions, bw = h), main = paste("h =", round(h, 4)), xlab = "International_Transactions", lwd = 2)
+rug(credit$International_Transactions)
+```
+
+**Lectura:** con el 59,3 % de la cartera en cero, la curva tiene su pico prácticamente pegado al origen y una cola larga y baja hasta 14 — el mismo problema conceptual que `Cash_Advance_Amount`: la "montaña" cerca de cero es la manera en que `density()` traduce una masa puntual discreta a una curva continua, no evidencia de que existan valores fraccionarios de transacciones internacionales.
+
+### `Reward_Points_Earned`
+
+```{r, dens_Reward_Points_Earned}
+h <- bw.nrd0(credit$Reward_Points_Earned)
+plot(density(credit$Reward_Points_Earned, bw = h), main = paste("h =", round(h, 4)), xlab = "Reward_Points_Earned", lwd = 2)
+rug(credit$Reward_Points_Earned)
+```
+
+**Lectura:** moda cerca de 468 puntos, con una curva que reproduce casi exactamente la forma de `Monthly_Spending` reescalada — de nuevo la contraparte visual de una correlación de 0,980 entre ambas.
+
+### `Reward_Points_Redeemed`
+
+```{r, dens_Reward_Points_Redeemed}
+h <- bw.nrd0(credit$Reward_Points_Redeemed)
+plot(density(credit$Reward_Points_Redeemed, bw = h), main = paste("h =", round(h, 4)), xlab = "Reward_Points_Redeemed", lwd = 2)
+rug(credit$Reward_Points_Redeemed)
+```
+
+**Lectura:** con el 39,9 % de los clientes en cero, la moda de la curva (7,5) queda prácticamente pegada al origen — el mismo efecto de suavizado sobre una masa puntual que ya se vio en `Cash_Advance_Amount` e `International_Transactions`, y la cola hasta 44.820 puntos corresponde a la minoría que sí redime en montos grandes.
+
+### `Mobile_App_Login`
+
+```{r, dens_Mobile_App_Login}
+h <- bw.nrd0(credit$Mobile_App_Login)
+plot(density(credit$Mobile_App_Login, bw = h), main = paste("h =", round(h, 4)), xlab = "Mobile_App_Login", lwd = 2)
+rug(credit$Mobile_App_Login)
+```
+
+**Lectura:** curva suave y casi simétrica con pico cerca de 24,6 sesiones, muy parecida en forma a la de `Monthly_Transactions` — otro hábito de consulta razonablemente uniforme entre clientes, sin la cola pesada de las variables de dinero.
+
+### `Credit_Score`
+
+Ya se presentó como variable de referencia al comienzo de este módulo ($h = 7{,}076$, moda cerca de 663,2). Se repite aquí solo para mantener el mismo orden de las 26 variables que en los Módulos 3 y 4; no hay nada nuevo que añadir a lo ya discutido ahí.
+
+**Lectura de conjunto:** vistas las 26, el ancho de banda $h$ varía en casi cinco órdenes de magnitud (de 0,02 en los ratios acotados a más de 77.000(₹) en `Annual_Income`), siempre calibrado por `bw.nrd0()` a la dispersión propia de cada variable. Las variables con una masa de clientes en cero (`Cash_Advance_Amount`, `International_Transactions`, `Reward_Points_Redeemed`, y en menor medida `EMI_Count`) comparten una limitación real de este método: la curva continua no puede representar fielmente un valor discreto que concentra a un tercio o más de la cartera, y hay que leerla sabiendo eso.
+
+## Conclusión del módulo
+
+1. La densidad de kernel resuelve el problema del origen arbitrario del histograma sin eliminar la decisión: la traslada al ancho de banda $h$, calibrado aquí con la regla de Silverman (`bw.nrd0()`) en vez de fijado a mano.
+2. Sobre `Credit_Score`, la curva confirma con más nitidez la misma forma unimodal y ligeramente asimétrica hacia la izquierda que ya habían anticipado la media, la mediana (Módulo 3) y el histograma con Sturges.
+3. Aplicada a las 26 variables, la densidad de kernel reproduce — en una curva continua — la misma clasificación de formas ya documentada en el diccionario del Módulo 1: picos pegados al origen en las variables de gasto, forma acotada y compacta en los ratios, y barras discretas separadas en los conteos de rango corto.
+
+------------------------------------------------------------------------
+
+# Módulo 5: Caja y Bigotes (Boxplots) y Detección Univariada de Atípicos (S03)
 
 El Módulo 3 trabajó con `Credit_Score`, una variable casi simétrica. Este módulo cambia deliberadamente a `Monthly_Spending`, el gasto mensual total, que el propio diccionario del Módulo 1 describe como fuertemente asimétrica a la derecha (la suma de siete categorías de gasto que ya vienen sesgadas). Es el caso típico donde la caja y bigotes — y la regla de Tukey que la acompaña — se comporta distinto a como lo hizo con una variable simétrica, y por eso conviene tratarla aparte.
 
@@ -721,7 +1022,7 @@ names(f_gasto) <- c("Mínimo", "Q1", "Mediana", "Q3", "Máximo")
 f_gasto
 ```
 
-**Lectura:** el salto de la mediana (\$`r format(round(f_gasto["Mediana"]), big.mark=".")`) al máximo (\$`r format(round(f_gasto["Máximo"]), big.mark=".")`) es enorme comparado con el salto del mínimo a la mediana — la firma numérica de una cola derecha larga, consistente con lo que el diccionario del Módulo 1 ya anticipaba para esta variable.
+**Lectura:** el salto de la mediana (`r format(round(f_gasto["Mediana"]), big.mark=".")`(₹)) al máximo (`r format(round(f_gasto["Máximo"]), big.mark=".")`(₹)) es enorme comparado con el salto del mínimo a la mediana — la firma numérica de una cola derecha larga, consistente con lo que el diccionario del Módulo 1 ya anticipaba para esta variable.
 
 ## Rango Intercuartílico ($RIC$) y Límites de Tukey
 
@@ -743,7 +1044,7 @@ c(Q1 = q1_gasto, Q3 = q3_gasto, RIC = ric_gasto,
   Lim_Inferior = lim_inf_gasto, Lim_Superior = lim_sup_gasto)
 ```
 
-**Lectura:** el límite inferior da `r format(round(lim_inf_gasto), big.mark=".")` — **negativo**, algo imposible para un gasto — y el superior da \$`r format(round(lim_sup_gasto), big.mark=".")`. Que el propio límite inferior sea un valor que la variable no puede tomar es ya una pista de que la regla de Tukey, pensada para variables simétricas, se comporta de forma particular sobre una variable con esta cola.
+**Lectura:** el límite inferior da `r format(round(lim_inf_gasto), big.mark=".")` (**negativo**, algo imposible para un gasto) y el superior da `r format(round(lim_sup_gasto), big.mark=".")`(₹). Que el propio límite inferior sea un valor que la variable no puede tomar es ya una pista de que la regla de Tukey, pensada para variables simétricas, se comporta de forma particular sobre una variable con esta cola.
 
 ## Conteo de atípicos univariados
 
@@ -764,7 +1065,7 @@ boxplot(gasto, horizontal = TRUE, col = "skyblue",
 abline(v = c(lim_inf_gasto, lim_sup_gasto), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** `r format(n_atipicos_gasto, big.mark=".")` clientes (`r sprintf("%.2f%%", pct_atipicos_gasto)` de la cartera) quedan marcados como atípicos, y los tres cuartos de la caja se ven aplastados contra el lado izquierdo del gráfico — efecto directo de que el bigote superior tiene que estirarse hasta \$`r format(round(lim_sup_gasto), big.mark=".")` para alcanzar siquiera al 91,6 % de los datos que sí caen dentro. Esto no es un caso aislado de `Monthly_Spending`: se repite, con distinta intensidad, en la mayoría de las variables de gasto y saldo de este dataset, así que antes de juzgar caso por caso conviene verlo en las 26 a la vez.
+**Lectura:** `r format(n_atipicos_gasto, big.mark=".")` clientes (`r sprintf("%.2f%%", pct_atipicos_gasto)` de la cartera) quedan marcados como atípicos, y los tres cuartos de la caja se ven aplastados contra el lado izquierdo del gráfico — efecto directo de que el bigote superior tiene que estirarse hasta `r format(round(lim_sup_gasto), big.mark=".")`(₹) para alcanzar siquiera al 91,6 % de los datos que sí caen dentro. Esto no es un caso aislado de `Monthly_Spending`: se repite, con distinta intensidad, en la mayoría de las variables de gasto y saldo de este dataset, así que antes de juzgar caso por caso conviene verlo en las 26 a la vez.
 
 Repetimos el procedimiento anterior —cinco números, límites de Tukey, conteo de atípicos, boxplot con esos límites— sobre las 25 variables numéricas restantes, cada una en su propio bloque de código y con una lectura específica de lo que sus propios números dicen.
 
@@ -802,7 +1103,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Annual_Inc
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** el límite inferior da $-851.089$ — negativo, porque el $RIC$ (\$1.005.907) ya es grande frente al propio $Q_1$ (\$657.771) — así que todos los 4.037 atípicos (8,07 %) están en la cola superior: son los clientes de ingresos altos, no errores de captura, como ya se discutió en la sección anterior sobre el porqué de tantos atípicos.
+**Lectura:** el límite inferior da $-851.089$ — negativo, porque el $RIC$ (1.005.907(₹)) ya es grande frente al propio $Q_1$ (657.771(₹)) — así que todos los 4.037 atípicos (8,07 %) están en la cola superior: son los clientes de ingresos altos, no errores de captura, como ya se discutió en la sección anterior sobre el porqué de tantos atípicos.
 
 ### `Credit_Limit`
 
@@ -820,7 +1121,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Credit_Lim
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** patrón casi idéntico al de `Annual_Income` (límite inferior negativo, $-776.000$; 4.173 atípicos, 8,35 %, todos por arriba), consistente con que ambas variables están casi perfectamente ligadas ($r = 0{,}974$). La caja se ve visualmente aplastada contra la izquierda porque la mediana (\$396.000) está mucho más cerca del mínimo (\$16.000) que del bigote superior (\$1.712.000).
+**Lectura:** patrón casi idéntico al de `Annual_Income` (límite inferior negativo, $-776.000$; 4.173 atípicos, 8,35 %, todos por arriba), consistente con que ambas variables están casi perfectamente ligadas ($r = 0{,}974$). La caja se ve visualmente aplastada contra la izquierda porque la mediana (396.000(₹)) está mucho más cerca del mínimo (16.000(₹)) que del bigote superior (1.712.000(₹)).
 
 ### `Card_Age_Months`
 
@@ -842,7 +1143,7 @@ abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 
 ### `Monthly_Spending`
 
-Ya se presentó como caso de estudio al comienzo de este módulo: 4.213 atípicos (8,43 %), todos en la cola derecha, con el límite inferior negativo ($-\$57.933$) que ya se discutió arriba. Se incluye aquí solo para que la lista de las 26 variables quede completa y en el mismo orden que en los Módulos 3 y 8.
+Ya se presentó como caso de estudio al comienzo de este módulo: 4.213 atípicos (8,43 %), todos en la cola derecha, con el límite inferior negativo ($-57.933(₹)$) que ya se discutió arriba. Se incluye aquí solo para que la lista de las 26 variables quede completa y en el mismo orden que en los Módulos 3 y 8.
 
 ### `Monthly_Transactions`
 
@@ -878,7 +1179,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Avg_Transa
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,57 % de atípicos, con un máximo (\$10.460) que llega a casi 6,6 veces el límite superior (\$1.581). Al ser un cociente entre una variable sesgada (`Monthly_Spending`) y una acotada (`Monthly_Transactions`), la caja concentra toda la asimetría del numerador sin la protección que el denominador acotado le da a otras variables.
+**Lectura:** 8,57 % de atípicos, con un máximo (10.460(₹)) que llega a casi 6,6 veces el límite superior (1.581(₹)). Al ser un cociente entre una variable sesgada (`Monthly_Spending`) y una acotada (`Monthly_Transactions`), la caja concentra toda la asimetría del numerador sin la protección que el denominador acotado le da a otras variables.
 
 ### `Online_Shopping_Spending`
 
@@ -896,7 +1197,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Online_Sho
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,09 % de atípicos y un límite inferior negativo ($-\$12.230$), típico de las categorías de gasto: la caja queda comprimida entre \$0 y \$27.850, con el 8 % restante disperso en una cola que llega hasta \$258.200 — casi 20 veces el bigote superior.
+**Lectura:** 8,09 % de atípicos y un límite inferior negativo ($-12.230(₹)$), típico de las categorías de gasto: la caja queda comprimida entre 0(₹) y 27.850(₹), con el 8 % restante disperso en una cola que llega hasta 258.200(₹) — casi 20 veces el bigote superior.
 
 ### `Grocery_Spending`
 
@@ -914,7 +1215,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Grocery_Sp
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,06 % de atípicos, el porcentaje más bajo entre las siete categorías de gasto — consistente con tener la mediana más alta del grupo (\$10.650): al ser un gasto que casi todos hacen de forma recurrente, la caja central es proporcionalmente más ancha que en categorías más discrecionales como `Travel_Spending`.
+**Lectura:** 8,06 % de atípicos, el porcentaje más bajo entre las siete categorías de gasto — consistente con tener la mediana más alta del grupo (10.650(₹)): al ser un gasto que casi todos hacen de forma recurrente, la caja central es proporcionalmente más ancha que en categorías más discrecionales como `Travel_Spending`.
 
 ### `Fuel_Spending`
 
@@ -932,7 +1233,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Fuel_Spend
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,35 % de atípicos (4.176 clientes) por encima de \$25.250 — el grupo que sí tiene vehículo y se desplaza mucho, frente a la mayoría con gasto bajo (mediana \$5.466) que compone la caja compacta.
+**Lectura:** 8,35 % de atípicos (4.176 clientes) por encima de 25.250(₹) — el grupo que sí tiene vehículo y se desplaza mucho, frente a la mayoría con gasto bajo (mediana 5.466(₹)) que compone la caja compacta.
 
 ### `Dining_Spending`
 
@@ -968,7 +1269,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Travel_Spe
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,63 % de atípicos, el porcentaje más alto de las siete categorías de gasto, coherente con ser también la de mayor asimetría (5,71) y mayor $Z$-máximo (19,4 $\sigma$, Módulo 5). El bigote superior (\$15.540) es más de 14 veces la mediana (\$2.883): la mayoría casi no viaja, y quienes sí lo hacen gastan órdenes de magnitud más.
+**Lectura:** 8,63 % de atípicos, el porcentaje más alto de las siete categorías de gasto, coherente con ser también la de mayor asimetría (5,71) y mayor $Z$-máximo (19,4 $\sigma$, Módulo 5). El bigote superior (15.540(₹)) es más de 14 veces la mediana (2.883(₹)): la mayoría casi no viaja, y quienes sí lo hacen gastan órdenes de magnitud más.
 
 ### `Entertainment_Spending`
 
@@ -986,7 +1287,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Entertainm
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** 8,55 % de atípicos, el segundo porcentaje más alto después de `Travel_Spending` — consistente con ser también la segunda variable con mayor asimetría (5,01) entre las categorías de gasto. Gasto discrecional y ocasional: la mayoría se concentra por debajo de \$8.613 (Q3) y la minoría que consume ocio de forma intensiva forma la cola marcada.
+**Lectura:** 8,55 % de atípicos, el segundo porcentaje más alto después de `Travel_Spending` — consistente con ser también la segunda variable con mayor asimetría (5,01) entre las categorías de gasto. Gasto discrecional y ocasional: la mayoría se concentra por debajo de 8.613(₹) (Q3) y la minoría que consume ocio de forma intensiva forma la cola marcada.
 
 ### `Utility_Bill_Spending`
 
@@ -1112,7 +1413,7 @@ bxp(bp, horizontal = TRUE, col = "skyblue", main = "Diagrama de Caja: Cash_Advan
 abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 ```
 
-**Lectura:** el porcentaje de atípicos más alto de todo el dataset: 19,10 % (9.549 clientes). Con $Q_1 = 0$ (el 70,3 % de los clientes nunca hace avances), el $RIC$ se calcula casi enteramente sobre la minoría que sí los usa, y eso hace que el límite superior (\$21.730) sea muy bajo en relación con el máximo real (\$1.212.849) — una masa puntual en cero exagera, mecánicamente, el conteo de atípicos de Tukey en el resto de la variable.
+**Lectura:** el porcentaje de atípicos más alto de todo el dataset: 19,10 % (9.549 clientes). Con $Q_1 = 0$ (el 70,3 % de los clientes nunca hace avances), el $RIC$ se calcula casi enteramente sobre la minoría que sí los usa, y eso hace que el límite superior (21.730(₹)) sea muy bajo en relación con el máximo real (1.212.849(₹)) — una masa puntual en cero exagera, mecánicamente, el conteo de atípicos de Tukey en el resto de la variable.
 
 ### `EMI_Count`
 
@@ -1255,9 +1556,9 @@ La causa no es un error de captura en ninguna de las dos: es que la regla de Tuk
 
 ------------------------------------------------------------------------
 
-# Módulo 5: Comparación Multivariada Estandarizada mediante Boxplots (S03)
+# Módulo 6: Comparación Multivariada Estandarizada mediante Boxplots (S03)
 
-Los Módulos 3 y 4 miraron una variable a la vez. El siguiente paso natural en la taxonomía de S01 es comparar **varias variables en un solo gráfico** — pero un boxplot compara posiciones en el eje vertical, y eso solo tiene sentido si todas las variables están en la misma unidad. Aquí no lo están: `Annual_Income` se mide en pesos (cientos de miles), `Card_Age_Months` en meses (decenas) y `Payment_Ratio` es una proporción entre 0 y 1. Antes de graficar nada, cuantificamos qué tan distintas son esas escalas:
+Los Módulos 3 y 4 miraron una variable a la vez. El siguiente paso natural en la taxonomía de S01 es comparar **varias variables en un solo gráfico** — pero un boxplot compara posiciones en el eje vertical, y eso solo tiene sentido si todas las variables están en la misma unidad. Aquí no lo están: `Annual_Income` se mide en Rupias (₹) (cientos de miles), `Card_Age_Months` en meses (decenas) y `Payment_Ratio` es una proporción entre 0 y 1. Antes de graficar nada, cuantificamos qué tan distintas son esas escalas:
 
 ```{r, submatriz_numerica}
 cols_num <- sapply(credit, is.numeric)
@@ -1324,7 +1625,7 @@ top_zmax <- names(sort(z_max, decreasing = TRUE))[1]
 
 ------------------------------------------------------------------------
 
-# Módulo 6: Análisis Bivariado, Correlación y el "Punto Imposible" (S01 & S03 & S04)
+# Módulo 7: Análisis Bivariado, Correlación y el "Punto Imposible" (S01 & S03 & S04)
 
 ## Selección objetiva de las variables para el análisis bivariado
 
@@ -1382,7 +1683,7 @@ tabla_eta2[order(-tabla_eta2$Eta2), ]
 
 **Lectura y decisión:**
 
-3.  **Entre las categóricas, `Occupation` explica el `r sprintf("%.1f%%", 100*eta2(credit$Annual_Income, credit$Occupation))` de la varianza de `Annual_Income`** (de \$251.605 promedio en `Student` a \$4.369.221 en `Business Owner`, seis niveles con medias muy separadas), mientras que `Gender` explica menos del `r sprintf("%.2f%%", 100*eta2(credit$Annual_Income, credit$Gender))` de esa misma variable y del `r sprintf("%.2f%%", 100*eta2(credit$Credit_Score, credit$Gender))` de `Credit_Score`. **Por eso `Occupation` recibe un análisis de grupos (boxplot por categoría) más adelante en este módulo, y `Gender` no**: con una diferencia de ese tamaño, agrupar por género no aportaría nada que ya no se viera en la variable global.
+3.  **Entre las categóricas, `Occupation` explica el `r sprintf("%.1f%%", 100*eta2(credit$Annual_Income, credit$Occupation))` de la varianza de `Annual_Income`** (de 251.605(₹) promedio en `Student` a 4.369.221(₹) en `Business Owner`, seis niveles con medias muy separadas), mientras que `Gender` explica menos del `r sprintf("%.2f%%", 100*eta2(credit$Annual_Income, credit$Gender))` de esa misma variable y del `r sprintf("%.2f%%", 100*eta2(credit$Credit_Score, credit$Gender))` de `Credit_Score`. **Por eso `Occupation` recibe un análisis de grupos (boxplot por categoría) más adelante en este módulo, y `Gender` no**: con una diferencia de ese tamaño, agrupar por género no aportaría nada que ya no se viera en la variable global.
 4.  **Dato que confirma la coherencia interna del dataset simulado:** tanto `Card_Type` como `Occupation` explican bien las variables de dinero (`Card_Type` explica el `r sprintf("%.1f%%", 100*eta2(credit$Credit_Limit, credit$Card_Type))` de `Credit_Limit`) pero casi nada de `Credit_Score` (`r sprintf("%.2f%%", 100*eta2(credit$Credit_Score, credit$Card_Type))` y `r sprintf("%.2f%%", 100*eta2(credit$Credit_Score, credit$Occupation))` respectivamente). Es la misma conclusión del punto 2, vista ahora desde el lado categórico: **el riesgo crediticio en este dataset no depende de cuánto gana o gasta el cliente, sino de cómo paga.**
 
 ### Selección final
@@ -1498,7 +1799,7 @@ c(Q1 = q1_ingreso, Q3 = q3_ingreso, RIC = ric_ingreso,
   Lim_Inferior = lim_inf_ingreso, Lim_Superior = lim_sup_ingreso)
 ```
 
-El límite superior da \$`r format(round(lim_sup_ingreso), big.mark=".")`, así que el ingreso propuesto (\$3.000.000) queda cómodamente por debajo: nada raro, todavía.
+El límite superior da \$`r format(round(lim_sup_ingreso), big.mark=".")`, así que el ingreso propuesto (3.000.000(₹)) queda cómodamente por debajo: nada raro, todavía.
 
 **Paso 2 — límites de `Credit_Limit`:**
 
@@ -1517,7 +1818,7 @@ c(Q1 = q1_limite, Q3 = q3_limite, RIC = ric_limite,
   Lim_Inferior = lim_inf_limite, Lim_Superior = lim_sup_limite)
 ```
 
-El límite inferior da `r format(round(lim_inf_limite), big.mark=".")` — **negativo**, porque el $RIC$ de esta variable es grande frente a su $Q_1$. Un cupo de \$200 (muy por debajo del mínimo real de toda la cartera, \$`r format(min(credit$Credit_Limit), big.mark=".")`) tampoco se marca como atípico: a la regla de Tukey le basta con que su límite calculado sea más laxo que el rango observado, no necesita que el dato sea físicamente real para dejarlo pasar.
+El límite inferior da `r format(round(lim_inf_limite), big.mark=".")` — **negativo**, porque el $RIC$ de esta variable es grande frente a su $Q_1$. Un cupo de 200(₹) (muy por debajo del mínimo real de toda la cartera, `r format(min(credit$Credit_Limit), big.mark=".")`(₹)) tampoco se marca como atípico: a la regla de Tukey le basta con que su límite calculado sea más laxo que el rango observado, no necesita que el dato sea físicamente real para dejarlo pasar.
 
 **Paso 3 — verificación conjunta:**
 
@@ -1554,7 +1855,7 @@ abline(v = mean(credit$Annual_Income), col = "gray50", lty = 2)
 abline(h = mean(credit$Credit_Limit), col = "gray50", lty = 2)
 ```
 
-**Lectura del resultado:** con $r = `r round(cor(credit$Annual_Income, credit$Credit_Limit), 3)`$ entre ambas variables, ningún cliente con ingresos de \$3.000.000 tiene en la práctica un cupo de \$200 — el punto rojo cae fuera de la nube, lejos de donde vive la elipse de correlación, aunque esté dentro del rango de cada eje por separado. Es la misma lección del `Payment_Ratio`/`Credit_Score` de la sección anterior, esta vez con un mecanismo económico distinto: ingreso y cupo aprobado.
+**Lectura del resultado:** con $r = `r round(cor(credit$Annual_Income, credit$Credit_Limit), 3)`$ entre ambas variables, ningún cliente con ingresos de 3.000.000(₹) tiene en la práctica un cupo de 200(₹) — el punto rojo cae fuera de la nube, lejos de donde vive la elipse de correlación, aunque esté dentro del rango de cada eje por separado. Es la misma lección del `Payment_Ratio`/`Credit_Score` de la sección anterior, esta vez con un mecanismo económico distinto: ingreso y cupo aprobado.
 
 ## Confirmando la selección: `Credit_Utilization` frente a `Credit_Score`
 
@@ -1598,7 +1899,7 @@ par(mfrow = c(1, 1))
 
 **Lectura, con cifras exactas:** en el panel izquierdo las cajas prácticamente no se traslapan y suben en escalera — de `Student` (mediana más baja) a `Business Owner` (mediana más alta), con una razón de casi 17 a 1 entre las medias de ambos grupos (`r format(round(mean(credit$Annual_Income[credit$Occupation=="Student"])), big.mark=".")` frente a `r format(round(mean(credit$Annual_Income[credit$Occupation=="Business Owner"])), big.mark=".")`). Eso es lo que significa $\eta^2 = `r sprintf("%.3f", eta2(credit$Annual_Income, credit$Occupation))`$: el `r sprintf("%.1f%%", 100*eta2(credit$Annual_Income, credit$Occupation))` de toda la variabilidad de `Annual_Income` en la cartera se explica solo con saber la ocupación del cliente. En el panel derecho, en cambio, las seis cajas de `Credit_Score` son visualmente indistinguibles entre sí y todas se traslapan casi por completo — consistente con que la ocupación explica apenas el `r sprintf("%.2f%%", 100*eta2(credit$Credit_Score, credit$Occupation))` de la varianza del puntaje. **La misma variable categórica es informativa para una variable y ruido puro para otra**, y eso solo se decide calculando $\eta^2$, no mirando el boxplot primero.
 
-## Seis tendencias bivariadas de la cartera
+## Tendencias bivariadas de la cartera
 
 Todo el análisis bivariado de este módulo, más las lecturas de la matriz de dispersión del Módulo 7, se resumen en seis patrones geométricos distintos. No son seis observaciones sueltas: son las seis formas básicas que puede tomar la nube de puntos de dos variables, y cada una tiene una consecuencia práctica distinta para un modelo posterior.
 
@@ -1616,15 +1917,11 @@ A más ingreso, más cupo, en proporción casi constante: la nube es una banda a
 
 **Tendencia 2 — Lineal inversa.** `Credit_Utilization` y `Credit_Score` ($r = `r round(cor(credit$Credit_Utilization, credit$Credit_Score), 3)`$, ya graficada en la sección "Confirmando la selección" de este módulo): la nube desciende de izquierda a derecha — a mayor uso del cupo, menor puntaje. **Consecuencia:** es, junto con `Payment_Ratio`, una relación con signo de negocio claro y aprovechable para explicar riesgo.
 
-**Tendencia 3 — Independencia / bloque rectangular.** `Annual_Income` y `Credit_Score` ($r = `r round(cor(credit$Annual_Income, credit$Credit_Score), 3)`$, ver matriz de dispersión del Módulo 7): la nube llena un rectángulo completo, sin banda ni curva — hay clientes de puntaje alto y bajo en todos los niveles de ingreso. **Consecuencia:** ninguna transformación va a crear una relación que no existe; `Annual_Income` no sirve para predecir riesgo por sí sola.
+**Tendencia 3 — Efecto cuña / límite superior.** `Credit_Limit` y `Outstanding_Balance` ($r = `r round(cor(credit$Credit_Limit, credit$Outstanding_Balance), 3)`$, ver matriz de dispersión del Módulo 7): la nube llena un triángulo, no un rectángulo — ningún cliente debe más del `r round(100*max(credit$Outstanding_Balance/credit$Credit_Limit))`% de su cupo (el máximo real de la razón saldo/cupo es `r round(max(credit$Outstanding_Balance/credit$Credit_Limit), 3)`). **Consecuencia:** la relación es real pero asimétrica — `Credit_Limit` actúa como techo físico de `Outstanding_Balance`, no como su causa proporcional.
 
-**Tendencia 4 — Efecto cuña / límite superior.** `Credit_Limit` y `Outstanding_Balance` ($r = `r round(cor(credit$Credit_Limit, credit$Outstanding_Balance), 3)`$, ver matriz de dispersión del Módulo 7): la nube llena un triángulo, no un rectángulo — ningún cliente debe más del `r round(100*max(credit$Outstanding_Balance/credit$Credit_Limit))`% de su cupo (el máximo real de la razón saldo/cupo es `r round(max(credit$Outstanding_Balance/credit$Credit_Limit), 3)`). **Consecuencia:** la relación es real pero asimétrica — `Credit_Limit` actúa como techo físico de `Outstanding_Balance`, no como su causa proporcional.
+**Tendencia 4 — Diferenciación por grupos ordinales.** `Card_Type` (ordinal: Basic < Silver < Gold < Platinum < Signature) sobre `Credit_Limit`:
 
-**Tendencia 5 — Efecto embudo.** `Monthly_Spending` y `Payment_Ratio` ($r = `r round(cor(credit$Monthly_Spending, credit$Payment_Ratio), 3)`$, ver matriz de dispersión del Módulo 7): la correlación global es prácticamente nula, pero la dispersión de `Payment_Ratio` se estrecha a medida que `Monthly_Spending` crece — a gastos muy altos, ya no se ven ratios de pago perfectos. **Consecuencia:** un $r$ cercano a 0 no implica ausencia de estructura; aquí lo que cambia con `Monthly_Spending` es la *varianza* de la otra variable, no su media (heterocedasticidad), algo que ningún coeficiente de correlación captura.
-
-**Tendencia 6 — Diferenciación por grupos ordinales.** `Card_Type` (ordinal: Basic < Silver < Gold < Platinum < Signature) sobre `Credit_Limit`:
-
-```{r, tendencia6_grupos_ordinales, fig.width=7, fig.height=5}
+```{r, tendencia4_grupos_ordinales, fig.width=7, fig.height=5}
 orden_tipo <- c("Basic", "Silver", "Gold", "Platinum", "Signature")
 boxplot(Credit_Limit ~ factor(Card_Type, levels = orden_tipo), data = credit,
         col = colorRampPalette(c("grey80", "#1E7F63"))(5),
@@ -1643,7 +1940,7 @@ Las cinco cajas suben en el mismo orden que la jerarquía de la tarjeta, sin nin
 
 ------------------------------------------------------------------------
 
-# Módulo 7: Estructura Multivariada Conjunta (S01 & S03 & S05)
+# Módulo 8: Estructura Multivariada Conjunta (S01 & S03 & S05)
 
 El Módulo 6 miró pares de variables, uno a la vez, eligiéndolos con un criterio explícito. Pero un dataset de $p = 26$ variables numéricas no se agota en unos pocos pares: hay $\binom{26}{2} = 325$ posibles, y ningún analista revisa 325 diagramas de dispersión uno por uno (S05). Este módulo resuelve ese problema convirtiendo todos los pares en **un solo objeto** — la matriz de correlación $\mathbf{R}$ — y después en tres representaciones visuales distintas de esa misma matriz, cada una útil para ver algo que las otras no ven: el mapa de calor (bloques de variables parecidas), las coordenadas paralelas (patrones de más de dos variables a la vez) y la matriz de dispersión (la forma real de cada relación, no solo su número).
 
@@ -1941,302 +2238,6 @@ En varios gráficos, los puntos llenan un triángulo pero dejan un espacio vací
 1. La matriz $\mathbf{X}$ tiene una interdependencia lineal alta pero muy desigual: bloques de variables casi redundantes ($r > 0{,}95$: `Outstanding_Balance`-`Statement_Balance`, `Monthly_Spending`-`Reward_Points_Earned`) conviven con variables prácticamente independientes del resto (`Payment_Ratio`, `Credit_Utilization` frente a las de dinero) — la matriz de correlación tiene un valor propio casi nulo (Módulo 7.3) que es la huella numérica exacta de esa redundancia.
 2. Las tres visualizaciones muestran cosas distintas de la misma matriz: el mapa de calor agrupa variables parecidas en bloques, las coordenadas paralelas muestran patrones de más de dos variables a la vez (el grupo de riesgo bajo hundido en `Payment_Ratio`), y `pairs` muestra la forma real de cada relación (bandas, cuñas, bloques cuadrados) que un solo número de correlación no distingue.
 3. Esta alta redundancia entre variables de dinero es, además, la razón concreta por la que el Módulo 9 tiene que **excluir** columnas derivadas antes de invertir la matriz de covarianzas para la distancia de Mahalanobis: una matriz casi singular no se puede invertir de forma estable.
-
-------------------------------------------------------------------------
-
-# Módulo 8: Densidad de Kernel (S04)
-
-El Módulo 3 dejó una deuda pendiente: el histograma depende no solo del número de cortes (`breaks`), sino de dónde empieza la primera caja — dos histogramas con el mismo ancho pero corridos medio intervalo pueden verse distintos, sin ninguna justificación de por qué. La densidad de kernel resuelve ese segundo problema reemplazando las cajas por una curva continua, construida sumando una "montañita" (el kernel) centrada en cada observación. La decisión sobre cuántos cortes usar no desaparece: se traslada íntegramente al ancho de banda $h$.
-
-## Cómo se escoge $h$ sin adivinar
-
-La **regla de Silverman**, que es la que R usa por defecto:
-
-$$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}\right) n^{-1/5}$$
-
-donde $s$ es la desviación estándar muestral y RIC el rango intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y ensanche la curva de más — la misma preocupación que llevó a preferir `fivenum()` sobre la media en el Módulo 4. R implementa esta fórmula en `bw.nrd0(x)`, y es la que usamos en todo este módulo en vez de adivinar un valor.
-
-## Densidad de Kernel aplicada a nuestras variables
-
-### Primero con una variable
-
-Igual que en el Módulo 3, empezamos con `Credit_Score` — la variable de riesgo de referencia de todo el informe — antes de repetir el procedimiento sobre las 26:
-
-```{r, densidad_kernel_credit_score}
-var <- credit$Credit_Score
-h <- bw.nrd0(var)
-
-plot(density(var, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit Score", lwd = 2)
-rug(var)
-```
-
-**Lectura:** con $h = `r round(h,3)`$, la curva confirma sin ambigüedad lo que el histograma del Módulo 3 ya insinuaba con `breaks = 17`: una forma unimodal con una cola ligeramente más larga hacia la izquierda — pero ahora sin la arbitrariedad del origen de las cajas, porque una curva de densidad no tiene "primera caja".
-
-### Aplicado a cada variable
-
-Repetimos el procedimiento —calcular $h$ con `bw.nrd0()`, graficar la densidad, marcar los datos individuales con `rug()`— sobre las 25 variables numéricas restantes, cada una en su propio bloque de código y con una lectura específica de lo que su curva muestra.
-
-### `Age`
-
-```{r, dens_Age}
-h <- bw.nrd0(credit$Age)
-plot(density(credit$Age, bw = h), main = paste("h =", round(h, 4)), xlab = "Age", lwd = 2)
-rug(credit$Age)
-```
-
-**Lectura:** con $h = 1{,}27$ años, la curva confirma la forma casi simétrica que ya mostró el histograma, con su punto más alto cerca de 31,9 años y una cola derecha suave hacia los 70 — sin las 60 barras del histograma, la ligera inclinación se ve incluso más limpia.
-
-### `Annual_Income`
-
-```{r, dens_Annual_Income}
-h <- bw.nrd0(credit$Annual_Income)
-plot(density(credit$Annual_Income, bw = h), main = paste("h =", round(h, 4)), xlab = "Annual_Income", lwd = 2)
-rug(credit$Annual_Income)
-```
-
-**Lectura:** $h \approx \$77.600$ — un ancho de banda grande, coherente con una variable cuya dispersión (\$1.407.257 de desviación estándar) es de las mayores del dataset. La curva alcanza su punto más alto cerca de \$1.045.364, muy por debajo de la media (\$1.479.318): la moda, a diferencia de la media, no se deja arrastrar por la cola de altos ingresos.
-
-### `Credit_Limit`
-
-```{r, dens_Credit_Limit}
-h <- bw.nrd0(credit$Credit_Limit)
-plot(density(credit$Credit_Limit, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit_Limit", lwd = 2)
-rug(credit$Credit_Limit)
-```
-
-**Lectura:** la moda (\$86.922) queda muy cerca del mínimo de la escala de cupos usuales, y muy lejos de la media (\$709.677) — la curva deja ver, mejor que el histograma escalonado, que la mayoría de la cartera tiene cupos modestos y una minoría con cupos de varios millones estira la curva hacia la derecha sin levantarla.
-
-### `Card_Age_Months`
-
-```{r, dens_Card_Age_Months}
-h <- bw.nrd0(credit$Card_Age_Months)
-plot(density(credit$Card_Age_Months, bw = h), main = paste("h =", round(h, 4)), xlab = "Card_Age_Months", lwd = 2)
-rug(credit$Card_Age_Months)
-```
-
-**Lectura:** con $h = 3$ meses, la curva tiene su pico cerca de los 35 meses (menos de 3 años) y decae de forma suave hasta los 240 — una cartera de tarjetas mayoritariamente jóvenes, sin el segundo pico que tendría una cartera con una generación antigua de tarjetahabientes y otra reciente.
-
-### `Monthly_Spending`
-
-```{r, dens_Monthly_Spending}
-h <- bw.nrd0(credit$Monthly_Spending)
-plot(density(credit$Monthly_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Monthly_Spending", lwd = 2)
-rug(credit$Monthly_Spending)
-```
-
-**Lectura:** con $h \approx \$4.350$, la curva de densidad confirma la marcada asimetría hacia la derecha (asimetría 3,00) que acumula las colas de las siete categorías de gasto: la moda de la curva cae cerca de \$18.592, muy por debajo de la mediana (\$50.022) y de la media (\$73.872), mostrando con una curva continua cómo la gran mayoría de la cartera tiene consumos mensuales contenidos mientras un grupo reducido se extiende hasta más de \$600.000.
-
-### `Monthly_Transactions`
-
-```{r, dens_Monthly_Transactions}
-h <- bw.nrd0(credit$Monthly_Transactions)
-plot(density(credit$Monthly_Transactions, bw = h), main = paste("h =", round(h, 4)), xlab = "Monthly_Transactions", lwd = 2)
-rug(credit$Monthly_Transactions)
-```
-
-**Lectura:** curva unimodal y razonablemente simétrica, con la moda (64,1) cerca de la mediana (76) y la media (83,0) — la variable con menor asimetría (0,54) de todo el dataset junto con `Mobile_App_Login`, y su densidad lo confirma sin las asperezas que sí tienen las variables de gasto.
-
-### `Avg_Transaction_Value`
-
-```{r, dens_Avg_Transaction_Value}
-h <- bw.nrd0(credit$Avg_Transaction_Value)
-plot(density(credit$Avg_Transaction_Value, bw = h), main = paste("h =", round(h, 4)), xlab = "Avg_Transaction_Value", lwd = 2)
-rug(credit$Avg_Transaction_Value)
-```
-
-**Lectura:** moda cerca de \$472, casi calcada de su propia mediana (\$617) — el `rug()` en la parte baja del eje se ve denso y casi continuo, mientras que hacia el máximo (\$10.460) las marcas se separan tanto que son casi invisibles: la representación más directa de un cociente con cola pesada.
-
-### `Online_Shopping_Spending`
-
-```{r, dens_Online_Shopping_Spending}
-h <- bw.nrd0(credit$Online_Shopping_Spending)
-plot(density(credit$Online_Shopping_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Online_Shopping_Spending", lwd = 2)
-rug(credit$Online_Shopping_Spending)
-```
-
-**Lectura:** con $h \approx \$773$, la curva sube rápido cerca del origen (moda \$2.323) y desciende con una cola larga y suave — el mismo patrón "pico bajo, cola larga" de todas las categorías de gasto discrecional, aquí sin el escalonado que el histograma sí mostraba.
-
-### `Grocery_Spending`
-
-```{r, dens_Grocery_Spending}
-h <- bw.nrd0(credit$Grocery_Spending)
-plot(density(credit$Grocery_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Grocery_Spending", lwd = 2)
-rug(credit$Grocery_Spending)
-```
-
-**Lectura:** la moda (\$3.600) es la más alta de las siete categorías de gasto, consistente con ser también la de mediana más alta (\$10.650, Módulo 4): el mercado es el único gasto que casi toda la cartera hace de forma sustancial, y la curva lo refleja con un pico desplazado del origen.
-
-### `Fuel_Spending`
-
-```{r, dens_Fuel_Spending}
-h <- bw.nrd0(credit$Fuel_Spending)
-plot(density(credit$Fuel_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Fuel_Spending", lwd = 2)
-rug(credit$Fuel_Spending)
-```
-
-**Lectura:** moda cerca de \$1.653, con una cola visible pero no tan extendida como la de `Travel_Spending` o `Entertainment_Spending` — la curva sube y baja de forma más simétrica en su primer tramo, coherente con que el combustible es un gasto de necesidad para quien tiene vehículo, no puramente discrecional.
-
-### `Dining_Spending`
-
-```{r, dens_Dining_Spending}
-h <- bw.nrd0(credit$Dining_Spending)
-plot(density(credit$Dining_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Dining_Spending", lwd = 2)
-rug(credit$Dining_Spending)
-```
-
-**Lectura:** con moda cerca de \$1.707 y $h \approx \$640$, la curva es visualmente casi un calco de la de `Online_Shopping_Spending` (moda \$2.323, $h \approx \$773$) — dos categorías de gasto discrecional distintas que comparten el mismo mecanismo generador de "mayoría moderada, minoría intensiva".
-
-### `Travel_Spending`
-
-```{r, dens_Travel_Spending}
-h <- bw.nrd0(credit$Travel_Spending)
-plot(density(credit$Travel_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Travel_Spending", lwd = 2)
-rug(credit$Travel_Spending)
-```
-
-**Lectura:** de las siete categorías de gasto, es la que tiene la curva más apretada contra el origen (moda \$773, la más baja del grupo) y la cola más extendida y plana — coherente con ser la variable de mayor asimetría (5,71) y mayor $Z$-máximo (19,4 $\sigma$) de todo el dataset: la mayoría casi no viaja, y el `rug()` muestra marcas aisladas muy lejos del grueso de la cartera.
-
-### `Entertainment_Spending`
-
-```{r, dens_Entertainment_Spending}
-h <- bw.nrd0(credit$Entertainment_Spending)
-plot(density(credit$Entertainment_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Entertainment_Spending", lwd = 2)
-rug(credit$Entertainment_Spending)
-```
-
-**Lectura:** moda cerca de \$954, entre la de `Travel_Spending` (\$773) y la de `Dining_Spending` (\$1.707) — un gasto discrecional y ocasional que el `rug()` muestra denso hasta unos pocos miles de pesos y disperso mucho más allá.
-
-### `Utility_Bill_Spending`
-
-```{r, dens_Utility_Bill_Spending}
-h <- bw.nrd0(credit$Utility_Bill_Spending)
-plot(density(credit$Utility_Bill_Spending, bw = h), main = paste("h =", round(h, 4)), xlab = "Utility_Bill_Spending", lwd = 2)
-rug(credit$Utility_Bill_Spending)
-```
-
-**Lectura:** moda cerca de \$2.358, la más alta después de `Grocery_Spending` entre las categorías de gasto — coherente con tener también la asimetría más baja del grupo (4,35, Módulo 3): domiciliar servicios públicos es una práctica recurrente y de monto relativamente acotado, no tan discrecional como entretenimiento o viajes.
-
-### `Outstanding_Balance`
-
-```{r, dens_Outstanding_Balance}
-h <- bw.nrd0(credit$Outstanding_Balance)
-plot(density(credit$Outstanding_Balance, bw = h), main = paste("h =", round(h, 4)), xlab = "Outstanding_Balance", lwd = 2)
-rug(credit$Outstanding_Balance)
-```
-
-**Lectura:** con $h \approx \$20.390$, la moda (\$32.949) queda muy por debajo de la mediana (\$145.300) y de la media (\$303.400) — tres medidas de centro que se alejan cada vez más entre sí, la firma de una cola derecha larga y pesada.
-
-### `Statement_Balance`
-
-```{r, dens_Statement_Balance}
-h <- bw.nrd0(credit$Statement_Balance)
-plot(density(credit$Statement_Balance, bw = h), main = paste("h =", round(h, 4)), xlab = "Statement_Balance", lwd = 2)
-rug(credit$Statement_Balance)
-```
-
-**Lectura:** curva casi indistinguible de la de `Outstanding_Balance` en su forma general (moda \$55.687 frente a \$32.949, ambas muy por debajo de sus medias) — la contraparte visual, otra vez, de compartir prácticamente la misma información ($r = 0{,}997$).
-
-### `Payment_Amount`
-
-```{r, dens_Payment_Amount}
-h <- bw.nrd0(credit$Payment_Amount)
-plot(density(credit$Payment_Amount, bw = h), main = paste("h =", round(h, 4)), xlab = "Payment_Amount", lwd = 2)
-rug(credit$Payment_Amount)
-```
-
-**Lectura:** moda cerca de \$39.820, con una cola que se extiende hasta cerca de \$6.000.000 — la misma familia de forma que `Outstanding_Balance` y `Statement_Balance`, coherente con que el pago mensual es proporcional a lo que el cliente debe.
-
-### `Payment_Ratio`
-
-```{r, dens_Payment_Ratio}
-h <- bw.nrd0(credit$Payment_Ratio)
-plot(density(credit$Payment_Ratio, bw = h), main = paste("h =", round(h, 4)), xlab = "Payment_Ratio", lwd = 2)
-rug(credit$Payment_Ratio)
-```
-
-**Lectura:** con $h \approx 0{,}025$ (el ancho de banda más pequeño entre las variables de dinero/ratio, porque su rango es corto), la curva sube hasta un pico cerca de 0,97 y cae abruptamente después — la única variable de las 26 cuya moda está pegada al borde superior de su rango posible, la contraparte visual exacta de su asimetría negativa.
-
-### `Credit_Utilization`
-
-```{r, dens_Credit_Utilization}
-h <- bw.nrd0(credit$Credit_Utilization)
-plot(density(credit$Credit_Utilization, bw = h), main = paste("h =", round(h, 4)), xlab = "Credit_Utilization", lwd = 2)
-rug(credit$Credit_Utilization)
-```
-
-**Lectura:** curva suave y unimodal con pico cerca de 0,38, sin ninguna de las asperezas de las variables de dinero — el ancho de banda más pequeño de todo el dataset ($h \approx 0{,}021$), consistente con ser de las variables menos dispersas (desviación estándar 0,206).
-
-### `Cash_Advance_Amount`
-
-```{r, dens_Cash_Advance_Amount}
-h <- bw.nrd0(credit$Cash_Advance_Amount)
-plot(density(credit$Cash_Advance_Amount, bw = h), main = paste("h =", round(h, 4)), xlab = "Cash_Advance_Amount", lwd = 2)
-rug(credit$Cash_Advance_Amount)
-```
-
-**Lectura:** aquí la densidad de kernel muestra su límite: el 70,3 % de los clientes tiene exactamente cero, pero `density()` no sabe dibujar una masa puntual — la dibuja como una curva continua con un pico pronunciado cerca de cero (moda 369,6) que en realidad representa una barra de altura finita en un histograma. La curva es útil para ver la forma de la cola de quienes sí usan avances, pero engañosa si se lee como "la probabilidad de gastar exactamente \$370".
-
-### `EMI_Count`
-
-```{r, dens_EMI_Count}
-h <- bw.nrd0(credit$EMI_Count)
-plot(density(credit$EMI_Count, bw = h), main = paste("h =", round(h, 4)), xlab = "EMI_Count", lwd = 2)
-rug(credit$EMI_Count)
-```
-
-**Lectura:** con solo 7 valores enteros posibles, la densidad de kernel dibuja una curva continua sobre una variable que en realidad no lo es — el `rug()` muestra 7 columnas de marcas apiladas, no un continuo, y la curva suave entre ellas (pico cerca de 2) es una aproximación conveniente, no una descripción literal de cómo se distribuyen los datos.
-
-### `International_Transactions`
-
-```{r, dens_International_Transactions}
-h <- bw.nrd0(credit$International_Transactions)
-plot(density(credit$International_Transactions, bw = h), main = paste("h =", round(h, 4)), xlab = "International_Transactions", lwd = 2)
-rug(credit$International_Transactions)
-```
-
-**Lectura:** con el 59,3 % de la cartera en cero, la curva tiene su pico prácticamente pegado al origen y una cola larga y baja hasta 14 — el mismo problema conceptual que `Cash_Advance_Amount`: la "montaña" cerca de cero es la manera en que `density()` traduce una masa puntual discreta a una curva continua, no evidencia de que existan valores fraccionarios de transacciones internacionales.
-
-### `Reward_Points_Earned`
-
-```{r, dens_Reward_Points_Earned}
-h <- bw.nrd0(credit$Reward_Points_Earned)
-plot(density(credit$Reward_Points_Earned, bw = h), main = paste("h =", round(h, 4)), xlab = "Reward_Points_Earned", lwd = 2)
-rug(credit$Reward_Points_Earned)
-```
-
-**Lectura:** moda cerca de 468 puntos, con una curva que reproduce casi exactamente la forma de `Monthly_Spending` reescalada — de nuevo la contraparte visual de una correlación de 0,980 entre ambas.
-
-### `Reward_Points_Redeemed`
-
-```{r, dens_Reward_Points_Redeemed}
-h <- bw.nrd0(credit$Reward_Points_Redeemed)
-plot(density(credit$Reward_Points_Redeemed, bw = h), main = paste("h =", round(h, 4)), xlab = "Reward_Points_Redeemed", lwd = 2)
-rug(credit$Reward_Points_Redeemed)
-```
-
-**Lectura:** con el 39,9 % de los clientes en cero, la moda de la curva (7,5) queda prácticamente pegada al origen — el mismo efecto de suavizado sobre una masa puntual que ya se vio en `Cash_Advance_Amount` e `International_Transactions`, y la cola hasta 44.820 puntos corresponde a la minoría que sí redime en montos grandes.
-
-### `Mobile_App_Login`
-
-```{r, dens_Mobile_App_Login}
-h <- bw.nrd0(credit$Mobile_App_Login)
-plot(density(credit$Mobile_App_Login, bw = h), main = paste("h =", round(h, 4)), xlab = "Mobile_App_Login", lwd = 2)
-rug(credit$Mobile_App_Login)
-```
-
-**Lectura:** curva suave y casi simétrica con pico cerca de 24,6 sesiones, muy parecida en forma a la de `Monthly_Transactions` — otro hábito de consulta razonablemente uniforme entre clientes, sin la cola pesada de las variables de dinero.
-
-### `Credit_Score`
-
-Ya se presentó como variable de referencia al comienzo de este módulo ($h = 7{,}076$, moda cerca de 663,2). Se repite aquí solo para mantener el mismo orden de las 26 variables que en los Módulos 3 y 4; no hay nada nuevo que añadir a lo ya discutido ahí.
-
-**Lectura de conjunto:** vistas las 26, el ancho de banda $h$ varía en casi cinco órdenes de magnitud (de 0,02 en los ratios acotados a más de \$77.000 en `Annual_Income`), siempre calibrado por `bw.nrd0()` a la dispersión propia de cada variable. Las variables con una masa de clientes en cero (`Cash_Advance_Amount`, `International_Transactions`, `Reward_Points_Redeemed`, y en menor medida `EMI_Count`) comparten una limitación real de este método: la curva continua no puede representar fielmente un valor discreto que concentra a un tercio o más de la cartera, y hay que leerla sabiendo eso.
-
-## Conclusión del módulo
-
-1. La densidad de kernel resuelve el problema del origen arbitrario del histograma sin eliminar la decisión: la traslada al ancho de banda $h$, calibrado aquí con la regla de Silverman (`bw.nrd0()`) en vez de fijado a mano.
-2. Sobre `Credit_Score`, la curva confirma con más nitidez la misma forma unimodal y ligeramente asimétrica hacia la izquierda que ya habían anticipado la media, la mediana (Módulo 3) y el histograma con Sturges.
-3. Aplicada a las 26 variables, la densidad de kernel reproduce — en una curva continua — la misma clasificación de formas ya documentada en el diccionario del Módulo 1: picos pegados al origen en las variables de gasto, forma acotada y compacta en los ratios, y barras discretas separadas en los conteos de rango corto.
 
 ------------------------------------------------------------------------
 
