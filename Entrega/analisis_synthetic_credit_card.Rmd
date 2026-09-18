@@ -2604,7 +2604,7 @@ Con los dos criterios ya aplicados, el resto de este módulo se dedica
 exclusivamente a los pares que quedaron señalados, y a ningún otro:
 
 | Par | Criterio | Valor | Por qué se analiza |
-|------------------|------------------|------------------|------------------|
+|----|----|----|----|
 | `Annual_Income` – `Credit_Limit` | $\lvert r \rvert$ | `r round(cor(credit$Annual_Income, credit$Credit_Limit), 3)` | par numérico más fuerte no redundante |
 | `Payment_Ratio` – `Credit_Score` | $\lvert r \rvert$ | `r round(r_credit_score["Payment_Ratio"], 3)` | predictor #1 del riesgo |
 | `Credit_Utilization` – `Credit_Score` | $\lvert r \rvert$ | `r round(r_credit_score["Credit_Utilization"], 3)` | predictor #2 del riesgo |
