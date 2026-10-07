@@ -1,0 +1,411 @@
+---
+title: "Notas de Clase: Componentes principales I"
+subtitle: "¿Un solo indicador o cinco? El encargo de la institución que asigna tutorías"
+author: "Estadística Multidimensional · Universidad Distrital Francisco José de Caldas"
+date: "Sábado 17 de octubre de 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+    fig_width: 9
+    fig_height: 5.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9, fig.height = 5.5)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+theme_set(theme_minimal(base_size = 13))
+coma <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = " ")
+miles <- function(x) formatC(x, format = "d", big.mark = " ")
+```
+
+# Introducción: el encargo
+
+Hoy no llegamos como estudiantes de estadística. **Llegamos como analistas con un cliente.**
+
+El cliente es **una institución de educación técnica** que recibe cada semestre los resultados de la
+prueba Saber de sus estudiantes. Tiene plata para un programa de **tutorías** y quiere repartirla bien.
+Su coordinadora académica nos escribe:
+
+> *«Recibo cinco puntajes por estudiante y no tengo tiempo de mirar cinco listas. ¿Puedo asignar las
+> tutorías con un solo número, el puntaje global? ¿O me estoy perdiendo a alguien?»*
+
+Ésa es la pregunta de hoy, y es una pregunta de negocio:
+
+> **¿Cuánta información se pierde al resumir cinco puntajes en uno solo, y a quién deja por fuera
+> esa pérdida?**
+
+La herramienta para responderla se llama **análisis de componentes principales**. Pero antes del
+nombre va la idea, y la idea es sencilla: *buscar el mejor resumen posible de los cinco módulos y
+medir qué se queda por fuera.*
+
+# Objetivos de aprendizaje
+
+Al terminar la sesión, cada estudiante debe poder:
+
+1. Explicar **por qué cinco puntajes que se mueven juntos se pueden resumir** en menos.
+2. Decir **en palabras** qué es una componente: una suma con pesos de las variables originales.
+3. Leer **cuánta información guarda** cada componente y decidir cuántas conservar.
+4. Leer **los pesos** de una componente y decir qué mide.
+5. **Traducir el resultado a una decisión del cliente**: qué se reporta, qué se pierde y a quién
+   afecta.
+
+# La base con la que llegamos
+
+Repetimos la limpieza de las dos sesiones pasadas, para que estas notas tejan solas.
+
+```{r leer}
+saber <- read.csv("PruebaSaber1.csv", sep = ";", fileEncoding = "latin1",
+                  stringsAsFactors = FALSE)
+
+s <- saber |>
+  transmute(
+    cuantitativo = MOD_RAZONA_CUANTITAT_PUNT,
+    lectura      = MOD_LECTURA_CRITICA_PUNT,
+    ciudadanas   = MOD_COMPETEN_CIUDADA_PUNT,
+    ingles       = MOD_INGLES_PUNT,
+    escritura    = MOD_COMUNI_ESCRITA_PUNT,
+    global       = PUNT_GLOBAL,
+    estrato      = FAMI_ESTRATOVIVIENDA
+  )
+s$id <- seq_len(nrow(s))
+
+modulos <- c("cuantitativo", "lectura", "ciudadanas", "ingles", "escritura")
+etiqueta <- c(cuantitativo = "cuantitativo", lectura = "lectura", ciudadanas = "ciudadanas",
+              ingles = "inglés", escritura = "escritura")
+
+# 1. la fila corrida una columna (sesión 1)
+s <- s[s$estrato != "Empleado obrero u operario", ]
+# 2. los 26 ceros de inglés: no presentaron el módulo (sesión 1)
+s$ingles[s$ingles == 0] <- NA
+# 3. filas 671 y 614: ceros en módulos que no presentaron (sesión 2)
+for (m in modulos) s[[m]][s$id %in% c(671, 614) & s[[m]] == 0] <- NA
+
+sc <- s[complete.cases(s[modulos]), ]
+c(en_la_base = nrow(s), con_los_cinco = nrow(sc))
+```
+
+Trabajamos con los `r miles(nrow(sc))` estudiantes que tienen los cinco módulos. Igual que en la
+sesión pasada, los que no los tienen se reportan aparte: **un resumen de cinco puntajes no se puede
+calcular con un hueco.**
+
+# Primero: ¿los cinco módulos dicen lo mismo?
+
+Si los cinco puntajes fueran independientes —si saber uno no dijera nada de los otros—, no habría
+forma de resumirlos: cada uno traería información que los demás no tienen. **Se pueden resumir
+porque se repiten.** Veamos cuánto.
+
+```{r correlaciones, fig.height = 5}
+R <- cor(sc[modulos])
+round(R, 2)
+
+as.data.frame(as.table(R)) |>
+  mutate(Var1 = factor(etiqueta[as.character(Var1)], levels = etiqueta),
+         Var2 = factor(etiqueta[as.character(Var2)], levels = etiqueta)) |>
+  ggplot(aes(Var1, Var2, fill = Freq)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = coma(Freq, 2)), size = 4.2) +
+  scale_fill_gradient(low = "white", high = "#2B6CB0", limits = c(0, 1), name = "Van juntos",
+                      labels = function(x) coma(x, 2)) +
+  labs(title = "Qué tanto se mueven juntos los cinco módulos",
+       subtitle = "1 = siempre juntos · 0 = nada que ver", x = NULL, y = NULL) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+> 📋 **Describir:** todos los módulos se mueven juntos, pero no por igual. La pareja más unida es
+> lectura con ciudadanas (`r coma(R["lectura", "ciudadanas"], 2)`). La más suelta es **escritura**:
+> con ningún módulo pasa de `r coma(max(R["escritura", modulos[modulos != "escritura"]]), 2)`.
+>
+> 🔎 **Analizar:** hay una parte que se repite —a quien le va bien en uno le suele ir bien en los
+> demás— y **eso es lo que permite resumir**. Pero escritura va más sola que el resto: si la
+> resumimos junto con los otros, algo de ella se va a perder. **Decisión:** vale la pena buscar un
+> resumen, y hay que vigilar qué le pasa a escritura.
+
+# La idea: el mejor resumen posible
+
+## Un resumen es una suma con pesos
+
+El puntaje global ya es un resumen: es, más o menos, el promedio de los cinco módulos. Un promedio es
+una suma con **pesos iguales**. La pregunta es si hay **otros pesos** que resuman mejor.
+
+> 📐 **La matemática, enunciada.** Una **componente** es una suma con pesos de los cinco módulos:
+>
+> $$C = w_1\,\text{cuantitativo} + w_2\,\text{lectura} + w_3\,\text{ciudadanas} + w_4\,\text{inglés} + w_5\,\text{escritura}$$
+>
+> con la condición $w_1^2 + w_2^2 + w_3^2 + w_4^2 + w_5^2 = 1$, para que los pesos no crezcan sin
+> límite.
+>
+> **En palabras:** la primera componente es la suma con pesos que **más separa a los estudiantes
+> entre sí**. Si un resumen deja a todo el mundo en el mismo número, no sirve para decidir; el mejor
+> resumen es el que más diferencia a unos de otros. Esa diferencia se mide con la **varianza**, y la
+> varianza es **información**.
+
+## Lo que encuentra R
+
+```{r pca}
+pca <- prcomp(sc[modulos])          # los cinco ya están en la misma escala
+pesos <- pca$rotation
+round(pesos[, 1:3], 3)
+```
+
+```{r pc1-y-global}
+c(peso_mas_bajo_en_la_1   = round(min(pesos[, 1]), 3),
+  peso_mas_alto_en_la_1   = round(max(pesos[, 1]), 3),
+  la_1_va_con_el_global   = round(abs(cor(pca$x[, 1], sc$global)), 3))
+```
+
+> 📋 **Describir:** en la primera componente los cinco pesos tienen el mismo signo y son parecidos,
+> entre `r coma(min(pesos[, 1]), 2)` y `r coma(max(pesos[, 1]), 2)`. Escritura es la que menos pesa.
+> Y esa componente va con el puntaje global `r coma(abs(cor(pca$x[, 1], sc$global)), 3)`: son
+> prácticamente lo mismo.
+>
+> 🔎 **Analizar:** **el mejor resumen de un solo número es, en la práctica, el puntaje global.** La
+> institución no se equivocaba: si va a usar un solo número, el global es el correcto. Pero la
+> pregunta del cliente no era cuál número usar, sino **qué se pierde**. **Decisión:** ahora hay que
+> medir cuánta información guarda ese número y cuánta deja por fuera.
+
+# ¿Cuánta información guarda cada componente?
+
+Los cinco módulos tienen, entre todos, una cantidad de información: la suma de sus varianzas. Las
+componentes **no crean ni destruyen información: la reparten**.
+
+> 📐 **La matemática, enunciada.** Si $\lambda_1, \dots, \lambda_5$ son las varianzas de las cinco
+> componentes,
+>
+> $$\lambda_1 + \lambda_2 + \lambda_3 + \lambda_4 + \lambda_5 = \text{var}(\text{cuant}) + \text{var}(\text{lect}) + \dots + \text{var}(\text{escr})$$
+>
+> **En palabras:** la información total no cambia; la primera componente se queda con la mayor
+> tajada, la segunda con la mayor tajada de lo que sobra, y así. La proporción
+> $\lambda_1 / (\lambda_1 + \dots + \lambda_5)$ es **qué parte de la información guarda la primera**.
+
+```{r varianzas}
+lambda <- pca$sdev^2
+c(suma_varianzas_modulos     = round(sum(sapply(sc[modulos], var)), 1),
+  suma_varianzas_componentes = round(sum(lambda), 1))
+
+reparto <- data.frame(componente = paste0("C", 1:5),
+                      de_cada_100 = 100 * lambda / sum(lambda),
+                      acumulado   = 100 * cumsum(lambda) / sum(lambda))
+reparto$de_cada_100 <- round(reparto$de_cada_100, 1)
+reparto$acumulado   <- round(reparto$acumulado, 1)
+reparto
+```
+
+```{r grafico-reparto, fig.height = 4.5}
+ggplot(reparto, aes(componente, de_cada_100)) +
+  geom_col(fill = c("#2B6CB0", rep("grey70", 4)), width = 0.65) +
+  geom_text(aes(label = coma(de_cada_100)), vjust = -0.4, size = 4.5) +
+  geom_line(aes(y = acumulado, group = 1), color = "#C05621", linewidth = 1) +
+  geom_point(aes(y = acumulado), color = "#C05621", size = 2.5) +
+  geom_text(data = reparto[-1, ], aes(y = acumulado, label = coma(acumulado)), vjust = -0.9, color = "#C05621", size = 3.8) +
+  scale_y_continuous(limits = c(0, 108)) +
+  labs(title = "De cada 100 partes de información, cuántas guarda cada componente",
+       subtitle = "Barras: cada componente · línea naranja: acumulado",
+       x = NULL, y = "De cada 100")
+```
+
+> 📋 **Describir:** la primera componente guarda `r coma(reparto$de_cada_100[1])` de cada 100 partes
+> de la información de los cinco módulos. Con dos se llega a `r coma(reparto$acumulado[2])`, y con
+> tres a `r coma(reparto$acumulado[3])`.
+>
+> 🔎 **Analizar:** un solo número guarda **un poco más de la mitad**. Es mucho para un solo número,
+> pero **casi la mitad de lo que dicen los cinco puntajes se queda por fuera**. La pregunta de negocio
+> no es si 53 es mucho o poco en abstracto: es **si lo que se queda por fuera le importa al
+> cliente.** **Decisión:** hay que mirar qué es esa información que no entra en el global.
+
+# ¿Qué mide cada componente?
+
+Los pesos dicen qué mide cada componente. Un peso grande —positivo o negativo— es un módulo que manda.
+
+```{r grafico-pesos, fig.height = 5}
+data.frame(pesos[, 1:3], modulo = rownames(pesos)) |>
+  pivot_longer(-modulo, names_to = "componente", values_to = "peso") |>
+  mutate(componente = recode(componente, PC1 = "C1 · el nivel general",
+                             PC2 = "C2 · escritura", PC3 = "C3 · inglés"),
+         modulo = factor(etiqueta[modulo], levels = rev(etiqueta))) |>
+  ggplot(aes(peso, modulo, fill = peso > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, color = "grey40") +
+  geom_text(aes(label = coma(peso, 2), hjust = ifelse(peso > 0, -0.15, 1.15)), size = 3.8) +
+  facet_wrap(~ componente) +
+  scale_fill_manual(values = c("#C05621", "#2B6CB0"), guide = "none") +
+  scale_x_continuous(limits = c(-1.25, 1.25), labels = function(x) coma(x, 1)) +
+  labs(title = "Qué módulos mandan en cada una de las tres primeras componentes",
+       x = "Peso", y = NULL)
+```
+
+> 📋 **Describir:** en la primera, todos los módulos pesan parecido y en la misma dirección. En la
+> segunda, escritura pesa `r coma(abs(pesos["escritura", 2]), 2)` (con signo contrario al resto) y los
+> demás casi nada. En la tercera,
+> inglés pesa `r coma(pesos["ingles", 3], 2)`.
+>
+> 🔎 **Analizar:** la primera es **el nivel general del estudiante**: sube cuando sube todo. La segunda
+> es **escritura por su cuenta**: distingue a los que escriben mejor o peor de lo que haría esperar su
+> nivel general. La tercera es lo mismo con **inglés**. Es decir: lo que el global deja por fuera **no
+> es ruido, tiene nombre**: son escritura e inglés, justo los dos módulos que menos se parecen a los
+> demás. **Decisión:** si el cliente da tutorías de escritura o de inglés, el global no le sirve para
+> escoger a quién.
+
+> ⚠️ El signo de una componente es arbitrario: R pudo haber entregado todos los pesos con el signo
+> contrario y sería la misma componente. Lo que se lee es **qué módulos pesan mucho** y **si van en
+> la misma dirección o en contra**.
+
+# El costo de decidir con un solo número
+
+Hasta aquí todo está en «partes de información». Al cliente eso no le dice nada. **Lo traducimos a
+estudiantes.**
+
+Supongamos que la institución da tutoría al 20 % más bajo. Puede escoger a ese 20 % de dos maneras:
+por el puntaje global, o por el módulo de la tutoría.
+
+```{r costo}
+bajo <- function(v) v <= quantile(v, 0.20)
+cobertura <- lapply(c("escritura", "ingles", "cuantitativo"), function(m) {
+  necesita <- bajo(sc[[m]]); detecta <- bajo(sc$global)
+  data.frame(tutoria = m,
+             lo_necesitan = sum(necesita),
+             el_global_los_ve = sum(necesita & detecta),
+             se_quedan_por_fuera = sum(necesita & !detecta))
+}) |> bind_rows()
+cobertura$de_cada_100_por_fuera <- round(100 * cobertura$se_quedan_por_fuera / cobertura$lo_necesitan, 1)
+cobertura
+```
+
+```{r grafico-costo, fig.height = 4.2}
+cobertura |>
+  select(tutoria, `Los ve el global` = el_global_los_ve, `Se quedan por fuera` = se_quedan_por_fuera) |>
+  pivot_longer(-tutoria) |>
+  mutate(tutoria = factor(etiqueta[tutoria], levels = rev(etiqueta[c("escritura", "ingles", "cuantitativo")]))) |>
+  ggplot(aes(value, tutoria, fill = name)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = miles(value)), position = position_stack(vjust = 0.5), color = "white",
+            fontface = "bold", size = 4.3) +
+  scale_fill_manual(values = c("#2B6CB0", "#C05621"), name = NULL) +
+  scale_x_continuous(labels = miles) +
+  labs(title = "Estudiantes en el 20 % más bajo de cada módulo: ¿los encuentra el global?",
+       x = "Estudiantes", y = "Tutoría de") +
+  theme(legend.position = "top")
+```
+
+> 📋 **Describir:** `r miles(cobertura$lo_necesitan[1])` estudiantes están en el 20 % más bajo de
+> escritura. Si la tutoría se asigna por el global, **`r miles(cobertura$se_quedan_por_fuera[1])` de
+> ellos se quedan sin tutoría**: `r coma(cobertura$de_cada_100_por_fuera[1])` de cada 100. En inglés
+> se quedan por fuera `r miles(cobertura$se_quedan_por_fuera[2])`. En cuantitativo, que pesa más en el
+> global, `r miles(cobertura$se_quedan_por_fuera[3])`.
+>
+> 🔎 **Analizar:** **ésa es la información que se pierde, con nombre y apellido.** El global funciona
+> para el nivel general, pero casi la mitad de los que escriben peor no se ven, porque su nivel
+> general es aceptable. Y el costo es más alto justo en los módulos que la componente principal pesa
+> menos. **Decisión:** para el cliente, un número sirve para ordenar; para asignar tutorías de un área,
+> hay que mirar el módulo de esa área.
+
+```{r un-caso}
+disparejos <- sc$global >= mean(sc$global) & bajo(sc$escritura)
+c(global_sobre_el_promedio_y_escritura_en_el_20_bajo = sum(disparejos))
+```
+
+> 📋 **Describir:** `r miles(sum(disparejos))` estudiantes tienen el global **por encima del promedio**
+> y la escritura en el 20 % más bajo.
+>
+> 🔎 **Analizar:** para la institución, ésos son estudiantes «sin problema» si mira solo el global. Son el
+> tipo de estudiante que la segunda componente separa. **Decisión:** es la lista que se le entrega al
+> programa de escritura, y ningún resumen de un solo número la produce.
+
+# ¿Hay que estandarizar antes?
+
+Una decisión técnica que sí cambia resultados: si las variables están en escalas distintas, la que
+tenga números más grandes se come la componente. **Aquí no pasa**, porque los cinco módulos están en
+la misma escala.
+
+```{r estandarizar}
+pca_est <- prcomp(sc[modulos], scale. = TRUE)
+c(sin_estandarizar_la_1_guarda = round(100 * lambda[1] / sum(lambda), 1),
+  estandarizando_la_1_guarda   = round(100 * pca_est$sdev[1]^2 / sum(pca_est$sdev^2), 1),
+  desviacion_menor = round(min(sapply(sc[modulos], sd)), 1),
+  desviacion_mayor = round(max(sapply(sc[modulos], sd)), 1))
+```
+
+> 📋 **Describir:** los cinco módulos tienen desviaciones entre `r coma(min(sapply(sc[modulos], sd)))`
+> y `r coma(max(sapply(sc[modulos], sd)))`, y la primera componente guarda casi lo mismo con o sin
+> estandarizar.
+>
+> 🔎 **Analizar:** estandarizar es poner a todas las variables a desviación 1 antes de resumir. Aquí los
+> cinco ya tienen la misma desviación, así que el resultado casi no cambia. **Decisión:** en Saber no hace falta. **En su dataset casi seguro sí:** si mezclan pesos
+> con años o con porcentajes, sin estandarizar la componente solo repite la variable de números más
+> grandes. En R es `prcomp(datos, scale. = TRUE)`.
+
+# Qué no es una componente
+
+- **No es una causa.** Que la primera componente sea «el nivel general» no dice que exista una
+  habilidad general que produce los cinco puntajes. Dice que los puntajes se mueven juntos.
+- **No es un nombre que la técnica pone.** «Nivel general», «escritura», «inglés» son nombres que
+  **nosotros** pusimos mirando los pesos. Otro analista podría nombrarlas distinto, y habría que
+  discutirlo con el cliente.
+- **No reemplaza a los datos.** Es un resumen: sirve para ordenar y para ver qué se pierde, no para
+  borrar las variables originales.
+
+# La puerta a lo que viene
+
+| Lo que vimos hoy | La pregunta que queda | Dónde se responde |
+|---|---|---|
+| El nivel general guarda un poco más de la mitad | Si pongo a los estudiantes en un plano con las dos primeras componentes, **¿qué perfiles aparecen?** | **Lun 19 oct** · PCA II y biplot |
+| Los nombres de las componentes los pusimos nosotros | ¿Hay **habilidades** detrás de los puntajes, una cuantitativa y otra verbal? | **Sáb 24 oct** · Análisis factorial |
+
+# Actividad práctica
+
+Con **el dataset de su equipo** y **el cliente de su caso de negocio**:
+
+1. **La matriz de correlaciones.** ¿Qué variables se repiten? ¿Cuál va más sola?
+2. **El PCA.** Corran `prcomp()` sobre sus variables numéricas. **Decidan primero si estandarizan** y
+   digan por qué.
+3. **El reparto.** ¿Cuánta información guarda la primera componente? ¿Cuántas hacen falta para pasar
+   de 80 de cada 100?
+4. **Los pesos.** Pónganle nombre a las dos primeras componentes mirando sus pesos.
+5. **El costo para su cliente.** Si su cliente decidiera con un solo número, ¿a quién o a qué dejaría
+   por fuera? Cuéntenlo.
+
+# Preguntas conceptuales
+
+1. ¿Por qué cinco puntajes que se mueven juntos se pueden resumir, y cinco puntajes independientes no?
+2. La primera componente guarda 53 de cada 100 partes de la información. ¿Es mucho o poco? ¿De qué
+   depende la respuesta?
+3. Si la primera componente va con el global casi exactamente, ¿para qué sirvió calcularla?
+4. ¿Por qué escritura aparece sola en la segunda componente? Relaciónelo con la matriz de
+   correlaciones.
+5. Un equipo tiene en su base el precio en pesos y la calificación de 1 a 5. Corre el PCA sin
+   estandarizar y la primera componente guarda 99 de cada 100. ¿Qué pasó?
+6. ¿Cuál de estas afirmaciones es correcta? **(a)** La primera componente demuestra que existe una
+   habilidad general. **(b)** La primera componente es la suma con pesos que más separa a los
+   estudiantes. **(c)** Las componentes eliminan la información que no sirve. **(d)** El signo de los
+   pesos dice si un módulo es bueno o malo.
+
+# Conclusión: lo que le entregamos al cliente
+
+A la coordinadora le respondemos en cuatro frases:
+
+- **Sí, puede usar un solo número, y el correcto es el global.** Es prácticamente el mejor resumen
+  posible de los cinco módulos.
+- **Pero ese número guarda un poco más de la mitad de la información.** Lo que deja por fuera no es
+  ruido: son escritura e inglés, los dos módulos que menos se parecen a los demás.
+- **En estudiantes, el costo es concreto:** casi la mitad de los que más necesitan tutoría de
+  escritura, y casi la mitad de los de inglés, no aparecen en la lista del global.
+- **La decisión:** el global para ordenar y reportar; **escritura e inglés revisados aparte** para
+  asignar las tutorías de esas áreas.
+
+La técnica de hoy tiene nombre —**análisis de componentes principales**—, pero lo que hicimos fue
+contestar una pregunta de negocio: *qué se pierde al resumir, y a quién.*
+
+# Próxima clase
+
+**Lunes 19 de octubre · Componentes principales II: el biplot.**
+
+La pregunta: *si pongo a cada estudiante en un plano con el nivel general y con escritura, ¿qué
+perfiles aparecen, y a quién le sirve cada tipo de tutoría?* Veremos primero con **iris** un caso
+donde los grupos sí se separan, para comparar.

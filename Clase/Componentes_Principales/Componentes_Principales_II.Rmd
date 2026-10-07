@@ -1,0 +1,423 @@
+---
+title: "Notas de Clase: Componentes principales II"
+subtitle: "El mapa de los estudiantes: qué perfiles hay y a quién le toca cada tutoría"
+author: "Estadística Multidimensional · Universidad Distrital Francisco José de Caldas"
+date: "Lunes 19 de octubre de 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+    fig_width: 9
+    fig_height: 5.5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9, fig.height = 5.5)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+theme_set(theme_minimal(base_size = 13))
+coma  <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = " ")
+miles <- function(x) formatC(x, format = "d", big.mark = " ")
+```
+
+# Introducción: el encargo sigue
+
+El sábado le respondimos a la coordinadora de la institución técnica que **sí** podía ordenar a sus
+estudiantes con un solo número, el puntaje global, pero que ese número dejaba por fuera a casi la
+mitad de los que necesitaban tutoría de escritura.
+
+Nos volvió a escribir:
+
+> *«Entendido: no me basta un número. Pero tampoco puedo manejar cinco listas. ¿Qué tipos de
+> estudiante tengo? ¿Puedo armar grupos de tutoría por perfil? ¿Y cuántos estudiantes le tocan a
+> cada tutoría?»*
+
+La pregunta de hoy:
+
+> **Si ponemos a cada estudiante en un mapa de dos dimensiones, ¿qué perfiles aparecen, se separan en
+> grupos, y a quién le toca cada tipo de refuerzo?**
+
+Antes de mirar a los estudiantes vamos a mirar **un caso donde los grupos sí se separan**, para saber
+qué aspecto tiene eso. Así, cuando miremos Saber, sabremos reconocer si lo que vemos se parece o no.
+
+# Objetivos de aprendizaje
+
+Al terminar la sesión, cada estudiante debe poder:
+
+1. Dibujar y leer **el mapa de las dos primeras componentes**: cada caso es un punto.
+2. Leer **las flechas** de un biplot: qué dirección tiene cada variable y cuánto van juntas.
+3. Distinguir en el mapa un caso donde **los grupos se separan** de uno donde **solo se desplazan**.
+4. **Traducir el mapa a una decisión del cliente**, contada en casos concretos.
+
+# La base con la que llegamos
+
+La misma limpieza de las sesiones pasadas.
+
+```{r leer}
+saber <- read.csv("PruebaSaber1.csv", sep = ";", fileEncoding = "latin1",
+                  stringsAsFactors = FALSE)
+
+s <- saber |>
+  transmute(
+    cuantitativo = MOD_RAZONA_CUANTITAT_PUNT,
+    lectura      = MOD_LECTURA_CRITICA_PUNT,
+    ciudadanas   = MOD_COMPETEN_CIUDADA_PUNT,
+    ingles       = MOD_INGLES_PUNT,
+    escritura    = MOD_COMUNI_ESCRITA_PUNT,
+    global       = PUNT_GLOBAL,
+    estrato      = FAMI_ESTRATOVIVIENDA,
+    genero       = ESTU_GENERO
+  )
+s$id <- seq_len(nrow(s))
+
+modulos  <- c("cuantitativo", "lectura", "ciudadanas", "ingles", "escritura")
+etiqueta <- c(cuantitativo = "cuantitativo", lectura = "lectura", ciudadanas = "ciudadanas",
+              ingles = "inglés", escritura = "escritura")
+
+s <- s[s$estrato != "Empleado obrero u operario", ]            # fila corrida
+s$ingles[s$ingles == 0] <- NA                                    # no presentaron inglés
+for (m in modulos) s[[m]][s$id %in% c(671, 614) & s[[m]] == 0] <- NA   # ceros de las filas 671 y 614
+
+s$estrato <- sub("Estrato ", "", s$estrato)
+s$estrato[grepl("rural", s$estrato)] <- "Rural"
+s$estrato[s$estrato == ""] <- NA
+s$genero <- factor(s$genero, levels = c("F", "M"), labels = c("Mujer", "Hombre"))
+
+sc <- s[complete.cases(s[modulos]), ]
+nrow(sc)
+```
+
+# Primero, un caso donde los grupos sí se separan: iris
+
+**iris** son 150 flores de tres especies, con cuatro medidas de cada una: largo y ancho del sépalo y
+del pétalo. Las especies las clasificó un botánico, así que sabemos de antemano a qué grupo pertenece
+cada flor. Es el caso de libro: sirve para ver **cómo se ve un mapa cuando los grupos existen**.
+
+Las cuatro medidas están en centímetros pero con rangos muy distintos (el pétalo mide de 1 a 7; su
+ancho, de 0,1 a 2,5), así que aquí **sí se estandariza**.
+
+```{r iris-pca}
+pca_iris <- prcomp(iris[, 1:4], scale. = TRUE)
+guarda_iris <- 100 * pca_iris$sdev^2 / sum(pca_iris$sdev^2)
+round(guarda_iris, 1)
+
+mapa_iris <- data.frame(c1 = pca_iris$x[, 1], c2 = pca_iris$x[, 2], especie = iris$Species)
+```
+
+```{r iris-mapa, fig.height = 5}
+ggplot(mapa_iris, aes(c1, c2, color = especie)) +
+  geom_point(size = 2.3, alpha = 0.8) +
+  scale_color_manual(values = c(setosa = "#2B6CB0", versicolor = "#C05621", virginica = "#2F855A"),
+                     name = "Especie") +
+  scale_x_continuous(labels = function(x) coma(x, 0)) +
+  scale_y_continuous(labels = function(x) coma(x, 0)) +
+  labs(title = "Iris en el mapa de las dos primeras componentes",
+       subtitle = "Cada punto es una flor; el color es la especie que le asignó el botánico",
+       x = "Componente 1", y = "Componente 2")
+```
+
+```{r iris-cortes}
+c1 <- mapa_iris$c1; sp <- mapa_iris$especie
+c(setosa_llega_hasta          = round(max(c1[sp == "setosa"]), 2),
+  las_otras_empiezan_en       = round(min(c1[sp != "setosa"]), 2),
+  virginica_metidas_en_versicolor = sum(c1[sp == "virginica"] < max(c1[sp == "versicolor"])),
+  versicolor_metidas_en_virginica = sum(c1[sp == "versicolor"] > min(c1[sp == "virginica"])))
+```
+
+> 📋 **Describir:** las dos primeras componentes guardan `r coma(sum(guarda_iris[1:2]))` de cada 100
+> partes de la información de las cuatro medidas. En el mapa, **setosa queda sola**: llega hasta
+> `r coma(max(c1[sp == "setosa"]), 2)` en la primera componente y las otras dos especies empiezan en
+> `r coma(min(c1[sp != "setosa"]), 2)`. Versicolor y virginica se tocan:
+> `r sum(c1[sp == "virginica"] < max(c1[sp == "versicolor"]))` virginicas caen en la zona de versicolor
+> y `r sum(c1[sp == "versicolor"] > min(c1[sp == "virginica"]))` versicolor en la de virginica, de 50
+> cada una.
+>
+> 🔎 **Analizar:** **así se ve un grupo que existe:** una nube aparte, con un hueco vacío entre ella y
+> las demás. Setosa se separa sin discusión; versicolor y virginica se separan **casi**. **Decisión:**
+> este es el patrón que vamos a buscar en los estudiantes. Si aparece, la coordinadora puede armar
+> grupos de tutoría por perfil. Si no aparece, tendrá que decidir de otra forma.
+
+# El mapa de los estudiantes
+
+## Las dos direcciones del mapa
+
+Hacemos lo mismo con los cinco módulos. Como vimos el sábado, en Saber no hace falta estandarizar.
+
+```{r pca-saber}
+pca <- prcomp(sc[modulos])
+guarda <- 100 * pca$sdev^2 / sum(pca$sdev^2)
+
+# El signo de una componente es arbitrario: lo fijamos para que se lea fácil.
+# Componente 1 positiva = nivel general alto.
+# Componente 2 positiva = escribe MEJOR de lo que haría esperar su nivel general.
+signo1 <- sign(sum(pca$rotation[, 1])); signo2 <- sign(pca$rotation["escritura", 2])
+sc$nivel  <- signo1 * pca$x[, 1]
+sc$escr_r <- signo2 * pca$x[, 2]
+
+c(guarda_la_1 = round(guarda[1], 1), guarda_la_2 = round(guarda[2], 1),
+  el_mapa_guarda = round(sum(guarda[1:2]), 1),
+  la_2_va_con_escritura = round(cor(sc$escr_r, sc$escritura), 3))
+```
+
+> 📋 **Describir:** el mapa de dos componentes guarda `r coma(sum(guarda[1:2]))` de cada 100 partes de
+> la información de los cinco módulos. La primera dirección es el **nivel general**; la segunda va
+> `r coma(cor(sc$escr_r, sc$escritura), 2)` con escritura.
+>
+> 🔎 **Analizar:** es menos que en iris (`r coma(sum(guarda_iris[1:2]))`), pero alcanza para ver el
+> panorama. En el mapa, **ir a la derecha es tener mejor nivel general; ir hacia arriba es escribir
+> mejor de lo que ese nivel haría esperar.** **Decisión:** leemos el mapa con esas dos preguntas y
+> recordamos que inglés, la tercera componente, no está dibujado.
+
+## El biplot: los estudiantes y los módulos en el mismo dibujo
+
+Un **biplot** pone en el mismo dibujo a los estudiantes (puntos) y a los módulos (flechas).
+
+> 📐 **La matemática, enunciada.** Cada flecha tiene como coordenadas los pesos del módulo en las dos
+> componentes, multiplicados por lo que varía cada componente:
+>
+> $$\text{flecha del módulo } j = \big(w_{j1}\,\sqrt{\lambda_1},\; w_{j2}\,\sqrt{\lambda_2}\big)$$
+>
+> **En palabras:** la flecha apunta hacia donde crece ese módulo en el mapa, y es más larga cuanto
+> mejor la representa el mapa. **El ángulo entre dos flechas dice cuánto van juntos los dos
+> módulos**: ángulo pequeño, van juntos; ángulo recto, nada que ver; ángulo abierto, van en contra.
+> Es una lectura aproximada, tan buena como lo que guarda el mapa.
+
+```{r flechas}
+flechas <- data.frame(modulo = etiqueta[modulos],
+                      x = signo1 * pca$rotation[, 1] * pca$sdev[1],
+                      y = signo2 * pca$rotation[, 2] * pca$sdev[2])
+angulo <- function(a, b) acos(sum(a * b) / sqrt(sum(a^2) * sum(b^2))) * 180 / pi
+A <- outer(1:5, 1:5, Vectorize(function(i, j)
+  angulo(unlist(flechas[i, c("x", "y")]), unlist(flechas[j, c("x", "y")]))))
+dimnames(A) <- list(etiqueta[modulos], etiqueta[modulos])
+round(A)
+```
+
+```{r biplot, fig.height = 6.5}
+set.seed(19)
+muestra <- sc[sample(nrow(sc), 3000), ]
+k <- 2.2   # las flechas se agrandan para que se vean sobre la nube
+# las cuatro flechas del nivel general caen casi encima: sus etiquetas se apilan a la derecha
+etiq_flechas <- flechas
+cuatro <- etiq_flechas$modulo != "escritura"
+orden <- order(-etiq_flechas$y[cuatro])
+etiq_flechas$lx <- k * etiq_flechas$x + 3
+etiq_flechas$ly <- k * etiq_flechas$y
+etiq_flechas$lx[cuatro] <- max(k * flechas$x[cuatro]) + 4
+etiq_flechas$ly[cuatro][orden] <- c(9, 1, -7, -15)
+etiq_flechas$ly[!cuatro] <- k * flechas$y[!cuatro] + 4
+etiq_flechas$lx[!cuatro] <- k * flechas$x[!cuatro] - 6
+
+ggplot(muestra, aes(nivel, escr_r)) +
+  geom_point(alpha = 0.15, size = 0.8, color = "grey30") +
+  geom_segment(data = flechas, aes(x = 0, y = 0, xend = k * x, yend = k * y),
+               arrow = arrow(length = unit(0.25, "cm")), color = "#C05621", linewidth = 1.1) +
+  geom_label(data = etiq_flechas, aes(x = lx, y = ly, label = modulo), hjust = 0,
+             color = "#C05621", size = 4, label.size = 0, fill = "white") +
+  scale_x_continuous(labels = function(x) coma(x, 0)) +
+  scale_y_continuous(labels = function(x) coma(x, 0)) +
+  coord_equal() +
+  labs(title = "El biplot de Saber: estudiantes como puntos, módulos como flechas",
+       subtitle = "3 000 estudiantes al azar · derecha: mejor nivel general · arriba: escribe mejor de lo esperado",
+       x = "Nivel general (componente 1)", y = "Escritura frente a su nivel (componente 2)")
+```
+
+> 📋 **Describir:** cuantitativo, lectura, ciudadanas e inglés apuntan casi al mismo lado: entre ellos
+> hay a lo sumo `r round(max(A[1:4, 1:4]))` grados. La flecha de escritura se abre: está a entre
+> `r round(min(A[5, 1:4]))` y `r round(max(A[5, 1:4]))` grados de las demás. Y la nube de estudiantes
+> es **una sola mancha**, sin huecos.
+>
+> 🔎 **Analizar:** las cuatro flechas juntas son **el nivel general**: el que sube en uno sube en los
+> otros tres. Escritura va por su cuenta, como vimos el sábado. Pero lo más importante es la nube:
+> **no se ve ninguna isla como la de setosa.** No hay «tipos» de estudiante con un hueco entre ellos;
+> hay un continuo. **Decisión:** la coordinadora no puede esperar que los datos le entreguen grupos
+> hechos. Si quiere grupos de tutoría, **los tiene que definir ella**, con cortes en el mapa.
+
+# ¿Los grupos que ella conoce se separan en el mapa?
+
+La coordinadora conoce a sus estudiantes por estrato y por género. ¿Esos grupos ocupan zonas
+distintas del mapa?
+
+```{r estrato}
+sc$grupo_estrato <- case_when(sc$estrato == "1" ~ "Estrato 1",
+                              sc$estrato %in% c("4", "5", "6") ~ "Estratos 4 a 6")
+e1 <- sc$grupo_estrato %in% "Estrato 1"; e46 <- sc$grupo_estrato %in% "Estratos 4 a 6"
+c(estudiantes_estrato_1 = sum(e1), estudiantes_estratos_4_a_6 = sum(e46),
+  distancia_entre_promedios = round(mean(sc$nivel[e46]) - mean(sc$nivel[e1]), 1),
+  variacion_tipica_del_nivel = round(sd(sc$nivel), 1),
+  estrato_1_sobre_el_promedio_pct = round(100 * mean(sc$nivel[e1] > 0), 1),
+  estrato_1_sobre_la_mediana_de_4_a_6_pct = round(100 * mean(sc$nivel[e1] > median(sc$nivel[e46])), 1))
+```
+
+```{r estrato-mapa, fig.height = 5.5}
+sc |>
+  filter(!is.na(grupo_estrato)) |>
+  ggplot(aes(nivel, escr_r, color = grupo_estrato)) +
+  geom_point(alpha = 0.35, size = 0.9) +
+  stat_ellipse(level = 0.9, linewidth = 1.1) +
+  scale_color_manual(values = c("Estrato 1" = "#2B6CB0", "Estratos 4 a 6" = "#C05621"), name = NULL) +
+  scale_x_continuous(labels = function(x) coma(x, 0)) +
+  scale_y_continuous(labels = function(x) coma(x, 0)) +
+  coord_equal() +
+  labs(title = "Estrato 1 y estratos 4 a 6 en el mapa",
+       subtitle = "Elipses: donde cae el 90 % de cada grupo",
+       x = "Nivel general", y = "Escritura frente a su nivel") +
+  theme(legend.position = "top")
+```
+
+> 📋 **Describir:** entre el promedio del estrato 1 (`r miles(sum(e1))` estudiantes) y el de los
+> estratos 4 a 6 (`r miles(sum(e46))`) hay `r coma(mean(sc$nivel[e46]) - mean(sc$nivel[e1]))` puntos
+> de nivel general, cuando la variación típica del nivel es `r coma(sd(sc$nivel))`. Pero
+> `r coma(100 * mean(sc$nivel[e1] > 0))` de cada 100 estudiantes de estrato 1 están **por encima del
+> promedio**, y `r coma(100 * mean(sc$nivel[e1] > median(sc$nivel[e46])))` de cada 100 superan a la
+> mitad de los de estratos 4 a 6.
+>
+> 🔎 **Analizar:** el estrato **desplaza** la nube hacia la derecha, pero **no la separa**: las dos
+> elipses se montan casi enteras. Es lo contrario de setosa. **Diferencia no es separación.**
+> **Decisión:** asignar tutorías por estrato dejaría por fuera a estudiantes de estratos altos que la
+> necesitan y se la daría a muchos de estrato 1 que no. El estrato no sirve para escoger a quién.
+
+```{r genero}
+c(mujeres_escriben_mejor_que_su_nivel_pct = round(100 * mean(sc$escr_r[sc$genero %in% "Mujer"] > 0), 1),
+  hombres_escriben_mejor_que_su_nivel_pct = round(100 * mean(sc$escr_r[sc$genero %in% "Hombre"] > 0), 1))
+```
+
+> 📋 **Describir:** en la dirección de escritura pasa algo parecido con el género:
+> `r coma(100 * mean(sc$escr_r[sc$genero %in% "Mujer"] > 0))` de cada 100 mujeres escriben mejor de lo
+> que haría esperar su nivel, contra `r coma(100 * mean(sc$escr_r[sc$genero %in% "Hombre"] > 0))` de
+> cada 100 hombres.
+>
+> 🔎 **Analizar:** hay una diferencia, pero de nuevo **no es separación**: casi la mitad de los hombres
+> también está arriba. **Decisión:** el género tampoco sirve para escoger a quién va a la tutoría de
+> escritura. Lo que sirve es **el lugar de cada estudiante en el mapa**.
+
+# La decisión: el mapa de tutorías
+
+Si los grupos no vienen hechos, la coordinadora los define con dos cortes. Proponemos uno sencillo:
+**quedar más de una variación típica por debajo** en cada dirección.
+
+- Muy abajo en **nivel general** → tutoría general.
+- Muy abajo en **escritura frente a su nivel** → tutoría de escritura.
+
+```{r tutorias}
+corte1 <- -sd(sc$nivel); corte2 <- -sd(sc$escr_r)
+sc$tutoria <- case_when(
+  sc$nivel < corte1 & sc$escr_r < corte2 ~ "Las dos",
+  sc$nivel < corte1                      ~ "General",
+  sc$escr_r < corte2                     ~ "Escritura",
+  TRUE                                   ~ "Ninguna")
+tabla_tutorias <- as.data.frame(table(tutoria = sc$tutoria))
+tabla_tutorias$de_cada_100 <- round(100 * tabla_tutorias$Freq / nrow(sc), 1)
+tabla_tutorias
+n_tut <- setNames(tabla_tutorias$Freq, tabla_tutorias$tutoria)
+solo_escr <- sc$tutoria == "Escritura"
+escr_fuera_global <- 100 * mean(sc$global[solo_escr] > quantile(sc$global, 0.20))
+c(solo_escritura_fuera_del_20_bajo_del_global_pct = round(escr_fuera_global, 1))
+```
+
+```{r tutorias-mapa, fig.height = 6}
+colores <- c("Las dos" = "#9B2C2C", "General" = "#2B6CB0", "Escritura" = "#C05621", "Ninguna" = "grey75")
+ggplot(sc[sc$id %in% muestra$id, ], aes(nivel, escr_r, color = tutoria)) +
+  geom_point(alpha = 0.6, size = 1) +
+  geom_vline(xintercept = corte1, linetype = "dashed") +
+  geom_hline(yintercept = corte2, linetype = "dashed") +
+  annotate("label", x = corte1 - 35, y = 45, label = paste("General:", miles(n_tut["General"])),
+           color = "#2B6CB0", label.size = 0) +
+  annotate("label", x = 40, y = corte2 - 30, label = paste("Escritura:", miles(n_tut["Escritura"])),
+           color = "#C05621", label.size = 0) +
+  annotate("label", x = corte1 - 35, y = corte2 - 30, label = paste("Las dos:", miles(n_tut["Las dos"])),
+           color = "#9B2C2C", label.size = 0) +
+  scale_color_manual(values = colores, name = "Tutoría") +
+  guides(color = guide_legend(override.aes = list(size = 3.5, alpha = 1))) +
+  scale_x_continuous(labels = function(x) coma(x, 0)) +
+  scale_y_continuous(labels = function(x) coma(x, 0)) +
+  coord_equal() +
+  labs(title = "El mapa de tutorías: dos cortes, cuatro grupos",
+       subtitle = "Puntos: 3 000 estudiantes al azar · cifras: toda la base",
+       x = "Nivel general", y = "Escritura frente a su nivel") +
+  theme(legend.position = "top")
+```
+
+> 📋 **Describir:** con los dos cortes, `r miles(n_tut["General"])` estudiantes van solo a tutoría
+> general, `r miles(n_tut["Escritura"])` solo a escritura y `r miles(n_tut["Las dos"])` a las dos. El
+> resto, `r miles(n_tut["Ninguna"])`, no necesita ninguna según este criterio.
+>
+> 🔎 **Analizar:** los `r miles(n_tut["Escritura"])` de solo escritura son **estudiantes con nivel
+> general aceptable que escriben peor de lo esperado**: `r coma(escr_fuera_global)` de cada 100 de
+> ellos no están en el 20 % más bajo del global, así que una lista por global no los habría visto. Y los
+> dos grupos de tutoría son casi del mismo tamaño, así que el programa de escritura **no es un
+> apéndice**: necesita tanta capacidad como el general. **Decisión:** la coordinadora puede armar dos
+> programas de tamaño parecido y un grupo pequeño con las dos tutorías. El corte de «una variación
+> típica» es una decisión suya, no de la técnica: si tiene menos cupos, lo corre hacia abajo.
+
+# Qué no dice el mapa
+
+- **No dice que haya tipos de estudiante.** Los grupos de tutoría los definimos nosotros con cortes;
+  la nube es un continuo.
+- **No muestra inglés.** El mapa guarda `r coma(sum(guarda[1:2]))` de cada 100; inglés vive en la
+  tercera componente. Si la institución tiene tutoría de inglés, hay que hacer el mismo ejercicio con
+  ese módulo.
+- **No explica por qué.** Que el estrato desplace la nube no dice que el estrato cause el puntaje:
+  con el estrato viajan el colegio, el computador, el tiempo libre.
+
+# La puerta a lo que viene
+
+| Lo que vimos hoy | La pregunta que queda | Dónde se responde |
+|---|---|---|
+| Cuatro flechas van juntas y escritura va sola | ¿Hay **habilidades** detrás de los puntajes? ¿Una o dos? | **Sáb 24 oct** · Análisis factorial I |
+| Los nombres de las direcciones los pusimos nosotros | ¿Se puede girar el mapa para que cada dirección tenga un nombre claro? | **Lun 26 oct** · Análisis factorial II |
+| Los grupos se desplazan pero no se separan | ¿Cómo se prueba si dos grupos son distintos en los cinco módulos a la vez? | **Sáb 7 nov** · Taller de Hotelling |
+
+# Actividad práctica
+
+Con **el dataset de su equipo** y **el cliente de su caso de negocio**:
+
+1. **El mapa.** Dibujen sus casos en el plano de las dos primeras componentes. ¿Qué tanto guarda?
+2. **Las flechas.** Hagan el biplot. ¿Qué variables van juntas? ¿Cuál va sola?
+3. **Los grupos.** Coloreen el mapa por una variable de grupo de su base. ¿Se separan como setosa, o
+   solo se desplazan?
+4. **La decisión.** Propongan un corte en el mapa que le sirva a su cliente, y cuenten cuántos casos
+   caen en cada zona.
+
+# Preguntas conceptuales
+
+1. En iris, setosa queda sola en el mapa. ¿Qué tendría que verse en Saber para decir que hay «tipos»
+   de estudiante?
+2. Dos flechas forman un ángulo de 7 grados. ¿Qué dice eso de los dos módulos?
+3. El estrato mueve la nube 25,7 puntos de nivel general. ¿Por qué eso no alcanza para asignar
+   tutorías por estrato?
+4. ¿Por qué el mapa de Saber guarda menos información que el de iris, y qué se pierde?
+5. Los cortes de «una variación típica por debajo» los escogimos nosotros. ¿Qué cambia si la
+   institución tiene la mitad de cupos?
+6. ¿Cuál de estas afirmaciones es correcta? **(a)** Si el promedio de dos grupos es distinto, los
+   grupos se separan en el mapa. **(b)** Un biplot muestra casos y variables en el mismo dibujo.
+   **(c)** El ángulo entre dos flechas mide cuál variable es más importante. **(d)** El mapa encuentra
+   automáticamente los grupos de tutoría.
+
+# Conclusión: lo que le entregamos al cliente
+
+- **No hay tipos de estudiante hechos.** A diferencia de las flores de iris, los estudiantes forman
+  una sola nube, sin huecos. Los grupos de tutoría hay que definirlos.
+- **El mapa tiene dos direcciones con nombre:** el nivel general, donde cuatro módulos van juntos, y
+  escritura, que va por su cuenta.
+- **Estrato y género desplazan la nube pero no la separan.** No sirven para escoger a quién va a
+  tutoría: diferencia no es separación.
+- **La decisión:** dos cortes en el mapa dan dos programas de tamaño parecido —general y escritura— y
+  un grupo pequeño que necesita los dos. Cada estudiante sabe por qué está en su tutoría.
+
+Lo que usamos hoy se llama **biplot de componentes principales**. Lo que hicimos fue convertir cinco
+puntajes en un mapa y el mapa en una lista de tutorías.
+
+# Próxima clase
+
+**Sábado 24 de octubre · Análisis factorial I.**
+
+Un nuevo cliente: una empresa que contrata técnicos pregunta si la prueba mide **una habilidad o
+dos**. Hoy vimos que cuatro flechas van juntas y una va sola; el sábado vemos si detrás de eso hay
+habilidades, y en qué se diferencia esa pregunta de la de hoy.

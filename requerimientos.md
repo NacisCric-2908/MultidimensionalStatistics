@@ -40,9 +40,19 @@
 
 ## S06
 
-- [x]  Matriz de datos
+- [x]  Matriz de dato
 - [x]  Vector de medias
 - [x]  La forma matricial (centroide)
 - [x]  Mediana marginal
 - [x]  verificación de distancia
-- [x]  Mahalanobis
+
+
+## Mahalanobis
+- [x]   Completos #complete.case, todos en la misma escala
+- [x]   Valor extremo #a mas de 3 desviaciones de la medias
+- [ ]   Elipse
+- [x]   Mahalanobis
+- [x]   euclidian vs mahalonibis
+- [x]   chi^2 con n grados de libertad 
+- [ ]   grafico q-q
+- [ ]   Los raros de verdad #los que son verdaderamete raros pero en combinacion
