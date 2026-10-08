@@ -2604,7 +2604,7 @@ Con los dos criterios ya aplicados, el resto de este módulo se dedica
 exclusivamente a los pares que quedaron señalados, y a ningún otro:
 
 | Par | Criterio | Valor | Por qué se analiza |
-|----|----|----|----|
+|------------------|------------------|------------------|------------------|
 | `Annual_Income` – `Credit_Limit` | $\lvert r \rvert$ | `r round(cor(credit$Annual_Income, credit$Credit_Limit), 3)` | par numérico más fuerte no redundante |
 | `Payment_Ratio` – `Credit_Score` | $\lvert r \rvert$ | `r round(r_credit_score["Payment_Ratio"], 3)` | predictor #1 del riesgo |
 | `Credit_Utilization` – `Credit_Score` | $\lvert r \rvert$ | `r round(r_credit_score["Credit_Utilization"], 3)` | predictor #2 del riesgo |
@@ -4222,3 +4222,264 @@ Módulo 6 ya mostró que su orden se refleja linealmente en
     colinealidad, pero son las variables más útiles para interpretarlos
     después, precisamente porque son las que más se relacionan con el
     riesgo.
+
+# (Mahalanobis) Agregado para revisar
+
+## completos
+
+ver 0 o sin registro (deberia dar 0 porque tenemos todos los datos)
+
+```{r completos}
+# Filtramos las filas completas considerando únicamente las variables retenidas
+completos <- complete.cases(credit[retenidas])
+sc <- credit[completos, ]
+
+# Resumen de registros
+c(
+  en_la_base = nrow(credit),
+  filas_completas = nrow(sc),
+  quedan_por_fuera = sum(!completos)
+)
+
+# Conteo de valores faltantes (NA) por cada variable retenida
+colSums(is.na(credit[retenidas]))
+```
+
+## A mas de 3 desviaciones
+
+aqui aplique transfomacion log+1 solo para trasnformar y ver que pasa
+
+```{r revision univariada}
+# 1. Creamos una copia para trabajar las transformaciones
+sc_transf <- sc
+
+# 2. Identificamos las variables que requieren log(x + 1) según el criterio de asimetría
+vars_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+
+# 3. Aplicamos log(x + 1) únicamente a esas variables
+for (v in vars_log) {
+  sc_transf[[v]] <- log1p(sc_transf[[v]])  # log1p(x) equivale a log(x + 1)
+}
+
+# 4. Ahora sí escalamos todas las variables retenidas
+Z <- scale(sc_transf[retenidas])
+
+# 5. Detección de atípicos univariados sobre los datos bien transformados
+extremo_univariado <- apply(abs(Z) > 3, 1, any)
+
+c(con_alguna_nota_extrema = sum(extremo_univariado),
+  porcentaje = round(100 * mean(extremo_univariado), 2))
+```
+
+## Elipse (esto es lo que vimos del punto imposible)
+
+```{r elipse}
+# Elegimos dos variables con correlación fuerte pero no redundante
+vars_plano <- c("Payment_Ratio", "Credit_Score")
+
+# 1. Matriz y distancia de Mahalanobis para la elipse
+par2 <- as.matrix(sc[vars_plano])
+d_par <- mahalanobis(par2, colMeans(par2), cov(par2))
+
+# 2. Límites de la elipse al 95% (df = 2)
+fuera_elipse <- d_par > qchisq(0.95, df = 2)
+
+# 3. Límites univariados (±2 desviaciones estándar)
+Z_sub <- scale(sc[vars_plano])
+nota_extrema <- abs(Z_sub[, "Payment_Ratio"]) > 2 | abs(Z_sub[, "Credit_Score"]) > 2
+
+# 4. Conteo exactamente igual al del profesor
+data.frame(
+  situacion = c(
+    "Fuera de la elipse, con ambas variables dentro de ±2 sd (Raros en combinación)",
+    "Dentro de la elipse, pero con una variable fuera de ±2 sd (Falsas alarmas)",
+    "Fuera de la elipse (Total atípicos multivariados)"
+  ),
+  clientes = c(
+    sum(fuera_elipse & !nota_extrema),
+    sum(!fuera_elipse & nota_extrema),
+    sum(fuera_elipse)
+  )
+)
+```
+
+## Eucidiana vs mahalanobis
+
+aqui una comparariva de las dos distancias
+
+```{r euclid-vs-maha}
+# 1. Matriz de variables numéricas retenidas (sin redundancias)
+M  <- as.matrix(sc[retenidas])
+mu <- colMeans(M)
+
+# 2. Distancia de Mahalanobis (calculamos d_M sacando la raíz cuadrada de d2)
+sc$d2 <- mahalanobis(M, mu, cov(M))
+sc$d_mahal <- sqrt(sc$d2)
+
+# 3. Distancia Euclidiana (sobre variables estandarizadas para evitar sesgo de escala)
+M_scale <- scale(M)
+sc$euclid <- sqrt(rowSums(M_scale^2))
+
+# 4. Definimos el Top de atípicos (por ejemplo, el 1% superior o el umbral Chi-cuadrado al 97.5%)
+top_n <- round(0.01 * nrow(sc)) # Top 1% (500 clientes)
+
+# 5. Comparación directa
+c(
+  correlacion_entre_las_dos = round(cor(sc$euclid, sc$d_mahal), 3),
+  coinciden_en_el_top_500   = length(intersect(
+    order(sc$euclid,  decreasing = TRUE)[1:top_n],
+    order(sc$d_mahal, decreasing = TRUE)[1:top_n]
+  ))
+)
+```
+
+```{r distancia todos los modulos}
+round(summary(sc$d2))
+```
+
+## Chi\^2 con n=p_variables grados de libertad
+
+```{r CHI}
+# 1. Matriz de variables retenidas y distancia de Mahalanobis
+M  <- as.matrix(sc[retenidas])
+mu <- colMeans(M)
+d2_nuestras <- mahalanobis(M, mu, cov(M))
+
+# 2. Número de variables retenidas
+p_vars <- length(retenidas) # Debería ser 21
+
+# 3. Cortes teóricos con df = 21
+cortes <- qchisq(c(0.95, 0.99, 0.999), df = p_vars)
+
+# 4. Tabla comparativa: Esperados vs. Observados
+data.frame(
+  corte = c("95 %", "99 %", "99,9 %"),
+  valor_de_la_distancia = round(cortes, 2),
+  esperados_por_encima = paste0(c(5, 1, 0.1), " %"),
+  observados_n = sapply(cortes, function(q) sum(d2_nuestras > q)),
+  observados_pct = paste0(round(100 * sapply(cortes, function(q) mean(d2_nuestras > q)), 2), " %")
+)
+
+# 5. Gráfico de distancias con la curva Chi-cuadrado (df = 21)
+df_grafico <- data.frame(d2 = d2_nuestras)
+
+ggplot(df_grafico, aes(x = d2)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 70,
+                 fill = "steelblue", color = "white") +
+  stat_function(fun = dchisq, args = list(df = p_vars), color = "firebrick", linewidth = 1.1) +
+  geom_vline(xintercept = cortes[2], linetype = "dashed", color = "black") +
+  annotate("text", x = cortes[2] + 10, y = 0.03,
+           label = paste0("Corte 99%: ", round(cortes[2], 2)), size = 4) +
+  labs(title = paste0("Distancias de Mahalanobis con ", p_vars, " variables retenidas"),
+       subtitle = paste0("En rojo, la distribución Chi-cuadrado con ", p_vars, " grados de libertad"),
+       x = "Distancia de Mahalanobis (al cuadrado)", y = "Densidad")
+```
+
+lo mismo pero viedno el comportamiento de log+1
+
+```{r CHI con log+1}
+# 1. Identificamos las variables a transformar con log1p() según el criterio de Skewness > 1 (Módulo 11)
+vars_para_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+
+# 2. Creamos la submatriz transformada
+M_log <- sc[retenidas]
+for (v in vars_para_log) {
+  M_log[[v]] <- log1p(M_log[[v]])  # log1p(x) es log(x + 1)
+}
+
+# 3. Calculamos Mahalanobis sobre los datos con log1p + scale
+M_log_mat <- as.matrix(M_log)
+mu_log    <- colMeans(M_log_mat)
+d2_log    <- mahalanobis(M_log_mat, mu_log, cov(M_log_mat))
+
+# 4. Tabla comparativa: Solo scale() vs. log1p() + scale()
+p_vars <- length(retenidas)
+cortes <- qchisq(c(0.95, 0.99, 0.999), df = p_vars)
+
+data.frame(
+  Corte = c("95 %", "99 %", "99,9 %"),
+  Valor_Chi2 = round(cortes, 2),
+  Esperado_Pct = c("5.00 %", "1.00 %", "0.10 %"),
+  Obs_Solo_Scale_Pct = paste0(round(100 * sapply(cortes, function(q) mean(sc$d2 > q)), 2), " %"),
+  Obs_Log_Scale_Pct  = paste0(round(100 * sapply(cortes, function(q) mean(d2_log > q)), 2), " %")
+)
+
+df_comparacion <- rbind(
+  data.frame(d2 = sc$d2, Metodo = "Solo scale() (Datos Crudos)"),
+  data.frame(d2 = d2_log, Metodo = "log(x+1) + scale() (Transformados)")
+)
+
+ggplot(df_comparacion, aes(x = d2, fill = Metodo)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 70, alpha = 0.6, position = "identity", color = "white") +
+  stat_function(fun = dchisq, args = list(df = p_vars), color = "firebrick", linewidth = 1.2) +
+  geom_vline(xintercept = cortes[2], linetype = "dashed", color = "black") +
+  scale_fill_manual(values = c("Solo scale() (Datos Crudos)" = "steelblue", 
+                               "log(x+1) + scale() (Transformados)" = "darkgreen")) +
+  coord_cartesian(xlim = c(0, 150)) +  # Acercamos la vista para apreciar el cuerpo
+  labs(
+    title = "Efecto de la transformación log1p() en la Distancia de Mahalanobis",
+    subtitle = "En rojo, la distribución Chi-cuadrado teórica con 21 grados de libertad",
+    x = "Distancia de Mahalanobis (al cuadrado)",
+    y = "Densidad",
+    fill = "Estrategia"
+  ) +
+  theme_minimal()
+```
+
+Expliacion rapida para no olvidar: esto quiere decir que log+1 hace que
+el comportamiento del dataset se mas una normal multivariante que solo
+viendo los valores reales
+
+## Prueba de mardia pero con log+1
+
+aqui solo queiro ver que tanto cambia usando el log+1
+
+```{r mardia con log+1}
+set.seed(42)
+
+# 1. Creamos la submatriz con la transformación log1p aplicada a las variables asimétricas
+M_log <- sc[retenidas]
+vars_para_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+
+for (v in vars_para_log) {
+  M_log[[v]] <- log1p(M_log[[v]]) # log1p(x) es log(x + 1)
+}
+
+# 2. Tomamos una muestra aleatoria de 1.500 observaciones para no saturar memoria
+m_mardia <- 10000
+Xm_log <- as.matrix(M_log[sample(nrow(M_log), m_mardia), ])
+
+p_mardia <- ncol(Xm_log)
+xbar_m   <- colMeans(Xm_log)
+S_m      <- cov(Xm_log)
+Xc_m     <- sweep(Xm_log, 2, xbar_m)
+
+# 3. Matriz de distancias generalizadas (G)
+G_m <- Xc_m %*% solve(S_m) %*% t(Xc_m)
+
+# 4. Estadísticos de Mardia (Asimetría y Curtosis)
+b1p <- sum(G_m^3) / m_mardia^2
+b2p <- mean(diag(G_m)^2)
+
+# Grados de libertad y p-valores
+gl_skew   <- p_mardia * (p_mardia + 1) * (p_mardia + 2) / 6
+stat_skew <- m_mardia * b1p / 6
+pval_skew <- pchisq(stat_skew, df = gl_skew, lower.tail = FALSE)
+
+media_kurt <- p_mardia * (p_mardia + 2)
+var_kurt   <- 8 * p_mardia * (p_mardia + 2) / m_mardia
+z_kurt     <- (b2p - media_kurt) / sqrt(var_kurt)
+pval_kurt  <- 2 * pnorm(-abs(z_kurt))
+
+# 5. Resultado comparativo
+data.frame(
+  Estadistico = c("Asimetría de Mardia (stat_skew)", "Curtosis de Mardia (z_kurt)"),
+  Valor_Solo_Scale = c(122753.1, 194.2), # Valores aproximados de tu corrida cruda (Módulo 10)
+  Valor_Con_Log1p  = c(round(stat_skew, 1), round(z_kurt, 2)),
+  Ref_Teorica      = c(paste0("chi2, df=", gl_skew), "N(0,1)"),
+  p_valor_Log      = c(format.pval(pval_skew, digits = 3, eps = 2.2e-16),
+                       format.pval(pval_kurt, digits = 3, eps = 2.2e-16))
+)
+```
+
+Nota: anque log la lleve a una forma mas normal sigue rechazando H_0

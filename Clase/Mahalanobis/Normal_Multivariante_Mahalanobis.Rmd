@@ -26,39 +26,46 @@ theme_set(theme_minimal(base_size = 13))
 
 # Introducción
 
-La sesión pasada revisamos la base **variable por variable**: un histograma de cada módulo, un
-boxplot del INSE, una tabla por estrato. Encontramos ocho INSE sin punto decimal, una fila corrida y
-26 ceros de inglés. Con eso la base quedó limpia.
+La sesión pasada revisamos la base **variable por variable**: un
+histograma de cada módulo, un boxplot del INSE, una tabla por estrato.
+Encontramos ocho INSE sin punto decimal, una fila corrida y 26 ceros de
+inglés. Con eso la base quedó limpia.
 
 Pero nos quedó una pregunta abierta, y es la de hoy:
 
-> **¿Hay estudiantes que son raros en la combinación de sus cinco módulos, aunque ninguna nota por
-> separado sea extrema?**
+> **¿Hay estudiantes que son raros en la combinación de sus cinco
+> módulos, aunque ninguna nota por separado sea extrema?**
 
-Piénsenlo con un caso concreto. Un estudiante saca **130 en razonamiento cuantitativo y 69 en lectura
-crítica**. Ni una ni otra es una nota escandalosa: 130 no está entre las más altas del salón, y 69
-tampoco está entre las más bajas. Si revisamos cuantitativo solo, pasa. Si revisamos lectura sola,
-pasa. **¿Y si miramos las dos al tiempo?**
+Piénsenlo con un caso concreto. Un estudiante saca **130 en razonamiento
+cuantitativo y 69 en lectura crítica**. Ni una ni otra es una nota
+escandalosa: 130 no está entre las más altas del salón, y 69 tampoco
+está entre las más bajas. Si revisamos cuantitativo solo, pasa. Si
+revisamos lectura sola, pasa. **¿Y si miramos las dos al tiempo?**
 
-Ahí es donde la nota se vuelve rara: en esta prueba, a quien le va bien en cuantitativo **le suele ir
-bien en lectura**. Un estudiante que rompe esa regla es un caso que vale la pena mirar — y ninguna
-revisión de una variable a la vez lo iba a encontrar.
+Ahí es donde la nota se vuelve rara: en esta prueba, a quien le va bien
+en cuantitativo **le suele ir bien en lectura**. Un estudiante que rompe
+esa regla es un caso que vale la pena mirar — y ninguna revisión de una
+variable a la vez lo iba a encontrar.
 
 # Objetivos de aprendizaje
 
 Al terminar la sesión, cada estudiante debe poder:
 
-1. Explicar **por qué revisar variable por variable no alcanza** para detectar casos raros.
-2. Decir **en palabras** qué mide la distancia de Mahalanobis y en qué se diferencia de la euclidiana.
-3. Leer un **gráfico Q-Q de las distancias** y decir si los datos se comportan como una campana
-   multivariante.
-4. **Decidir** qué hacer con un caso raro: si es error, si es atípico real, si se borra, se corrige o
-   se marca.
-5. Justificar esa decisión mostrando **qué cambia y qué no cambia** en el análisis.
+1.  Explicar **por qué revisar variable por variable no alcanza** para
+    detectar casos raros.
+2.  Decir **en palabras** qué mide la distancia de Mahalanobis y en qué
+    se diferencia de la euclidiana.
+3.  Leer un **gráfico Q-Q de las distancias** y decir si los datos se
+    comportan como una campana multivariante.
+4.  **Decidir** qué hacer con un caso raro: si es error, si es atípico
+    real, si se borra, se corrige o se marca.
+5.  Justificar esa decisión mostrando **qué cambia y qué no cambia** en
+    el análisis.
 
 # La base con la que llegamos
 
-Repetimos aquí la limpieza de la sesión pasada, para que estas notas tejan solas.
+Repetimos aquí la limpieza de la sesión pasada, para que estas notas
+tejan solas.
 
 ```{r leer}
 saber <- read.csv("PruebaSaber1.csv", sep = ";", fileEncoding = "latin1",
@@ -98,8 +105,8 @@ modulos <- c("cuantitativo", "lectura", "ciudadanas", "ingles", "escritura")
 dim(s)
 ```
 
-Para todo lo de hoy necesitamos estudiantes con **los cinco módulos**: una distancia multivariante no
-se puede calcular con un hueco.
+Para todo lo de hoy necesitamos estudiantes con **los cinco módulos**:
+una distancia multivariante no se puede calcular con un hueco.
 
 ```{r completos}
 completos <- complete.cases(s[modulos])
@@ -108,27 +115,31 @@ c(en_la_base = nrow(s), con_los_cinco = nrow(sc), quedan_por_fuera = sum(!comple
 colSums(is.na(s[modulos]))
 ```
 
-> 📋 **Describir:** de los 9 999 estudiantes, 9 908 tienen los cinco módulos. Los 91 que quedan por
-> fuera son los 26 sin inglés y los 66 sin escritura.
+> 📋 **Describir:** de los 9 999 estudiantes, 9 908 tienen los cinco
+> módulos. Los 91 que quedan por fuera son los 26 sin inglés y los 66
+> sin escritura.
 >
-> 🔎 **Analizar:** esos 91 **no son una molestia técnica, son un grupo**: son justamente los que no
-> presentaron un módulo. Toda técnica multivariante — Mahalanobis, PCA, factorial — los deja por
-> fuera **en silencio**, y el informe no se entera. **Decisión:** se trabaja con los 9 908, pero los 91
-> se revisan aparte al final de la sesión, para no perderlos de vista.
+> 🔎 **Analizar:** esos 91 **no son una molestia técnica, son un
+> grupo**: son justamente los que no presentaron un módulo. Toda técnica
+> multivariante — Mahalanobis, PCA, factorial — los deja por fuera **en
+> silencio**, y el informe no se entera. **Decisión:** se trabaja con
+> los 9 908, pero los 91 se revisan aparte al final de la sesión, para
+> no perderlos de vista.
 
 ```{r escala}
 round(sapply(sc[modulos], function(v) c(media = mean(v), desviacion = sd(v))), 1)
 ```
 
-Los cinco módulos siguen en la misma escala — media 100, desviación 20 — así que **podemos
-compararlos directamente**, sin estandarizar nada.
+Los cinco módulos siguen en la misma escala — media 100, desviación 20 —
+así que **podemos compararlos directamente**, sin estandarizar nada.
 
 # Por qué variable por variable no alcanza
 
 ## La revisión de siempre
 
-La forma habitual de buscar casos raros es mirar cada variable y señalar al que se sale: el que está a
-más de tres desviaciones del promedio de su columna.
+La forma habitual de buscar casos raros es mirar cada variable y señalar
+al que se sale: el que está a más de tres desviaciones del promedio de
+su columna.
 
 ```{r univariado}
 Z <- scale(sc[modulos])
@@ -137,27 +148,30 @@ c(con_alguna_nota_extrema = sum(extremo_univariado),
   porcentaje = round(100 * mean(extremo_univariado), 2))
 ```
 
-> 📋 **Describir:** 90 estudiantes de 9 908 tienen al menos una nota a más de tres desviaciones de la
-> media de su módulo.
+> 📋 **Describir:** 90 estudiantes de 9 908 tienen al menos una nota a
+> más de tres desviaciones de la media de su módulo.
 >
-> 🔎 **Analizar:** es el 0,91 % — un número razonable, y uno se queda tranquilo. **Pero esa revisión
-> solo puede ver una columna a la vez.** No tiene forma de preguntar si la *combinación* de las cinco
-> notas tiene sentido. **Decisión:** antes de darla por buena, hay que probarla contra un caso que
-> sabemos raro.
+> 🔎 **Analizar:** es el 0,91 % — un número razonable, y uno se queda
+> tranquilo. **Pero esa revisión solo puede ver una columna a la vez.**
+> No tiene forma de preguntar si la *combinación* de las cinco notas
+> tiene sentido. **Decisión:** antes de darla por buena, hay que
+> probarla contra un caso que sabemos raro.
 
 ## El caso del plano
 
-Tomemos solo dos módulos, cuantitativo y lectura, para poder dibujarlos. La sesión pasada vimos que
-**se mueven juntos**:
+Tomemos solo dos módulos, cuantitativo y lectura, para poder dibujarlos.
+La sesión pasada vimos que **se mueven juntos**:
 
 ```{r cor-plano}
 round(cor(sc$cuantitativo, sc$lectura), 3)
 ```
 
-Correlación 0,557: no es que uno determine al otro, pero saber una nota **cambia lo que uno espera** de
-la otra. Esto es exactamente la distribución condicional del corte pasado.
+Correlación 0,557: no es que uno determine al otro, pero saber una nota
+**cambia lo que uno espera** de la otra. Esto es exactamente la
+distribución condicional del corte pasado.
 
-Ahora miremos al estudiante de la fila 5919, el del ejemplo de la introducción:
+Ahora miremos al estudiante de la fila 5919, el del ejemplo de la
+introducción:
 
 ```{r caso-5919}
 caso <- sc[sc$id == 5919, c("id", modulos, "global")]
@@ -166,19 +180,21 @@ c(percentil_cuantitativo = round(100 * mean(sc$cuantitativo <= 130), 1),
   percentil_lectura      = round(100 * mean(sc$lectura <= 69), 1))
 ```
 
-> 📋 **Describir:** ese estudiante sacó 130 en cuantitativo (percentil 94) y 69 en lectura
-> (percentil 6,5).
+> 📋 **Describir:** ese estudiante sacó 130 en cuantitativo (percentil
+> 94) y 69 en lectura (percentil 6,5).
 >
-> 🔎 **Analizar:** **ninguna de las dos notas lo señala.** No está en el 5 % más alto de cuantitativo
-> ni en el 5 % más bajo de lectura; su puntaje global es exactamente 100, el promedio. Cualquier
-> revisión columna por columna lo deja pasar sin mirarlo. **Decisión:** si queremos encontrarlo, hay
-> que cambiar de herramienta.
+> 🔎 **Analizar:** **ninguna de las dos notas lo señala.** No está en el
+> 5 % más alto de cuantitativo ni en el 5 % más bajo de lectura; su
+> puntaje global es exactamente 100, el promedio. Cualquier revisión
+> columna por columna lo deja pasar sin mirarlo. **Decisión:** si
+> queremos encontrarlo, hay que cambiar de herramienta.
 
 ## El mismo plano, con la elipse
 
-La nube de puntos dice qué combinaciones son comunes. Le dibujamos encima la **elipse de
-concentración del 95 %**: la frontera dentro de la cual cae el 95 % de los estudiantes si los dos
-módulos se comportan como una campana.
+La nube de puntos dice qué combinaciones son comunes. Le dibujamos
+encima la **elipse de concentración del 95 %**: la frontera dentro de la
+cual cae el 95 % de los estudiantes si los dos módulos se comportan como
+una campana.
 
 ```{r elipse, fig.height = 6}
 set.seed(3)
@@ -201,8 +217,9 @@ ggplot(muestra, aes(x = cuantitativo, y = lectura)) +
        x = "Razonamiento cuantitativo", y = "Lectura crítica")
 ```
 
-El punto naranja está **adentro del rectángulo azul** — las dos notas son normales — y **afuera de la
-elipse roja**. Contemos cuánta gente está en ese caso:
+El punto naranja está **adentro del rectángulo azul** — las dos notas
+son normales — y **afuera de la elipse roja**. Contemos cuánta gente
+está en ese caso:
 
 ```{r conteo-elipse}
 par2  <- as.matrix(sc[c("cuantitativo", "lectura")])
@@ -219,42 +236,49 @@ data.frame(
                   sum(fuera_elipse)))
 ```
 
-> 📋 **Describir:** 114 estudiantes quedan fuera de la elipse aunque sus dos notas están dentro de las
-> bandas; y al revés, 432 tienen una nota fuera de las bandas pero están dentro de la elipse. En total
-> 451 (el 4,55 %) quedan fuera de la elipse.
+> 📋 **Describir:** 114 estudiantes quedan fuera de la elipse aunque sus
+> dos notas están dentro de las bandas; y al revés, 432 tienen una nota
+> fuera de las bandas pero están dentro de la elipse. En total 451 (el
+> 4,55 %) quedan fuera de la elipse.
 >
-> 🔎 **Analizar:** las dos revisiones **no señalan a la misma gente, y los dos errores importan**:
+> 🔎 **Analizar:** las dos revisiones **no señalan a la misma gente, y
+> los dos errores importan**:
 >
-> - Los **114** son casos raros que la revisión columna por columna **no ve**: notas normales en una
->   combinación que no lo es.
-> - Los **432** son falsas alarmas de la revisión columna por columna: son estudiantes **altos en las
->   dos o bajos en las dos**. Son excelentes, o les fue mal parejo; no son raros.
+> - Los **114** son casos raros que la revisión columna por columna **no
+>   ve**: notas normales en una combinación que no lo es.
+> - Los **432** son falsas alarmas de la revisión columna por columna:
+>   son estudiantes **altos en las dos o bajos en las dos**. Son
+>   excelentes, o les fue mal parejo; no son raros.
 >
-> **Decisión:** para buscar casos raros en esta base no se revisa columna por columna. Se necesita una
-> medida que mire las variables juntas — y la elipse ya nos está diciendo cuál: **la distancia al
+> **Decisión:** para buscar casos raros en esta base no se revisa
+> columna por columna. Se necesita una medida que mire las variables
+> juntas — y la elipse ya nos está diciendo cuál: **la distancia al
 > centro, medida con la forma de la nube.**
 
 # La distancia de Mahalanobis, dicha en palabras
 
 ## La idea
 
-La distancia de siempre — la euclidiana — mide **cuántos puntos hay del estudiante al promedio**,
-tratando a los cinco módulos como si fueran independientes y todos igual de importantes.
+La distancia de siempre — la euclidiana — mide **cuántos puntos hay del
+estudiante al promedio**, tratando a los cinco módulos como si fueran
+independientes y todos igual de importantes.
 
-La de **Mahalanobis** mide lo mismo, pero antes hace dos ajustes, y los dos son de sentido común:
+La de **Mahalanobis** mide lo mismo, pero antes hace dos ajustes, y los
+dos son de sentido común:
 
 | Ajuste | Qué hace | Por qué |
-|---|---|---|
+|----|----|----|
 | **Por la escala** | Cuenta la distancia en desviaciones, no en puntos | 10 puntos en un módulo muy disperso valen menos que 10 en uno apretado |
 | **Por la compañía** | Descuenta lo que las variables ya comparten | Si cuantitativo y lectura van juntas, estar alto en las dos no es *dos* rarezas: es una sola |
 
-Dicho en una frase: **la distancia de Mahalanobis mide qué tan lejos está un estudiante del centro,
-teniendo en cuenta que las variables van juntas.** Es la distancia *medida en elipses*: todos los
-puntos de la elipse roja del gráfico anterior están a la misma distancia de Mahalanobis del centro,
-aunque a ojo unos parezcan más lejos que otros.
+Dicho en una frase: **la distancia de Mahalanobis mide qué tan lejos
+está un estudiante del centro, teniendo en cuenta que las variables van
+juntas.** Es la distancia *medida en elipses*: todos los puntos de la
+elipse roja del gráfico anterior están a la misma distancia de
+Mahalanobis del centro, aunque a ojo unos parezcan más lejos que otros.
 
-> **No vamos a escribir la fórmula ni a demostrar nada.** Lo único que hace falta saber para usarla es
-> qué mide y qué decisión permite tomar.
+> **No vamos a escribir la fórmula ni a demostrar nada.** Lo único que
+> hace falta saber para usarla es qué mide y qué decisión permite tomar.
 
 ## Las dos distancias, sobre los mismos estudiantes
 
@@ -277,17 +301,22 @@ sc |>
             euclidiana = round(euclid, 1), mahalanobis = round(d2, 1))
 ```
 
-> 📋 **Describir:** las dos distancias se correlacionan 0,809, pero de los 168 estudiantes más lejanos
-> según cada una, **solo 42 son los mismos**. La fila 8692 (139, 139, 138, 136, 138) está lejísimos en
-> euclidiana (84,7) y cerca en Mahalanobis (7,1); la fila 2019 (127, 60, 107, 97, 94) está a menos de
-> la mitad en euclidiana (49,3) y es de las más lejanas en Mahalanobis (15,3).
+> 📋 **Describir:** las dos distancias se correlacionan 0,809, pero de
+> los 168 estudiantes más lejanos según cada una, **solo 42 son los
+> mismos**. La fila 8692 (139, 139, 138, 136, 138) está lejísimos en
+> euclidiana (84,7) y cerca en Mahalanobis (7,1); la fila 2019 (127, 60,
+> 107, 97, 94) está a menos de la mitad en euclidiana (49,3) y es de las
+> más lejanas en Mahalanobis (15,3).
 >
-> 🔎 **Analizar:** las dos distancias **no señalan a la misma gente, y la que sirve es la segunda**.
-> El estudiante 8692 sacó casi 140 en los cinco módulos: está lejos del promedio, sí, pero **su perfil
-> es perfectamente coherente** — es un estudiante excelente, no un caso raro. El 2019 tiene notas
-> corrientes, pero 127 en cuantitativo con 60 en lectura **no es una combinación que la base produzca**.
-> **Decisión:** para buscar casos que revisar se usa Mahalanobis. La euclidiana solo encontraría a los
-> mejores y a los peores, que es lo único que ya sabíamos.
+> 🔎 **Analizar:** las dos distancias **no señalan a la misma gente, y
+> la que sirve es la segunda**. El estudiante 8692 sacó casi 140 en los
+> cinco módulos: está lejos del promedio, sí, pero **su perfil es
+> perfectamente coherente** — es un estudiante excelente, no un caso
+> raro. El 2019 tiene notas corrientes, pero 127 en cuantitativo con 60
+> en lectura **no es una combinación que la base produzca**.
+> **Decisión:** para buscar casos que revisar se usa Mahalanobis. La
+> euclidiana solo encontraría a los mejores y a los peores, que es lo
+> único que ya sabíamos.
 
 ## Las distancias de los cinco módulos
 
@@ -295,9 +324,10 @@ sc |>
 round(summary(sc$d2), 2)
 ```
 
-Con cinco variables, si los datos fueran una campana multivariante perfecta, estas distancias
-deberían repartirse como una **chi-cuadrado con 5 grados de libertad** — uno por módulo. Eso nos da
-los cortes con los que decidir qué es «lejos»:
+Con cinco variables, si los datos fueran una campana multivariante
+perfecta, estas distancias deberían repartirse como una **chi-cuadrado
+con 5 grados de libertad** — uno por módulo. Eso nos da los cortes con
+los que decidir qué es «lejos»:
 
 ```{r cortes}
 cortes <- qchisq(c(0.95, 0.99, 0.999), df = 5)
@@ -322,22 +352,27 @@ ggplot(sc, aes(x = d2)) +
        x = "Distancia de Mahalanobis (al cuadrado)", y = "Densidad")
 ```
 
-> 📋 **Describir:** la mediana de las distancias es 4,20 y el máximo 40,69. La curva roja sigue de
-> cerca al histograma en el cuerpo, pero por encima del corte del 99 % hay **168 estudiantes (1,70 %)
-> donde se esperaba 1 %**, y por encima del 99,9 % hay **54 (0,55 %) donde se esperaba 0,1 %**.
+> 📋 **Describir:** la mediana de las distancias es 4,20 y el máximo
+> 40,69. La curva roja sigue de cerca al histograma en el cuerpo, pero
+> por encima del corte del 99 % hay **168 estudiantes (1,70 %) donde se
+> esperaba 1 %**, y por encima del 99,9 % hay **54 (0,55 %) donde se
+> esperaba 0,1 %**.
 >
-> 🔎 **Analizar:** el centro de la distribución se comporta como la teoría dice; **lo que no cuadra es
-> la cola**. Hay cinco veces más estudiantes muy lejanos de los que una campana produciría. Eso no es
-> un defecto del cálculo: **es la señal de que ahí hay algo que mirar**. **Decisión:** los 168 que
-> pasan el corte del 99 % son la lista de casos a revisar uno por uno. No se borran por estar en la
-> lista: se revisan.
+> 🔎 **Analizar:** el centro de la distribución se comporta como la
+> teoría dice; **lo que no cuadra es la cola**. Hay cinco veces más
+> estudiantes muy lejanos de los que una campana produciría. Eso no es
+> un defecto del cálculo: **es la señal de que ahí hay algo que mirar**.
+> **Decisión:** los 168 que pasan el corte del 99 % son la lista de
+> casos a revisar uno por uno. No se borran por estar en la lista: se
+> revisan.
 
 # El gráfico Q-Q: ¿son una campana multivariante?
 
-El histograma anterior ya insinuó la respuesta. El gráfico Q-Q la muestra sin lugar a dudas: pone en
-el eje horizontal la distancia que **debería** tener cada estudiante si los datos fueran normales
-multivariantes, y en el vertical la que **tiene**. Si los datos se portan, los puntos caen sobre la
-recta.
+El histograma anterior ya insinuó la respuesta. El gráfico Q-Q la
+muestra sin lugar a dudas: pone en el eje horizontal la distancia que
+**debería** tener cada estudiante si los datos fueran normales
+multivariantes, y en el vertical la que **tiene**. Si los datos se
+portan, los puntos caen sobre la recta.
 
 ```{r qq, fig.height = 6}
 n  <- nrow(sc)
@@ -361,16 +396,20 @@ data.frame(
   row.names = NULL)
 ```
 
-> 📋 **Describir:** los puntos caen sobre la recta hasta una distancia de unos 11 —el 95 % de los
-> estudiantes— y de ahí en adelante se despegan hacia arriba. En el percentil 99 la distancia
-> observada es 16,84 contra 15,09 esperada, y en el 99,9 es **29,92 contra 20,52**.
+> 📋 **Describir:** los puntos caen sobre la recta hasta una distancia
+> de unos 11 —el 95 % de los estudiantes— y de ahí en adelante se
+> despegan hacia arriba. En el percentil 99 la distancia observada es
+> 16,84 contra 15,09 esperada, y en el 99,9 es **29,92 contra 20,52**.
 >
-> 🔎 **Analizar:** **el 95 % de la base sí se comporta como una campana multivariante**, y eso ya es
-> una noticia buena: significa que las técnicas que vienen —PCA, factorial, Hotelling— van a trabajar
-> sobre un cuerpo de datos bien portado. Lo que se sale es **la cola**, y se sale hacia arriba: hay
-> estudiantes más lejanos de lo que cualquier campana produciría. **Decisión:** no se descarta la
-> normal multivariante y se sigue adelante, pero **sabiendo que hay una cola de casos que hay que
-> identificar** antes de que se metan en los resultados. Eso es lo que hacemos en la sección que sigue.
+> 🔎 **Analizar:** **el 95 % de la base sí se comporta como una campana
+> multivariante**, y eso ya es una noticia buena: significa que las
+> técnicas que vienen —PCA, factorial, Hotelling— van a trabajar sobre
+> un cuerpo de datos bien portado. Lo que se sale es **la cola**, y se
+> sale hacia arriba: hay estudiantes más lejanos de lo que cualquier
+> campana produciría. **Decisión:** no se descarta la normal
+> multivariante y se sigue adelante, pero **sabiendo que hay una cola de
+> casos que hay que identificar** antes de que se metan en los
+> resultados. Eso es lo que hacemos en la sección que sigue.
 
 ## Y la prueba formal, ¿qué dice?
 
@@ -386,26 +425,31 @@ data.frame(modulo = modulos,
                       function(x) mean((x - mean(x))^3) / sd(x)^3), 2))
 ```
 
-> 📋 **Describir:** la prueba de Mardia, sobre una muestra de 2 000 estudiantes, rechaza la normalidad
-> multivariante con p < 0,001 tanto por asimetría como por curtosis. Mirando módulo por módulo,
-> inglés tiene asimetría 0,61 y escritura −0,51; los otros tres están cerca de cero.
+> 📋 **Describir:** la prueba de Mardia, sobre una muestra de 2 000
+> estudiantes, rechaza la normalidad multivariante con p \< 0,001 tanto
+> por asimetría como por curtosis. Mirando módulo por módulo, inglés
+> tiene asimetría 0,61 y escritura −0,51; los otros tres están cerca de
+> cero.
 >
-> 🔎 **Analizar:** **el rechazo era previsible y dice menos de lo que parece.** Con 9 908 datos
-> cualquier prueba de normalidad rechaza: detecta desviaciones tan pequeñas que no cambian ninguna
-> decisión. Por eso el Q-Q vale más que el p-valor — el Q-Q dice **cuánto** se desvían y **dónde**.
-> Y las dos asimetrías tienen explicación conocida: **inglés tiene piso en 67** (lo vimos la sesión
-> pasada) y **escritura se califica leyendo un texto**, no con preguntas de selección. **Decisión:** no
-> se transforma nada ni se abandona la normal multivariante por este p-valor; se deja constancia de que
-> inglés y escritura son las dos que más se apartan, para volver sobre ellas si alguna técnica se
-> comporta raro.
+> 🔎 **Analizar:** **el rechazo era previsible y dice menos de lo que
+> parece.** Con 9 908 datos cualquier prueba de normalidad rechaza:
+> detecta desviaciones tan pequeñas que no cambian ninguna decisión. Por
+> eso el Q-Q vale más que el p-valor — el Q-Q dice **cuánto** se desvían
+> y **dónde**. Y las dos asimetrías tienen explicación conocida:
+> **inglés tiene piso en 67** (lo vimos la sesión pasada) y **escritura
+> se califica leyendo un texto**, no con preguntas de selección.
+> **Decisión:** no se transforma nada ni se abandona la normal
+> multivariante por este p-valor; se deja constancia de que inglés y
+> escritura son las dos que más se apartan, para volver sobre ellas si
+> alguna técnica se comporta raro.
 
 ## ¿Y si los datos no fueran una campana?
 
-No es el caso aquí, pero conviene tener la respuesta lista, porque en los datasets de ustedes sí va a
-pasar:
+No es el caso aquí, pero conviene tener la respuesta lista, porque en
+los datasets de ustedes sí va a pasar:
 
 | Qué se ve en el Q-Q | Qué significa | Qué se hace |
-|---|---|---|
+|----|----|----|
 | Se despega **solo en la cola** (nuestro caso) | Hay casos raros, el cuerpo está bien | Identificarlos y decidir sobre ellos; seguir |
 | Se curva **desde el principio** | Alguna variable está torcida | Transformarla (logaritmo, raíz) y volver a mirar |
 | Dos tramos con pendientes distintas | Hay **dos grupos** mezclados | Separarlos y analizar cada uno; no promediar |
@@ -413,7 +457,8 @@ pasar:
 
 # Quiénes son los casos raros de verdad
 
-Ésta es la parte que importa. Tenemos 168 nombres; la pregunta es **qué tienen**.
+Ésta es la parte que importa. Tenemos 168 nombres; la pregunta es **qué
+tienen**.
 
 ## Lo primero: la revisión de siempre no los habría encontrado
 
@@ -422,13 +467,16 @@ raros <- sc$d2 > qchisq(0.99, df = 5)
 table(nota_extrema_univariada = extremo_univariado, raro_en_la_combinacion = raros)
 ```
 
-> 📋 **Describir:** de los 168 casos raros, **132 no tienen ninguna nota a más de tres desviaciones**
-> de su módulo. Y de los 90 que sí tienen una nota extrema, 54 no son raros en la combinación.
+> 📋 **Describir:** de los 168 casos raros, **132 no tienen ninguna nota
+> a más de tres desviaciones** de su módulo. Y de los 90 que sí tienen
+> una nota extrema, 54 no son raros en la combinación.
 >
-> 🔎 **Analizar:** **cuatro de cada cinco casos raros son invisibles para la revisión columna por
-> columna.** Ésta es la respuesta a la pregunta con la que abrimos la sesión, y es un sí rotundo: los
-> estudiantes raros de esta base son raros **por la combinación**, no por una nota. **Decisión:** en
-> este curso, la búsqueda de atípicos se hace con Mahalanobis, no con reglas por columna.
+> 🔎 **Analizar:** **cuatro de cada cinco casos raros son invisibles
+> para la revisión columna por columna.** Ésta es la respuesta a la
+> pregunta con la que abrimos la sesión, y es un sí rotundo: los
+> estudiantes raros de esta base son raros **por la combinación**, no
+> por una nota. **Decisión:** en este curso, la búsqueda de atípicos se
+> hace con Mahalanobis, no con reglas por columna.
 
 ## Qué tienen en común: el perfil desparejo
 
@@ -464,17 +512,21 @@ sc |>
        x = NULL, y = "Puntaje")
 ```
 
-> 📋 **Describir:** entre sus cinco módulos, los casos raros tienen una diferencia media de **79,3
-> puntos entre su mejor y su peor nota**; en el resto de la base esa diferencia es de 35 puntos. La
-> distancia de Mahalanobis y ese rango se correlacionan 0,839. En el gráfico las líneas rojas suben y
-> bajan; la negra es plana.
+> 📋 **Describir:** entre sus cinco módulos, los casos raros tienen una
+> diferencia media de **79,3 puntos entre su mejor y su peor nota**; en
+> el resto de la base esa diferencia es de 35 puntos. La distancia de
+> Mahalanobis y ese rango se correlacionan 0,839. En el gráfico las
+> líneas rojas suben y bajan; la negra es plana.
 >
-> 🔎 **Analizar:** **ser raro aquí es tener un perfil desparejo**, no ser bueno ni malo. La
-> correlación de 0,839 casi convierte a la distancia en una medida de «qué tan disparejo es este
-> estudiante». Y eso tiene sentido: la prueba mide habilidades que van juntas, así que un estudiante
-> que saca 140 en un módulo y 60 en otro está haciendo algo que la base casi no produce. **Decisión:**
-> al reportarlos, no se les llama «los mejores» ni «los peores» —su puntaje global promedio es 104,5
-> contra 100,1 del resto, prácticamente lo mismo—: se les llama **los de perfil disparejo**.
+> 🔎 **Analizar:** **ser raro aquí es tener un perfil desparejo**, no
+> ser bueno ni malo. La correlación de 0,839 casi convierte a la
+> distancia en una medida de «qué tan disparejo es este estudiante». Y
+> eso tiene sentido: la prueba mide habilidades que van juntas, así que
+> un estudiante que saca 140 en un módulo y 60 en otro está haciendo
+> algo que la base casi no produce. **Decisión:** al reportarlos, no se
+> les llama «los mejores» ni «los peores» —su puntaje global promedio es
+> 104,5 contra 100,1 del resto, prácticamente lo mismo—: se les llama
+> **los de perfil disparejo**.
 
 ## De dónde sale el zigzag: inglés
 
@@ -487,16 +539,20 @@ c(ingles_es_su_mejor_modulo_raros_pct = es_su_mejor_modulo(sc[raros, ]),
   ingles_es_su_mejor_modulo_resto_pct = es_su_mejor_modulo(sc[!raros, ]))
 ```
 
-> 📋 **Describir:** los casos raros sacan en promedio **121,2 en inglés** contra 99,8 del resto,
-> mientras que en los otros cuatro módulos están cerca del promedio. Para el 38,1 % de ellos inglés es
-> su mejor módulo, contra el 20,3 % del resto.
+> 📋 **Describir:** los casos raros sacan en promedio **121,2 en
+> inglés** contra 99,8 del resto, mientras que en los otros cuatro
+> módulos están cerca del promedio. Para el 38,1 % de ellos inglés es su
+> mejor módulo, contra el 20,3 % del resto.
 >
-> 🔎 **Analizar:** **el módulo que más produce perfiles disparejos es inglés**, y ya sabemos por qué:
-> la sesión pasada vimos que es el módulo donde más pesa el nivel socioeconómico —entre el cuarto más
-> bajo y el más alto del INSE, inglés sube 14 puntos contra 10 de lectura—. Inglés se aprende **por
-> fuera del programa**: cursos, viajes, series sin doblar. Por eso hay estudiantes con inglés muy por
-> encima del resto de su perfil. **Decisión:** la rareza de buena parte de estos 168 **no es un
-> problema de datos, es un hecho social**, y por lo tanto no se borra.
+> 🔎 **Analizar:** **el módulo que más produce perfiles disparejos es
+> inglés**, y ya sabemos por qué: la sesión pasada vimos que es el
+> módulo donde más pesa el nivel socioeconómico —entre el cuarto más
+> bajo y el más alto del INSE, inglés sube 14 puntos contra 10 de
+> lectura—. Inglés se aprende **por fuera del programa**: cursos,
+> viajes, series sin doblar. Por eso hay estudiantes con inglés muy por
+> encima del resto de su perfil. **Decisión:** la rareza de buena parte
+> de estos 168 **no es un problema de datos, es un hecho social**, y por
+> lo tanto no se borra.
 
 ## ¿Y quiénes son? El contexto
 
@@ -516,18 +572,22 @@ c(inse_medio_raros = round(mean(sc$inse[raros], na.rm = TRUE), 2),
 round(tapply(sc$d2, sc$estrato, mean), 2)
 ```
 
-> 📋 **Describir:** entre los casos raros hay **66,7 % de hombres** contra 43,5 % en el resto, y
-> **89,2 % con computador** contra 75 %. Su INSE medio es 52,62 contra 48,75. La distancia media sube
-> con el estrato: 4,83 en estrato 1 y 7,96 en estrato 6.
+> 📋 **Describir:** entre los casos raros hay **66,7 % de hombres**
+> contra 43,5 % en el resto, y **89,2 % con computador** contra 75 %. Su
+> INSE medio es 52,62 contra 48,75. La distancia media sube con el
+> estrato: 4,83 en estrato 1 y 7,96 en estrato 6.
 >
-> 🔎 **Analizar:** los casos raros **no salen al azar de la base**: hay más hombres y más estudiantes
-> de hogares con mejores condiciones. Y las dos cosas encajan con lo de la sesión pasada: la ventaja de
-> los hombres estaba concentrada **en un solo módulo** (cuantitativo), y el peso del INSE también está
-> concentrado en uno (inglés). **Un perfil disparejo es lo que producen las ventajas concentradas en un
-> módulo.** **Decisión:** este resultado se reporta como hallazgo del análisis, y **prohíbe** una
-> lectura tentadora: «los casos raros son estudiantes con problemas». No lo son. Y también prohíbe lo
-> contrario: no se puede decir que la rareza sea «ser de estrato alto», porque el estrato 6 son apenas
-> 0,6 % de los raros.
+> 🔎 **Analizar:** los casos raros **no salen al azar de la base**: hay
+> más hombres y más estudiantes de hogares con mejores condiciones. Y
+> las dos cosas encajan con lo de la sesión pasada: la ventaja de los
+> hombres estaba concentrada **en un solo módulo** (cuantitativo), y el
+> peso del INSE también está concentrado en uno (inglés). **Un perfil
+> disparejo es lo que producen las ventajas concentradas en un módulo.**
+> **Decisión:** este resultado se reporta como hallazgo del análisis, y
+> **prohíbe** una lectura tentadora: «los casos raros son estudiantes
+> con problemas». No lo son. Y también prohíbe lo contrario: no se puede
+> decir que la rareza sea «ser de estrato alto», porque el estrato 6 son
+> apenas 0,6 % de los raros.
 
 ## Los que sí son errores
 
@@ -541,20 +601,26 @@ sc |> arrange(desc(d2)) |> slice(1:4) |>
 s[s$id == 614, c("id", modulos, "global")]         # no tiene inglés: quedó fuera del análisis
 ```
 
-> 📋 **Describir:** el caso más lejano de toda la base (distancia 40,69) es la fila 671: **cero en
-> cuantitativo, cero en lectura y cero en ciudadanas**, pero 68 en inglés y 95 en escritura. Buscando
-> parecidos aparece la fila 614, con ceros en lectura y ciudadanas y 102 en cuantitativo.
+> 📋 **Describir:** el caso más lejano de toda la base (distancia 40,69)
+> es la fila 671: **cero en cuantitativo, cero en lectura y cero en
+> ciudadanas**, pero 68 en inglés y 95 en escritura. Buscando parecidos
+> aparece la fila 614, con ceros en lectura y ciudadanas y 102 en
+> cuantitativo.
 >
-> 🔎 **Analizar:** **es el mismo caso de los 26 ceros de inglés de la sesión pasada, y se nos había
-> escapado.** Nadie que saque 95 en escritura saca cero en lectura: esos ceros son **módulos no
-> presentados**, no conocimiento cero. La sesión pasada los buscamos solo en inglés porque ahí eran 26
-> y saltaban en el histograma; aquí son **un estudiante**, invisible en cualquier histograma, y **lo
-> encontró la distancia**. **Decisión:** esos ceros se tratan como faltantes, igual que los de inglés.
-> **Y la lección de método: la distancia de Mahalanobis no sirve solo para encontrar gente rara, sirve
-> para encontrar errores que la revisión por columnas no ve.**
+> 🔎 **Analizar:** **es el mismo caso de los 26 ceros de inglés de la
+> sesión pasada, y se nos había escapado.** Nadie que saque 95 en
+> escritura saca cero en lectura: esos ceros son **módulos no
+> presentados**, no conocimiento cero. La sesión pasada los buscamos
+> solo en inglés porque ahí eran 26 y saltaban en el histograma; aquí
+> son **un estudiante**, invisible en cualquier histograma, y **lo
+> encontró la distancia**. **Decisión:** esos ceros se tratan como
+> faltantes, igual que los de inglés. **Y la lección de método: la
+> distancia de Mahalanobis no sirve solo para encontrar gente rara,
+> sirve para encontrar errores que la revisión por columnas no ve.**
 
-Y el otro grupo que aparece arriba en la lista es el del tope de la escala — la fila 1639, segunda de
-la tabla, tiene **200 en cuantitativo y 200 en inglés**:
+Y el otro grupo que aparece arriba en la lista es el del tope de la
+escala — la fila 1639, segunda de la tabla, tiene **200 en cuantitativo
+y 200 en inglés**:
 
 ```{r topes}
 tiene_200 <- apply(sc[modulos], 1, function(v) any(v == 200))
@@ -563,18 +629,21 @@ c(estudiantes_con_algun_200 = sum(tiene_200),
   distancia_media_de_ellos  = round(mean(sc$d2[tiene_200]), 1))
 ```
 
-> 📋 **Describir:** 13 estudiantes tienen un 200 en algún módulo, y **los 13 están entre los 168 casos
-> raros**, con distancia media 29,7.
+> 📋 **Describir:** 13 estudiantes tienen un 200 en algún módulo, y
+> **los 13 están entre los 168 casos raros**, con distancia media 29,7.
 >
-> 🔎 **Analizar:** 200 es **el tope de la escala**, no una nota más: quien llegó ahí pudo haber sacado
-> más y la prueba no lo puede decir. Eso convierte su perfil en artificialmente disparejo. **Decisión:**
-> se marcan como *tope de escala*, se dejan en la base, y **no se usan para estimar relaciones entre
-> módulos**, porque su nota real es desconocida.
+> 🔎 **Analizar:** 200 es **el tope de la escala**, no una nota más:
+> quien llegó ahí pudo haber sacado más y la prueba no lo puede decir.
+> Eso convierte su perfil en artificialmente disparejo. **Decisión:** se
+> marcan como *tope de escala*, se dejan en la base, y **no se usan para
+> estimar relaciones entre módulos**, porque su nota real es
+> desconocida.
 
 ## Los 91 que quedaron por fuera
 
-Nos falta cerrar con los que ni siquiera entraron al cálculo. A los 26 que no presentaron inglés les
-podemos calcular una distancia **con los otros cuatro módulos**:
+Nos falta cerrar con los que ni siquiera entraron al cálculo. A los 26
+que no presentaron inglés les podemos calcular una distancia **con los
+otros cuatro módulos**:
 
 ```{r los-91}
 m4  <- c("cuantitativo", "lectura", "ciudadanas", "escritura")
@@ -589,15 +658,18 @@ c(distancia_media_de_los_26 = round(mean(s4$d4[sin_ingles]), 2),
   del_resto_lo_supera_pct    = round(100 * mean(s4$d4[!sin_ingles] > qchisq(0.99, 4)), 2))
 ```
 
-> 📋 **Describir:** los 26 que no presentaron inglés tienen, con los otros cuatro módulos, una
-> distancia media de **11,71 contra 3,98** del resto. Cinco de los 26 (el 19 %) pasan el corte del 99 %,
-> frente al 1,46 % del resto de la base.
+> 📋 **Describir:** los 26 que no presentaron inglés tienen, con los
+> otros cuatro módulos, una distancia media de **11,71 contra 3,98** del
+> resto. Cinco de los 26 (el 19 %) pasan el corte del 99 %, frente al
+> 1,46 % del resto de la base.
 >
-> 🔎 **Analizar:** **no presentar un módulo no es un accidente independiente de lo demás**: quienes no
-> lo presentaron tienen además perfiles más disparejos en los módulos que sí presentaron. Probablemente
-> algo pasó ese día. **Decisión:** los 91 se reportan como grupo aparte en cualquier informe sobre esta
-> base, y **no se dice «se excluyeron 91 por datos faltantes» como si fuera un detalle técnico**: se
-> dice quiénes eran y en qué se diferencian.
+> 🔎 **Analizar:** **no presentar un módulo no es un accidente
+> independiente de lo demás**: quienes no lo presentaron tienen además
+> perfiles más disparejos en los módulos que sí presentaron.
+> Probablemente algo pasó ese día. **Decisión:** los 91 se reportan como
+> grupo aparte en cualquier informe sobre esta base, y **no se dice «se
+> excluyeron 91 por datos faltantes» como si fuera un detalle técnico**:
+> se dice quiénes eran y en qué se diferencian.
 
 ## La decisión, que es lo que faltaba
 
@@ -611,24 +683,28 @@ c(correlacion_con_los_raros = round(cor(sc$lectura, sc$ciudadanas), 3),
   media_global_sin  = round(mean(sc$global[!raros]), 2))
 ```
 
-> 📋 **Describir:** quitando los 168 casos raros, la correlación entre lectura y ciudadanas pasa de
-> 0,636 a 0,649, ninguna correlación de la matriz se mueve más de **0,019**, y la media del puntaje
-> global pasa de 100,15 a 100,08.
+> 📋 **Describir:** quitando los 168 casos raros, la correlación entre
+> lectura y ciudadanas pasa de 0,636 a 0,649, ninguna correlación de la
+> matriz se mueve más de **0,019**, y la media del puntaje global pasa
+> de 100,15 a 100,08.
 >
-> 🔎 **Analizar:** **borrarlos no arreglaría nada, porque no están rompiendo nada.** Con 9 908
-> estudiantes, 168 no mueven la aguja. Y si no cambian los resultados, borrarlos solo tendría un
-> efecto: **hacer desaparecer del informe a la gente más interesante de la base.** El único caso en que
-> un atípico se borra es cuando es un error que no se puede corregir. **Decisión final:**
+> 🔎 **Analizar:** **borrarlos no arreglaría nada, porque no están
+> rompiendo nada.** Con 9 908 estudiantes, 168 no mueven la aguja. Y si
+> no cambian los resultados, borrarlos solo tendría un efecto: **hacer
+> desaparecer del informe a la gente más interesante de la base.** El
+> único caso en que un atípico se borra es cuando es un error que no se
+> puede corregir. **Decisión final:**
 
 | Grupo | Cuántos | Qué es | Qué se hace |
-|---|--:|---|---|
+|----|---:|----|----|
 | Ceros en módulos completos (filas 671 y 614) | 2 | **Error**: módulo no presentado | Los ceros se vuelven **faltantes** |
 | Con un 200 en algún módulo | 13 | **Tope de escala**: la nota real se desconoce | Se **marcan** y no se usan para estimar relaciones |
-| Perfil disparejo, casi siempre por inglés | ~153 | **Atípico real**: estudiantes de verdad | Se **dejan y se marcan**; son un hallazgo, no un estorbo |
+| Perfil disparejo, casi siempre por inglés | \~153 | **Atípico real**: estudiantes de verdad | Se **dejan y se marcan**; son un hallazgo, no un estorbo |
 | Sin los cinco módulos | 91 | Grupo con más faltantes y perfiles disparejos | Se **reportan aparte**, no se esconden |
 
-> **La frase del semestre, otra vez, ahora con una herramienta que la aplica:** *un atípico se estudia;
-> un error se corrige.* Lo nuevo de hoy es que ya tenemos con qué **encontrarlos**.
+> **La frase del semestre, otra vez, ahora con una herramienta que la
+> aplica:** *un atípico se estudia; un error se corrige.* Lo nuevo de
+> hoy es que ya tenemos con qué **encontrarlos**.
 
 Queda marcada la base, sin borrar a nadie:
 
@@ -642,13 +718,14 @@ table(sc$caso_raro)
 La sesión de hoy dejó dos cosas montadas para el resto del semestre:
 
 | Lo que vimos hoy | La pregunta que queda | Dónde se responde |
-|---|---|---|
+|----|----|----|
 | La distancia usa **la forma de la nube** para medir | Si la nube tiene una dirección principal, ¿**cuál** es? ¿Se puede resumir los cinco módulos en menos? | **Sáb 17 oct** · PCA I |
 | Los casos raros tienen **perfil disparejo** | ¿Los estudiantes se agrupan por **tipo de perfil**? | **Lun 19 oct** · PCA II y biplot |
 | El 95 % se comporta como campana multivariante | Con esa campana, ¿se puede **comparar grupos completos** y no un promedio a la vez? | **31 oct – 9 nov** · Hotelling y MANOVA |
 
-> **La normal multivariante no era el tema de hoy por sí misma:** era el permiso para usar todo lo que
-> viene. Ya lo tenemos, y con la advertencia escrita: el cuerpo se porta, la cola no.
+> **La normal multivariante no era el tema de hoy por sí misma:** era el
+> permiso para usar todo lo que viene. Ya lo tenemos, y con la
+> advertencia escrita: el cuerpo se porta, la cola no.
 
 # Actividad práctica
 
@@ -656,66 +733,78 @@ Con **el dataset de su equipo**, en parejas:
 
 ## Parte 1 — El plano
 
-Escojan **dos variables numéricas correlacionadas** de su base. Hagan el gráfico de dispersión con
-`stat_ellipse(type = "norm", level = 0.95)` y las bandas de ±2 desviaciones. **¿Hay algún punto dentro
-de las bandas y fuera de la elipse?** Si lo hay, muéstrenlo.
+Escojan **dos variables numéricas correlacionadas** de su base. Hagan el
+gráfico de dispersión con `stat_ellipse(type = "norm", level = 0.95)` y
+las bandas de ±2 desviaciones. **¿Hay algún punto dentro de las bandas y
+fuera de la elipse?** Si lo hay, muéstrenlo.
 
 ## Parte 2 — Las distancias
 
-Con **tres o más variables numéricas**, calculen `mahalanobis()` y cuenten cuántos casos pasan el corte
-del 99 % de la chi-cuadrado con tantos grados de libertad como variables usaron. Comparen ese número
-con el 1 % esperado.
+Con **tres o más variables numéricas**, calculen `mahalanobis()` y
+cuenten cuántos casos pasan el corte del 99 % de la chi-cuadrado con
+tantos grados de libertad como variables usaron. Comparen ese número con
+el 1 % esperado.
 
 ## Parte 3 — El Q-Q
 
-Hagan el Q-Q de esas distancias. **¿Se despega? ¿Dónde?** Digan cuál de los cuatro casos de la tabla de
-la sección 5.3 es el suyo y qué implica.
+Hagan el Q-Q de esas distancias. **¿Se despega? ¿Dónde?** Digan cuál de
+los cuatro casos de la tabla de la sección 5.3 es el suyo y qué implica.
 
 ## Parte 4 — La decisión
 
-Miren los cinco casos más lejanos. Para cada uno: **¿error, tope de escala, o atípico real?** ¿Qué
-tienen en común? Decidan qué hacer con ellos **y muestren qué cambia** en un resultado suyo si los
-quitan.
+Miren los cinco casos más lejanos. Para cada uno: **¿error, tope de
+escala, o atípico real?** ¿Qué tienen en común? Decidan qué hacer con
+ellos **y muestren qué cambia** en un resultado suyo si los quitan.
 
 # Preguntas conceptuales
 
-1. Un estudiante tiene 130 en cuantitativo y 69 en lectura. Ninguna nota está entre las más extremas
-   de su módulo. ¿Por qué entonces es un caso raro?
-2. La fila 8692 sacó 139, 139, 138, 136 y 138. Está lejísimos del promedio en distancia euclidiana y
-   cerca en Mahalanobis. **¿Cuál de las dos tiene razón, y por qué?**
-3. La prueba de Mardia rechaza la normalidad multivariante con p < 0,001. ¿Por qué no abandonamos la
-   normal multivariante? ¿Qué miramos en vez del p-valor?
-4. Si quitar los 168 casos raros no cambia ninguna correlación más de 0,019, ¿para qué sirvió
-   encontrarlos?
-5. ¿Por qué el módulo de inglés produce más perfiles disparejos que los demás? Relacione la respuesta
-   con lo que vimos del INSE la sesión pasada.
-6. ¿Cuál de estas afirmaciones es correcta? **(a)** Los casos raros son los estudiantes con peor
-   puntaje. **(b)** Los casos raros son los estudiantes con mejor puntaje. **(c)** Los casos raros
-   tienen un puntaje global parecido al del resto, pero un perfil disparejo. **(d)** Los casos raros
-   son errores de digitación.
+1.  Un estudiante tiene 130 en cuantitativo y 69 en lectura. Ninguna
+    nota está entre las más extremas de su módulo. ¿Por qué entonces es
+    un caso raro?
+2.  La fila 8692 sacó 139, 139, 138, 136 y 138. Está lejísimos del
+    promedio en distancia euclidiana y cerca en Mahalanobis. **¿Cuál de
+    las dos tiene razón, y por qué?**
+3.  La prueba de Mardia rechaza la normalidad multivariante con p \<
+    0,001. ¿Por qué no abandonamos la normal multivariante? ¿Qué miramos
+    en vez del p-valor?
+4.  Si quitar los 168 casos raros no cambia ninguna correlación más de
+    0,019, ¿para qué sirvió encontrarlos?
+5.  ¿Por qué el módulo de inglés produce más perfiles disparejos que los
+    demás? Relacione la respuesta con lo que vimos del INSE la sesión
+    pasada.
+6.  ¿Cuál de estas afirmaciones es correcta? **(a)** Los casos raros son
+    los estudiantes con peor puntaje. **(b)** Los casos raros son los
+    estudiantes con mejor puntaje. **(c)** Los casos raros tienen un
+    puntaje global parecido al del resto, pero un perfil disparejo.
+    **(d)** Los casos raros son errores de digitación.
 
 # Conclusión
 
-Hoy aprendimos a hacer una pregunta que antes no podíamos hacer: **¿este estudiante tiene sentido
-completo, no solo nota por nota?**
+Hoy aprendimos a hacer una pregunta que antes no podíamos hacer: **¿este
+estudiante tiene sentido completo, no solo nota por nota?**
 
-- **Variable por variable no alcanza:** 132 de los 168 casos raros no tienen ninguna nota extrema, y
-  al revés, 432 estudiantes con una nota extrema resultaron perfectamente normales en la combinación.
-- **Mahalanobis mide con la forma de la nube:** por eso separa al estudiante excelente y parejo (que
-  no es raro) del estudiante disparejo (que sí).
-- **El Q-Q dice hasta dónde confiar:** el 95 % de la base se comporta como campana multivariante; la
-  cola no, y eso es lo que había que encontrar.
-- **Y la decisión, que era el punto:** 2 errores que se corrigen, 13 topes de escala que se marcan,
-  unos 153 atípicos reales que se dejan porque son el hallazgo, y 91 excluidos que se reportan aparte.
+- **Variable por variable no alcanza:** 132 de los 168 casos raros no
+  tienen ninguna nota extrema, y al revés, 432 estudiantes con una nota
+  extrema resultaron perfectamente normales en la combinación.
+- **Mahalanobis mide con la forma de la nube:** por eso separa al
+  estudiante excelente y parejo (que no es raro) del estudiante
+  disparejo (que sí).
+- **El Q-Q dice hasta dónde confiar:** el 95 % de la base se comporta
+  como campana multivariante; la cola no, y eso es lo que había que
+  encontrar.
+- **Y la decisión, que era el punto:** 2 errores que se corrigen, 13
+  topes de escala que se marcan, unos 153 atípicos reales que se dejan
+  porque son el hallazgo, y 91 excluidos que se reportan aparte.
 
-La técnica de hoy no dio un resultado: dio **una lista de gente a mirar** y una razón para cada
-decisión.
+La técnica de hoy no dio un resultado: dio **una lista de gente a
+mirar** y una razón para cada decisión.
 
 # Próxima clase
 
 **Sábado 17 de octubre · Análisis de componentes principales (PCA I).**
 
-La pregunta: *los cinco módulos se mueven juntos y la distancia de hoy usó esa forma para medir;
-¿hay una sola habilidad detrás de los cinco, o hacen falta varias?*
+La pregunta: *los cinco módulos se mueven juntos y la distancia de hoy
+usó esa forma para medir; ¿hay una sola habilidad detrás de los cinco, o
+hacen falta varias?*
 
 Traigan la base marcada de hoy, con la columna `caso_raro`.
