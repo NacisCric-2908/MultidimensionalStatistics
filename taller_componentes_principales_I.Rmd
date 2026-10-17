@@ -1,0 +1,362 @@
+---
+title: "Taller: ¿Un número o varios?"
+subtitle: "El resumen para la Gerencia de Riesgo de Crédito · Componentes principales I"
+author:
+  - "Oscar Manuel Contreras Gacha (20221020052)"
+  - "Juan Pablo Sarmiento Ramírez (20221020138)"
+  - "Steven Navarro Parrales (20221020048)"
+  - "Juan Diego Grajales Castillo (20221020128)"
+date: "Estadística Multidimensional · 26158 · grupo 020-81 · periodo 2026-3"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9, fig.height = 5.5)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+theme_set(theme_minimal(base_size = 13))
+coma  <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = " ")
+miles <- function(x) formatC(round(x), format = "d", big.mark = " ")
+```
+
+Cada resultado se lee con tres frases:
+
+- 👀 **Qué vemos**: el número o el gráfico, sin interpretar.
+- 💼 **Qué significa para el cliente**: la traducción a la cartera de tarjetas.
+- ✅ **Qué decide el cliente**: la consecuencia práctica.
+
+# El encargo
+
+```{r datos}
+credit <- read.csv("../data/bronze/synthetic_credit_card_customer_behavior_dataset.csv",
+                   stringsAsFactors = FALSE)
+
+vars <- c("Annual_Income", "Credit_Limit", "Monthly_Spending", "Statement_Balance",
+          "Payment_Amount", "Payment_Ratio", "Credit_Utilization",
+          "Cash_Advance_Amount", "EMI_Count", "Credit_Score")
+etiqueta <- c(Annual_Income = "Ingreso anual", Credit_Limit = "Cupo",
+              Monthly_Spending = "Gasto mensual", Statement_Balance = "Saldo facturado",
+              Payment_Amount = "Monto pagado", Payment_Ratio = "Proporción pagada",
+              Credit_Utilization = "Uso del cupo", Cash_Advance_Amount = "Avances en efectivo",
+              EMI_Count = "Compras a cuotas", Credit_Score = "Puntaje crediticio")
+
+X <- credit[vars]
+c(clientes = nrow(X), variables = ncol(X), celdas_vacias = sum(is.na(X)))
+```
+
+**El cliente es la Gerencia de Riesgo de Crédito del banco emisor** de las
+`r miles(nrow(X))` tarjetas de la base (rupias indias, ₹). Cada mes **decide qué
+clientes entran al programa de seguimiento preventivo**: llamada del gestor,
+congelar los aumentos de cupo y ofrecer refinanciación antes de que la deuda se vuelva
+mora. Hoy toma esa decisión mirando una ficha de **10 variables numéricas** por cliente,
+y quiere saber si puede reemplazarla por un solo índice. Escogimos esas 10 porque
+cubren las cuatro preguntas que se hace un analista de riesgo:
+
+- **¿Cuánto puede?** `Annual_Income`, `Credit_Limit`.
+- **¿Cuánto usa?** `Monthly_Spending`, `Statement_Balance`, `Credit_Utilization`.
+- **¿Cómo paga?** `Payment_Amount`, `Payment_Ratio`.
+- **¿Muestra señales de estrés?** `Cash_Advance_Amount`, `EMI_Count`, y el
+  `Credit_Score` que le asigna el buró.
+
+Dejamos por fuera las siete categorías de gasto: para el riesgo importa cuánto gasta el
+cliente, no en qué, y el total ya está en `Monthly_Spending`. Esta lista es distinta de
+las 21 variables del Módulo 11 de la entrega: allá la idea era segmentar toda la cartera,
+y aquí la matriz se arma para la pregunta de riesgo. Con 10 variables, `Payment_Ratio` y
+`Credit_Utilization` ya no vuelven casi singular la matriz, y tienen que estar porque
+son las dos que más se mueven con el puntaje (Módulo 6). La base tiene cero celdas
+vacías (Módulo 2), así que entran los `r miles(nrow(X))` clientes.
+
+# ¿Se repiten?
+
+```{r correlaciones, fig.height = 6.5}
+R <- cor(X)
+orden <- vars[hclust(as.dist(1 - abs(R)))$order]
+
+as.data.frame(as.table(R)) |>
+  mutate(Var1 = factor(etiqueta[as.character(Var1)], levels = etiqueta[orden]),
+         Var2 = factor(etiqueta[as.character(Var2)], levels = etiqueta[orden])) |>
+  ggplot(aes(Var1, Var2, fill = Freq)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = coma(Freq, 2)), size = 3.4) +
+  scale_fill_gradient2(low = "#C05621", mid = "white", high = "#2B6CB0", limits = c(-1, 1),
+                       name = "Van juntos", labels = function(x) coma(x, 1)) +
+  labs(title = "Qué tanto se mueven juntas las 10 variables de la ficha",
+       subtitle = "1 = siempre juntas · 0 = nada que ver · −1 = en contra",
+       x = NULL, y = NULL) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+```
+
+```{r cuanto-se-repite}
+fuera_diag <- R; diag(fuera_diag) <- NA
+data.frame(variable = etiqueta[vars],
+           su_mayor_correlacion = round(apply(abs(fuera_diag), 1, max, na.rm = TRUE), 2)) |>
+  arrange(su_mayor_correlacion)
+```
+
+> 👀 **Qué vemos:** hay dos bloques. El primero lo forman ingreso, cupo, gasto, saldo y
+> monto pagado, que van juntos con correlaciones entre
+> `r coma(min(R[vars[1:5], vars[1:5]]), 2)` y `r coma(max(fuera_diag[vars[1:5], vars[1:5]], na.rm = TRUE), 2)`.
+> Ingreso con cupo es la pareja que más se repite (`r coma(R["Annual_Income", "Credit_Limit"], 2)`).
+> El segundo bloque es puntaje, proporción pagada y uso del cupo: el puntaje va
+> `r coma(R["Credit_Score", "Payment_Ratio"], 2)` con la proporción pagada y
+> `r coma(R["Credit_Score", "Credit_Utilization"], 2)` con el uso del cupo. Entre un bloque
+> y el otro las correlaciones son casi cero: ingreso con puntaje es
+> `r coma(R["Annual_Income", "Credit_Score"], 2)`. Las variables que van más solas son los
+> **avances en efectivo** y las **compras a cuotas**, que con ninguna pasan de
+> `r coma(max(abs(fuera_diag["EMI_Count", ]), na.rm = TRUE), 2)`.
+>
+> 💼 **Qué significa para el cliente:** la ficha tiene información repetida. Cinco
+> variables cuentan casi la misma historia, que es el tamaño del cliente, y por eso
+> **sí tiene sentido resumirlas**. Pero esa historia no dice nada del riesgo, que vive
+> en otro bloque.
+>
+> ✅ **Qué decide el cliente:** vale la pena buscar un resumen. Hay que vigilar si el
+> primer número del resumen deja por fuera el bloque de pago y puntaje, que es justo el
+> que le importa a la Gerencia.
+
+# ¿Estandarizar?
+
+```{r desviaciones}
+desv <- sapply(X, sd)
+data.frame(variable = etiqueta[vars], desviacion = desv) |>
+  arrange(desc(desviacion)) |>
+  mutate(desviacion = coma(desviacion, 2))
+c(la_mayor_entre_la_menor = round(max(desv) / min(desv)))
+```
+
+**Decisión, tomada antes de correr: estandarizamos.** Las desviaciones van desde
+`r coma(min(desv), 2)` (uso del cupo, que es una proporción) hasta
+`r miles(max(desv))` rupias (ingreso anual). Sin estandarizar, la primera componente solo
+repetiría la variable con los números más grandes. Las variables de la ficha no se miden
+en la misma unidad, y para la Gerencia una rupia de ingreso no vale lo mismo que un punto
+de puntaje crediticio. Lo justo es que cada variable entre con el mismo peso de partida.
+
+```{r estandarizar-o-no}
+pca_crudo <- prcomp(X)                 # sin estandarizar
+pca       <- prcomp(X, scale. = TRUE)  # estandarizando (nuestra decisión)
+
+info_c1 <- function(p) 100 * p$sdev[1]^2 / sum(p$sdev^2)
+manda   <- function(p) etiqueta[names(which.max(abs(p$rotation[, 1])))]
+
+data.frame(
+  version = c("Sin estandarizar", "Estandarizando"),
+  la_C1_guarda_de_cada_100 = round(c(info_c1(pca_crudo), info_c1(pca)), 1),
+  variable_que_mas_pesa_en_C1 = c(manda(pca_crudo), manda(pca)),
+  su_peso = round(c(max(abs(pca_crudo$rotation[, 1])), max(abs(pca$rotation[, 1]))), 2)
+)
+```
+
+> 👀 **Qué vemos:** sin estandarizar, la primera componente guarda
+> `r coma(info_c1(pca_crudo))` de cada 100 partes de la información, y casi todo es una
+> sola variable: `r manda(pca_crudo)`, con peso `r coma(max(abs(pca_crudo$rotation[, 1])), 2)`.
+> Estandarizando, guarda `r coma(info_c1(pca))` de cada 100, y ninguna variable pesa más de
+> `r coma(max(abs(pca$rotation[, 1])), 2)`.
+>
+> 💼 **Qué significa para el cliente:** el `r coma(info_c1(pca_crudo))` de cada 100 sin estandarizar
+> parece un resumen excelente, pero es un espejismo de escala. Ese «índice» casi solo
+> ordena a los clientes por cuántas rupias ganan, y el puntaje crediticio, que se mide en
+> cientos de puntos, prácticamente no pesa.
+>
+> ✅ **Qué decide el cliente:** usar la versión estandarizada. Todo lo que sigue sale de
+> `prcomp(X, scale. = TRUE)`.
+
+# Cuánta información guarda
+
+```{r reparto}
+reparto <- data.frame(componente  = factor(paste0("C", 1:10), levels = paste0("C", 1:10)),
+                      de_cada_100 = 100 * pca$sdev^2 / sum(pca$sdev^2))
+reparto$acumulado <- cumsum(reparto$de_cada_100)
+k80 <- which(reparto$acumulado > 80)[1]
+reparto |> mutate(across(c(de_cada_100, acumulado), ~ round(.x, 1)))
+```
+
+```{r grafico-reparto, fig.height = 4.8}
+ggplot(reparto, aes(componente, de_cada_100)) +
+  geom_col(fill = ifelse(seq_len(10) <= k80, "#2B6CB0", "grey75"), width = 0.65) +
+  geom_text(aes(label = coma(de_cada_100)), vjust = -0.4, size = 3.8) +
+  geom_line(aes(y = acumulado, group = 1), color = "#C05621", linewidth = 1) +
+  geom_point(aes(y = acumulado), color = "#C05621", size = 2.4) +
+  geom_text(data = reparto[2:5, ], aes(y = acumulado, label = coma(acumulado)),
+            vjust = -0.9, color = "#C05621", size = 3.6) +
+  geom_hline(yintercept = 80, linetype = "dashed", color = "grey40") +
+  annotate("text", x = 9.6, y = 83, label = "80 de cada 100", color = "grey30", size = 3.5) +
+  scale_y_continuous(limits = c(0, 108)) +
+  labs(title = "De cada 100 partes de información de la ficha, cuántas guarda cada componente",
+       subtitle = "Barras: cada componente · línea naranja: acumulado · en azul, las necesarias para pasar de 80",
+       x = NULL, y = "De cada 100")
+```
+
+> 👀 **Qué vemos:** la primera componente guarda `r coma(reparto$de_cada_100[1])` de cada 100
+> partes de la información de las 10 variables. La segunda suma `r coma(reparto$de_cada_100[2])`
+> y la tercera `r coma(reparto$de_cada_100[3])`. Hacen falta **`r k80` componentes para pasar
+> de 80**: con ellas se llega a `r coma(reparto$acumulado[k80])`. De la sexta en adelante
+> ninguna guarda más de `r coma(max(reparto$de_cada_100[6:10]))`.
+>
+> 💼 **Qué significa para el cliente, en una frase:** *un solo índice resume la mitad de
+> la ficha del cliente; para no perder más de una quinta parte, la Gerencia necesita
+> mirar `r k80` números.*
+>
+> ✅ **Qué decide el cliente:** antes de quedarse con un número, tiene que saber qué es la
+> otra mitad. Si es ruido, se puede botar. Si es lo que distingue a un cliente riesgoso,
+> no. Eso lo resuelven los dos puntos siguientes.
+
+# Qué mide cada una
+
+```{r pesos}
+# El signo es arbitrario: lo fijamos para que la lectura sea cómoda.
+# C1 positiva = más cupo; C2 positiva = peor puntaje; C3 positiva = más uso del cupo.
+signo <- c(sign(pca$rotation["Credit_Limit", 1]),
+           -sign(pca$rotation["Credit_Score", 2]),
+            sign(pca$rotation["Credit_Utilization", 3]))
+pesos <- sweep(pca$rotation[, 1:3], 2, signo, `*`)
+puntaje_c <- sweep(pca$x[, 1:3], 2, signo, `*`)
+round(pesos, 2)
+```
+
+```{r grafico-pesos, fig.height = 5.8}
+nombres <- c(PC1 = "C1 · el tamaño del cliente",
+             PC2 = "C2 · cómo paga (el riesgo)",
+             PC3 = "C3 · usar el cupo y pagarlo")
+data.frame(pesos, variable = rownames(pesos)) |>
+  pivot_longer(-variable, names_to = "componente", values_to = "peso") |>
+  mutate(componente = factor(nombres[componente], levels = nombres),
+         variable = factor(etiqueta[variable], levels = rev(etiqueta))) |>
+  ggplot(aes(peso, variable, fill = peso > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, color = "grey40") +
+  geom_text(aes(label = coma(peso, 2), hjust = ifelse(peso > 0, -0.15, 1.15)), size = 3.3) +
+  facet_wrap(~ componente) +
+  scale_fill_manual(values = c("#C05621", "#2B6CB0"), guide = "none") +
+  scale_x_continuous(limits = c(-1.15, 1.15), labels = function(x) coma(x, 1)) +
+  labs(title = "Qué variables mandan en cada una de las tres primeras componentes",
+       x = "Peso", y = NULL)
+```
+
+> 👀 **Qué vemos:** en **C1**, ingreso, cupo, gasto, saldo y monto pagado pesan casi lo
+> mismo (`r coma(min(pesos[vars[1:5], 1]), 2)` a `r coma(max(pesos[vars[1:5], 1]), 2)`) y en la
+> misma dirección. Avances y cuotas pesan la mitad, y puntaje, proporción pagada y uso del
+> cupo pesan casi cero. En **C2** mandan el puntaje (`r coma(pesos["Credit_Score", 2], 2)`) y la
+> proporción pagada (`r coma(pesos["Payment_Ratio", 2], 2)`), en contra del uso del cupo
+> (`r coma(pesos["Credit_Utilization", 2], 2)`), y el bloque de tamaño no pesa. En **C3**,
+> uso del cupo (`r coma(pesos["Credit_Utilization", 3], 2)`) y proporción pagada
+> (`r coma(pesos["Payment_Ratio", 3], 2)`) van **en la misma dirección**, mientras el puntaje
+> pesa `r coma(pesos["Credit_Score", 3], 2)`.
+>
+> 💼 **Qué significa para el cliente:** les pusimos nombre mirando qué variables mandan.
+>
+> - **C1 · el tamaño del cliente.** Sube cuando sube todo lo que se mide en rupias: un
+>   C1 alto es un cliente que gana, tiene cupo y mueve mucho dinero. No dice nada de cómo
+>   paga.
+> - **C2 · cómo paga (el riesgo).** Con el signo que fijamos, sube cuando el cliente
+>   **paga una parte pequeña de lo facturado, usa mucho del cupo y tiene peor puntaje**.
+>   Es el eje del comportamiento de pago, y no tiene que ver con el tamaño.
+> - **C3 · usar el cupo y pagarlo.** Separa a quien usa mucho cupo pero también paga
+>   buena parte del saldo de quien usa poco y paga poco. Como el puntaje casi no pesa
+>   aquí, es una diferencia de estilo de uso de la tarjeta que el buró no castiga ni
+>   premia.
+>
+> ✅ **Qué decide el cliente:** lo que el primer índice deja por fuera **no es ruido:
+> tiene nombre, y es el riesgo**. Los nombres los pusimos nosotros leyendo los pesos.
+> Las componentes muestran qué variables se mueven juntas; **no muestran que el tamaño
+> cause un buen o mal pago**, ni que exista una «disciplina financiera» medida por C2.
+
+# El costo para su cliente
+
+**El grupo que le importa a la Gerencia:** los clientes de riesgo, definidos como el
+**20 % con peor puntaje crediticio** de la cartera. Si la Gerencia decidiera con un solo
+número, mandaría a seguimiento al 20 % de clientes de un extremo de C1. Para darle a C1
+su mejor oportunidad, probamos los dos extremos y nos quedamos con el que encuentra más
+clientes de riesgo. Después hacemos lo mismo con C2.
+
+```{r costo}
+corte <- quantile(credit$Credit_Score, 0.20)
+riesgo <- credit$Credit_Score <= corte
+en_el_20_alto <- function(s) s >= quantile(s, 0.80)
+
+encuentra <- function(s) max(sum(riesgo & en_el_20_alto(s)), sum(riesgo & en_el_20_alto(-s)))
+
+cobertura <- data.frame(
+  decide_con = c("Solo C1 (tamaño)", "C2 (cómo paga)", "Al azar (referencia)"),
+  clientes_de_riesgo = sum(riesgo),
+  los_encuentra = c(encuentra(puntaje_c[, 1]), encuentra(puntaje_c[, 2]), round(0.2 * sum(riesgo)))
+)
+cobertura$se_le_escapan <- cobertura$clientes_de_riesgo - cobertura$los_encuentra
+cobertura$de_cada_100_se_escapan <- round(100 * cobertura$se_le_escapan / cobertura$clientes_de_riesgo, 1)
+cobertura
+```
+
+```{r grafico-costo, fig.height = 3.8}
+cobertura[1:2, ] |>
+  select(decide_con, `Los encuentra` = los_encuentra, `Se le escapan` = se_le_escapan) |>
+  pivot_longer(-decide_con) |>
+  mutate(decide_con = factor(decide_con, levels = rev(cobertura$decide_con[1:2]))) |>
+  ggplot(aes(value, decide_con, fill = name)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = miles(value)), position = position_stack(vjust = 0.5),
+            color = "white", fontface = "bold", size = 4.3) +
+  scale_fill_manual(values = c("#2B6CB0", "#C05621"), name = NULL) +
+  scale_x_continuous(labels = miles) +
+  labs(title = paste0("Los ", miles(sum(riesgo)), " clientes de riesgo: ¿los encuentra cada número?"),
+       subtitle = paste0("Riesgo = puntaje crediticio de ", corte, " o menos (el 20 % más bajo)"),
+       x = "Clientes", y = NULL) +
+  theme(legend.position = "top")
+```
+
+> 👀 **Qué vemos:** en la cartera hay `r miles(sum(riesgo))` clientes de riesgo, con puntaje
+> de `r corte` o menos. Si se escoge el 20 % por **C1**, la lista encuentra
+> `r miles(cobertura$los_encuentra[1])` de ellos y **se le escapan `r miles(cobertura$se_le_escapan[1])`**,
+> `r coma(cobertura$de_cada_100_se_escapan[1])` de cada 100. Una lista al azar encontraría unos
+> `r miles(cobertura$los_encuentra[3])`. Si se escoge por **C2**, encuentra
+> `r miles(cobertura$los_encuentra[2])` y se le escapan apenas `r miles(cobertura$se_le_escapan[2])`.
+>
+> 💼 **Qué significa para el cliente:** el primer índice **no sirve para encontrar el
+> riesgo**: la lista que arma es casi tan mala como sacar nombres de un sombrero. Esto
+> cuadra con el Módulo 6 de la entrega, donde el riesgo de esta cartera se mueve con
+> cómo paga el cliente y no con cuánto gana. La información que se pierde con un solo
+> número es justo la que la Gerencia necesita.
+
+```{r un-caso}
+grandes_y_riesgosos <- en_el_20_alto(puntaje_c[, 1]) & riesgo
+c(clientes_grandes_y_de_riesgo = sum(grandes_y_riesgosos),
+  cupo_promedio_de_ellos       = round(mean(credit$Credit_Limit[grandes_y_riesgosos])),
+  cupo_promedio_de_la_cartera  = round(mean(credit$Credit_Limit)))
+```
+
+> 👀 **Qué vemos:** `r miles(sum(grandes_y_riesgosos))` clientes están a la vez en el 20 % más
+> grande de C1 y en el 20 % de peor puntaje. Su cupo promedio es de
+> `r miles(mean(credit$Credit_Limit[grandes_y_riesgosos]))` rupias, frente a
+> `r miles(mean(credit$Credit_Limit))` del promedio de la cartera.
+>
+> 💼 **Qué significa para el cliente:** con un índice de tamaño, estos clientes se ven
+> como «los mejores de la cartera» y son candidatos naturales a aumento de cupo. Son, al
+> mismo tiempo, los de peor puntaje y los que más plata tienen comprometida. El índice
+> único no los separa de los grandes que pagan bien; C2 sí.
+>
+> ✅ **Qué decide el cliente: un número no le basta.** La Gerencia debe reportar **dos**:
+> C1 (tamaño) para saber cuánto dinero hay en juego, y C2 (cómo paga) para escoger a
+> quién mandar a seguimiento. Cruzados, señalan primero a los grandes que pagan mal.
+> Con esos dos guarda `r coma(reparto$acumulado[2])` de cada 100 partes de la información. Si
+> además quiere pasar de 80, agrega C3 para distinguir a quien usa el cupo y lo paga de
+> quien lo usa poco y paga poco.
+
+# Lo que le entregamos a la Gerencia
+
+- **Sí se puede resumir la ficha de 10 variables**, porque cinco de ellas repiten casi la
+  misma historia: el tamaño del cliente.
+- **Pero ese primer índice guarda solo la mitad de la información**, y la mitad que
+  deja por fuera es el comportamiento de pago, es decir, el riesgo.
+- **En clientes, el costo es concreto:** de los `r miles(sum(riesgo))` con peor puntaje, el
+  índice único deja por fuera `r miles(cobertura$se_le_escapan[1])`, y a los
+  `r miles(sum(grandes_y_riesgosos))` grandes con mal puntaje los confunde con los
+  mejores clientes.
+- **La decisión:** reportar dos números, tamaño y cómo paga. El segundo es el que
+  decide la entrada al programa de seguimiento preventivo.
