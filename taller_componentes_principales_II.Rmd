@@ -1,0 +1,598 @@
+---
+title: "Taller: El mapa de su negocio"
+subtitle: "El mapa para la Gerencia de Riesgo de Crédito · Componentes principales II"
+author:
+  - "Oscar Manuel Contreras Gacha (20221020052)"
+  - "Juan Pablo Sarmiento Ramírez (20221020138)"
+  - "Steven Navarro Parrales (20221020048)"
+  - "Juan Diego Grajales Castillo (20221020128)"
+date: "Estadística Multidimensional · 26158 · grupo 020-81 · periodo 2026-3"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9, fig.height = 5.5)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+if (!requireNamespace("ggrepel", quietly = TRUE)) {
+  install.packages("ggrepel", repos = "https://cloud.r-project.org")
+}
+library(ggrepel)
+theme_set(theme_minimal(base_size = 13))
+coma  <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = " ")
+miles <- function(x) formatC(round(x), format = "d", big.mark = " ")
+# «a, b y c» para armar frases con listas calculadas
+unir  <- function(x) if (length(x) <= 1) x else paste(paste(x[-length(x)], collapse = ", "), "y", x[length(x)])
+# elige una de dos frases según el signo de una correlación
+sentido <- function(r, si_positiva, si_negativa) if (r > 0) si_positiva else si_negativa
+```
+
+Cada resultado se lee con tres frases:
+
+- 👀 **Qué vemos**: el número o el gráfico, sin interpretar.
+- 💼 **Qué significa para el cliente**: la traducción a la cartera de tarjetas.
+- ✅ **Qué decide el cliente**: la consecuencia práctica.
+
+Este taller continúa el **Taller I** (versión corregida), que a su vez parte del Módulo 11
+de `Entrega/analisis_synthetic_credit_card.Rmd`. Usamos **las mismas 9 variables
+retenidas**, la **misma transformación** (`log(x+1)` a las de asimetría mayor que 1 y
+después `scale()`) y la **misma decisión de estandarizar**. `Payment_Ratio` y
+`Credit_Utilization` siguen siendo **variables suplementarias**: no construyen el mapa,
+pero sirven para ponerle nombre a sus direcciones.
+
+# El encargo
+
+```{r datos, results = "hide"}
+ruta <- c("data/bronze/synthetic_credit_card_customer_behavior_dataset.csv")
+ruta <- ruta[file.exists(ruta)][1]
+if (is.na(ruta)) stop("No se encuentra el CSV: ajuste la ruta en este bloque.")
+credit <- read.csv(ruta, stringsAsFactors = FALSE)
+
+vars <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount",
+          "EMI_Count", "Monthly_Transactions", "Avg_Transaction_Value",
+          "International_Transactions", "Credit_Score")
+suplementarias <- c("Payment_Ratio", "Credit_Utilization")
+dinero <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount")
+uso    <- c("EMI_Count", "Monthly_Transactions", "Avg_Transaction_Value",
+            "International_Transactions")
+
+etiqueta <- c(Annual_Income = "Ingreso anual", Credit_Limit = "Cupo",
+              Statement_Balance = "Saldo facturado", Payment_Amount = "Monto pagado",
+              EMI_Count = "Compras a cuotas", Monthly_Transactions = "Compras al mes",
+              Avg_Transaction_Value = "Valor por compra",
+              International_Transactions = "Compras internacionales",
+              Credit_Score = "Puntaje crediticio",
+              Payment_Ratio = "Proporción pagada", Credit_Utilization = "Uso del cupo")
+
+# Misma transformación del Taller I: log(x+1) si |asimetría| > 1, y luego scale()
+skew <- function(x) mean(((x - mean(x)) / sd(x))^3)
+asimetria <- sapply(credit[vars], skew)
+con_log <- vars[abs(asimetria) > 1]
+X <- credit[vars]
+X[con_log] <- lapply(X[con_log], log1p)
+p <- length(vars)
+```
+
+**El cliente es la Gerencia de Riesgo de Crédito del banco emisor** de las
+`r miles(nrow(credit))` tarjetas de la base (rupias indias, ₹). Cada mes **decide qué
+clientes entran al programa de seguimiento preventivo**: llamada del gestor, congelar los
+aumentos de cupo y ofrecer refinanciación antes de que la deuda se vuelva mora. En el
+Taller I le dijimos que un solo número no le basta. Ahora le entregamos **el mapa de su
+cartera**: cada cliente es un punto, y la posición del punto resume sus `r p` variables.
+Lo que importa no es el dibujo, sino **qué ve la Gerencia en el mapa y qué hace con él**.
+
+La ficha usa `r p` variables numéricas, de las cuales `r length(con_log)` entran con
+logaritmo (`r unir(unname(etiqueta[con_log]))`). Las celdas vacías son
+`r sum(is.na(X))`, así que entran los `r miles(nrow(X))` clientes.
+
+# El mapa y sus direcciones
+
+```{r pca}
+pca <- prcomp(X, scale. = TRUE)   # log + scale: la decisión del Taller I
+
+reparto <- data.frame(componente = factor(paste0("C", 1:p), levels = paste0("C", 1:p)),
+                      de_cada_100 = 100 * pca$sdev^2 / sum(pca$sdev^2))
+reparto$acumulado <- cumsum(reparto$de_cada_100)
+
+# El signo de cada componente es arbitrario en prcomp(): lo fijamos con una variable ancla.
+#   C1: el cupo pesa positivo      -> ir a la derecha = más cupo.
+#   C2: el puntaje pesa NEGATIVO   -> ir hacia arriba = peor puntaje.
+signo <- c(sign(pca$rotation["Credit_Limit", 1]),
+           -sign(pca$rotation["Credit_Score", 2]))
+carga     <- sweep(pca$rotation[, 1:2], 2, signo, `*`)
+puntaje_c <- sweep(pca$x[, 1:2], 2, signo, `*`)
+colnames(puntaje_c) <- c("C1", "C2")
+
+data.frame(componente = c("C1", "C2"),
+           variable_ancla = c("Cupo", "Puntaje crediticio"),
+           regla = c("el cupo debe pesar positivo", "el puntaje debe pesar negativo"),
+           peso_despues = round(c(carga["Credit_Limit", 1], carga["Credit_Score", 2]), 2),
+           hubo_que_invertir = signo < 0)
+```
+
+```{r nombres-direcciones}
+# Con qué se mueve cada dirección: correlación de C1 y C2 con cada variable.
+tabla_cor <- t(cbind(cor(puntaje_c, X), cor(puntaje_c, credit[suplementarias])))
+data.frame(variable = unname(etiqueta[rownames(tabla_cor)]),
+           tipo = c(rep("activa", p), rep("suplementaria", length(suplementarias))),
+           con_C1 = round(tabla_cor[, "C1"], 2),
+           con_C2 = round(tabla_cor[, "C2"], 2),
+           row.names = NULL)
+
+r_c1_cupo  <- tabla_cor["Credit_Limit", "C1"]
+r_c1_saldo <- tabla_cor["Statement_Balance", "C1"]
+r_c1_pun   <- tabla_cor["Credit_Score", "C1"]
+r_c2_pun   <- tabla_cor["Credit_Score", "C2"]
+r_c2_pr    <- tabla_cor["Payment_Ratio", "C2"]
+r_c2_cu    <- tabla_cor["Credit_Utilization", "C2"]
+```
+
+```{r mapa, fig.height = 6.3}
+mapa <- data.frame(C1 = puntaje_c[, 1], C2 = puntaje_c[, 2])
+
+ggplot(mapa, aes(C1, C2)) +
+  geom_point(alpha = 0.06, size = 0.35, color = "#2B6CB0") +
+  geom_hline(yintercept = 0, color = "grey50", linetype = "dashed") +
+  geom_vline(xintercept = 0, color = "grey50", linetype = "dashed") +
+  labs(title = paste0("El mapa de los ", miles(nrow(mapa)), " clientes"),
+       subtitle = paste0("Las dos componentes guardan ", coma(reparto$acumulado[2]),
+                         " de cada 100 partes de la información de la ficha"),
+       x = "←  cliente más pequeño   ·   C1: el tamaño del cliente   ·   cliente más grande  →",
+       y = "←  mejor puntaje   ·   C2: el riesgo   ·   peor puntaje  →")
+```
+
+> 👀 **Qué vemos:** C1 guarda `r coma(reparto$de_cada_100[1])` de cada 100 partes de la
+> información de las `r p` variables y C2 guarda `r coma(reparto$de_cada_100[2])`: **juntas
+> guardan `r coma(reparto$acumulado[2])`**. Ir a la derecha en el mapa va con más cupo
+> (correlación `r coma(r_c1_cupo, 2)`) y más saldo facturado (`r coma(r_c1_saldo, 2)`), y casi
+> no tiene que ver con el puntaje (`r coma(r_c1_pun, 2)`). Ir hacia arriba va con peor puntaje
+> (correlación `r coma(r_c2_pun, 2)`, negativa por cómo fijamos el signo). Entre las
+> suplementarias, C2 va `r coma(r_c2_pr, 2)` con la proporción pagada y `r coma(r_c2_cu, 2)` con
+> el uso del cupo.
+>
+> 💼 **Qué significa para el cliente:** les pusimos nombre mirando con qué variables se
+> mueve cada dirección.
+>
+> - **Derecha · el tamaño del cliente.** Cuanto más a la derecha, más cupo, más saldo
+>   y más rupias en juego. No dice cómo paga.
+> - **Arriba · el riesgo.** Cuanto más arriba, peor puntaje, y las suplementarias dicen
+>   cómo es ese cliente: va con `r sentido(r_c2_pr, "una proporción pagada mayor", "una proporción pagada menor")`
+>   y con `r sentido(r_c2_cu, "más uso del cupo", "menos uso del cupo")`.
+>
+> **Cómo fijamos el signo:** `prcomp()` entrega cada componente con un signo al azar, y
+> invertirlo no cambia el mapa, solo lo refleja. Lo fijamos con una variable ancla por
+> eje: C1 con el cupo (que pese positivo) y C2 con el puntaje (que pese negativo). La
+> tabla de arriba muestra si hubo que invertir cada eje. Los nombres son nuestros: el
+> mapa muestra qué variables se mueven juntas, **no que el tamaño cause un buen o mal
+> pago**.
+>
+> ✅ **Qué decide el cliente:** leer cada cliente con dos preguntas: *¿qué tan a la derecha
+> está?* (cuánto dinero hay en juego) y *¿qué tan arriba?* (cuánto riesgo). Al mirar solo
+> este plano quedan por fuera `r coma(100 - reparto$acumulado[2])` de cada 100 partes de la
+> información de la ficha, y eso es lo que se sacrifica por tener un mapa de dos
+> dimensiones.
+
+# El biplot
+
+```{r biplot-datos}
+# Correlación de cada variable con C1 y C2 = peso × desviación de la componente.
+flechas <- sweep(carga, 2, pca$sdev[1:2], `*`)
+colnames(flechas) <- c("C1", "C2")
+
+bloque <- c(Annual_Income = "Dinero", Credit_Limit = "Dinero", Statement_Balance = "Dinero",
+            Payment_Amount = "Dinero", EMI_Count = "Uso de la tarjeta",
+            Monthly_Transactions = "Uso de la tarjeta", Avg_Transaction_Value = "Uso de la tarjeta",
+            International_Transactions = "Uso de la tarjeta", Credit_Score = "Puntaje")
+
+fl <- data.frame(variable = rownames(flechas), flechas, row.names = NULL)
+fl$etiqueta <- unname(etiqueta[fl$variable])
+fl$bloque   <- factor(unname(bloque[fl$variable]), levels = c("Dinero", "Uso de la tarjeta", "Puntaje"))
+fl$angulo   <- atan2(fl$C2, fl$C1) * 180 / pi   # 0° = derecha, 90° = arriba
+fl$largo    <- sqrt(fl$C1^2 + fl$C2^2)          # 1 = la variable se ve entera en el mapa
+
+# Ángulo entre cada par de flechas (≈ cuánto se parecen las dos variables)
+ang <- function(a, b) acos(pmin(1, pmax(-1, sum(a * b) / sqrt(sum(a^2) * sum(b^2))))) * 180 / pi
+M <- as.matrix(fl[, c("C1", "C2")]); rownames(M) <- fl$variable
+A <- outer(1:p, 1:p, Vectorize(function(i, j) ang(M[i, ], M[j, ])))
+dimnames(A) <- list(fl$variable, fl$variable)
+```
+
+```{r biplot, fig.width = 10, fig.height = 8}
+set.seed(2026)
+idx <- sample(nrow(mapa), 6000)                          # solo para que el gráfico sea liviano
+esc <- unname(1.1 / quantile(abs(as.vector(puntaje_c)), 0.99))   # reescala los puntos para que quepan
+nube <- data.frame(x = puntaje_c[idx, 1] * esc, y = puntaje_c[idx, 2] * esc)
+t_c <- seq(0, 2 * pi, length.out = 200)
+circulo <- data.frame(x = cos(t_c), y = sin(t_c))
+
+ggplot() +
+  geom_point(data = nube, aes(x, y), alpha = 0.12, size = 0.5, color = "grey60") +
+  geom_path(data = circulo, aes(x, y), color = "grey50", linetype = "dashed") +
+  geom_hline(yintercept = 0, color = "grey70") +
+  geom_vline(xintercept = 0, color = "grey70") +
+  geom_segment(data = fl, aes(x = 0, y = 0, xend = C1, yend = C2, color = bloque),
+               arrow = arrow(length = unit(0.22, "cm")), linewidth = 0.9) +
+  geom_text_repel(data = fl, aes(C1, C2, label = etiqueta, color = bloque),
+                  size = 4, fontface = "bold", box.padding = 0.5, point.padding = 0.3,
+                  min.segment.length = 0, max.overlaps = Inf, seed = 1, show.legend = FALSE) +
+  scale_color_manual(values = c("Dinero" = "#2B6CB0", "Uso de la tarjeta" = "#718096",
+                                "Puntaje" = "#C05621"), name = NULL) +
+  coord_fixed(xlim = c(-1.25, 1.25), ylim = c(-1.25, 1.25)) +
+  labs(title = "Biplot: los clientes como puntos y las variables como flechas",
+       subtitle = "Una flecha que llega a la circunferencia se ve entera en el mapa · los puntos están reescalados",
+       x = "C1 · el tamaño del cliente  →", y = "C2 · el riesgo (peor puntaje)  →") +
+  theme(legend.position = "top")
+```
+
+```{r biplot-tablas}
+data.frame(variable = fl$etiqueta, bloque = fl$bloque,
+           angulo_desde_C1 = round(fl$angulo),
+           largo_de_la_flecha = round(fl$largo, 2),
+           de_cada_100_que_se_ve_en_el_mapa = round(100 * fl$largo^2))
+
+A_ver <- round(A); dimnames(A_ver) <- list(fl$etiqueta, fl$etiqueta)
+data.frame(`ángulo entre flechas (°)` = rownames(A_ver), A_ver, check.names = FALSE, row.names = NULL)
+
+# Cifras que usa la lectura
+sub_dinero      <- A[dinero, dinero][upper.tri(A[dinero, dinero])]
+ang_pun_dinero  <- A["Credit_Score", dinero]
+ang_uso_dinero  <- A[uso, dinero]
+min_ang         <- apply(A + diag(999, p), 1, min)         # ángulo a su vecina más cercana
+sola            <- names(which.max(min_ang))
+mas_abierta     <- rownames(A)[which(A == max(A), arr.ind = TRUE)[1, ]]
+n_opuestas      <- sum(A[upper.tri(A)] > 120)
+pobres          <- unname(etiqueta[fl$variable[fl$largo < 0.7]])
+juntas          <- max(sub_dinero) < 30          # ¿las de dinero van realmente juntas?
+pun_aparte      <- min(ang_pun_dinero) > 45      # ¿el puntaje apunta a otro lado?
+```
+
+> 👀 **Qué vemos:**
+>
+> - **Van juntas:** las cuatro flechas de dinero salen casi en la misma dirección. Entre
+>   ellas forman ángulos de `r round(min(sub_dinero))`° a `r round(max(sub_dinero))`°.
+> - **Va sola:** la flecha más aislada es la de `r unname(etiqueta[sola])`, con
+>   `r round(min_ang[sola])`° hasta su vecina más cercana. El puntaje forma entre
+>   `r round(min(ang_pun_dinero))`° y `r round(max(ang_pun_dinero))`° con las de dinero
+>   (con el cupo, `r round(A["Credit_Score", "Credit_Limit"])`°).
+> - **Uso de la tarjeta:** las flechas de uso forman entre `r round(min(ang_uso_dinero))`° y
+>   `r round(max(ang_uso_dinero))`° con las de dinero.
+> - **En contra:** `r if (n_opuestas == 0) paste0("ningún par pasa de 120°; la pareja más abierta es ", unname(etiqueta[mas_abierta[1]]), " con ", unname(etiqueta[mas_abierta[2]]), " (", round(max(A)), "°)") else paste0("hay ", n_opuestas, " pares con más de 120°; el más abierto es ", unname(etiqueta[mas_abierta[1]]), " con ", unname(etiqueta[mas_abierta[2]]), " (", round(max(A)), "°)")`.
+> - **Cuánto se ve:** `r if (length(pobres) == 0) "todas las flechas llegan cerca de la circunferencia, así que sus ángulos son confiables" else paste0("las flechas de ", unir(pobres), " son cortas (menos de 0,7): sus ángulos son menos confiables, porque parte de su información está en otras componentes")`.
+>
+> Ángulo cerca de 0° = las dos variables se mueven juntas; cerca de 90° = casi no tienen
+> que ver; cerca de 180° = se mueven en contra.
+>
+> 💼 **Qué significa para el cliente:** `r if (juntas) "ingreso, cupo, saldo y monto pagado **cuentan casi la misma historia**, el tamaño del cliente: mirar las cuatro a la vez no le da cuatro señales, le da una repetida." else "las variables de dinero se parecen, pero no tanto como para tratarlas como una sola: cada una aporta algo propio."` Las variables de uso de la tarjeta acompañan ese bloque en mayor o menor grado. `r if (pun_aparte) "El puntaje crediticio apunta a otro lado: **el riesgo no se lee en las variables de dinero**, y ninguna de ellas lo reemplaza." else "El puntaje crediticio queda más cerca de las variables de dinero de lo que esperábamos: hay que leerlo con cuidado."`
+>
+> ✅ **Qué decide el cliente:** `r if (juntas && pun_aparte) paste0("para el seguimiento le basta **una** variable de tamaño (la que prefiera por costo de obtenerla) y **no puede prescindir del puntaje**. La ficha de ", p, " variables se puede acortar sin perder lo que distingue a los clientes, pero quitarle el puntaje sí le quitaría el riesgo.") else "revisar con cuáles variables de la ficha puede quedarse según los ángulos de la tabla: las que forman ángulos pequeños entre sí se pueden sustituir unas por otras; las que quedan solas, no."`
+
+# ¿Hay grupos o hay un continuo?
+
+```{r continuo-datos}
+# Número de picos de la densidad y qué tan profundo es el valle entre los dos mayores.
+# Con «prom» se ignoran bultos menores al 10 % del pico más alto.
+forma <- function(x, prom = 0.10) {
+  d <- density(x); y <- d$y
+  pic <- which(diff(sign(diff(y))) == -2) + 1
+  pic <- pic[y[pic] >= prom * max(y)]
+  q <- quantile(x, c(0.10, 0.90))
+  central <- min(y[d$x >= q[1] & d$x <= q[2]]) / max(y)   # lo más bajo del 80 % central
+  if (length(pic) < 2) return(c(picos = length(pic), valle_sobre_pico = NA, central_sobre_pico = central))
+  dos <- sort(pic[order(y[pic], decreasing = TRUE)[1:2]])
+  c(picos = length(pic), valle_sobre_pico = min(y[dos[1]:dos[2]]) / min(y[dos]), central_sobre_pico = central)
+}
+
+ir <- prcomp(iris[, 1:4], scale. = TRUE)$x    # referencia: el caso con islas del que habla la clase
+f_c1 <- forma(mapa$C1);  f_c2 <- forma(mapa$C2)
+i_c1 <- forma(ir[, 1]);  i_c2 <- forma(ir[, 2])
+
+fmt_v <- function(f) if (is.na(f["valle_sobre_pico"])) "no hay valle" else paste0(coma(100 * f["valle_sobre_pico"], 0), " %")
+hay_valle <- function(f) f["picos"] >= 2 && !is.na(f["valle_sobre_pico"]) && f["valle_sobre_pico"] < 0.5
+continuo <- !hay_valle(f_c1) && !hay_valle(f_c2)
+
+data.frame(
+  mapa = c("Clientes · C1", "Clientes · C2", "Iris · C1", "Iris · C2"),
+  picos = unname(c(f_c1["picos"], f_c2["picos"], i_c1["picos"], i_c2["picos"])),
+  densidad_en_el_valle_sobre_la_del_pico = c(fmt_v(f_c1), fmt_v(f_c2), fmt_v(i_c1), fmt_v(i_c2)),
+  densidad_mas_baja_del_80_central_sobre_el_pico =
+    paste0(coma(100 * c(f_c1["central_sobre_pico"], f_c2["central_sobre_pico"],
+                        i_c1["central_sobre_pico"], i_c2["central_sobre_pico"]), 0), " %")
+)
+```
+
+```{r continuo-graficos, fig.height = 5.2}
+ggplot(mapa, aes(C1, C2)) +
+  geom_point(alpha = 0.05, size = 0.3, color = "#2B6CB0") +
+  geom_density_2d(color = "#C05621", bins = 10, linewidth = 0.5) +
+  labs(title = "La nube de clientes con sus curvas de nivel",
+       subtitle = "Un grupo aparte se vería como una segunda mancha rodeada de huecos",
+       x = "C1 · el tamaño del cliente  →", y = "C2 · el riesgo  →")
+
+bind_rows(data.frame(componente = "C1 · el tamaño del cliente", valor = mapa$C1),
+          data.frame(componente = "C2 · el riesgo", valor = mapa$C2)) |>
+  ggplot(aes(valor)) +
+  geom_density(fill = "#2B6CB0", alpha = 0.35, color = "#2B6CB0") +
+  facet_wrap(~ componente, scales = "free") +
+  labs(title = "Cuántos clientes hay a lo largo de cada componente",
+       subtitle = "Si hubiera islas, la curva tendría dos cumbres separadas por un valle",
+       x = "Posición en la componente", y = "Densidad")
+```
+
+```{r continuo-iris, fig.height = 4}
+data.frame(C1 = ir[, 1], C2 = ir[, 2], especie = iris$Species) |>
+  ggplot(aes(C1, C2, color = especie)) +
+  geom_point(size = 1.8) +
+  scale_color_manual(values = c("#C05621", "#2B6CB0", "#718096"), name = NULL) +
+  labs(title = "Referencia: el mapa de iris, con islas",
+       subtitle = "Setosa queda separada de las otras dos por un hueco en C1",
+       x = "C1", y = "C2") +
+  theme(legend.position = "top")
+```
+
+> 👀 **Qué vemos:** en el mapa de clientes la curva de C1 tiene `r f_c1["picos"]` pico(s) y la
+> de C2 tiene `r f_c2["picos"]`. `r if (hay_valle(f_c1)) paste0("En C1 hay un valle que baja a ", fmt_v(f_c1), " de la altura del pico.") else "En C1 no hay un valle que separe dos cumbres."`
+> `r if (hay_valle(f_c2)) paste0("En C2 hay un valle que baja a ", fmt_v(f_c2), " de la altura del pico.") else "En C2 tampoco."`
+> Dentro del 80 % central de los clientes, la densidad más baja de C1 es
+> `r coma(100 * f_c1["central_sobre_pico"], 0)` % de la más alta (en C2,
+> `r coma(100 * f_c2["central_sobre_pico"], 0)` %). Con el mismo cálculo, iris tiene
+> `r i_c1["picos"]` picos en C1 y su valle baja a `r fmt_v(i_c1)` del pico: así se ve una
+> isla de verdad. Las curvas de nivel de los clientes `r if (continuo) "forman una sola mancha, sin un segundo centro" else "muestran más de un centro"`.
+>
+> 💼 **Qué significa para el cliente:** `r if (continuo) "la cartera es un continuo: no hay «tipos» de cliente separados por un hueco que la Gerencia pueda señalar. El riesgo y el tamaño son gradientes: cada cliente está un poco más o un poco menos arriba y a la derecha que el de al lado. No existe un punto del mapa donde termine un grupo y empiece otro, como sí lo hay entre setosa y las demás." else "hay indicios de más de una masa de clientes. Ese hallazgo hay que contrastarlo con una variable de negocio antes de llamarlos «grupos»."`
+>
+> ✅ **Qué decide el cliente:** `r if (continuo) "no diseñar la política por «tipos» de cliente que el mapa no muestra. Cualquier corte que haga será una decisión suya, según cuántos clientes puede atender, y no un borde que el mapa haya encontrado. Eso se trabaja en el punto 5." else "revisar esa segunda masa antes de decidir, y no asumir que es un segmento de negocio."`
+
+# ¿Los grupos que su cliente conoce se separan?
+
+El grupo con el que la Gerencia ya decide es el **tipo de tarjeta** (`Card_Type`): de él
+dependen el cupo, los beneficios y la política de aumentos. Es ordinal: Basic < Silver <
+Gold < Platinum < Signature (Módulo 1 de la entrega).
+
+```{r grupo-datos}
+orden_tipo <- c("Basic", "Silver", "Gold", "Platinum", "Signature")
+mapa$tipo <- factor(credit$Card_Type, levels = orden_tipo)
+
+sd1 <- sd(mapa$C1); sd2 <- sd(mapa$C2)
+eta2 <- function(y, g) { s <- summary(aov(y ~ g))[[1]][["Sum Sq"]]; s[1] / sum(s) }
+
+medias <- mapa |> group_by(tipo) |> summarise(clientes = n(), C1 = mean(C1), C2 = mean(C2))
+
+# Cifra 1: distancia entre promedios, en desviaciones estándar de cada eje del mapa
+dist_medias <- function(a, b) {
+  c(en_C1 = (medias$C1[medias$tipo == b] - medias$C1[medias$tipo == a]) / sd1,
+    en_C2 = (medias$C2[medias$tipo == b] - medias$C2[medias$tipo == a]) / sd2)
+}
+# Cifra 2: de cada 100 clientes del grupo «de», cuántos caen dentro de la elipse del 90 % del grupo «en»
+en_elipse <- function(de, en, nivel = 0.90) {
+  A_ <- as.matrix(mapa[mapa$tipo == en, c("C1", "C2")])
+  B_ <- as.matrix(mapa[mapa$tipo == de, c("C1", "C2")])
+  mean(mahalanobis(B_, colMeans(A_), cov(A_)) <= qchisq(nivel, 2))
+}
+cruce <- outer(orden_tipo, orden_tipo, Vectorize(function(de, en) en_elipse(de, en)))
+dimnames(cruce) <- list(orden_tipo, orden_tipo)
+
+d_ext  <- dist_medias("Basic", "Signature")
+x_bs   <- 100 * cruce["Basic", "Signature"]
+x_sb   <- 100 * cruce["Signature", "Basic"]
+x_gp   <- 100 * cruce["Gold", "Platinum"]
+x_pg   <- 100 * cruce["Platinum", "Gold"]
+eta_c1 <- eta2(mapa$C1, mapa$tipo)
+eta_c2 <- eta2(mapa$C2, mapa$tipo)
+
+data.frame(tipo = medias$tipo, clientes = miles(medias$clientes),
+           promedio_C1 = round(medias$C1, 2), promedio_C2 = round(medias$C2, 2))
+data.frame(eje = c("C1 · tamaño", "C2 · riesgo"),
+           Basic_a_Signature_en_desviaciones = round(unname(c(d_ext["en_C1"], d_ext["en_C2"])), 2),
+           de_cada_100_varianza_que_explica_el_tipo = round(100 * c(eta_c1, eta_c2), 1))
+data.frame(`de cada 100 clientes de... / caen en la elipse de...` = orden_tipo,
+           round(100 * cruce), check.names = FALSE, row.names = NULL)
+```
+
+```{r grupo-grafico, fig.height = 6.3}
+set.seed(2026)
+muestra <- sample(nrow(mapa), 12000)
+
+ggplot(mapa, aes(C1, C2, color = tipo)) +
+  geom_point(data = mapa[muestra, ], alpha = 0.15, size = 0.4) +
+  stat_ellipse(level = 0.90, type = "norm", linewidth = 1.2) +
+  scale_color_viridis_d(name = "Card_Type", option = "D", end = 0.9) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 2.5))) +
+  labs(title = "El mapa por tipo de tarjeta, con la elipse del 90 % de cada grupo",
+       subtitle = "Los puntos son una muestra de 12 000 clientes · las elipses usan a todos",
+       x = "←  más pequeño   ·   C1: el tamaño del cliente   ·   más grande  →",
+       y = "←  mejor puntaje   ·   C2: el riesgo   ·   peor puntaje  →")
+```
+
+```{r grupo-cajas, fig.height = 4.2}
+mapa |>
+  pivot_longer(c(C1, C2), names_to = "eje", values_to = "valor") |>
+  mutate(eje = recode(eje, C1 = "C1 · el tamaño del cliente", C2 = "C2 · el riesgo")) |>
+  ggplot(aes(tipo, valor, fill = tipo)) +
+  geom_boxplot(outlier.size = 0.3, outlier.alpha = 0.2) +
+  facet_wrap(~ eje, scales = "free_y") +
+  scale_fill_viridis_d(option = "D", end = 0.9, guide = "none") +
+  labs(title = "Cada eje del mapa, por tipo de tarjeta", x = NULL, y = "Posición en la componente")
+```
+
+> 👀 **Qué vemos:** en **C1**, el promedio de Basic y el de Signature están a
+> `r coma(abs(d_ext["en_C1"]), 2)` desviaciones del mapa, y el tipo de tarjeta explica
+> `r coma(100 * eta_c1, 1)` de cada 100 partes de la variación de C1. En **C2** esa distancia es
+> de `r coma(abs(d_ext["en_C2"]), 2)` desviaciones y el tipo explica `r coma(100 * eta_c2, 1)` de
+> cada 100. Sobre el traslape: de cada 100 clientes Basic, `r coma(x_bs, 0)` caen dentro de la
+> elipse de Signature, y de cada 100 Signature, `r coma(x_sb, 0)` caen dentro de la elipse de
+> Basic. Entre vecinos es distinto: de cada 100 Gold, `r coma(x_gp, 0)` caen en la elipse de
+> Platinum y de cada 100 Platinum, `r coma(x_pg, 0)` caen en la de Gold.
+>
+> 💼 **Qué significa para el cliente:** `r if (abs(d_ext["en_C1"]) >= 1) "los tipos de tarjeta **se desplazan** a lo largo del tamaño: cuanto más alto el tipo, más a la derecha, y los extremos (Basic y Signature) están claramente lejos." else "los tipos de tarjeta se desplazan poco a lo largo del tamaño."`
+> `r if (x_bs < 10 && x_sb < 10) "Los extremos (Basic y Signature) casi no se pisan." else "Incluso los extremos (Basic y Signature) se pisan en parte."` `r if (x_gp > 20 || x_pg > 20) "Los tipos vecinos sí se traslapan bastante, así que el tipo de tarjeta no separa a los clientes uno a uno." else "Los tipos vecinos se traslapan poco."`
+> `r if (abs(d_ext["en_C2"]) < 0.3) "En el riesgo, en cambio, los grupos casi coinciden: un Signature está tan arriba o tan abajo en el mapa como un Basic." else "En el riesgo también hay una diferencia entre tipos, aunque menor que en el tamaño."`
+> El tipo de tarjeta **va con** la posición en el mapa; no decimos que la cause.
+>
+> ✅ **Qué decide el cliente:** `r if (abs(d_ext["en_C2"]) < 0.3) "el tipo de tarjeta le sirve para saber **cuánto dinero hay en juego**, pero **no le sirve para escoger a quién mandar a seguimiento**: dentro de cada tipo hay clientes de riesgo y clientes sanos en proporciones parecidas. Para el seguimiento preventivo necesita el eje C2, no el tipo de tarjeta." else "el tipo de tarjeta ayuda en parte a anticipar el riesgo, pero como los grupos se traslapan en C2 no alcanza para escoger clientes uno a uno: necesita el eje C2."`
+
+# La decisión en el mapa
+
+Proponemos **dos cortes**, uno por componente. Los dos son decisiones de la Gerencia y
+no bordes que el mapa haya encontrado (en el punto 3 vimos que no hay huecos):
+
+- **Corte de riesgo (C2):** el 20 % de clientes más arriba en el mapa.
+- **Corte de tamaño (C1):** el 20 % de clientes más a la derecha.
+
+Elegimos el 20 % para ser coherentes con el Taller I, donde el riesgo se definió como el
+20 % con peor puntaje. Los dos cortes parten el mapa en **cuatro zonas**.
+
+```{r cortes-datos}
+corte_c1 <- quantile(mapa$C1, 0.80)
+corte_c2 <- quantile(mapa$C2, 0.80)
+
+mapa$zona <- factor(case_when(
+  mapa$C1 >= corte_c1 & mapa$C2 >= corte_c2 ~ "A",
+  mapa$C1 <  corte_c1 & mapa$C2 >= corte_c2 ~ "B",
+  mapa$C1 >= corte_c1 & mapa$C2 <  corte_c2 ~ "C",
+  TRUE ~ "D"), levels = c("A", "B", "C", "D"))
+nombre_zona <- c(A = "A · grande y de riesgo", B = "B · de riesgo, no grande",
+                 C = "C · grande, no de riesgo", D = "D · el resto")
+
+riesgo <- credit$Credit_Score <= quantile(credit$Credit_Score, 0.20)   # igual que el Taller I
+mapa$riesgo <- riesgo
+mapa$Credit_Score <- credit$Credit_Score
+mapa$Payment_Ratio <- credit$Payment_Ratio
+mapa$Credit_Utilization <- credit$Credit_Utilization
+mapa$Statement_Balance <- credit$Statement_Balance
+
+zonas <- mapa |>
+  group_by(zona) |>
+  summarise(clientes = n(),
+            de_cada_100_de_la_cartera = round(100 * n() / nrow(mapa), 1),
+            con_peor_puntaje = sum(riesgo),
+            puntaje_promedio = round(mean(Credit_Score)),
+            proporcion_pagada = round(mean(Payment_Ratio), 2),
+            uso_del_cupo = round(mean(Credit_Utilization), 2),
+            saldo_facturado_millones = round(sum(Statement_Balance) / 1e6))
+zonas$nombre <- unname(nombre_zona[as.character(zonas$zona)])
+as.data.frame(zonas[, c("zona", "nombre", setdiff(names(zonas), c("zona", "nombre")))])
+
+z <- function(letra, col) zonas[[col]][zonas$zona == letra]
+pr_AB <- c(z("A", "proporcion_pagada"), z("B", "proporcion_pagada"))
+pr_CD <- c(z("C", "proporcion_pagada"), z("D", "proporcion_pagada"))
+sup_ok <- if (r_c2_pr < 0) max(pr_AB) < min(pr_CD) else min(pr_AB) > max(pr_CD)
+llamados      <- z("A", "clientes") + z("B", "clientes")
+saldo_llamados <- z("A", "saldo_facturado_millones") + z("B", "saldo_facturado_millones")
+riesgo_llamados <- z("A", "con_peor_puntaje") + z("B", "con_peor_puntaje")
+```
+
+```{r cortes-grafico, fig.height = 6.5}
+xr <- quantile(mapa$C1, c(0.002, 0.998)); yr <- quantile(mapa$C2, c(0.002, 0.998))
+etq <- data.frame(zona = c("A", "B", "C", "D"),
+                  x = c(xr[2], xr[1], xr[2], xr[1]), y = c(yr[2], yr[2], yr[1], yr[1]),
+                  hj = c(1, 0, 1, 0), vj = c(1, 1, 0, 0))
+etq$label <- paste0(nombre_zona[etq$zona], "\n", miles(zonas$clientes[match(etq$zona, zonas$zona)]), " clientes")
+
+ggplot(mapa, aes(C1, C2, color = zona)) +
+  geom_point(alpha = 0.12, size = 0.35) +
+  geom_vline(xintercept = corte_c1, linetype = "dashed", linewidth = 0.8) +
+  geom_hline(yintercept = corte_c2, linetype = "dashed", linewidth = 0.8) +
+  geom_label(data = etq, aes(x, y, label = label, hjust = hj, vjust = vj),
+             inherit.aes = FALSE, size = 3.8, fill = "white", alpha = 0.9) +
+  scale_color_manual(values = c(A = "#C05621", B = "#D69E2E", C = "#2B6CB0", D = "grey70"), guide = "none") +
+  coord_cartesian(xlim = xr, ylim = yr) +
+  labs(title = "Los dos cortes y las cuatro zonas del mapa",
+       subtitle = "Cada corte deja al 20 % de la cartera en el extremo de su eje",
+       x = "←  más pequeño   ·   C1: el tamaño del cliente   ·   más grande  →",
+       y = "←  mejor puntaje   ·   C2: el riesgo   ·   peor puntaje  →")
+```
+
+```{r cortes-sensibilidad}
+# ¿Qué pasa si se mueve el corte de riesgo (C2)?
+sens_c2 <- do.call(rbind, lapply(c(0.70, 0.80, 0.90), function(q) {
+  k <- mapa$C2 >= quantile(mapa$C2, q)
+  data.frame(corte_C2 = paste0("percentil ", q * 100),
+             clientes_a_seguimiento = sum(k),
+             de_ellos_con_peor_puntaje = sum(k & riesgo),
+             de_cada_100_con_peor_puntaje_que_encuentra = round(100 * sum(k & riesgo) / sum(riesgo), 1),
+             de_cada_100_llamados_son_de_riesgo = round(100 * sum(k & riesgo) / sum(k), 1))
+}))
+sens_c2
+
+# ¿Qué pasa con la zona A si se mueven los dos cortes?
+pcts <- c(0.70, 0.80, 0.90)
+grid_A <- outer(pcts, pcts, Vectorize(function(q1, q2)
+  sum(mapa$C1 >= quantile(mapa$C1, q1) & mapa$C2 >= quantile(mapa$C2, q2))))
+data.frame(`clientes en la zona A` = paste0("C1 desde el percentil ", pcts * 100),
+           setNames(as.data.frame(grid_A), paste0("C2 desde el percentil ", pcts * 100)),
+           check.names = FALSE)
+```
+
+> 👀 **Qué vemos:** los dos cortes dejan **`r miles(z("A", "clientes"))` clientes en la zona A**
+> (grande y de riesgo), `r miles(z("B", "clientes"))` en la B (de riesgo, no grande),
+> `r miles(z("C", "clientes"))` en la C (grande, sin riesgo) y `r miles(z("D", "clientes"))` en la
+> D (el resto). De los `r miles(sum(riesgo))` clientes con peor puntaje, la zona A tiene
+> `r miles(z("A", "con_peor_puntaje"))` y la B `r miles(z("B", "con_peor_puntaje"))`. La proporción
+> pagada promedio es `r coma(z("A", "proporcion_pagada"), 2)` en A, `r coma(z("B", "proporcion_pagada"), 2)`
+> en B, `r coma(z("C", "proporcion_pagada"), 2)` en C y `r coma(z("D", "proporcion_pagada"), 2)` en D;
+> el uso del cupo es `r coma(z("A", "uso_del_cupo"), 2)`, `r coma(z("B", "uso_del_cupo"), 2)`,
+> `r coma(z("C", "uso_del_cupo"), 2)` y `r coma(z("D", "uso_del_cupo"), 2)`. El saldo facturado de A
+> es `r miles(z("A", "saldo_facturado_millones"))` millones de ₹, contra
+> `r miles(z("B", "saldo_facturado_millones"))` millones de la B.
+>
+> 💼 **Qué significa para el cliente, zona por zona:**
+>
+> - **A · grande y de riesgo** (`r miles(z("A", "clientes"))` clientes): es el grupo que el
+>   índice único del Taller I confundía con los mejores clientes. Son
+>   `r coma(100 * z("A", "clientes") / llamados, 0)` de cada 100 de los que se llamaría, pero
+>   concentran `r coma(100 * z("A", "saldo_facturado_millones") / saldo_llamados, 0)` de cada 100
+>   rupias facturadas de ese grupo. **Gestor senior, congelar aumentos de cupo y oferta de
+>   refinanciación.**
+> - **B · de riesgo, no grande** (`r miles(z("B", "clientes"))` clientes): también están
+>   entre el 20 % de mayor riesgo, pero cada cliente tiene menos dinero en juego. **Llamada estándar o mensaje
+>   automatizado con oferta de refinanciación**, sin gestor dedicado.
+> - **C · grande, no de riesgo** (`r miles(z("C", "clientes"))` clientes): mucho dinero y no
+>   están entre el 20 % de mayor riesgo. **No entran al seguimiento**; pueden considerarse
+>   para un aumento de cupo.
+> - **D · el resto** (`r miles(z("D", "clientes"))` clientes): **sin acción**.
+>
+> **Qué pasa si mueve el corte de riesgo:** con el corte en el percentil 70 se llama a
+> `r miles(sens_c2$clientes_a_seguimiento[1])` clientes y se encuentran
+> `r coma(sens_c2$de_cada_100_con_peor_puntaje_que_encuentra[1], 0)` de cada 100 con peor puntaje; con el
+> 90, se llama a `r miles(sens_c2$clientes_a_seguimiento[3])` y se encuentran
+> `r coma(sens_c2$de_cada_100_con_peor_puntaje_que_encuentra[3], 0)` de cada 100. De cada 100 llamados,
+> `r coma(sens_c2$de_cada_100_llamados_son_de_riesgo[1], 0)` son de riesgo con el corte en el 70 y
+> `r coma(sens_c2$de_cada_100_llamados_son_de_riesgo[3], 0)` con el corte en el 90:
+> `r if (sens_c2$de_cada_100_llamados_son_de_riesgo[3] > sens_c2$de_cada_100_llamados_son_de_riesgo[1]) "subir el corte hace la lista más corta y más precisa, pero deja más riesgo sin visitar." else "subir el corte acorta la lista pero no la hace más precisa, y deja más riesgo sin visitar."` Sobre la zona A
+> (segunda tabla), va de `r miles(grid_A[3, 3])` clientes con los dos cortes en el 90 a
+> `r miles(grid_A[1, 1])` con los dos en el 70.
+>
+> ✅ **Qué decide el cliente:** empezar con **A** (`r miles(z("A", "clientes"))` clientes),
+> donde cada llamada protege más dinero, y sumar **B** si la capacidad del equipo lo
+> permite. Con A y B se llama a `r miles(llamados)` clientes y se alcanzan
+> `r miles(riesgo_llamados)` de los `r miles(sum(riesgo))` de peor puntaje
+> (`r coma(100 * riesgo_llamados / sum(riesgo), 0)` de cada 100). El corte se mueve según
+> cuántas llamadas pueda hacer el equipo cada mes: no hay un valor «correcto» que el mapa
+> indique. **Un cuidado:** C2 se construyó en parte con el puntaje, y el puntaje es lo que
+> usamos para definir el riesgo; por eso la comprobación más honesta son la proporción
+> pagada y el uso del cupo, que **no entraron al mapa**. `r if (sup_ok) "En la tabla, las zonas de riesgo (A y B) se separan de C y D también en esas dos variables." else "En la tabla el orden entre zonas no es tan nítido en esas dos variables, así que conviene tomar el corte con cautela."`
+
+# Lo que le entregamos a la Gerencia
+
+- **El mapa guarda `r coma(reparto$acumulado[2])` de cada 100 partes de la información de la
+  ficha** y se lee con dos preguntas: qué tan a la derecha (tamaño) y qué tan arriba
+  (riesgo).
+- **Ingreso, cupo, saldo y monto pagado van juntas; el puntaje va solo.** La ficha puede
+  acortarse a una variable de tamaño más el puntaje.
+- **Los clientes forman `r if (continuo) "un continuo, no grupos" else "una nube con más de una masa"`.** `r if (continuo) "Los cortes son decisión de la Gerencia, no hallazgo del mapa." else "Conviene validar esa masa antes de usarla."`
+- **El tipo de tarjeta se desplaza en tamaño** (`r coma(abs(d_ext["en_C1"]), 2)` desviaciones entre
+  Basic y Signature) **pero `r if (abs(d_ext["en_C2"]) < 0.3) "casi no" else "solo en parte"` se desplaza en riesgo**
+  (`r coma(abs(d_ext["en_C2"]), 2)`): sirve para saber cuánto dinero hay en juego, no para
+  escoger a quién llamar.
+- **La decisión:** dos cortes del 20 %, cuatro zonas. A recibe gestor senior y refinanciación
+  (`r miles(z("A", "clientes"))` clientes), B una llamada estándar (`r miles(z("B", "clientes"))`), C
+  una oferta de aumento de cupo (`r miles(z("C", "clientes"))`) y D nada (`r miles(z("D", "clientes"))`).
