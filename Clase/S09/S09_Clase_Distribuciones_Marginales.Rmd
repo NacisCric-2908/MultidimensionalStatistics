@@ -1,0 +1,380 @@
+---
+title: "Estadística Multidimensional — Sesión 10"
+author: "26158 · grupo 020-81 · sábado 12 de septiembre de 2026"
+subtitle: Distribuciones marginales — y lo que se pierde al calcularlas
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+set.seed(2026)
+```
+
+# La pregunta de hoy
+
+El lunes definimos la **distribución conjunta**: la función que le asigna probabilidad a
+*combinaciones* de valores, $f(x_1,\dots,x_p)$.
+
+Hoy hacemos la operación inversa, que es la más usada y la peor entendida del curso:
+
+> **Tengo la conjunta de $p$ variables. Quiero la distribución de una sola. ¿Cómo la obtengo,
+> y qué estoy perdiendo cuando lo hago?**
+
+La respuesta a la primera mitad es una línea de álgebra. La respuesta a la segunda mitad es
+**la razón de ser de esta asignatura**, y ocupa la mitad de la clase.
+
+---
+
+# El caso discreto: el nombre es literal
+
+## De dónde viene la palabra «marginal»
+
+No es una metáfora. Viene de que el resultado **se escribía en el margen de la tabla**.
+
+Tomemos dos variables sobre los estudiantes de un programa:
+
+- $X$ = número de asignaturas perdidas en el semestre, con valores $0, 1, 2$
+- $Y$ = si trabaja, con valores $\text{no}=0$, $\text{sí}=1$
+
+```{r tabla}
+f <- matrix(c(0.30, 0.10,
+              0.15, 0.20,
+              0.05, 0.20),
+            nrow = 3, byrow = TRUE,
+            dimnames = list(X = c("0", "1", "2"), Y = c("no", "sí")))
+f
+sum(f)   # tiene que dar 1
+```
+
+Cada casilla es $f(x,y)=P(X=x,\ Y=y)$. Es la **conjunta**.
+
+## Marginalizar es sumar en la dirección de la variable que sobra
+
+$$f_X(x)=\sum_{y} f(x,y) \qquad\qquad f_Y(y)=\sum_{x} f(x,y)$$
+
+```{r margenes}
+fX <- rowSums(f)   # sumo sobre Y  -> me queda la distribución de X
+fY <- colSums(f)   # sumo sobre X  -> me queda la distribución de Y
+fX
+fY
+
+# y así se ve, literalmente, en el margen:
+addmargins(f)
+```
+
+Los números `0.40 0.35 0.25` que aparecen en el margen derecho **son** la distribución de $X$
+sola: el 40 % no pierde ninguna, el 35 % pierde una, el 25 % pierde dos. Suman 1, como debe ser.
+
+> **Ésa es toda la definición.** Marginalizar = sumar (o integrar) sobre las variables que no me
+> interesan. Se llama así porque el resultado quedaba escrito al margen.
+
+## Lo primero que hay que notar: las marginales no reconstruyen la tabla
+
+Si $X$ e $Y$ fueran independientes, se cumpliría $f(x,y)=f_X(x)\,f_Y(y)$ en **todas** las casillas.
+Comparemos:
+
+```{r independencia}
+producto <- outer(fX, fY)          # lo que habría si fueran independientes
+round(producto, 3)
+round(f - producto, 3)             # la diferencia: cuánto se aparta de la independencia
+```
+
+La casilla $(0,\text{no})$ vale $0{,}30$, pero bajo independencia valdría
+$0{,}40\times 0{,}50=0{,}20$. **No son independientes.**
+
+Y aquí está el punto que hay que llevarse:
+
+> Con `fX` y `fY` en la mano, **no hay forma de recuperar `f`**. La información de *cómo se
+> combinan* las dos variables se perdió en la suma. Las marginales son una proyección, y las
+> proyecciones no se invierten.
+
+---
+
+# El caso continuo: la suma se vuelve integral
+
+$$f_X(x)=\int_{-\infty}^{\infty} f(x,y)\,dy \qquad\qquad
+  f_Y(y)=\int_{-\infty}^{\infty} f(x,y)\,dx$$
+
+En $p$ dimensiones, la marginal de un subvector se obtiene integrando sobre **todas** las
+componentes que no forman parte de él.
+
+## La normal bivariada
+
+Para $(X,Y)$ normal bivariada estándar con correlación $\rho$:
+
+$$f(x,y)=\frac{1}{2\pi\sqrt{1-\rho^{2}}}
+  \exp\!\left(-\frac{x^{2}-2\rho xy+y^{2}}{2(1-\rho^{2})}\right)$$
+
+```{r densidad}
+dens <- function(x, y, rho) {
+  q <- (x^2 - 2*rho*x*y + y^2) / (1 - rho^2)
+  exp(-q/2) / (2*pi*sqrt(1 - rho^2))
+}
+
+rejilla <- seq(-3, 3, length.out = 60)
+z <- outer(rejilla, rejilla, dens, rho = 0.7)
+
+par(mfrow = c(1, 2), mar = c(2, 2, 3, 1))
+persp(rejilla, rejilla, z, theta = 30, phi = 25, col = "grey85", border = NA,
+      shade = 0.4, xlab = "x", ylab = "y", zlab = "f(x,y)",
+      main = expression(paste("Conjunta, ", rho, " = 0,7")))
+contour(rejilla, rejilla, z, nlevels = 8, xlab = "x", ylab = "y", asp = 1,
+        main = "Curvas de nivel")
+abline(h = 0, v = 0, col = "grey70", lty = 3)
+par(mfrow = c(1, 1))
+```
+
+La campana está **inclinada**: eso es $\rho=0{,}7$.
+
+## Y ahora el resultado que sorprende
+
+Integremos numéricamente para obtener $f_X$, con varios valores de $\rho$:
+
+```{r marginal-normal}
+marginal_X <- function(x, rho) {
+  integrate(function(y) dens(x, y, rho), -Inf, Inf)$value
+}
+
+pruebas <- expand.grid(x = c(-1.5, 0, 1), rho = c(0, 0.7, 0.9, -0.9))
+pruebas$marginal <- mapply(marginal_X, pruebas$x, pruebas$rho)
+pruebas$dnorm    <- dnorm(pruebas$x)
+pruebas$dif      <- pruebas$marginal - pruebas$dnorm
+round(pruebas, 8)
+```
+
+Léanlo despacio. La columna `marginal` es idéntica a `dnorm(x)` **para todos los valores de
+$\rho$**, incluido $\rho=-0{,}9$.
+
+$$\text{Si } (X,Y)\sim N_2\!\left(\begin{pmatrix}\mu_1\\ \mu_2\end{pmatrix},
+  \begin{pmatrix}\sigma_1^2 & \sigma_{12}\\ \sigma_{12} & \sigma_2^2\end{pmatrix}\right)
+  \quad\Longrightarrow\quad X\sim N(\mu_1,\ \sigma_1^{2})$$
+
+> **La marginal de una normal bivariada es normal, y no depende en absoluto de $\rho$.**
+>
+> Es decir: mirando solo el histograma de $X$, **es imposible saber si $X$ e $Y$ tienen
+> correlación 0 o $-0{,}9$**. La dependencia no está en las marginales. Nunca estuvo.
+
+---
+
+# La lámina que justifica el nombre de la asignatura
+
+Vamos a construir **tres distribuciones conjuntas completamente distintas** que tienen
+**exactamente las mismas marginales**: $N(0,1)$ las seis.
+
+```{r tres-conjuntas, fig.width = 9, fig.height = 6.6}
+n <- 4000
+
+# (A) independientes
+Xa <- rnorm(n);  Ya <- rnorm(n)
+
+# (B) fuertemente correlacionadas, rho = 0,9
+r  <- 0.9
+Xb <- rnorm(n);  Yb <- r*Xb + sqrt(1 - r^2)*rnorm(n)
+
+# (C) mezcla: la mitad con rho = +0,9 y la mitad con rho = -0,9
+s  <- sample(c(-1, 1), n, replace = TRUE)
+Xc <- rnorm(n);  Yc <- s*r*Xc + sqrt(1 - r^2)*rnorm(n)
+
+layout(matrix(1:6, nrow = 2, byrow = TRUE))
+par(mar = c(4, 4, 3, 1))
+lim <- c(-3.6, 3.6)
+
+plot(Xa, Ya, pch = 16, cex = .25, col = "#00000055", xlim = lim, ylim = lim,
+     asp = 1, main = "(A) independientes", xlab = "x", ylab = "y")
+plot(Xb, Yb, pch = 16, cex = .25, col = "#00000055", xlim = lim, ylim = lim,
+     asp = 1, main = "(B) rho = 0,9", xlab = "x", ylab = "y")
+plot(Xc, Yc, pch = 16, cex = .25, col = "#00000055", xlim = lim, ylim = lim,
+     asp = 1, main = "(C) mezcla de +0,9 y -0,9", xlab = "x", ylab = "y")
+
+for (v in list(Xa, Xb, Xc)) {
+  hist(v, breaks = 40, freq = FALSE, xlim = lim, ylim = c(0, .45),
+       col = "grey88", border = "white", main = "marginal de X", xlab = "x")
+  curve(dnorm(x), add = TRUE, lwd = 2)
+}
+layout(1)
+```
+
+Las tres nubes de arriba **no se parecen en nada**. Los tres histogramas de abajo son **la misma
+normal estándar**.
+
+```{r comparacion-marginales}
+resumen <- data.frame(
+  caso  = c("A independientes", "B rho=0,9", "C mezcla"),
+  media = c(mean(Xa), mean(Xb), mean(Xc)),
+  sd    = c(sd(Xa),   sd(Xb),   sd(Xc)),
+  cor   = c(cor(Xa, Ya), cor(Xb, Yb), cor(Xc, Yc))
+)
+
+# round() sobre un data.frame con columnas de texto da error: se redondea solo lo numerico
+resumen[, -1] <- round(resumen[, -1], 4)
+resumen
+```
+
+> **Conclusión, y es la de toda la asignatura:** las marginales **no determinan** la conjunta.
+> Analizar $p$ variables una por una y poner los resultados en fila **no es análisis
+> multivariante**: es $p$ análisis univariantes, y la estructura de dependencia —que es el objeto
+> de estudio— se queda por fuera de todos ellos.
+
+## El caso (C) merece dos minutos aparte
+
+Fíjense en la tercera columna del cuadro: la correlación del caso **(C)** es prácticamente
+**cero**, igual que la del caso (A). Y sin embargo la nube en forma de X muestra una dependencia
+brutal.
+
+```{r dependencia-sin-correlacion}
+c(correlacion_XY = cor(Xc, Yc),
+  correlacion_absolutos = cor(abs(Xc), abs(Yc)))
+
+# la dispersión de Y cambia muchísimo según dónde esté X:
+c(sd_Y_con_X_cerca_de_0 = sd(Yc[abs(Xc) < 0.2]),
+  sd_Y_con_X_cerca_de_2 = sd(Yc[Xc > 1.8 & Xc < 2.2]))
+```
+
+Con $X$ cerca de 0, $Y$ está apretada. Con $X$ cerca de 2, $Y$ está tres o cuatro veces más
+dispersa. **Eso es dependencia**, y $\rho$ no la ve: $\rho$ solo mide dependencia **lineal**.
+
+> Esto conecta con lo que quedó pendiente del Taller 2: *«correlación cercana a cero, ¿significa
+> independencia o solo ausencia de relación lineal?»*. Aquí está el contraejemplo, dibujado.
+
+---
+
+# Marginales en $p$ dimensiones
+
+Con $p$ variables, «marginal» no significa solo «una variable»: significa **cualquier
+subconjunto**. De $p=5$ se puede marginalizar a las variables 1 y 4, integrando sobre las otras
+tres.
+
+Para la normal multivariante el resultado es de una limpieza notable:
+
+$$\mathbf{X}\sim N_p(\boldsymbol\mu,\ \boldsymbol\Sigma)
+  \quad\Longrightarrow\quad
+  \mathbf{X}_{(k)}\sim N_k\!\left(\boldsymbol\mu_{(k)},\ \boldsymbol\Sigma_{(k)}\right)$$
+
+donde $\boldsymbol\mu_{(k)}$ es el subvector de medias y $\boldsymbol\Sigma_{(k)}$ es la
+**submatriz** de $\boldsymbol\Sigma$ que se obtiene tachando las filas y columnas que no interesan.
+
+```{r submatriz}
+mu <- c(peso = 70, altura = 170, edad = 30, ingreso = 2500)
+
+Sigma <- matrix(c( 100,   60,   30,   400,
+                    60,   80,   10,   250,
+                    30,   10,  120,   900,
+                   400,  250,  900, 40000),
+                nrow = 4, byrow = TRUE,
+                dimnames = list(names(mu), names(mu)))
+Sigma
+
+# marginal conjunta de (peso, ingreso): tacho altura y edad
+sel <- c("peso", "ingreso")
+mu[sel]
+Sigma[sel, sel]
+```
+
+> **No hay que integrar nada.** Se tachan filas y columnas y ya está. Ésa es la propiedad que hace
+> a la normal multivariante tan cómoda de trabajar, y es la razón de que la unidad 4 gire
+> alrededor de ella.
+>
+> **Ojo:** la implicación va en un solo sentido. Que las marginales sean normales **no garantiza**
+> que la conjunta lo sea — el caso (C) de la sección anterior tiene las dos marginales
+> perfectamente normales y una conjunta que no es normal bivariada ni de lejos.
+
+---
+
+# Sobre su propio dataset
+
+Y ahora la parte incómoda:
+
+> **Cada histograma que han hecho este semestre era una distribución marginal empírica.**
+
+Cuando en la revisión del 5 de septiembre calcularon la distribución de `MonthlyIncome`, o de la
+duración del tránsito, o del peso del perro, estaban estimando $f_{X_j}$ para una variable $j$,
+integrando —sin decirlo— sobre las otras 36 columnas.
+
+```{r marginal-empirica, fig.width = 9, fig.height = 4}
+datos <- data.frame(
+  horas    = round(rgamma(300, shape = 4, scale = 2.2), 1),
+  proyecto = round(rnorm(300, 3.4, 0.8), 2)
+)
+datos$proyecto <- pmin(pmax(datos$proyecto, 0), 5)
+
+par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+hist(datos$horas, breaks = 20, col = "grey88", border = "white",
+     main = "marginal de horas", xlab = "horas/semana")
+hist(datos$proyecto, breaks = 20, col = "grey88", border = "white",
+     main = "marginal de nota", xlab = "nota del proyecto")
+plot(datos$horas, datos$proyecto, pch = 16, cex = .5, col = "#00000066",
+     main = "la conjunta", xlab = "horas/semana", ylab = "nota")
+par(mfrow = c(1, 1))
+```
+
+Los dos primeros gráficos son marginales. **El tercero es el único que pertenece a esta
+asignatura.**
+
+> **Para el Avance 1.** El error más costoso de la revisión fue exactamente éste: veinte análisis
+> marginales presentados como análisis multivariante. Un informe de treinta páginas hecho solo de
+> histogramas es un informe de marginales. La matriz de dispersión, la de correlación y las
+> condicionales del lunes son lo que lo saca de ahí.
+
+---
+
+# Cierre: marginalizar puede invertir una conclusión
+
+Un último caso, para el lunes. Dos tratamientos contra cálculos renales, y la tasa de éxito
+según el tamaño del cálculo:
+
+```{r simpson}
+exitos <- matrix(c( 81, 234,
+                   192,  55), nrow = 2, byrow = TRUE,
+                 dimnames = list(caso = c("pequeños", "grandes"),
+                                 trat = c("A", "B")))
+total  <- matrix(c( 87, 270,
+                   263,  80), nrow = 2, byrow = TRUE,
+                 dimnames = dimnames(exitos))
+
+round(exitos / total, 3)                                  # dentro de cada tipo de caso
+round(colSums(exitos) / colSums(total), 3)                # marginal, sumando los dos tipos
+```
+
+- En cálculos **pequeños** gana **A**: 93,1 % contra 86,7 %.
+- En cálculos **grandes** gana **A**: 73,0 % contra 68,8 %.
+- **Marginalizando** sobre el tamaño gana **B**: 82,6 % contra 78,0 %.
+
+```{r simpson-explicacion}
+round(total["grandes", ] / colSums(total), 3)   # qué proporción de casos graves recibió cada uno
+```
+
+**A** trató el 75 % de los casos difíciles; **B**, el 23 %. Al sumar los dos tipos, esa diferencia
+de composición se cuela dentro de la tasa global y **da vuelta al resultado**.
+
+> **Marginalizar sobre una variable no es neutro: es una decisión.** Sumar sobre el tamaño del
+> cálculo equivale a afirmar que el tamaño no importa, y aquí sí importaba.
+>
+> **El lunes 14** vemos **distribuciones condicionales**, que son la herramienta que evita esto:
+> en lugar de sumar sobre la variable molesta, se fija su valor.
+
+---
+
+# Qué queda para el lunes
+
+| | |
+|---|---|
+| **Se define hoy** | $f_X(x)=\sum_y f(x,y)$ · $f_X(x)=\int f(x,y)\,dy$ |
+| **El resultado clave** | La marginal de una normal multivariante es normal, con el subvector de medias y la **submatriz** de $\boldsymbol\Sigma$ |
+| **La advertencia** | Las marginales **no** determinan la conjunta. Tres conjuntas distintas, las mismas seis marginales |
+| **El contraejemplo** | Correlación cero **no** es independencia: el caso (C) |
+| **Lunes 14** | Distribución **condicional** e independencia |
+| **Sábado 19** | Esperanza, varianza, correlación y ley de la varianza total |
+| **Sábado 26** | **Parcial 1** (U1–U3) · cierra el corte 1 |
+
+---
+
+*Estadística Multidimensional · 26158 · grupo 020-81 · periodo 2026-3 ·
+Jhon Alejandro Varón Robayo · Universidad Distrital Francisco José de Caldas.*

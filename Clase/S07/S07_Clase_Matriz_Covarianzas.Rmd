@@ -1,0 +1,281 @@
+---
+title: "Estadística Multidimensional — Sesión 8"
+subtitle: "Dispersión y dependencia: las matrices de covarianzas y de correlaciones"
+author: "26158 · grupo 020-81 · sábado 5 de septiembre de 2026"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+```
+
+# Cierra la unidad 2
+
+El lunes quedó una pregunta abierta. Vimos que dos puntos a **la misma distancia euclidiana** del
+centro pueden ser uno perfectamente normal y el otro rarísimo, y que para distinguirlos hacía falta
+$\mathbf{S}^{-1}$.
+
+Hoy definimos esa $\mathbf{S}$. Con eso la nube queda completamente descrita:
+**el centro** ($\bar{\mathbf{x}}$, del lunes) y **la forma** ($\mathbf{S}$, de hoy).
+
+> Continúa la sección 9.3 del archivo del semestre pasado
+> (`U2_Datos_multivariantes/03_Clase3_...Rmd`), donde `cov(iris_num)` aparecía con una línea de
+> interpretación: *«la diagonal contiene las varianzas»*. Hoy se abre esa línea, se demuestra por
+> qué es simétrica y semidefinida positiva, y se muestra el problema que obliga a pasar a
+> $\mathbf{R}$.
+
+---
+
+# De la varianza a la covarianza
+
+En una variable, la dispersión es la varianza:
+
+$$s_j^2 = \frac{1}{n-1}\sum_{i=1}^{n}(x_{ij}-\bar x_j)^2$$
+
+Con dos variables hace falta algo más: **si se mueven juntas o no**. Eso es la covarianza:
+
+$$s_{jk} = \frac{1}{n-1}\sum_{i=1}^{n}(x_{ij}-\bar x_j)(x_{ik}-\bar x_k)$$
+
+**Cómo leer ese producto**, que es donde está toda la intuición:
+
+- Si cuando $x_j$ está **arriba** de su media, $x_k$ también → los dos factores son positivos →
+  el producto suma. Covarianza **positiva**.
+- Si cuando uno sube el otro baja → un factor positivo y otro negativo → el producto resta.
+  Covarianza **negativa**.
+- Si no hay patrón, los productos positivos y negativos **se cancelan** → covarianza cerca de cero.
+
+```{r cov-a-mano}
+X <- as.matrix(iris[, 1:4])
+n <- nrow(X)
+
+a <- X[, "Sepal.Length"]; b <- X[, "Petal.Length"]
+c(a_mano  = sum((a - mean(a)) * (b - mean(b))) / (n - 1),
+  con_cov = cov(a, b))
+```
+
+> Nótese el $n-1$, no $n$. Es la corrección de Bessel: se estimó $\bar x$ **con los mismos datos**,
+> así que se gastó un grado de libertad. Dividir por $n$ subestima la dispersión.
+
+---
+
+# La matriz de covarianzas
+
+## Definición y forma matricial
+
+$$\mathbf{S} = \begin{pmatrix}
+s_1^2 & s_{12} & \cdots & s_{1p}\\
+s_{21} & s_2^2 & \cdots & s_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+s_{p1} & s_{p2} & \cdots & s_p^2
+\end{pmatrix}
+\qquad
+\mathbf{S} = \frac{1}{n-1}\,\mathbf{X}_c'\,\mathbf{X}_c$$
+
+donde $\mathbf{X}_c$ es la matriz **centrada**: a cada columna se le restó su media.
+
+```{r S-matricial}
+Xc <- scale(X, center = TRUE, scale = FALSE)   # centrar, NO escalar
+S_matricial <- t(Xc) %*% Xc / (n - 1)
+
+round(S_matricial, 4)
+all.equal(S_matricial, cov(X), check.attributes = FALSE)
+```
+
+**En la diagonal están las varianzas y fuera de ella las covarianzas.** No es una coincidencia
+de notación: $s_{jj}$ es la covarianza de una variable consigo misma, que por definición es su
+varianza.
+
+## Las tres propiedades
+
+```{r propiedades-S}
+S <- cov(X)
+c(diagonal_son_varianzas = all.equal(diag(S), apply(X, 2, var), check.attributes = FALSE) == TRUE,
+  es_simetrica           = isSymmetric(S),
+  semidefinida_positiva  = all(eigen(S)$values >= -1e-10))
+```
+
+1. **La diagonal son las varianzas.** $s_{jj}=s_j^2$.
+2. **Es simétrica**, porque $(x_{ij}-\bar x_j)(x_{ik}-\bar x_k)$ no depende del orden.
+3. **Es semidefinida positiva**: para cualquier vector $\mathbf{a}$, se cumple
+   $\mathbf{a}'\mathbf{S}\mathbf{a}\ge 0$.
+
+La tercera parece técnica y es la más importante. Significa esto:
+
+```{r sdp-significado}
+a <- c(1, -1, 2, 0)                 # una combinación lineal cualquiera
+combinacion <- as.vector(X %*% a)
+
+c(varianza_directa   = var(combinacion),
+  con_la_formula_aSa = as.numeric(t(a) %*% S %*% a))
+```
+
+> $\mathbf{a}'\mathbf{S}\mathbf{a}$ **es la varianza de la combinación lineal** $\mathbf{Xa}$.
+> Como ninguna varianza puede ser negativa, $\mathbf{S}$ tiene que ser semidefinida positiva.
+>
+> **Y ahí está el PCA completo, adelantado:** buscar la combinación lineal de máxima varianza es
+> maximizar $\mathbf{a}'\mathbf{S}\mathbf{a}$. La solución es el vector propio de $\mathbf{S}$
+> asociado al mayor valor propio. Eso es la unidad 6, y ya está contenido en la propiedad 3.
+
+---
+
+# El problema de la covarianza: depende de las unidades
+
+```{r unidades}
+X2 <- X
+X2[, "Sepal.Length"] <- X2[, "Sepal.Length"] * 10   # de cm a mm
+
+rbind(en_cm = c(cov(X[, 1],  X[, 3]),  cor(X[, 1],  X[, 3])),
+      en_mm = c(cov(X2[, 1], X2[, 3]), cor(X2[, 1], X2[, 3])))
+```
+
+**Los mismos datos. La covarianza se multiplicó por diez; la correlación no se movió.**
+
+Ese es el defecto fatal: la covarianza **no se puede comparar entre pares de variables** medidas en
+unidades distintas. ¿Es grande una covarianza de 1,27? Imposible saberlo sin conocer las escalas.
+
+## La corrección: estandarizar
+
+$$r_{jk}=\frac{s_{jk}}{s_j s_k}
+\qquad\Longrightarrow\qquad
+\mathbf{R}=\mathbf{D}^{-1/2}\,\mathbf{S}\,\mathbf{D}^{-1/2}$$
+
+donde $\mathbf{D}=\operatorname{diag}(s_1^2,\dots,s_p^2)$ — la diagonal de $\mathbf{S}$.
+
+```{r R-desde-S}
+D_menos_media <- diag(1 / sqrt(diag(S)))
+R_desde_S <- D_menos_media %*% S %*% D_menos_media
+dimnames(R_desde_S) <- dimnames(S)
+
+round(R_desde_S, 4)
+all.equal(R_desde_S, cor(X), check.attributes = FALSE)
+```
+
+> **Esa es la relación exacta que faltaba** entre lo del sábado pasado y lo de hoy.
+> $\mathbf{R}$ **es** $\mathbf{S}$ estandarizada, y $r_{jk}\in[-1,1]$ siempre, sin importar unidades.
+>
+> Dicho de otro modo: **la matriz de correlación es la matriz de covarianzas de los datos
+> tipificados.** Se puede verificar directamente:
+
+```{r R-es-S-de-z}
+Z <- scale(X)                    # ahora sí: centrar Y escalar
+all.equal(cov(Z), cor(X), check.attributes = FALSE)
+```
+
+## Entonces, ¿cuál se usa?
+
+| | Usar $\mathbf{S}$ | Usar $\mathbf{R}$ |
+|---|---|---|
+| **Cuándo** | Todas las variables en la misma unidad y las diferencias de escala **son información** | Unidades distintas, o una variable domina por su magnitud |
+| **Ejemplo** | Cuatro medidas en cm de la misma flor | Ingreso en pesos junto a edad en años |
+| **En PCA** | Componentes sobre covarianzas | **PCA normado** — el que casi siempre se usa |
+
+**La regla práctica:** ante la duda, $\mathbf{R}$. Si usa $\mathbf{S}$ con unidades mezcladas, la
+variable de números más grandes se lleva el resultado sin haberlo merecido.
+
+---
+
+# Dos resúmenes de la dispersión total
+
+Con $p$ variables hay $p$ varianzas. A veces hace falta **un solo número**.
+
+```{r varianza-total}
+c(varianza_total       = sum(diag(S)),      # traza
+  varianza_generalizada = det(S))           # determinante
+```
+
+- **Varianza total** = $\operatorname{tr}(\mathbf{S})=\sum_j s_j^2$. Suma las varianzas e
+  **ignora las covarianzas**. Es la que reparte el PCA: la suma de los valores propios es la traza.
+- **Varianza generalizada** = $\det(\mathbf{S})$. Sí tiene en cuenta la dependencia, y por eso
+  detecta algo que la traza no ve:
+
+```{r determinante-cero}
+Y <- cbind(X[, 1:3], redundante = X[, 1] * 2 + 3)   # columna que es combinación lineal
+S_Y <- cov(Y)
+
+c(varianza_total = sum(diag(S_Y)), determinante = det(S_Y))
+```
+
+> **El determinante es prácticamente cero, la traza no se enteró.** Cuando una variable es
+> combinación lineal de otras, la nube es *plana* — vive en menos dimensiones de las que dice tener.
+> Un determinante cercano a cero es la señal de **multicolinealidad**, y es lo que hace que
+> $\mathbf{S}^{-1}$ no exista o sea inestable.
+>
+> Eso importa **ahora mismo**: Mahalanobis necesita $\mathbf{S}^{-1}$.
+
+---
+
+# Cerrando la pregunta del lunes
+
+```{r mahalanobis, fig.width=6.5, fig.height=5.5}
+Y2  <- X[, c(1, 3)]
+cen <- colMeans(Y2); S2 <- cov(Y2)
+
+plot(Y2, pch = 19, cex = 0.6, col = rgb(0, 0, 0, 0.3),
+     xlab = "Sepal.Length", ylab = "Petal.Length",
+     main = "Misma distancia euclidiana, distinta distancia de Mahalanobis")
+points(cen[1], cen[2], pch = 4, cex = 2, lwd = 3, col = "#B0442F")
+
+A <- cen + c(1.0,  2.2)
+B <- cen + c(1.0, -2.2)
+points(rbind(A, B), pch = 19, cex = 1.5, col = c("#1E7F63", "#B0442F"))
+text(rbind(A, B), c("A", "B"), pos = 4, font = 2)
+
+round(rbind(
+  euclidiana  = c(A = sqrt(sum((A - cen)^2)),          B = sqrt(sum((B - cen)^2))),
+  mahalanobis = c(A = sqrt(mahalanobis(t(A), cen, S2)), B = sqrt(mahalanobis(t(B), cen, S2)))
+), 3)
+```
+
+$$d_M(\mathbf{x})=\sqrt{(\mathbf{x}-\bar{\mathbf{x}})'\,\mathbf{S}^{-1}(\mathbf{x}-\bar{\mathbf{x}})}$$
+
+**Qué hace $\mathbf{S}^{-1}$:** deshace la forma de la nube. Estira las direcciones de poca varianza
+y encoge las de mucha, de modo que la distancia se mide *en unidades de dispersión de la propia
+nube*, no en unidades del eje.
+
+```{r elipses, fig.width=6.5, fig.height=5.5}
+d2 <- mahalanobis(Y2, cen, S2)
+col <- ifelse(d2 > qchisq(0.975, df = 2), "#B0442F", rgb(0, 0, 0, 0.3))
+
+plot(Y2, pch = 19, cex = 0.7, col = col,
+     xlab = "Sepal.Length", ylab = "Petal.Length",
+     main = "Atípicos multivariantes: d² > cuantil 0,975 de una ji-cuadrado")
+points(cen[1], cen[2], pch = 4, cex = 2, lwd = 3, col = "#1E7F63")
+```
+
+> **Por qué ji-cuadrado:** si los datos vinieran de una normal multivariante, $d_M^2$ se distribuye
+> $\chi^2_p$. Eso convierte «está lejos» en **una prueba con un umbral**, en vez de una impresión.
+> El supuesto de normalidad multivariante es la **unidad 4**, y ahí se justifica formalmente.
+>
+> Los puntos rojos son atípicos **multivariantes**: varios de ellos no son extremos en ninguna
+> variable por separado. Sólo se ven mirando las dos juntas.
+
+---
+
+# Las cuatro ideas
+
+1. $\mathbf{S}=\frac{1}{n-1}\mathbf{X}_c'\mathbf{X}_c$ — diagonal de varianzas, simétrica y
+   **semidefinida positiva**, porque $\mathbf{a}'\mathbf{S}\mathbf{a}$ es la varianza de
+   $\mathbf{Xa}$.
+2. **La covarianza depende de las unidades y la correlación no.**
+   $\mathbf{R}=\mathbf{D}^{-1/2}\mathbf{S}\mathbf{D}^{-1/2}$, y equivale a la covarianza de los
+   datos tipificados.
+3. **Traza** = varianza total, ignora la dependencia. **Determinante** = varianza generalizada, y
+   si es casi cero hay multicolinealidad.
+4. **Mahalanobis** usa $\mathbf{S}^{-1}$ para medir en unidades de la nube, y con el umbral
+   $\chi^2$ detecta atípicos que ninguna variable por separado revela.
+
+# Lo que viene
+
+- **Lunes 7:** unidad 3 — variable aleatoria multivariante y distribución conjunta. Se pasa de
+  describir datos a **modelarlos**.
+- **Unidad 4:** la normal multivariante, que es donde el umbral $\chi^2$ de hoy queda justificado.
+- **Unidad 6:** los valores propios de $\mathbf{S}$ (o de $\mathbf{R}$) — componentes principales.
+  Ya quedó planteado en la propiedad 3.
+
+> **Nota.** No se pudo tejer al escribirlo (no hay R en esa máquina). Téjalo antes de proyectarlo.
+> Todo corre con R base, sin paquetes adicionales.

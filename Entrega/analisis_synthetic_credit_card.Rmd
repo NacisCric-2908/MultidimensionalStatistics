@@ -1,6 +1,6 @@
 ---
 title: "Estadística Multidimensional — Análisis Exploratorio Integral"
-subtitle: "Dataset Sintético: Comportamiento Crediticio y Riesgo Financiero (Semanas 1 a 6)"
+subtitle: "Dataset Sintético: Comportamiento Crediticio y Riesgo Financiero (S01 a S10, Mahalanobis y Componentes Principales)"
 author:
   - "Oscar Manuel Contreras Gacha (20221020052)"
   - "Juan Pablo Sarmiento Ramírez (20221020138)"
@@ -63,40 +63,59 @@ de datos `bronze/synthetic_credit_card_customer_behavior_dataset.csv`:
 que describen su perfil demográfico, su capacidad financiera, su
 comportamiento de gasto y su historial de pago. Integra de manera
 secuencial los métodos, herramientas conceptuales y requerimientos
-desarrollados a lo largo de las **Semanas 1 a 6** de la asignatura,
-organizados en once módulos que se apoyan unos en otros — cada módulo
-cierra con sus propias conclusiones, y retoma explícitamente lo que dejó
-listo el módulo anterior:
+desarrollados en las sesiones S01 a S10 de la asignatura, en la sesión
+de normal multivariante y distancia de Mahalanobis, y en las dos
+sesiones de componentes principales, organizados en diecisiete módulos
+que se apoyan unos en otros — cada módulo cierra con sus propias
+conclusiones, y retoma explícitamente lo que dejó listo el módulo
+anterior:
 
-- **Módulo 1 (S02):** importación reproducible y clasificación de las
-  $p$ variables según su verdadera escala de medición, no solo su tipo
-  de almacenamiento en R.
+- **Módulo 1 (S01 & S02):** importación reproducible y clasificación de
+  las $p$ variables según su verdadera escala de medición, no solo su
+  tipo de almacenamiento en R.
 - **Módulo 2 (S02):** auditoría de calidad de la matriz — faltantes,
   duplicados, rangos y frecuencias.
 - **Módulo 3 (S01 & S03):** análisis univariado y la decisión del número
   de clases de un histograma.
-- **Módulo 4 (S03):** cajas y bigotes, cinco números de Tukey y
+- **Módulo 4 (S04):** densidad de kernel como alternativa al histograma,
+  y el efecto del ancho de banda $h$.
+- **Módulo 5 (S03):** cajas y bigotes, cinco números de Tukey y
   detección univariada de atípicos.
-- **Módulo 5 (S03):** por qué hay que estandarizar para comparar
+- **Módulo 6 (S03):** por qué hay que estandarizar para comparar
   variables en escalas distintas.
-- **Módulo 6 (S01, S03 & S04):** análisis bivariado — con una selección
-  **justificada** de qué pares de variables merecen ese análisis — y el
-  "punto imposible".
-- **Módulo 7 (S01, S03 & S05):** la estructura conjunta de las $p$
-  variables: matriz de correlación, mapa de calor, coordenadas paralelas
-  y matriz de dispersión.
-- **Módulo 8 (S04):** densidad de kernel como alternativa al histograma.
-- **Módulo 9 (S06):** vector de medias, centroide y distancia de
-  Mahalanobis — el centro de la nube y la distancia correcta para medir
-  qué tan lejos está cada cliente de él.
-- **Módulo 10:** pruebas de hipótesis formales — normalidad univariada y
+- **Módulo 7 (S03 & S04):** análisis bivariado — con una selección
+  **justificada** de qué pares de variables merecen ese análisis —,
+  covarianza y correlación, y el "punto imposible".
+- **Módulo 8 (S05):** la estructura conjunta de las $p$ variables:
+  matriz de correlación, mapa de calor, coordenadas paralelas y matriz
+  de dispersión.
+- **Módulo 9 (S06):** vector de medias y centroide, y por qué la
+  distancia euclidiana no basta para medir qué tan lejos está un cliente
+  del centro.
+- **Módulo 10 (S07):** la matriz de covarianzas $\mathbf{S}$, su
+  relación exacta con $\mathbf{R}$, la varianza total y la generalizada,
+  y la verificación de que $\mathbf{S}$ se puede invertir.
+- **Módulo 11 (S08 & S09):** variable aleatoria multivariante —
+  distribución conjunta y marginales, y lo que se pierde al
+  marginalizar.
+- **Módulo 12 (S10):** distribución condicional e independencia, la
+  paradoja de Simpson en la cartera y la ley de la varianza total.
+- **Módulo 13 (Normal multivariante):** distancia de Mahalanobis,
+  gráfico Q-Q contra la $\chi^2$ y qué hacer con cada caso raro.
+- **Módulo 14:** pruebas de hipótesis formales — normalidad univariada y
   multivariante, y significancia de las correlaciones ya usadas en los
-  Módulos 6 y 7.
-- **Módulo 11:** preparación de los datos para las siguientes etapas del
-  proyecto (PCA y *clustering*) — qué transformación aplicar a cada
-  variable y con cuáles nos
+  Módulos 7 y 8.
+- **Módulo 15:** preparación de los datos para PCA y *clustering* — qué
+  transformación aplicar a cada variable, con cuáles nos quedamos,
+  codificación *one-hot* de las categóricas y exportación de las tablas
+  limpias.
+- **Módulo 16 (PCA I):** cuánta información guarda cada componente, qué
+  mide y qué se pierde al resumir la cartera en un solo número.
+- **Módulo 17 (PCA II):** el mapa de los clientes, el biplot, si los
+  grupos conocidos se separan y el efecto de meter el tipo de tarjeta
+  con *one-hot*.
 
-##Contexto Economico del Análisis sobre el Dataset
+## Contexto Económico del Análisis sobre el Dataset
 
 El presente análisis se desarrolla en el contexto económico de la India,
 utilizando la rupia india (INR/₹) como unidad monetaria. Los datos
@@ -301,7 +320,7 @@ que_es <- c(
   Credit_Score = "el puntaje crediticio asignado al cliente"
 )
 
-# Por qué la distribución tiene esa forma (se usa en los Módulos 3, 4 y 8)
+# Por qué la distribución tiene esa forma (se usa en los Módulos 3, 4 y 5)
 por_que <- c(
   Age = "La forma es casi simétrica con una leve inclinación hacia la derecha: la cartera se concentra entre los 27 y los 44 años y se adelgaza hacia los 70, porque hay pocos titulares mayores y ninguno menor de 18.",
   Annual_Income = "La cola larga hacia la derecha es lo esperable en cualquier variable de ingreso: la mayoría gana alrededor de la mediana y unos pocos ganan varias veces más, lo que empuja la media muy por encima de la mediana.",
@@ -338,7 +357,7 @@ diccionario
 **Cómo se usa:** la columna `Descripcion` es la que responde "¿qué es
 esta variable?" cada vez que en los módulos siguientes aparezca una cola
 larga, un grupo de atípicos o una correlación alta — antes de calificar
-algo de "raro" hay que poder decir qué mide. Los Módulos 3, 4 y 8
+algo de "raro" hay que poder decir qué mide. Los Módulos 3, 4 y 5
 remiten a este diccionario en su primera línea de cada variable, pero
 cada histograma, boxplot y curva de densidad tiene su propio código y su
 propia interpretación, escrita para esa variable en particular y no
@@ -510,7 +529,7 @@ text(bp, pct_gender, labels = paste0(pct_gender, "%"), pos = 3)
 **Lectura:** `r pct_gender["M"]`% de la cartera es `M` frente a
 `r pct_gender["F"]`% `F` — una diferencia de solo
 `r round(pct_gender["M"]-pct_gender["F"],1)` puntos porcentuales,
-consistente con lo ya visto en el Módulo 6: `Gender` explica menos del
+consistente con lo ya visto en el Módulo 7: `Gender` explica menos del
 0,01 % de la varianza de cualquier variable de negocio, y esta
 distribución casi pareja es parte de la razón.
 
@@ -543,7 +562,7 @@ más frecuente (`Government Employee`,
 `r pct_ocup["Government Employee"]`%). `Student` y `Retired` son las
 categorías más pequeñas (`r pct_ocup["Student"]`% y
 `r pct_ocup["Retired"]`%) — justamente los dos extremos de ingreso que
-el Módulo 6 identificó en el boxplot por ocupación (`Student` con la
+el Módulo 7 identificó en el boxplot por ocupación (`Student` con la
 media más baja, `Business Owner` con la más alta, y este último tampoco
 es mayoritario: `r pct_ocup["Business Owner"]`%).
 
@@ -570,7 +589,7 @@ y empieza por una sola variable a la vez — el nivel más simple de la
 taxonomía de S01 (univariado, antes de bivariado y multivariado).
 Elegimos `Credit_Score` como la variable de referencia de todo este
 módulo, en vez de cualquier otra, porque es la variable de riesgo: el
-resto del informe (Módulos 6, 7 y 9) termina relacionando todo con ella,
+resto del informe (Módulos 7, 8 y 9) termina relacionando todo con ella,
 así que conviene entender primero su forma a solas.
 
 ## Estadísticos descriptivos univariados
@@ -743,7 +762,7 @@ par(mfrow = c(1, 1))
 
 **Lectura:** `Credit_Limit` es el cupo aprobado, y hereda la cola
 derecha de `Annual_Income` (de la que depende casi linealmente,
-$r = 0{,}974$, Módulo 6). Es, además, la variable con mayor asimetría de
+$r = 0{,}974$, Módulo 7). Es, además, la variable con mayor asimetría de
 todo el dataset (3,01). Con `breaks = 17` el histograma ya se ve
 escalonado en vez de continuo, porque el cupo solo toma valores
 redondeados a miles — un patrón que ningún ajuste de `breaks` puede
@@ -783,8 +802,8 @@ gasto de abajo, así que acumula la cola derecha de las siete a la vez
 (asimetría 3,00, más alta que la de cualquier categoría individual). Con
 `breaks = 5` esa acumulación es invisible; con `breaks = 17` se ve una
 masa concentrada entre 26.646(₹) y 83.032(₹) (el rango intercuartílico)
-y una cola larga hasta 691.688(₹); es la variable ya usada como caso de
-estudio del Módulo 4, y este histograma es la contraparte visual de esos
+y una cola larga hasta 691.688(₹); es la variable que el Módulo 5 usa como caso de
+estudio de atípicos, y este histograma es la contraparte visual de esos
 mismos números. A modo de observación la gráfica nos sugiere que la
 mayoria de los clientes tienen un gasto mensual moderado a bajo y una
 parte tiene gastos mensuales muy elevados.
@@ -903,7 +922,7 @@ par(mfrow = c(1, 1))
 ```
 
 **Lectura:** `Travel_Spending` tiene la asimetría más alta de las siete
-categorías de gasto (5,71) y ya había aparecido en el Módulo 5 como la
+categorías de gasto (5,71) y es, como muestra el Módulo 6, la
 variable con el $Z$-máximo más extremo de todo el dataset (19,4
 $\sigma$). Con `breaks = 17` casi toda la masa se aplasta contra el
 origen (mediana 2.883(₹)) y la cola visible hacia 213.100(₹) es
@@ -958,7 +977,7 @@ par(mfrow = c(1, 1))
 con `breaks = 17` la mediana (145.300(₹)) queda muy por debajo de la
 media (303.400(₹)), y el máximo (5.790.000(₹)) es casi 19 veces la
 media. Es, junto con `Statement_Balance`, la variable con la que
-comparte casi toda su información ($r = 0{,}997$, Módulo 7) — el
+comparte casi toda su información ($r = 0{,}997$, Módulo 8) — el
 histograma de una es, en la práctica, el histograma de la otra
 reescalado.
 
@@ -1097,7 +1116,7 @@ gráfica es, en los tres paneles, esencialmente la de `Monthly_Spending`
 reescalada: mismo pico bajo (mediana 1.833) y misma cola derecha
 (asimetría 3,50). Con `breaks = 17` se distingue bien esa forma común;
 el parecido visual entre esta variable y `Monthly_Spending` es, de
-hecho, la contraparte gráfica de su correlación de 0,980 (Módulo 7).
+hecho, la contraparte gráfica de su correlación de 0,980 (Módulo 8).
 
 ### `Reward_Points_Redeemed`
 
@@ -1189,8 +1208,8 @@ $$h_{\text{Silverman}} \;=\; 0{,}9 \; \min\!\left(s,\; \frac{\text{RIC}}{1{,}34}
 
 donde $s$ es la desviación estándar muestral y RIC el rango
 intercuartílico. El $\min$ está ahí para que un atípico no infle $s$ y
-ensanche la curva de más — la misma preocupación que llevó a preferir
-`fivenum()` sobre la media en el Módulo 4. R implementa esta fórmula en
+ensanche la curva de más — la misma preocupación que en el Módulo 5 lleva a preferir
+`fivenum()` sobre la media. R implementa esta fórmula en
 `bw.nrd0(x)`, y es la que usamos en todo este módulo en vez de adivinar
 un valor.
 
@@ -1215,6 +1234,124 @@ lo que el histograma del Módulo 3 ya insinuaba con `breaks = 17`: una
 forma unimodal con una cola ligeramente más larga hacia la izquierda —
 pero ahora sin la arbitrariedad del origen de las cajas, porque una
 curva de densidad no tiene "primera caja".
+
+### La fórmula detrás de `density()`
+
+La curva anterior no es un dibujo: es un estimador con fórmula. Con
+$n$ observaciones $x_1, \dots, x_n$, un kernel $K$ y un ancho de banda
+$h$,
+
+$$\hat f_h(x) \;=\; \frac{1}{n\,h}\sum_{i=1}^{n} K\!\left(\frac{x - x_i}{h}\right),
+\qquad K(u) = \frac{1}{\sqrt{2\pi}}\,e^{-u^{2}/2}$$
+
+Cada sumando es una "montañita" gaussiana centrada en un cliente; el
+factor $\frac{1}{nh}$ hace que el área total sea 1 (el cambio de
+variable $u = (x - x_i)/h$ trae un factor $h$ que se cancela). Lo
+comprobamos calculando la fórmula a mano en cinco puntos y comparándola
+con lo que devuelve `density()`:
+
+```{r, kernel_a_mano}
+x_cs <- credit$Credit_Score
+h_cs <- bw.nrd0(x_cs)
+f_manual <- function(x0) sum(dnorm((x0 - x_cs) / h_cs)) / (length(x_cs) * h_cs)
+
+puntos <- c(500, 580, 630, 680, 750)
+d_cs <- density(x_cs, bw = h_cs)
+data.frame(
+  x = puntos,
+  formula_a_mano = round(sapply(puntos, f_manual), 6),
+  density_de_R   = round(approx(d_cs$x, d_cs$y, xout = puntos)$y, 6)
+)
+
+# Y el área bajo la curva es 1
+round(sum(d_cs$y) * diff(d_cs$x[1:2]), 4)
+```
+
+**Lectura:** las dos columnas coinciden hasta el quinto decimal (la
+pequeña diferencia viene de que `density()` evalúa la suma sobre una
+rejilla de 512 puntos y aproxima) y el área bajo la curva es 1, salvo el
+error de esa rejilla: $\hat f_h$ es una densidad legítima, no un suavizado
+decorativo.
+
+### $h$ decide lo que se ve: $h/3$, $h$ y $3h$
+
+El $h$ de Silverman es una regla, no una verdad: está deducida
+suponiendo normalidad. Por eso, como pide la sesión, se mira el mismo
+dato con $h/3$ y con $3h$ antes de decidir. Lo hacemos sobre
+`Monthly_Transactions`, la variable donde la decisión más cambia la
+lectura, y contamos los picos de cada curva (ignorando bultos menores al
+10 % del pico más alto):
+
+```{r, kernel_tres_h, fig.width=11, fig.height=4}
+contar_picos <- function(x, h) {
+  d <- density(x, bw = h)
+  i <- which(diff(sign(diff(d$y))) == -2) + 1
+  i <- i[d$y[i] > 0.1 * max(d$y)]
+  round(d$x[i])
+}
+
+x_mt <- credit$Monthly_Transactions
+h_mt <- bw.nrd0(x_mt)
+
+par(mfrow = c(1, 3))
+for (k in c(1/3, 1, 3)) {
+  plot(density(x_mt, bw = k * h_mt), lwd = 2, col = "steelblue",
+       main = paste0(c("h/3", "h (Silverman)", "3h")[match(k, c(1/3, 1, 3))],
+                     " = ", round(k * h_mt, 2)),
+       xlab = "Monthly_Transactions")
+  rug(sample(x_mt, 2000), col = rgb(0, 0, 0, 0.2))
+}
+par(mfrow = c(1, 1))
+
+picos_mt <- lapply(c(h3 = 1/3, h = 1, h_por_3 = 3), function(k) contar_picos(x_mt, k * h_mt))
+sapply(picos_mt, length)
+picos_mt$h
+
+# ¿Esos picos tienen nombre? Mediana de transacciones por tipo de tarjeta
+sort(tapply(x_mt, credit$Card_Type, median))
+```
+
+**Lectura:** con $3h$ la curva tiene `r length(picos_mt$h_por_3)` solo
+pico y la variable parece una campana ancha — la estructura se pierde
+por exceso de sesgo. Con $h/3$ aparecen `r length(picos_mt$h3)` picos,
+uno cada pocas transacciones: eso es varianza muestral, ruido. Con el
+$h$ de Silverman ($h = `r round(h_mt, 2)`$) aparecen
+`r length(picos_mt$h)` picos, y los primeros
+(`r paste(head(picos_mt$h, 3), collapse = ", ")` transacciones)
+**coinciden con las medianas de `Basic`, `Silver` y `Gold`**. Ahí está el
+criterio que pide la sesión para decidir si un pico es estructura o
+ruido: se sostiene al mover un poco $h$ y tiene sentido en el tema de
+los datos. Los picos de $h$ son la huella de los tipos de tarjeta
+mezclados en una sola variable; los de $h/3$ no tienen ninguna
+explicación. **Decisión:** se reporta la densidad con el $h$ de
+Silverman, declarado, y se deja anotado que `Monthly_Transactions` es en
+realidad una mezcla de poblaciones — algo que vuelve a aparecer en la
+paradoja de Simpson del Módulo 12.
+
+```{r, kernel_tres_h_edad, fig.width=11, fig.height=4}
+x_age <- credit$Age
+h_age <- bw.nrd0(x_age)
+par(mfrow = c(1, 3))
+for (k in c(1/3, 1, 3)) {
+  plot(density(x_age, bw = k * h_age), lwd = 2, col = "darkorange",
+       main = paste0(c("h/3", "h (Silverman)", "3h")[match(k, c(1/3, 1, 3))],
+                     " = ", round(k * h_age, 2)),
+       xlab = "Age")
+}
+par(mfrow = c(1, 1))
+c(picos_h3 = length(contar_picos(x_age, h_age / 3)),
+  edades_distintas = length(unique(x_age)))
+```
+
+**Lectura:** `Age` muestra la otra cara del problema. Con $h/3$
+(`r round(h_age/3, 2)` años) la curva tiene
+`r length(contar_picos(x_age, h_age / 3))` picos, prácticamente uno por
+cada edad entera: no es una estructura de la cartera, es que la edad se
+registra en años completos y un $h$ menor que 1 "ve" esa rejilla. El
+ruido de un $h$ muy pequeño no siempre es aleatorio; a veces es la
+discretización de la variable. **Regla aplicada en todo el módulo:**
+cada densidad declara su $h$, y $h$ nunca se baja por debajo de la
+resolución con la que se mide la variable.
 
 ### Aplicado a cada variable
 
@@ -1346,7 +1483,7 @@ rug(credit$Grocery_Spending)
 
 **Lectura:** la moda (3.600(₹)) es la más alta de las siete categorías
 de gasto, consistente con ser también la de mediana más alta (10.650(₹),
-Módulo 4): el mercado es el único gasto que casi toda la cartera hace de
+Módulo 5): el mercado es el único gasto que casi toda la cartera hace de
 forma sustancial, y la curva lo refleja con un pico desplazado del
 origen.
 
@@ -1575,7 +1712,7 @@ pesada de las variables de dinero.
 
 Ya se presentó como variable de referencia al comienzo de este módulo
 ($h = 7{,}076$, moda cerca de 663,2). Se repite aquí solo para mantener
-el mismo orden de las 26 variables que en los Módulos 3 y 4; no hay nada
+el mismo orden de las 26 variables que en los Módulos 3 y 5; no hay nada
 nuevo que añadir a lo ya discutido ahí.
 
 **Lectura de conjunto:** vistas las 26, el ancho de banda $h$ varía en
@@ -1804,7 +1941,7 @@ Ya se presentó como caso de estudio al comienzo de este módulo: 4.213
 atípicos (8,43 %), todos en la cola derecha, con el límite inferior
 negativo ($-57.933(₹)$) que ya se discutió arriba. Se incluye aquí solo
 para que la lista de las 26 variables quede completa y en el mismo orden
-que en los Módulos 3 y 8.
+que en los Módulos 3 y 4.
 
 ### `Monthly_Transactions`
 
@@ -1953,7 +2090,7 @@ abline(v = c(li, ls), col = "red", lty = 2, lwd = 2)
 
 **Lectura:** 8,63 % de atípicos, el porcentaje más alto de las siete
 categorías de gasto, coherente con ser también la de mayor asimetría
-(5,71) y mayor $Z$-máximo (19,4 $\sigma$, Módulo 5). El bigote superior
+(5,71) y mayor $Z$-máximo (19,4 $\sigma$, Módulo 6). El bigote superior
 (15.540(₹)) es más de 14 veces la mediana (2.883(₹)): la mayoría casi no
 viaja, y quienes sí lo hacen gastan órdenes de magnitud más.
 
@@ -2343,7 +2480,7 @@ cuenta la asimetría.
 
 # Módulo 6: Comparación Multivariada Estandarizada mediante Boxplots (S03)
 
-Los Módulos 3 y 4 miraron una variable a la vez. El siguiente paso
+Los Módulos 3 a 5 miraron una variable a la vez. El siguiente paso
 natural en la taxonomía de S01 es comparar **varias variables en un solo
 gráfico** — pero un boxplot compara posiciones en el eje vertical, y eso
 solo tiene sentido si todas las variables están en la misma unidad. Aquí
@@ -2448,7 +2585,7 @@ el otro extremo, variables como `Mobile_App_Login`,
 `Monthly_Transactions` o `Credit_Utilization` tienen su máximo apenas a
 2-3 $\sigma$, la marca de una variable acotada y sin cola. Este ranking
 coincide, en unidades comparables, con el mismo grupo de variables de
-cola larga que el Módulo 4 identificó con el conteo de atípicos de Tukey
+cola larga que el Módulo 5 identificó con el conteo de atípicos de Tukey
 — aquí se ve de un solo vistazo sobre las 26 a la vez, en vez de
 variable por variable.
 
@@ -2463,7 +2600,7 @@ variable por variable.
     mismo eje (desviaciones estándar) y se pueden comparar de verdad.
 3.  El ranking de $Z$-máximo identifica, sin necesidad de mirar 26
     gráficos por separado, cuáles variables tienen la cola derecha más
-    extrema, y coincide con el mismo grupo de variables que el Módulo 4
+    extrema, y coincide con el mismo grupo de variables que el Módulo 5
     ya había señalado por su alto porcentaje de atípicos de Tukey — dos
     rutas distintas (conteo de atípicos, cola en desviaciones estándar)
     que llegan a la misma conclusión sobre las mismas variables.
@@ -2474,7 +2611,7 @@ variable por variable.
 
 ## Selección objetiva de las variables para el análisis bivariado
 
-Con la matriz ya estandarizada y comparada como conjunto en el Módulo 5,
+Con la matriz ya estandarizada y comparada como conjunto en el Módulo 6,
 toca bajar un nivel: mirar pares de variables. Pero con $p = 26$
 variables numéricas hay $\binom{26}{2} = 325$ pares posibles, y si se
 suman las 4 cualitativas hay decenas de combinaciones
@@ -2521,7 +2658,7 @@ print(round(head(r_credit_score[order(-abs(r_credit_score))], 5), 3))
     aparecen pares como `Outstanding_Balance`-`Statement_Balance` o
     `Monthly_Spending`-`Reward_Points_Earned`, que son casi la misma
     cantidad de dinero contada dos veces (ya excluidos del análisis de
-    dependencia lineal genuina en el Módulo 9). `Annual_Income` y
+    dependencia lineal genuina en el Módulo 10). `Annual_Income` y
     `Credit_Limit` sí son dos decisiones de negocio distintas (lo que el
     cliente gana vs. lo que el banco le aprueba) que resultan casi
     perfectamente ligadas: **por eso se les dedica el análisis bivariado
@@ -2621,19 +2758,13 @@ r_pr_cs <- cor(credit$Payment_Ratio, credit$Credit_Score)
 r_pr_cs
 ```
 
-```{r}
-# 1. Convertimos la ocupación a números para que R pueda calcularle correlación
-credit$Occupation_Num <- as.numeric(as.factor(credit$Occupation))
-
-# 2. Seleccionamos el grupo de variables que quieres cruzar
-# (Asegúrate de escribir los nombres exactos de tus columnas)
-variables_interes <- credit[, c("Annual_Income", "Credit_Limit", "Payment_Ratio", 
-                                "Credit_Score", "Credit_Utilization", "Occupation_Num")]
-
-# 3. Generamos la tabla completa automáticamente (redondeada a 2 decimales)
-tabla_correlacion <- round(cor(variables_interes, use = "complete.obs"), 2)
-
-# 4. Mostramos el resultado en consola
+```{r, tabla_correlacion_pares}
+# Solo variables numéricas: Occupation es nominal, y numerar sus niveles
+# (1 = Business Owner, 2 = Government Employee, ...) daría una correlación
+# que cambia con el orden alfabético. Para ella ya se usó eta^2.
+variables_interes <- credit[, c("Annual_Income", "Credit_Limit", "Payment_Ratio",
+                                "Credit_Score", "Credit_Utilization")]
+tabla_correlacion <- round(cor(variables_interes), 2)
 tabla_correlacion
 ```
 
@@ -2643,6 +2774,117 @@ crediticio depende del comportamiento financiero: pagar altos
 porcentajes de la deuda (r = 0.77) y mantener una baja utilización de
 las tarjetas (r = -0.60). El nivel de ingresos por sí solo no garantiza
 un buen Score (r = 0.03).
+
+## Covarianza y correlación: de dónde sale $r$ (S04)
+
+Todas las cifras de la tabla anterior son coeficientes de Pearson. Vale
+la pena abrirlos, porque son la pieza con la que se construyen la matriz
+$\mathbf{R}$ (Módulo 8), la matriz $\mathbf{S}$ (Módulo 10) y el PCA
+(Módulos 16 y 17). Para dos variables $j$ y $k$ medidas sobre los mismos
+$n$ clientes, la **covarianza** es
+
+$$s_{jk} \;=\; \frac{1}{n-1}\sum_{i=1}^{n}\bigl(x_{ij}-\bar x_j\bigr)\bigl(x_{ik}-\bar x_k\bigr)$$
+
+Cada sumando es el producto de dos desviaciones respecto de la media:
+positivo si el cliente está del mismo lado de la media en las dos
+variables, negativo si está en lados opuestos. La covarianza suma esa
+evidencia a favor y en contra de "van juntas". Y como
+$s_{jj} = s_j^2$, la varianza es la covarianza de una variable consigo
+misma.
+
+```{r, covarianza_a_mano}
+x_ui <- credit$Credit_Utilization
+y_cs <- credit$Credit_Score
+n_cred <- nrow(credit)
+
+c(a_mano  = sum((x_ui - mean(x_ui)) * (y_cs - mean(y_cs))) / (n_cred - 1),
+  con_cov = cov(x_ui, y_cs))
+```
+
+**El problema de la covarianza es que depende de las unidades.** Si el
+ingreso se expresa en miles de rupias en vez de rupias, la relación
+entre ingreso y cupo no cambia en nada, pero la covarianza se divide por
+mil:
+
+```{r, covarianza_unidades}
+rbind(
+  ingreso_en_rupias       = c(cov = cov(credit$Annual_Income, credit$Credit_Limit),
+                              r   = cor(credit$Annual_Income, credit$Credit_Limit)),
+  ingreso_en_miles_rupias = c(cov = cov(credit$Annual_Income / 1000, credit$Credit_Limit),
+                              r   = cor(credit$Annual_Income / 1000, credit$Credit_Limit))
+)
+```
+
+Por eso se divide por las dos desviaciones estándar:
+
+$$r_{jk} \;=\; \frac{s_{jk}}{s_j\,s_k}
+\;=\; \frac{\sum (x_{ij}-\bar x_j)(x_{ik}-\bar x_k)}
+{\sqrt{\sum (x_{ij}-\bar x_j)^2}\;\sqrt{\sum (x_{ik}-\bar x_k)^2}},
+\qquad -1 \le r_{jk} \le 1$$
+
+**Lectura:** la covarianza pasó de un número del orden de $10^{12}$ a
+uno mil veces menor sin que la cartera cambiara; la correlación se quedó
+exactamente en
+`r round(cor(credit$Annual_Income, credit$Credit_Limit), 4)`. Esa es la
+razón de que todo el análisis de relaciones del informe se haga con
+$r$ y no con $s_{jk}$: con variables en rupias, conteos y proporciones,
+una covarianza "grande" no dice nada sin las escalas. La cota
+$|r_{jk}| \le 1$ no es un convenio: es la desigualdad de Cauchy–Schwarz
+aplicada a los dos vectores de desviaciones, y $|r| = 1$ solo se alcanza
+si los puntos caen exactamente sobre una recta.
+
+## ¿El gráfico confirma el número? (Anscombe, S04)
+
+La sesión S04 cerró con el cuarteto de Anscombe: cuatro nubes distintas
+con la misma correlación. La lección —$r$ mide relación **lineal**, no
+relación, y siempre se grafica— se aplica aquí al par con el $r$ más
+alto de la selección, `Annual_Income`–`Credit_Limit`. Si $r = 0{,}974$
+fuera "una recta casi perfecta", el cociente cupo/ingreso sería
+prácticamente el mismo para todos los clientes. Lo comprobamos de tres
+formas: con la correlación de rangos (Spearman, que no depende de los
+valores extremos), quitando el 1 % de ingresos más altos, y mirando la
+nube por tipo de tarjeta.
+
+```{r, anscombe_cartera}
+ai <- credit$Annual_Income; cl <- credit$Credit_Limit
+top_1 <- ai > quantile(ai, 0.99)
+
+c(pearson            = cor(ai, cl),
+  spearman           = cor(ai, cl, method = "spearman"),
+  pearson_sin_top_1  = cor(ai[!top_1], cl[!top_1]))
+
+razon_cupo <- cl / ai
+round(sapply(split(razon_cupo, credit$Card_Type), median), 3)[c("Basic", "Silver", "Gold", "Platinum", "Signature")]
+```
+
+```{r, anscombe_cartera_plot, fig.width=7.5, fig.height=5.5}
+orden_tarjeta <- c("Basic", "Silver", "Gold", "Platinum", "Signature")
+col_tarjeta <- c("#9E9E9E", "#5B8DB8", "#D4A017", "#2E7D32", "#8E24AA")
+set.seed(4)
+idx_m <- sample(nrow(credit), 6000)
+plot(ai[idx_m], cl[idx_m], pch = 16, cex = 0.45,
+     col = adjustcolor(col_tarjeta[match(credit$Card_Type[idx_m], orden_tarjeta)], 0.5),
+     xlab = "Annual_Income (₹)", ylab = "Credit_Limit (₹)",
+     main = "r = 0,974, pero no es una sola recta")
+legend("topleft", orden_tarjeta, col = col_tarjeta, pch = 16, bty = "n", title = "Card_Type")
+```
+
+**Lectura:** los tres números confirman que la relación es fuerte y no
+la fabrica un puñado de clientes extremos (sin el 1 % de ingresos más
+altos, $r$ apenas baja a
+`r round(cor(ai[!top_1], cl[!top_1]), 3)`). Pero el gráfico muestra algo
+que ningún número de la tabla dice: **no hay una recta, hay cinco**. Cada
+tipo de tarjeta tiene su propia proporción de cupo sobre ingreso — un
+`Basic` recibe en mediana
+`r round(median(razon_cupo[credit$Card_Type == "Basic"]), 2)` rupias de
+cupo por rupia de ingreso, un `Signature`
+`r round(median(razon_cupo[credit$Card_Type == "Signature"]), 2)` —, y el
+$r$ global mezcla esos cinco abanicos en uno. Es el conjunto 1 de
+Anscombe solo en apariencia: la política de cupos del banco es
+**ingreso × factor del tipo de tarjeta**, y esa estructura solo se ve
+graficando. **Decisión:** el par se sigue usando como el más fuerte de
+la cartera, pero cualquier modelo de cupo tiene que incluir
+`Card_Type`, y el Módulo 12 vuelve sobre esta mezcla de poblaciones.
 
 ## Construcción y Demostración del "Punto Imposible" (S03 - Sesión 4)
 
@@ -2910,7 +3152,7 @@ decide calculando $\eta^2$, no mirando el boxplot primero.
 ## Tendencias bivariadas de la cartera
 
 Todo el análisis bivariado de este módulo, más las lecturas de la matriz
-de dispersión del Módulo 7, se resumen en seis patrones geométricos
+de dispersión del Módulo 8, se resumen en seis patrones geométricos
 distintos. No son seis observaciones sueltas: son las seis formas
 básicas que puede tomar la nube de puntos de dos variables, y cada una
 tiene una consecuencia práctica distinta para un modelo posterior.
@@ -3027,7 +3269,7 @@ en un modelo, no solo como grupos separados.
 
 # Módulo 8: Estructura Multivariada Conjunta (S01 & S03 & S05)
 
-El Módulo 6 miró pares de variables, uno a la vez, eligiéndolos con un
+El Módulo 7 miró pares de variables, uno a la vez, eligiéndolos con un
 criterio explícito. Pero un dataset de $p = 26$ variables numéricas no
 se agota en unos pocos pares: hay $\binom{26}{2} = 325$ posibles, y
 ningún analista revisa 325 diagramas de dispersión uno por uno (S05).
@@ -3043,7 +3285,7 @@ relación, no solo su número).
 
 Antes de calcularla sobre las 26 variables (una tabla de 26×26 no se lee
 a simple vista), la calculamos primero sobre las 10 variables de mayor
-interés de negocio — las mismas que ya aparecieron en el Módulo 6
+interés de negocio — las mismas que ya aparecieron en el Módulo 7
 (ingreso, cupo, gasto, saldos, ratios de pago/utilización y el puntaje)
 — para tener una referencia numérica exacta antes de pasar al mapa de
 calor completo:
@@ -3165,7 +3407,7 @@ de su tarjeta usa) es independiente de si es de ingresos altos o bajos.
 
 El mapa de calor y su síntesis ya dieron una lectura de negocio de
 $\mathbf{R}$. Antes de construir nada más sobre esta matriz — el PCA de
-unidades futuras y, en el Módulo 9 de este informe, la distancia de
+unidades futuras y, en el Módulo 13 de este informe, la distancia de
 Mahalanobis —, hay que confirmar que $\mathbf{R}$ cumple las tres
 propiedades que la teoría exige (Everitt & Hothorn): diagonal de unos
 (por definición $r_{jj}=1$), simetría ($r_{jk}=r_{kj}$) y ser
@@ -3193,7 +3435,7 @@ positivo, aunque muy cercano a cero. Ese valor propio casi nulo **no es
 un error**: es la huella numérica de que hay variables casi redundantes
 entre sí (`Outstanding_Balance` con `Statement_Balance`,
 `Monthly_Spending` con `Reward_Points_Earned`, ya señaladas arriba en la
-síntesis del mapa de calor), y anticipa por qué el Módulo 9 tiene que
+síntesis del mapa de calor), y anticipa por qué el Módulo 10 tiene que
 excluir columnas derivadas antes de invertir la matriz de covarianzas
 para la distancia de Mahalanobis.
 
@@ -3496,7 +3738,7 @@ entre los usuarios.
     `Monthly_Spending`-`Reward_Points_Earned`) conviven con variables
     prácticamente independientes del resto (`Payment_Ratio`,
     `Credit_Utilization` frente a las de dinero) — la matriz de
-    correlación tiene un valor propio casi nulo (Módulo 7.3) que es la
+    correlación tiene un valor propio casi nulo (Módulo 8) que es la
     huella numérica exacta de esa redundancia.
 2.  Las tres visualizaciones muestran cosas distintas de la misma
     matriz: el mapa de calor agrupa variables parecidas en bloques, las
@@ -3505,16 +3747,16 @@ entre los usuarios.
     muestra la forma real de cada relación (bandas, cuñas, bloques
     cuadrados) que un solo número de correlación no distingue.
 3.  Esta alta redundancia entre variables de dinero es, además, la razón
-    concreta por la que el Módulo 9 tiene que **excluir** columnas
+    concreta por la que el Módulo 10 tiene que **excluir** columnas
     derivadas antes de invertir la matriz de covarianzas para la
     distancia de Mahalanobis: una matriz casi singular no se puede
     invertir de forma estable.
 
 ------------------------------------------------------------------------
 
-# Módulo 9: Vector de Medias, Centroide y Distancia de Mahalanobis (S06)
+# Módulo 9: Vector de Medias, Centroide y el Límite de la Distancia Euclidiana (S06)
 
-Hasta el Módulo 7 se describió la **forma** de la nube de
+Hasta el Módulo 8 se describió la **forma** de la nube de
 $n = `r nrow(credit)`$ puntos en $p$ dimensiones (correlación,
 coordenadas paralelas, `pairs`). Falta lo otro que describe una nube:
 **dónde está su centro**, y qué tan lejos está cada cliente de ese
@@ -3553,7 +3795,7 @@ centroide es `Annual_Income` $\approx$
 con la fórmula por columnas o con el producto matricial
 $\frac{1}{n}\mathbf{X}'\mathbf{1}$. No es una curiosidad algebraica: esa
 forma matricial es la que se generaliza a la distancia de Mahalanobis
-más abajo.
+en el Módulo 13.
 
 ## El centroide, geométricamente
 
@@ -3591,7 +3833,7 @@ mínimo está exactamente donde la teoría dice que debe estar.
 
 El centroide global describe **al conjunto**, no necesariamente a cada
 cliente ni a cada segmento. Lo comprobamos con `Card_Type`, la variable
-categórica que en el Módulo 6 resultó ser la de mayor $\eta^2$ sobre las
+categórica que en el Módulo 7 resultó ser la de mayor $\eta^2$ sobre las
 variables de dinero:
 
 ```{r, medias_por_grupo}
@@ -3613,7 +3855,7 @@ de cupo — casi una décima parte del promedio global — mientras que uno
 \$`r format(round(medias_grupo$Credit_Limit[medias_grupo$Card_Type=="Signature"]), big.mark=".")`,
 casi seis veces el promedio. Es la misma historia que el
 $\eta^2 = `r sprintf("%.2f", eta2(credit$Credit_Limit,
-credit$Card_Type))`$ del Módulo 6, vista ahora en las medias
+credit$Card_Type))`$ del Módulo 7, vista ahora en las medias
 directamente: **hay cinco centros, no uno**. En cambio, para
 `Credit_Score` los cinco promedios de grupo van de
 `r round(min(medias_grupo$Credit_Score),1)` a
@@ -3725,8 +3967,234 @@ contra de esa correlación y su distancia de Mahalanobis es
 La regla euclidiana ve a A y B como igual de "raros"; la que respeta la
 forma de la nube (la elipse de correlación, no el círculo) sabe que sólo
 B lo es de verdad. Esa es formalmente la misma idea del "punto
-imposible" del Módulo 6, ahora con una distancia que la mide en vez de
+imposible" del Módulo 7, ahora con una distancia que la mide en vez de
 solo mostrarla.
+
+La pieza que falta para medir así sobre toda la cartera es justamente
+$\mathbf{S}^{-1}$: hay que definir la matriz de covarianzas, ver qué
+propiedades tiene y comprobar que se puede invertir. Eso es el Módulo
+10; la distancia de Mahalanobis sobre los `r format(nrow(credit), big.mark=".")`
+clientes, con su prueba $\chi^2$ y su gráfico Q-Q, es el Módulo 13.
+
+## Conclusión del módulo
+
+1.  $\bar{\mathbf{x}} = \frac{1}{n}\mathbf{X}'\mathbf{1}$ es el
+    centroide: el punto que minimiza la suma de distancias al cuadrado a
+    la nube, verificado numéricamente sobre
+    `Annual_Income`/`Credit_Limit`.
+2.  El centroide describe **al conjunto**, no a cada segmento:
+    representa bien a `Credit_Score` (grupos de `Card_Type` casi
+    idénticos) y representa mal a `Credit_Limit` (grupos de `Card_Type`
+    con medias que van de
+    `r format(round(min(medias_grupo$Credit_Limit)), big.mark=".")`(₹) a
+    `r format(round(max(medias_grupo$Credit_Limit)), big.mark=".")`(₹)).
+3.  La media tiene punto de ruptura próximo a cero frente a errores
+    **sistemáticos** (250 filas de 50.000 bastan para dispararla
+    `r sprintf("%.0f%%", 100*(mean(Xb)/mean(X_original)-1))`), mientras
+    que la mediana marginal y la media recortada resisten. Ninguna de
+    las dos reemplaza, sin embargo, a una mediana multivariante genuina.
+4.  La distancia euclidiana ignora la correlación entre variables; la de
+    Mahalanobis la incorpora a través de $\mathbf{S}^{-1}$, y por eso
+    distingue a un cliente "raro" de uno perfectamente típico aunque
+    ambos estén a la misma distancia en línea recta del centro. Para
+    usarla sobre toda la cartera hace falta $\mathbf{S}$, que es el tema
+    del módulo siguiente.
+
+------------------------------------------------------------------------
+
+# Módulo 10: Dispersión y Dependencia — la Matriz de Covarianzas (S07)
+
+El Módulo 9 dejó la nube con un centro, $\bar{\mathbf{x}}$, y una
+pregunta abierta: para medir qué tan lejos está un cliente de ese centro
+respetando la forma de la nube hace falta $\mathbf{S}^{-1}$. Este módulo
+define esa $\mathbf{S}$, demuestra con los datos sus tres propiedades,
+muestra el problema de unidades que obliga a pasar a $\mathbf{R}$ (la
+matriz del Módulo 8) y termina verificando que, con las variables
+correctas, $\mathbf{S}$ sí se puede invertir. Con esto la nube queda
+completamente descrita: **el centro** ($\bar{\mathbf{x}}$) y **la
+forma** ($\mathbf{S}$).
+
+## Definición y forma matricial
+
+$$\mathbf{S} = \begin{pmatrix}
+s_1^2 & s_{12} & \cdots & s_{1p}\\
+s_{21} & s_2^2 & \cdots & s_{2p}\\
+\vdots & \vdots & \ddots & \vdots\\
+s_{p1} & s_{p2} & \cdots & s_p^2
+\end{pmatrix}
+\qquad
+\mathbf{S} = \frac{1}{n-1}\,\mathbf{X}_c'\,\mathbf{X}_c$$
+
+donde $\mathbf{X}_c$ es la matriz **centrada** (a cada columna se le
+resta su media). El $n-1$ y no $n$ es la corrección de Bessel: la media
+se estimó con los mismos datos, y eso gasta un grado de libertad.
+Trabajamos con cuatro variables que resumen la historia del informe —
+capacidad (`Annual_Income`, `Credit_Limit`), deuda
+(`Statement_Balance`) y riesgo (`Credit_Score`) — y verificamos que la
+forma matricial coincide con `cov()`:
+
+```{r, S_matricial}
+vars_S <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Credit_Score")
+X_S  <- as.matrix(credit[, vars_S])
+n_S  <- nrow(X_S)
+
+Xc_S <- scale(X_S, center = TRUE, scale = FALSE)   # centrar, NO escalar
+S_matricial <- t(Xc_S) %*% Xc_S / (n_S - 1)
+
+signif(S_matricial, 3)
+all.equal(S_matricial, cov(X_S), check.attributes = FALSE)
+```
+
+**Lectura:** las dos formas dan la misma matriz. En la diagonal están
+las varianzas (la de `Annual_Income` es del orden de $10^{12}$ rupias²,
+la de `Credit_Score` apenas
+`r format(round(var(credit$Credit_Score)), big.mark=".")` puntos²) y
+fuera de ella las covarianzas. La de `Statement_Balance` con
+`Credit_Score` es la única negativa de la tabla: a más deuda facturada,
+menor puntaje, la misma dirección que se vio con `Credit_Utilization`
+en el Módulo 7.
+
+## Las tres propiedades, y por qué la tercera es el PCA
+
+```{r, propiedades_S}
+S4 <- cov(X_S)
+c(diagonal_son_varianzas = isTRUE(all.equal(diag(S4), apply(X_S, 2, var),
+                                            check.attributes = FALSE)),
+  es_simetrica           = isSymmetric(S4),
+  semidefinida_positiva  = all(eigen(S4)$values >= -1e-8 * max(eigen(S4)$values)))
+```
+
+1.  **La diagonal son las varianzas**, porque $s_{jj} = s_j^2$.
+2.  **Es simétrica**, porque
+    $(x_{ij}-\bar x_j)(x_{ik}-\bar x_k)$ no depende del orden.
+3.  **Es semidefinida positiva**: para cualquier vector de pesos
+    $\mathbf{a}$, $\mathbf{a}'\mathbf{S}\mathbf{a} \ge 0$.
+
+La tercera tiene un significado concreto que se puede verificar con la
+cartera. Tomemos la combinación lineal "ingreso menos cupo", es decir
+$\mathbf{a} = (1, -1, 0, 0)'$: la parte del ingreso que el banco **no**
+convirtió en cupo.
+
+```{r, aSa_varianza}
+a <- c(1, -1, 0, 0)
+combinacion <- as.vector(X_S %*% a)        # Annual_Income - Credit_Limit, cliente por cliente
+
+c(varianza_directa  = var(combinacion),
+  formula_a_S_a     = as.numeric(t(a) %*% S4 %*% a))
+```
+
+**Lectura:** $\mathbf{a}'\mathbf{S}\mathbf{a}$ **es la varianza de la
+combinación lineal** $\mathbf{X}\mathbf{a}$, y como ninguna varianza
+puede ser negativa, $\mathbf{S}$ tiene que ser semidefinida positiva.
+Aquí está el PCA completo, adelantado: buscar la combinación de
+variables que más separa a los clientes es **maximizar**
+$\mathbf{a}'\mathbf{S}\mathbf{a}$ (con $\mathbf{a}'\mathbf{a} = 1$), y la
+solución es el vector propio de $\mathbf{S}$ asociado al mayor valor
+propio. Eso es exactamente lo que hacen los Módulos 16 y 17.
+
+## El problema de unidades, y por qué el informe trabaja con $\mathbf{R}$
+
+```{r, S_unidades}
+X_S_miles <- X_S
+X_S_miles[, "Annual_Income"] <- X_S_miles[, "Annual_Income"] / 1000   # de rupias a miles de rupias
+
+rbind(en_rupias = c(cov = cov(X_S[, 1], X_S[, 2]),       cor = cor(X_S[, 1], X_S[, 2])),
+      en_miles  = c(cov = cov(X_S_miles[, 1], X_S_miles[, 2]), cor = cor(X_S_miles[, 1], X_S_miles[, 2])))
+
+# ¿Qué fracción de la varianza total se lleva cada variable en S?
+round(100 * diag(S4) / sum(diag(S4)), 4)
+```
+
+**Lectura:** al cambiar de rupias a miles de rupias la covarianza se
+divide por mil y la correlación no se mueve. Y la segunda tabla muestra
+el efecto práctico: en $\mathbf{S}$, `Annual_Income` sola se lleva el
+`r round(100 * diag(S4)["Annual_Income"] / sum(diag(S4)), 1)` % de la
+varianza total, y `Credit_Score` el
+`r format(signif(100 * diag(S4)["Credit_Score"] / sum(diag(S4)), 2), scientific = FALSE)` %.
+Cualquier técnica que trabaje sobre $\mathbf{S}$ con estas unidades
+mezcladas —un PCA sin estandarizar, por ejemplo— va a "descubrir" que lo
+importante de la cartera es el ingreso, solo porque se mide en números
+más grandes. La corrección es estandarizar:
+
+$$r_{jk}=\frac{s_{jk}}{s_j s_k}
+\qquad\Longrightarrow\qquad
+\mathbf{R}=\mathbf{D}^{-1/2}\,\mathbf{S}\,\mathbf{D}^{-1/2},
+\qquad \mathbf{D}=\operatorname{diag}(s_1^2,\dots,s_p^2)$$
+
+```{r, R_desde_S}
+D_menos_media <- diag(1 / sqrt(diag(S4)))
+R_desde_S <- D_menos_media %*% S4 %*% D_menos_media
+dimnames(R_desde_S) <- dimnames(S4)
+
+round(R_desde_S, 3)
+c(R_igual_a_cor       = isTRUE(all.equal(R_desde_S, cor(X_S), check.attributes = FALSE)),
+  cov_de_Z_igual_a_R  = isTRUE(all.equal(cov(scale(X_S)), cor(X_S), check.attributes = FALSE)))
+```
+
+**Lectura:** $\mathbf{D}^{-1/2}\mathbf{S}\mathbf{D}^{-1/2}$ reproduce
+`cor()` exactamente, y la covarianza de los datos tipificados
+(`scale()`) también: **la matriz de correlación es la matriz de
+covarianzas de los datos estandarizados**. Es la misma operación que el
+Módulo 6 hizo con los boxplots, ahora escrita como álgebra matricial.
+
+| | Usar $\mathbf{S}$ | Usar $\mathbf{R}$ |
+|---|---|---|
+| **Cuándo** | Todas las variables en la misma unidad, y las diferencias de escala **son información** | Unidades distintas, o una variable domina por su magnitud |
+| **En esta cartera** | Nunca: hay rupias, conteos, meses, años, proporciones y un puntaje | **Siempre** |
+| **En PCA** | Componentes sobre covarianzas | **PCA normado** (Módulos 16 y 17) |
+
+## Dos resúmenes de la dispersión total: traza y determinante
+
+Con $p$ variables hay $p$ varianzas; a veces hace falta un solo número.
+Como $\mathbf{S}$ en rupias está dominada por el ingreso, los calculamos
+sobre $\mathbf{R}$ (la covarianza de los datos estandarizados), primero
+con las 26 variables numéricas y después sin las cinco columnas
+derivadas o duplicadas que el Módulo 8 ya había señalado:
+
+```{r, traza_determinante}
+variables_derivadas <- c("Monthly_Spending", "Payment_Ratio", "Credit_Utilization",
+                         "Reward_Points_Earned", "Outstanding_Balance")
+R_26 <- cor(credit[, numeric_cols])
+R_21 <- cor(credit[, setdiff(numeric_cols, variables_derivadas)])
+
+data.frame(
+  matriz = c("R con las 26 numéricas", "R sin las 5 derivadas (21)"),
+  p = c(ncol(R_26), ncol(R_21)),
+  varianza_total_traza = c(sum(diag(R_26)), sum(diag(R_21))),
+  varianza_generalizada_det = signif(c(det(R_26), det(R_21)), 3),
+  menor_valor_propio = signif(c(min(eigen(R_26)$values), min(eigen(R_21)$values)), 3)
+)
+
+# ¿Por qué? Monthly_Spending es la suma exacta de las siete categorías de gasto
+cat_gasto <- c("Online_Shopping_Spending", "Grocery_Spending", "Fuel_Spending", "Dining_Spending",
+               "Travel_Spending", "Entertainment_Spending", "Utility_Bill_Spending")
+max(abs(credit$Monthly_Spending - rowSums(credit[, cat_gasto])))
+```
+
+**Lectura:** la **traza** —la varianza total— vale exactamente $p$ en
+las dos matrices (cada variable estandarizada aporta 1) y **no se entera
+de nada**: ignora las covarianzas. El **determinante** —la varianza
+generalizada— sí las tiene en cuenta: con las 26 variables es
+`r signif(det(R_26), 2)`, prácticamente cero, y su menor valor propio
+también lo es. La razón es literal: `Monthly_Spending` es la suma de las
+siete categorías de gasto (la diferencia máxima entre las dos es de
+`r round(max(abs(credit$Monthly_Spending - rowSums(credit[, cat_gasto]))), 2)`
+rupias, redondeo), así que la nube de 26 dimensiones es **plana** en al
+menos una dirección: vive en menos dimensiones de las que dice tener.
+Quitando las cinco derivadas el determinante sube a
+`r signif(det(R_21), 2)`. Sigue siendo pequeño, porque es el producto de
+21 valores propios y varios son menores que 1 (las variables de dinero
+siguen muy correlacionadas); el indicador que importa es el menor valor
+propio, que pasa de `r signif(min(eigen(R_26)$values), 2)` —un cero
+numérico— a `r round(min(eigen(R_21)$values), 3)`: ya no queda ninguna
+dirección plana. Un determinante casi nulo es la
+señal de multicolinealidad, y es exactamente lo que hace que
+$\mathbf{S}^{-1}$ no exista o sea inestable — y la distancia de
+Mahalanobis la necesita. La traza, en cambio, va a reaparecer en el
+PCA: la suma de los valores propios **es** la traza, es decir, la
+información total que las componentes se reparten.
+
+## Antes de invertir $\mathbf{S}$: verificación de la submatriz
 
 Antes de calcular covarianzas y distancias de Mahalanobis sobre **toda**
 la cartera es necesario verificar que la submatriz numérica sea
@@ -3799,18 +4267,884 @@ y un número de condición que, aunque no es 1, se mantiene lejos de la
 zona de redundancia severa — la matriz **es invertible** y está lista
 para Mahalanobis.
 
-## Distancia de Mahalanobis sobre toda la cartera
+## Conclusión del módulo
 
-Con la submatriz verificada, calculamos la distancia de Mahalanobis de
-cada uno de los `r nrow(credit)` clientes a su propio centroide:
+1.  $\mathbf{S} = \frac{1}{n-1}\mathbf{X}_c'\mathbf{X}_c$ tiene las
+    varianzas en la diagonal, es simétrica y es **semidefinida
+    positiva**, porque $\mathbf{a}'\mathbf{S}\mathbf{a}$ es la varianza
+    de la combinación $\mathbf{X}\mathbf{a}$ — verificado con "ingreso
+    menos cupo". Maximizar esa varianza es el PCA de los Módulos 16
+    y 17.
+2.  **La covarianza depende de las unidades y la correlación no.** Con
+    solo cuatro variables, `Annual_Income` se lleva el
+    `r round(100 * diag(S4)["Annual_Income"] / sum(diag(S4)))` % de la
+    varianza total de $\mathbf{S}$ y `Credit_Score` prácticamente nada,
+    solo por las unidades; por eso el informe
+    trabaja con $\mathbf{R}=\mathbf{D}^{-1/2}\mathbf{S}\mathbf{D}^{-1/2}$,
+    que es la covarianza de los datos estandarizados.
+3.  **Traza** = varianza total, ciega a la dependencia. **Determinante**
+    = varianza generalizada: con las 26 numéricas es prácticamente cero
+    porque `Monthly_Spending` es la suma exacta de sus categorías.
+4.  Sin las cinco columnas derivadas o duplicadas, la submatriz de
+    `r 26 - length(variables_excluidas)` variables es invertible: es la
+    que usan Mahalanobis (Módulo 13) y el PCA (Módulos 15 a 17).
+
+------------------------------------------------------------------------
+
+# Módulo 11: Variable Aleatoria Multivariante — Distribución Conjunta y Marginales (S08 & S09)
+
+Hasta el Módulo 10 el trabajo fue **descriptivo**: la nube de
+$n = `r format(nrow(credit), big.mark=".")`$ clientes quedó resumida por
+su centro $\bar{\mathbf{x}}$ y su forma $\mathbf{S}$. Aquí cambia la
+pregunta: ya no es *"¿cómo resumo estos datos?"* sino *"¿de qué
+mecanismo salieron?"*, y ese mecanismo es la **distribución conjunta**
+del vector aleatorio $\mathbf{X} = (X_1, \dots, X_p)'$. $\bar{\mathbf{x}}$
+y $\mathbf{S}$ dejan de ser el objeto y pasan a ser **dos resúmenes** de
+algo más grande: sus dos primeros momentos.
+
+La pregunta que ordena el módulo es la de la sesión S08:
+
+> **¿Basta con conocer cada variable por separado para conocerlas
+> juntas?**
+
+## Caso discreto: la conjunta es una tabla
+
+Para el banco, el riesgo no se lee punto por punto del `Credit_Score`
+sino por **bandas**. Usamos los cortes habituales de la industria
+(menos de 580, riesgo alto; 580 a 669, medio; 670 a 739, bajo; 740 o
+más, muy bajo) y cruzamos esa banda con el tipo de tarjeta. Con dos
+variables discretas, la distribución conjunta es la tabla de doble
+entrada de proporciones:
+
+$$p_{jk} = P(\text{Card\_Type} = j,\ \text{Riesgo} = k)$$
+
+```{r, conjunta_tabla}
+orden_tarjeta <- c("Basic", "Silver", "Gold", "Platinum", "Signature")
+credit_banda <- cut(credit$Credit_Score, breaks = c(-Inf, 579, 669, 739, Inf),
+                    labels = c("Alto", "Medio", "Bajo", "Muy bajo"))
+tarjeta <- factor(credit$Card_Type, levels = orden_tarjeta)
+
+tabla_tr <- table(Card_Type = tarjeta, Riesgo = credit_banda)
+addmargins(tabla_tr)
+
+conjunta_tr <- tabla_tr / sum(tabla_tr)
+round(100 * conjunta_tr, 2)      # en porcentaje
+sum(conjunta_tr)                 # tiene que dar 1
+```
+
+**Lectura:** cada casilla es la proporción de clientes con *esa*
+combinación de tarjeta y banda de riesgo; la más poblada es
+`Gold` · riesgo medio, con el
+`r round(100 * max(conjunta_tr), 1)` % de la cartera. La tabla suma 1:
+es una distribución de probabilidad legítima sobre las
+`r length(conjunta_tr)` combinaciones posibles.
+
+## Las marginales viven en los márgenes
+
+El nombre es literal: la distribución **marginal** se llama así porque
+se escribe en el margen de la tabla. Se obtiene **sumando en la
+dirección de la variable que se quiere eliminar**:
+
+$$p_{j\cdot} = \sum_k p_{jk} \qquad\qquad p_{\cdot k} = \sum_j p_{jk}$$
+
+```{r, marginales_tabla, fig.width=10, fig.height=4}
+marg_tarjeta <- rowSums(conjunta_tr)   # se suma sobre el riesgo  -> queda la tarjeta
+marg_riesgo  <- colSums(conjunta_tr)   # se suma sobre la tarjeta -> queda el riesgo
+round(100 * marg_tarjeta, 1)
+round(100 * marg_riesgo, 1)
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+barplot(100 * marg_tarjeta, col = "grey80", border = NA, las = 1,
+        main = "Marginal de Card_Type", ylab = "%")
+barplot(100 * marg_riesgo, col = "grey80", border = NA, las = 1,
+        main = "Marginal de la banda de riesgo", ylab = "%")
+par(mfrow = c(1, 1))
+```
+
+**Lectura:** el `r round(100 * marg_riesgo["Alto"], 1)` % de la cartera
+está en riesgo alto y apenas el
+`r round(100 * marg_riesgo["Muy bajo"], 1)` % en muy bajo; `Gold` es la
+tarjeta más común (`r round(100 * marg_tarjeta["Gold"], 1)` %) y
+`Signature` la más rara (`r round(100 * marg_tarjeta["Signature"], 1)` %).
+Cada marginal es una distribución de una sola variable (no negativa,
+suma 1), y **cada histograma y cada tabla de frecuencias de los Módulos
+2 y 3 eran exactamente esto: marginales empíricas**, calculadas
+"integrando", sin decirlo, sobre las otras 29 columnas.
+
+## Las marginales no reconstruyen la conjunta (S09)
+
+Si las dos variables fueran independientes, la conjunta sería el
+producto de las marginales en **todas** las casillas,
+$p_{jk} = p_{j\cdot}\,p_{\cdot k}$. Lo comparamos para dos pares de
+categóricas: tarjeta con riesgo, y ocupación con tarjeta.
+
+```{r, marginales_vs_producto}
+desvio_de_independencia <- function(tab) {
+  f <- tab / sum(tab)
+  producto <- outer(rowSums(f), colSums(f))     # lo que habría si fueran independientes
+  max(abs(f - producto))
+}
+
+tabla_ot <- table(Occupation = credit$Occupation, Card_Type = tarjeta)
+
+c(tarjeta_vs_riesgo   = desvio_de_independencia(tabla_tr),
+  ocupacion_vs_tarjeta = desvio_de_independencia(tabla_ot))
+
+# La segunda, casilla por casilla: conjunta real menos producto de marginales (en %)
+f_ot <- tabla_ot / sum(tabla_ot)
+round(100 * (f_ot - outer(rowSums(f_ot), colSums(f_ot))), 2)
+```
+
+**Lectura:** los dos pares se comportan de forma opuesta. Entre tarjeta
+y banda de riesgo, ninguna casilla se aparta del producto de las
+marginales más de
+`r round(100 * desvio_de_independencia(tabla_tr), 2)` puntos
+porcentuales: con las dos marginales en la mano se reconstruye la tabla
+casi perfectamente, porque el tipo de tarjeta casi no dice nada del
+riesgo (lo mismo que mostró el $\eta^2$ del Módulo 7). Entre ocupación y
+tarjeta, en cambio, el desvío llega a
+`r round(100 * desvio_de_independencia(tabla_ot), 1)` puntos: hay
+casillas que el producto de marginales llena y que en la cartera están
+**vacías** — ningún `Student` tiene una tarjeta distinta de `Basic`, y
+ningún `Business Owner` tiene una `Basic`. **Con las dos marginales no
+hay forma de recuperar esa estructura**: la información de *cómo se
+combinan* las variables se perdió al sumar. Las marginales son una
+proyección, y las proyecciones no se invierten.
+
+## Caso continuo: la conjunta es una superficie
+
+Con variables continuas la tabla se vuelve una densidad conjunta
+$f(x, y)$ y la suma se vuelve integral, con la misma lógica:
+
+$$f_X(x) = \int_{-\infty}^{\infty} f(x,y)\, dy \qquad\qquad
+  f_Y(y) = \int_{-\infty}^{\infty} f(x,y)\, dx$$
+
+Tomamos el par de riesgo del Módulo 7, `Credit_Utilization` y
+`Credit_Score`. Las marginales son los dos histogramas; la conjunta es
+la nube:
+
+```{r, conjunta_continua, fig.width=11, fig.height=4}
+ui <- credit$Credit_Utilization
+cs <- credit$Credit_Score
+
+par(mfrow = c(1, 3), mar = c(4, 4, 3, 1))
+hist(ui, breaks = 40, col = "grey85", border = "white",
+     main = "Marginal de Credit_Utilization", xlab = "proporción del cupo usada")
+hist(cs, breaks = 40, col = "grey85", border = "white",
+     main = "Marginal de Credit_Score", xlab = "puntaje")
+smoothScatter(ui, cs, main = "Conjunta", xlab = "Credit_Utilization", ylab = "Credit_Score")
+abline(v = mean(ui), h = mean(cs), lty = 3)
+par(mfrow = c(1, 1))
+```
+
+**Lectura:** ninguno de los dos histogramas dice que los clientes que
+usan más cupo tienen peor puntaje; la tercera figura lo muestra a
+simple vista, con la nube inclinada hacia abajo. **Toda la información
+sobre la relación está en la conjunta**, y ninguna marginal la contiene.
+
+## La prueba de que las marginales no determinan la conjunta: barajar
+
+Se toma `Credit_Score` y se **baraja**: se reordenan sus valores al
+azar entre los clientes. Barajar no cambia qué valores hay ni cuántas
+veces aparece cada uno —las dos marginales quedan idénticas—; lo único
+que destruye es *con quién estaba emparejado cada valor*, es decir, la
+conjunta.
+
+```{r, barajado}
+set.seed(7)
+cs_barajado <- sample(cs)
+
+# Las marginales no se movieron:
+rbind(original = c(media = mean(cs), desv = sd(cs), mediana = median(cs)),
+      barajado = c(media = mean(cs_barajado), desv = sd(cs_barajado), mediana = median(cs_barajado)))
+
+# La conjunta sí:
+concordantes <- function(x, y) mean((x > mean(x)) == (y > mean(y)))
+rbind(original = c(r = cor(ui, cs),          concordantes = concordantes(ui, cs)),
+      barajado = c(r = cor(ui, cs_barajado), concordantes = concordantes(ui, cs_barajado)))
+```
+
+```{r, barajado_plot, fig.width=10, fig.height=4.2}
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+smoothScatter(ui, cs, xlab = "Credit_Utilization", ylab = "Credit_Score",
+              main = sprintf("Conjunta real (r = %.2f)", cor(ui, cs)))
+smoothScatter(ui, cs_barajado, xlab = "Credit_Utilization", ylab = "Credit_Score barajado",
+              main = sprintf("Barajada (r = %.2f)", cor(ui, cs_barajado)))
+par(mfrow = c(1, 1))
+```
+
+**Lectura:** media, desviación y mediana del puntaje son idénticas antes
+y después de barajar, pero la correlación pasa de
+`r round(cor(ui, cs), 3)` a `r round(cor(ui, cs_barajado), 3)`. La
+proporción de clientes que están **del mismo lado** de la media en las
+dos variables pasa de `r round(100 * concordantes(ui, cs), 1)` % a
+`r round(100 * concordantes(ui, cs_barajado), 1)` %, que es lo que da el
+azar: en los datos reales, en `r round(100 * (1 - concordantes(ui, cs)))`
+de cada 100 clientes las dos variables quedan en lados opuestos de su
+media (mucho uso del cupo con poco puntaje, o al revés). **Mismas marginales,
+conjuntas distintas.** Esa diferencia **es** la dependencia.
+
+## Dónde queda $\mathbf{S}$
+
+```{r, barajado_S}
+round(cov(cbind(Credit_Utilization = ui, Credit_Score = cs)), 3)
+round(cov(cbind(Credit_Utilization = ui, Credit_Score = cs_barajado)), 3)
+```
+
+**Lectura:** las diagonales son iguales —las varianzas marginales no
+cambiaron— y lo único que se movió es la covarianza cruzada. En
+$\mathbf{S}$, **toda** la información sobre la conjunta que las
+marginales no tienen está fuera de la diagonal. Pero $\mathbf{S}$
+tampoco es la conjunta completa: solo captura dependencia **lineal**, y
+dos conjuntas muy distintas pueden compartir la misma $\mathbf{S}$. El
+Módulo 12 muestra un ejemplo de lo que $\mathbf{S}$ no ve.
+
+## Marginalizar no es neutro: un adelanto de Simpson (S09)
+
+Marginalizar sobre una variable equivale a afirmar que esa variable no
+importa. En la cartera hay un caso donde eso invierte la conclusión. El
+número de transacciones al mes y el valor promedio de cada transacción,
+mirados sobre los `r format(nrow(credit), big.mark=".")` clientes juntos
+—es decir, **marginalizando sobre el tipo de tarjeta**—, se mueven en
+la misma dirección:
+
+```{r, simpson_adelanto}
+mt  <- credit$Monthly_Transactions
+atv <- credit$Avg_Transaction_Value
+
+c(r_toda_la_cartera = cor(mt, atv))
+round(sapply(split(credit, tarjeta),
+             function(d) cor(d$Monthly_Transactions, d$Avg_Transaction_Value)), 3)
+```
+
+**Lectura:** con toda la cartera junta,
+$r = `r round(cor(mt, atv), 3)`$: "quien compra más veces, compra más
+caro". Dentro de **cada** tipo de tarjeta la correlación es
+**negativa**: entre clientes con la misma tarjeta, quien hace más
+transacciones las hace de menor valor. Sumar sobre el tipo de tarjeta no
+solo borró la relación, **le dio la vuelta**. Es la paradoja de Simpson,
+y su mecanismo —qué hace el tipo de tarjeta para producirla— se resuelve
+en el Módulo 12 con la herramienta contraria a marginalizar:
+condicionar.
+
+## Conclusión del módulo
+
+1.  La **conjunta** lo contiene todo: tabla en el caso discreto
+    (tarjeta × banda de riesgo), densidad en el continuo (uso del cupo ×
+    puntaje). $\bar{\mathbf{x}}$ y $\mathbf{S}$ son solo sus dos
+    primeros momentos.
+2.  Las **marginales** se obtienen sumando (o integrando) sobre lo que
+    se quiere eliminar, y viven literalmente en los márgenes de la
+    tabla. Cada histograma del informe era una marginal empírica.
+3.  **Las marginales no determinan la conjunta.** Ocupación y tarjeta
+    tienen casillas vacías que ningún producto de marginales predice, y
+    al barajar el puntaje las marginales quedan idénticas mientras la
+    correlación con el uso del cupo pasa de
+    `r round(cor(ui, cs), 2)` a cero.
+4.  **Marginalizar es una decisión**, no una operación neutra: sobre
+    toda la cartera, más transacciones van con transacciones más caras;
+    dentro de cada tipo de tarjeta, pasa lo contrario.
+
+------------------------------------------------------------------------
+
+# Módulo 12: Distribución Condicional e Independencia (S10)
+
+El Módulo 11 terminó con una deuda: sobre toda la cartera, más
+transacciones van con transacciones más caras, y dentro de cada tipo de
+tarjeta pasa lo contrario. Juntar los tipos de tarjeta era
+**marginalizar**, y marginalizar dio vuelta a la conclusión. La
+herramienta de este módulo es la operación contraria: en lugar de sumar
+sobre la variable que estorba, **se fija su valor** y se mira qué pasa
+con lo demás. Eso es condicionar, y con ella se resuelven tres cosas: la
+definición correcta de independencia, la paradoja de Simpson de la
+cartera y la ley de la varianza total.
+
+## Caso discreto: condicionar es dividir por la marginal
+
+$$f(y \mid x) = \frac{f(x,y)}{f_X(x)} \qquad\text{siempre que } f_X(x) > 0$$
+
+Se toma **una fila** de la tabla conjunta y se reescala para que sume 1.
+Lo hacemos con la tabla de ocupación y tipo de tarjeta del Módulo 11:
+
+```{r, condicional_filas}
+cond_tarjeta_dada_ocup <- prop.table(tabla_ot, margin = 1)   # P(Card_Type | Occupation)
+round(100 * cond_tarjeta_dada_ocup, 1)
+rowSums(cond_tarjeta_dada_ocup)                               # cada fila suma 1
+
+cond_ocup_dada_tarjeta <- prop.table(tabla_ot, margin = 2)   # P(Occupation | Card_Type)
+round(100 * cond_ocup_dada_tarjeta, 1)
+```
+
+**Lectura:** cada fila de la primera tabla es una distribución completa
+del tipo de tarjeta, una por ocupación: hay seis condicionales y una
+sola marginal. Y las dos direcciones **no son lo mismo**: el
+`r round(100 * cond_tarjeta_dada_ocup["Student", "Basic"])` % de los
+estudiantes tiene una `Basic`
+($P(\text{Basic} \mid \text{Student})$), pero de los clientes `Basic`
+solo el `r round(100 * cond_ocup_dada_tarjeta["Student", "Basic"])` % son
+estudiantes ($P(\text{Student} \mid \text{Basic})$). Confundir
+$P(Y \mid X)$ con $P(X \mid Y)$ —"si casi todos los estudiantes son
+`Basic`, casi todos los `Basic` son estudiantes"— es el error más caro
+de la estadística aplicada; para un área comercial que quiera
+"encontrar estudiantes" filtrando por tarjeta `Basic`, significaría
+equivocarse con
+`r round(100 * (1 - cond_ocup_dada_tarjeta["Student", "Basic"]))` de cada
+100 clientes.
+
+## Independencia: tres definiciones que son la misma
+
+$X$ e $Y$ son **independientes** si y solo si se cumple cualquiera de
+estas —y entonces se cumplen las tres—:
+
+| | Forma | En palabras |
+|---|---|---|
+| **1** | $f(x,y) = f_X(x)\,f_Y(y)$ para **todo** $x, y$ | La conjunta es el producto de las marginales |
+| **2** | $f(y \mid x) = f_Y(y)$ para **todo** $x$ | Saber $X$ no cambia nada sobre $Y$ |
+| **3** | $f(x \mid y) = f_X(x)$ para **todo** $y$ | Saber $Y$ no cambia nada sobre $X$ |
+
+La segunda es la que se entiende: **si todas las filas condicionales son
+iguales entre sí, e iguales a la marginal, no hay dependencia**. La
+aplicamos a la tabla de tipo de tarjeta y banda de riesgo, y la
+acompañamos de la prueba $\chi^2$ de independencia y de la $V$ de
+Cramér, que mide el **tamaño** de la dependencia en una escala de 0 a 1:
+
+```{r, independencia_condicionales}
+cond_riesgo_dada_tarjeta <- prop.table(tabla_tr, margin = 1)
+round(100 * rbind(cond_riesgo_dada_tarjeta, marginal = marg_riesgo), 1)
+
+v_cramer <- function(tab) {
+  ji <- suppressWarnings(chisq.test(tab))
+  c(chi2 = unname(ji$statistic), gl = unname(ji$parameter), p_valor = ji$p.value,
+    V_Cramer = unname(sqrt(ji$statistic / (sum(tab) * (min(dim(tab)) - 1)))))
+}
+rbind(tarjeta_vs_riesgo    = v_cramer(tabla_tr),
+      ocupacion_vs_tarjeta = v_cramer(tabla_ot))
+```
+
+**Lectura:** las cinco filas de riesgo son casi iguales entre sí y casi
+iguales a la marginal: `Platinum` y `Signature` tienen un par de puntos
+más en las bandas de riesgo bajo, y nada más. La prueba $\chi^2$ rechaza
+la independencia ($p$ = `r signif(v_cramer(tabla_tr)["p_valor"], 2)`),
+pero con $n = 50.000$ eso detecta hasta la diferencia más pequeña (la
+misma advertencia del Módulo 14 sobre las pruebas de normalidad): el
+tamaño de la dependencia, $V = `r round(v_cramer(tabla_tr)["V_Cramer"], 3)`$,
+es prácticamente cero. Entre ocupación y tarjeta, en cambio,
+$V = `r round(v_cramer(tabla_ot)["V_Cramer"], 3)`$: una dependencia
+fuerte, la de las casillas vacías del Módulo 11. **Decisión:** para el
+riesgo, el tipo de tarjeta puede tratarse como casi independiente; para
+la ocupación, no — cualquier análisis por tipo de tarjeta está mezclando
+ocupaciones.
+
+## Caso continuo: se condiciona con una rebanada
+
+En el caso continuo la fórmula es la misma, y la imagen cambia:
+condicionar en $X = x$ es **cortar la nube con una rebanada** en ese $x$
+y mirar la distribución de $Y$ dentro de ella. Con datos, la rebanada se
+hace cortando $X$ en **terciles**, y se contestan las tres preguntas de
+la sesión: **¿se mueve el centro?, ¿cambia el ancho?, ¿cambia la
+forma?**. Lo hacemos con el par de riesgo, `Credit_Score` según el
+tercil de `Credit_Utilization`:
+
+```{r, rebanadas_utilizacion, fig.width=11, fig.height=4.5}
+asim <- function(v) mean(((v - mean(v)) / sd(v))^3)
+rebanar <- function(x, y, etiquetas = c("bajo", "medio", "alto")) {
+  t <- cut(x, breaks = quantile(x, c(0, 1/3, 2/3, 1)), include.lowest = TRUE, labels = etiquetas)
+  list(tercil = t,
+       resumen = t(sapply(split(y, t), function(v)
+         round(c(n = length(v), media = mean(v), sd = sd(v), asimetria = asim(v),
+                 p10 = unname(quantile(v, 0.1)), p90 = unname(quantile(v, 0.9))), 2))))
+}
+
+reb_ui <- rebanar(ui, cs)
+reb_ui$resumen
+
+col_terc <- c("#2E7D32", "#D4A017", "#B0442F")
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+boxplot(cs ~ reb_ui$tercil, col = adjustcolor(col_terc, 0.4),
+        main = "Credit_Score | tercil de Credit_Utilization",
+        xlab = "uso del cupo", ylab = "Credit_Score")
+plot(density(cs[reb_ui$tercil == "bajo"]), lwd = 2, col = col_terc[1],
+     main = "Las tres condicionales", xlab = "Credit_Score", ylim = c(0, 0.0085))
+lines(density(cs[reb_ui$tercil == "medio"]), lwd = 2, col = col_terc[2])
+lines(density(cs[reb_ui$tercil == "alto"]),  lwd = 2, col = col_terc[3])
+legend("topleft", paste("uso", levels(reb_ui$tercil)), col = col_terc, lwd = 2, bty = "n")
+par(mfrow = c(1, 1))
+```
+
+**Lectura, con las tres preguntas:**
+
+1.  **El centro se mueve, y mucho:** el puntaje medio pasa de
+    `r reb_ui$resumen["bajo", "media"]` con uso bajo del cupo a
+    `r reb_ui$resumen["alto", "media"]` con uso alto.
+2.  **El ancho cambia poco:** la desviación estándar se queda entre
+    `r min(reb_ui$resumen[, "sd"])` y
+    `r max(reb_ui$resumen[, "sd"])` en las tres rebanadas.
+3.  **La forma tampoco:** las tres condicionales tienen la misma cola
+    izquierda (asimetrías entre
+    `r min(reb_ui$resumen[, "asimetria"])` y
+    `r max(reb_ui$resumen[, "asimetria"])`); la curva entera se desplaza
+    sin deformarse.
+
+Es la huella de una dependencia **lineal**: lo que cambia con el uso del
+cupo es el nivel del puntaje, no su dispersión. **Para la Gerencia de
+Riesgo:** el tercil de uso del cupo, por sí solo, ya mueve el puntaje
+esperado en
+`r round(reb_ui$resumen["bajo", "media"] - reb_ui$resumen["alto", "media"])`
+puntos.
+
+## La normal bivariada: la condicional tiene fórmula
+
+Si $(X, Y)$ fuera normal bivariada, la condicional sería otra normal con
+media sobre una recta y varianza constante:
+
+$$Y \mid X = x \;\sim\; N\!\left(\mu_Y + \rho\,\frac{\sigma_Y}{\sigma_X}(x - \mu_X),\;\; \sigma_Y^2\,(1 - \rho^2)\right)$$
+
+Comparamos lo que predice la fórmula, usando las medias, desviaciones y
+la correlación de la cartera, con lo que muestran las rebanadas reales
+(ahora más finas: clientes con un uso del cupo a menos de 0,02 del valor
+indicado):
+
+```{r, normal_condicional_bivariada}
+mu_x <- mean(ui); s_x <- sd(ui); mu_y <- mean(cs); s_y <- sd(cs); rho_xy <- cor(ui, cs)
+media_cond <- function(x) mu_y + rho_xy * s_y / s_x * (x - mu_x)
+sd_cond    <- s_y * sqrt(1 - rho_xy^2)
+
+cortes_ui <- c(0.2, 0.4, 0.6, 0.8)
+t(sapply(cortes_ui, function(x0) {
+  y0 <- cs[abs(ui - x0) < 0.02]
+  round(c(uso = x0, n = length(y0),
+          media_real = mean(y0), media_formula = media_cond(x0),
+          sd_real = sd(y0), sd_formula = sd_cond), 1)
+}))
+c(sd_marginal = s_y, sd_condicional_formula = sd_cond)
+```
+
+**Lectura:** la media condicional real sigue de cerca la recta de la
+fórmula —que es exactamente la recta de regresión del puntaje sobre el
+uso del cupo— y la desviación dentro de cada rebanada se mantiene cerca
+de $\sigma_Y\sqrt{1-\rho^2} = `r round(sd_cond, 1)`$, **menor** que la
+marginal (`r round(s_y, 1)`) por el factor $\sqrt{1 - \rho^2}$: saber el
+uso del cupo reduce la incertidumbre sobre el puntaje. Las diferencias
+que aparezcan en los extremos vienen de que `Credit_Score` no es normal
+(cola izquierda, Módulo 3): la fórmula describe el centro de la cartera
+mejor que sus bordes.
+
+## La trampa: correlación casi cero no es independencia
+
+La sesión S10 advierte que una correlación nula (o una media
+condicional quieta) no prueba independencia, porque la definición 2 pide
+que **toda** la distribución condicional sea igual, no solo su centro.
+En la cartera hay un caso así: `Payment_Amount` (el monto que el cliente
+paga) y `Credit_Score`.
+
+```{r, rebanadas_pago, fig.width=11, fig.height=4.5}
+pa <- credit$Payment_Amount
+c(r_pearson = cor(pa, cs))
+
+reb_pa <- rebanar(pa, cs)
+reb_pa$resumen
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+boxplot(cs ~ reb_pa$tercil, col = adjustcolor(col_terc[3:1], 0.4),
+        main = "Credit_Score | tercil de Payment_Amount",
+        xlab = "monto pagado", ylab = "Credit_Score")
+plot(density(cs[reb_pa$tercil == "bajo"]), lwd = 2, col = col_terc[3],
+     main = "Las tres condicionales", xlab = "Credit_Score", ylim = c(0, 0.0075))
+lines(density(cs[reb_pa$tercil == "medio"]), lwd = 2, col = col_terc[2])
+lines(density(cs[reb_pa$tercil == "alto"]),  lwd = 2, col = col_terc[1])
+legend("topleft", paste("pago", levels(reb_pa$tercil)), col = col_terc[3:1], lwd = 2, bty = "n")
+par(mfrow = c(1, 1))
+```
+
+**Lectura:** la correlación es
+$r = `r round(cor(pa, cs), 3)`$, y el centro apenas se mueve entre
+terciles (de `r reb_pa$resumen["bajo", "media"]` a
+`r reb_pa$resumen["medio", "media"]`). Si solo se mirara $r$ o la media,
+la conclusión sería "el monto pagado no tiene nada que ver con el
+puntaje". Pero **el ancho sí cambia**: la desviación estándar del
+puntaje baja de `r reb_pa$resumen["bajo", "sd"]` entre quienes pagan poco
+a `r reb_pa$resumen["alto", "sd"]` entre quienes pagan mucho, y el
+percentil 10 sube de `r reb_pa$resumen["bajo", "p10"]` a
+`r reb_pa$resumen["alto", "p10"]` mientras el percentil 90 casi no se
+mueve. **La dependencia está en la cola de riesgo**: los puntajes más
+bajos de la cartera se concentran entre quienes pagan montos pequeños.
+
+| Lo que se mira | ¿Detecta la dependencia `Payment_Amount`–`Credit_Score`? |
+|---|---|
+| Correlación | **No**: $r \approx$ `r round(cor(pa, cs), 2)` |
+| Media condicional | **Apenas**: se mueve menos de 20 puntos |
+| **Distribución condicional completa** | **Sí**: la cola izquierda se alarga cuando el pago es bajo |
+
+## Simpson, resuelto
+
+Volvemos a la deuda del Módulo 11. La herramienta es condicionar en el
+tipo de tarjeta: ¿cómo se reparten las dos variables entre tarjetas, y
+qué pasa dentro de cada una?
+
+```{r, simpson_resuelto}
+resumen_simpson <- t(sapply(split(credit, tarjeta), function(d)
+  c(n = nrow(d),
+    transacciones_media = mean(d$Monthly_Transactions),
+    valor_medio = mean(d$Avg_Transaction_Value),
+    r_dentro = cor(d$Monthly_Transactions, d$Avg_Transaction_Value))))
+round(resumen_simpson, 2)
+
+c(r_global = cor(mt, atv),
+  r_entre_centros = cor(resumen_simpson[, "transacciones_media"], resumen_simpson[, "valor_medio"]),
+  r_dentro_promedio = mean(resumen_simpson[, "r_dentro"]))
+```
+
+```{r, simpson_plot, fig.width=7.5, fig.height=5.5}
+set.seed(11)
+idx_s <- sample(nrow(credit), 5000)
+plot(mt[idx_s], atv[idx_s], pch = 16, cex = 0.45, log = "y",
+     col = adjustcolor(col_tarjeta[as.integer(tarjeta[idx_s])], 0.45),
+     xlab = "Monthly_Transactions", ylab = "Avg_Transaction_Value (₹, escala log)",
+     main = "Dentro de cada tarjeta la nube baja; entre tarjetas, sube")
+points(resumen_simpson[, "transacciones_media"], resumen_simpson[, "valor_medio"],
+       pch = 23, cex = 2.2, bg = col_tarjeta, col = "black", lwd = 1.5)
+lines(resumen_simpson[, "transacciones_media"], resumen_simpson[, "valor_medio"], lty = 2)
+legend("topleft", orden_tarjeta, col = col_tarjeta, pch = 16, bty = "n", title = "Card_Type")
+```
+
+**Lectura:** las tres piezas del mecanismo están en la tabla:
+
+1.  **Condicionando en la tarjeta, la relación es negativa siempre**
+    (de `r round(max(resumen_simpson[, "r_dentro"]), 2)` a
+    `r round(min(resumen_simpson[, "r_dentro"]), 2)`): entre clientes
+    con la misma tarjeta, más transacciones van con transacciones más
+    pequeñas. Es la comparación honesta, iguales contra iguales.
+2.  **El tipo de tarjeta empuja las dos variables hacia arriba a la
+    vez:** un `Signature` hace en promedio
+    `r round(resumen_simpson["Signature", "transacciones_media"])`
+    transacciones de
+    `r format(round(resumen_simpson["Signature", "valor_medio"]), big.mark=".")`(₹);
+    un `Basic`,
+    `r round(resumen_simpson["Basic", "transacciones_media"])` de
+    `r round(resumen_simpson["Basic", "valor_medio"])`(₹). Los cinco
+    centros (rombos) suben juntos.
+3.  **Al juntar las tarjetas, la tendencia entre centros se impone a la
+    de dentro de cada grupo**, y el $r$ global sale positivo
+    (`r round(cor(mt, atv), 3)`).
+
+`Card_Type` es una variable **confusora**: afecta a la vez a cuántas
+transacciones se hacen y a cuánto vale cada una. **Regla:** cuando una
+variable empuja a las dos que se comparan, se condiciona en ella. Para
+el banco: un modelo de gasto que use transacciones y valor medio sin
+`Card_Type` llegaría a la conclusión exactamente equivocada sobre cómo
+se relacionan.
+
+## La ley de la varianza total
+
+La sesión anunció que la varianza de una variable se parte en dos:
+lo que varía **dentro** de cada rebanada y lo que se **mueven los
+centros** entre rebanadas,
+
+$$\operatorname{Var}(Y) \;=\; \underbrace{E\big[\operatorname{Var}(Y \mid X)\big]}_{\text{dentro}} \;+\; \underbrace{\operatorname{Var}\big(E[Y \mid X]\big)}_{\text{entre centros}}$$
+
+Lo verificamos con el puntaje y los terciles de uso del cupo (con
+denominador $n$ en todas las varianzas, para que la identidad sea
+exacta):
+
+```{r, varianza_total}
+var_n <- function(v) mean((v - mean(v))^2)
+pesos   <- prop.table(table(reb_ui$tercil))
+dentro  <- sum(pesos * tapply(cs, reb_ui$tercil, var_n))
+centros <- tapply(cs, reb_ui$tercil, mean)
+entre   <- sum(pesos * (centros - mean(cs))^2)
+
+c(varianza_total = var_n(cs), dentro = dentro, entre = entre, suma = dentro + entre,
+  pct_explicado_por_terciles = 100 * entre / var_n(cs))
+```
+
+**Lectura:** la suma reproduce exactamente la varianza total. De ella,
+el `r round(100 * entre / var_n(cs), 1)` % es "entre centros": la parte
+del puntaje que se explica con solo saber en qué tercil de uso del cupo
+está el cliente. Es un $\eta^2$ como los del Módulo 7, con el tercil
+como grupo, ahora deducido desde las condicionales; y si la rebanada fuera infinitamente
+fina, tendería a $\rho^2 = `r round(cor(ui, cs)^2, 3)`$ (la fórmula de la
+normal bivariada).
+
+## Condicionales en $p$ dimensiones
+
+Para la normal multivariante la condicional tiene forma cerrada: se
+parte el vector en dos bloques, $\mathbf{X} = (\mathbf{X}_1, \mathbf{X}_2)$,
+
+$$\mathbf{X}_1 \mid \mathbf{X}_2 = \mathbf{x}_2 \;\sim\;
+  N\!\left(\boldsymbol\mu_1 + \boldsymbol\Sigma_{12}\boldsymbol\Sigma_{22}^{-1}(\mathbf{x}_2 - \boldsymbol\mu_2),\;\;
+           \boldsymbol\Sigma_{11} - \boldsymbol\Sigma_{12}\boldsymbol\Sigma_{22}^{-1}\boldsymbol\Sigma_{21}\right)$$
+
+La marginal era **tachar** filas y columnas de $\boldsymbol\Sigma$; la
+condicional es **tachar y corregir**. La aplicamos al puntaje, primero
+sabiendo solo el uso del cupo y después sabiendo también la proporción
+pagada, con el vector de medias y la matriz $\mathbf{S}$ de la cartera:
+
+```{r, condicional_p_dimensiones}
+condicional_normal <- function(mu, Sigma, i, j, x2) {
+  S11 <- Sigma[i, i, drop = FALSE]
+  S12 <- Sigma[i, j, drop = FALSE]
+  S22 <- Sigma[j, j, drop = FALSE]
+  list(media = drop(mu[i] + S12 %*% solve(S22, x2 - mu[j])),
+       sd    = sqrt(drop(S11 - S12 %*% solve(S22, t(S12)))))
+}
+
+vars_c <- c("Credit_Score", "Credit_Utilization", "Payment_Ratio")
+mu_c <- colMeans(credit[, vars_c]); S_c <- cov(credit[, vars_c])
+
+sin_nada  <- c(media = unname(mu_c["Credit_Score"]), sd = sqrt(S_c["Credit_Score", "Credit_Score"]))
+con_uso   <- condicional_normal(mu_c, S_c, "Credit_Score", "Credit_Utilization", 0.80)
+con_ambas <- condicional_normal(mu_c, S_c, "Credit_Score", c("Credit_Utilization", "Payment_Ratio"), c(0.80, 0.40))
+
+rbind(sin_saber_nada            = sin_nada,
+      sabiendo_uso_80           = unlist(con_uso),
+      sabiendo_uso_80_y_pago_40 = unlist(con_ambas))
+
+# ¿Cuánto acierta la fórmula? Clientes reales con uso ~0,80 y proporción pagada ~0,40
+reales <- cs[abs(ui - 0.80) < 0.03 & abs(credit$Payment_Ratio - 0.40) < 0.03]
+c(n = length(reales), media_real = mean(reales), sd_real = sd(reales))
+```
+
+**Lectura:** sin saber nada, el puntaje esperado es
+`r round(sin_nada["media"])` con desviación `r round(sin_nada["sd"], 1)`.
+Saber que el cliente usa el 80 % de su cupo baja la media a
+`r round(con_uso$media)` y la desviación a `r round(con_uso$sd, 1)`.
+Saber además que paga solo el 40 % de lo facturado la baja a
+`r round(con_ambas$media)`, con desviación de apenas
+`r round(con_ambas$sd, 1)` puntos — y los
+`r length(reales)` clientes reales con ese perfil tienen un puntaje
+medio de `r round(mean(reales))`. **Cada variable que se conoce corre el
+centro y angosta la campana**, y estas dos juntas (que entre sí casi no
+están correlacionadas, $r = `r round(cor(ui, credit$Payment_Ratio), 3)`$)
+dejan el puntaje casi determinado: la varianza condicional es el
+`r round(100 * con_ambas$sd^2 / sin_nada["sd"]^2, 1)` % de la marginal.
+**Para la Gerencia de Riesgo esto es central:** el puntaje del buró
+está contenido casi por completo en dos conductas de pago que el banco
+observa directamente cada mes.
+
+### El requisito escondido: $\boldsymbol\Sigma_{22}$ tiene que invertirse
+
+```{r, condicional_singular}
+# El gasto total recalculado como suma exacta de sus siete categorías
+gasto_total_exacto <- rowSums(credit[, cat_gasto])
+X_gasto <- cbind(Credit_Score = credit$Credit_Score, Gasto_Total = gasto_total_exacto,
+                 credit[, cat_gasto])
+cond_gasto <- c("Gasto_Total", cat_gasto)
+
+tryCatch(
+  condicional_normal(colMeans(X_gasto), cov(X_gasto), "Credit_Score", cond_gasto,
+                     colMeans(X_gasto[, cond_gasto])),
+  error = function(e) paste("ERROR:", conditionMessage(e)))
+
+# Con el Monthly_Spending guardado en la base (redondeado a centavos) no hay error,
+# pero la matriz está a un redondeo de ser singular:
+c(numero_de_condicion = kappa(cov(credit[, c("Monthly_Spending", cat_gasto)]), exact = TRUE),
+  menor_valor_propio_R = min(eigen(cor(credit[, c("Monthly_Spending", cat_gasto)]))$values))
+```
+
+**Lectura:** si se intenta condicionar en el gasto total **y** en sus
+siete categorías a la vez, $\boldsymbol\Sigma_{22}$ es singular —el
+total es la suma exacta de las otras siete— y `solve()` falla: no hay
+distribución condicional que calcular. Con el `Monthly_Spending` que
+trae la base, R no protesta solo porque está redondeado a centavos
+(Módulo 10): el número de condición es del orden de
+$10^{`r floor(log10(kappa(cov(credit[, c("Monthly_Spending", cat_gasto)]), exact = TRUE)))`}$, es
+decir, R invierte una matriz que solo deja de ser singular por el ruido
+del redondeo, y cualquier resultado que salga de ahí es numéricamente
+basura. Es la misma razón por la que esas columnas se excluyen antes de
+Mahalanobis (Módulo 13) y del PCA (Módulo 15).
+
+## Conclusión del módulo
+
+1.  **Condicionar es fijar y reescalar**: cada fila de la tabla dividida
+    por su total. $P(\text{Basic} \mid \text{Student})$ y
+    $P(\text{Student} \mid \text{Basic})$ son cosas distintas, y en la
+    cartera difieren en más de 60 puntos.
+2.  **Independencia es que todas las condicionales sean iguales a la
+    marginal**, completas. Tarjeta y banda de riesgo son prácticamente
+    independientes ($V$ de Cramér casi 0, aunque la $\chi^2$ rechace por
+    el tamaño de muestra); ocupación y tarjeta no lo son.
+3.  **Las rebanadas responden tres preguntas:** con el uso del cupo se
+    mueve el centro del puntaje y no el ancho (dependencia lineal); con
+    el monto pagado, $r \approx 0$ pero cambia el ancho y la cola de
+    riesgo — correlación cero no es independencia.
+4.  **Simpson, resuelto:** `Card_Type` es confusora de transacciones y
+    valor medio; condicionando en ella, la relación es negativa en las
+    cinco tarjetas.
+5.  **Varianza total = dentro + entre centros**, verificada
+    exactamente; y en $p$ dimensiones la condicional es "tachar y
+    corregir", con la condición de que $\boldsymbol\Sigma_{22}$ sea
+    invertible.
+
+------------------------------------------------------------------------
+
+# Módulo 13: Normal Multivariante, Distancia de Mahalanobis y Gráfico Q-Q
+
+El Módulo 7 construyó a mano un "punto imposible": un cliente normal en
+cada variable por separado y fuera de la nube cuando se miran juntas. El
+Módulo 9 mostró que la distancia euclidiana no distingue a ese cliente
+de uno típico, y el Módulo 10 dejó lista la pieza que faltaba, una
+$\mathbf{S}$ invertible. Este módulo junta las tres cosas y responde la
+pregunta de la sesión de normal multivariante, ahora sobre la cartera:
+
+> **¿Hay clientes que son raros en la combinación de sus variables,
+> aunque ninguna por separado sea extrema? ¿Quiénes son, y qué se hace
+> con ellos?**
+
+## La matriz con la que se trabaja
+
+Mahalanobis necesita el vector completo de cada cliente: un solo hueco
+deja la fila por fuera. El Módulo 2 ya mostró que la cartera no tiene
+faltantes, así que entran todos. Se usan las
+`r 26 - length(variables_excluidas)` variables no redundantes verificadas
+en el Módulo 10, en dos versiones: **tal como vienen**, y con
+`log(x+1)` en las que tienen asimetría mayor que 1 en valor absoluto
+(el mismo criterio que formaliza el Módulo 15), porque una distancia
+construida con $\mathbf{S}$ hereda la asimetría de las variables.
+
+```{r, matriz_mahalanobis}
+vars_mahal <- setdiff(numeric_cols, variables_excluidas)
+asimetria_mahal <- sapply(credit[, vars_mahal], function(x) mean(((x - mean(x)) / sd(x))^3))
+vars_log_mahal <- vars_mahal[abs(asimetria_mahal) > 1]
+
+X_mahal <- credit[, vars_mahal]                      # tal como vienen
+X_log   <- X_mahal
+X_log[vars_log_mahal] <- lapply(X_log[vars_log_mahal], log1p)
+p_mahal <- ncol(X_mahal)
+
+c(clientes = nrow(X_mahal), filas_completas = sum(complete.cases(X_mahal)),
+  variables = p_mahal, con_log = length(vars_log_mahal))
+```
+
+## Por qué variable por variable no alcanza
+
+### La revisión de siempre
+
+La forma habitual de buscar casos raros es la del Módulo 6: señalar a
+quien está a más de tres desviaciones de la media en alguna columna.
+
+```{r, extremos_univariados}
+Z_log <- scale(X_log)
+extremo_univariado <- apply(abs(Z_log) > 3, 1, any)
+c(con_alguna_variable_extrema = sum(extremo_univariado),
+  porcentaje = round(100 * mean(extremo_univariado), 2))
+```
+
+**Lectura:** `r format(sum(extremo_univariado), big.mark=".")` clientes
+(`r round(100 * mean(extremo_univariado), 1)` %) tienen al menos una
+variable a más de tres desviaciones. Es un número razonable, pero esa
+revisión **solo ve una columna a la vez**: no puede preguntar si la
+*combinación* tiene sentido.
+
+### El caso del plano, con la elipse
+
+Tomamos el par de riesgo del Módulo 7, `Credit_Utilization` y
+`Credit_Score` ($r = `r round(cor(credit$Credit_Utilization, credit$Credit_Score), 3)`$),
+y le dibujamos encima la **elipse de concentración del 95 %**: la
+frontera dentro de la cual caería el 95 % de los clientes si el par
+fuera una campana bivariada. Encima, las bandas de $\pm 2$ desviaciones
+de cada variable, que es lo que vigila una revisión columna por columna.
+
+```{r, elipse_plano, fig.width=7, fig.height=6}
+par_riesgo <- as.matrix(credit[, c("Credit_Utilization", "Credit_Score")])
+centro_par <- colMeans(par_riesgo); S_par <- cov(par_riesgo)
+d2_par <- mahalanobis(par_riesgo, centro_par, S_par)
+
+fuera_elipse <- d2_par > qchisq(0.95, df = 2)
+z_par <- scale(par_riesgo)
+fuera_bandas <- abs(z_par[, 1]) > 2 | abs(z_par[, 2]) > 2
+
+# Elipse: centro + sqrt(chi2) * raíz de S aplicada a un círculo unitario
+elipse <- function(centro, S, nivel, k = 200) {
+  ang <- seq(0, 2 * pi, length.out = k)
+  circ <- cbind(cos(ang), sin(ang))
+  sweep(sqrt(qchisq(nivel, 2)) * circ %*% chol(S), 2, centro, "+")
+}
+
+set.seed(13)
+idx_e <- sample(nrow(par_riesgo), 6000)
+plot(par_riesgo[idx_e, ], pch = 16, cex = 0.45, col = rgb(0, 0, 0, 0.18),
+     xlab = "Credit_Utilization", ylab = "Credit_Score",
+     main = "Elipse del 95 % y bandas de ±2 desviaciones")
+lines(elipse(centro_par, S_par, 0.95), col = "firebrick", lwd = 2.5)
+sd_par <- apply(par_riesgo, 2, sd)
+abline(v = centro_par[1] + c(-2, 2) * sd_par[1], lty = 2, col = "steelblue", lwd = 1.5)
+abline(h = centro_par[2] + c(-2, 2) * sd_par[2], lty = 2, col = "steelblue", lwd = 1.5)
+raros_plano <- which(fuera_elipse & !fuera_bandas)
+points(par_riesgo[intersect(raros_plano, idx_e), ], pch = 16, cex = 0.7, col = "darkorange")
+legend("bottomleft", c("elipse del 95 %", "±2 desviaciones", "fuera de la elipse, dentro de las bandas"),
+       col = c("firebrick", "steelblue", "darkorange"), lty = c(1, 2, NA), pch = c(NA, NA, 16),
+       bty = "n", cex = 0.85)
+
+data.frame(
+  situacion = c("Fuera de la elipse, con las dos variables dentro de ±2 desviaciones",
+                "Dentro de la elipse, con una variable fuera de ±2 desviaciones",
+                "Fuera de la elipse (total)"),
+  clientes = c(sum(fuera_elipse & !fuera_bandas), sum(!fuera_elipse & fuera_bandas),
+               sum(fuera_elipse)))
+```
+
+**Lectura:** `r format(sum(fuera_elipse & !fuera_bandas), big.mark=".")`
+clientes (los puntos naranja) quedan **fuera de la elipse aunque sus dos
+variables están dentro de las bandas**: uso del cupo y puntaje
+corrientes por separado, en una combinación que la cartera casi no
+produce: casi todos son clientes con **poco** uso del cupo **y** puntaje
+bajo, justo lo contrario de lo que dice la correlación negativa. Y al revés,
+`r format(sum(!fuera_elipse & fuera_bandas), big.mark=".")` clientes
+tienen una variable fuera de las bandas pero están dentro de la elipse:
+son quienes llevan las dos variables al extremo **en la dirección de la
+correlación** (mucho uso y poco puntaje), coherentes con la nube. Las
+dos revisiones no señalan a la misma gente: la columna por columna se
+pierde a unos y da falsas alarmas con otros. Se necesita una medida que
+mida **en elipses**.
+
+## La distancia de Mahalanobis, en palabras
+
+La distancia euclidiana mide cuánto se aleja un cliente del promedio
+tratando a las variables como independientes. La de Mahalanobis hace
+dos ajustes antes de medir:
+
+| Ajuste | Qué hace | Por qué |
+|----|----|----|
+| **Por la escala** | Cuenta la distancia en desviaciones, no en rupias | 10.000 rupias de ingreso no valen lo mismo que 10.000 de gasto en combustible |
+| **Por la compañía** | Descuenta lo que las variables ya comparten | Si ingreso y cupo van juntos, tener los dos altos no es *dos* rarezas: es una sola |
 
 $$d_M(\mathbf{x}_i) = \sqrt{(\mathbf{x}_i - \bar{\mathbf{x}})' \, \mathbf{S}^{-1} \, (\mathbf{x}_i - \bar{\mathbf{x}})}$$
 
-```{r, mahalanobis_completo}
-X_mahal <- credit[, sapply(credit, is.numeric)]
-X_mahal <- X_mahal[, !(names(X_mahal) %in% variables_excluidas)]
-p_mahal <- ncol(X_mahal)
+Todos los puntos de la elipse roja están a la misma distancia de
+Mahalanobis del centro. Comparamos las dos distancias sobre los
+`r p_mahal` variables a la vez (la euclidiana, sobre las variables ya
+estandarizadas, para que no la domine el ingreso):
 
+```{r, euclidiana_vs_mahalanobis_cartera}
+d2_log <- mahalanobis(X_log, colMeans(X_log), cov(X_log))
+d_euclid <- sqrt(rowSums(Z_log^2))
+
+top_1pct <- round(0.01 * nrow(X_log))
+c(correlacion_entre_las_dos = round(cor(d_euclid, sqrt(d2_log)), 3),
+  clientes_en_el_top_1pct   = top_1pct,
+  coinciden_en_el_top_1pct  = length(intersect(order(d_euclid, decreasing = TRUE)[1:top_1pct],
+                                               order(d2_log,   decreasing = TRUE)[1:top_1pct])))
+```
+
+**Lectura:** las dos distancias se correlacionan
+`r round(cor(d_euclid, sqrt(d2_log)), 2)`, pero de los
+`r top_1pct` clientes más lejanos según cada una, solo
+`r length(intersect(order(d_euclid, decreasing = TRUE)[1:top_1pct], order(d2_log, decreasing = TRUE)[1:top_1pct]))`
+son los mismos. La euclidiana encuentra sobre todo a los clientes de
+los extremos de tamaño: la mitad de su lista tiene un ingreso por encima
+del percentil
+`r round(100 * median(rank(credit$Annual_Income)[order(d_euclid, decreasing = TRUE)[1:top_1pct]] / nrow(credit)))`
+de la cartera, clientes **grandes en todo** —mucho ingreso, mucho cupo,
+mucho gasto— que están lejos pero son coherentes; Mahalanobis encuentra a los que combinan sus
+variables de una forma que la cartera no produce.
+
+## Las distancias sobre toda la cartera y el corte $\chi^2$
+
+Si la cartera fuera normal multivariante, $d_M^2$ se distribuiría como
+una $\chi^2$ con $p = `r p_mahal`$ grados de libertad; eso convierte
+"está lejos" en un umbral. Primero, con las variables tal como vienen:
+
+```{r, mahalanobis_completo}
 S_mahal <- cov(X_mahal)
 d2 <- mahalanobis(X_mahal, colMeans(X_mahal), S_mahal)
 
@@ -3822,71 +5156,220 @@ c(p = p_mahal, corte_chi2_97.5 = round(corte_chi2, 1),
   pct_atipicos = round(100 * n_atipicos_mahal / nrow(X_mahal), 2))
 ```
 
-```{r, mahalanobis_qqplot, fig.width=6.5, fig.height=5.5}
-qqplot(qchisq(ppoints(length(d2)), df = p_mahal), d2,
-       xlab = expression(paste("Cuantiles teóricos ", chi[p]^2)),
-       ylab = "Distancia de Mahalanobis al cuadrado (d²)",
-       main = "¿La cartera se comporta como normal multivariante?",
-       pch = 16, col = rgb(0.1, 0.4, 0.7, 0.2), cex = 0.5)
-abline(0, 1, col = "firebrick", lwd = 2, lty = 2)
+Y la comparación completa de cortes, cruda frente a transformada:
+
+```{r, cortes_chi2}
+cortes <- qchisq(c(0.95, 0.99, 0.999), df = p_mahal)
+data.frame(
+  corte = c("95 %", "99 %", "99,9 %"),
+  valor_d2 = round(cortes, 2),
+  esperado_pct = c(5, 1, 0.1),
+  observado_crudo_pct = round(100 * sapply(cortes, function(q) mean(d2 > q)), 2),
+  observado_log_pct   = round(100 * sapply(cortes, function(q) mean(d2_log > q)), 2))
 ```
 
-**Lectura, con cifras exactas:** con $p = `r p_mahal`$ variables, el
-corte teórico de $\chi^2$ al 97,5 % es `r round(corte_chi2,1)`. Si la
-cartera fuera normal multivariante, ese corte dejaría por fuera cerca
-del 2,5 % de los clientes; en cambio quedan marcados
+```{r, hist_d2, fig.width=11, fig.height=4.5}
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+for (caso in list(list(d = d2, t = "Variables tal como vienen"),
+                  list(d = d2_log, t = "Con log(x+1) en las asimétricas"))) {
+  hist(pmin(caso$d, 150), breaks = 80, freq = FALSE, col = "grey85", border = "white",
+       xlim = c(0, 150), main = caso$t, xlab = "d² (truncada en 150)")
+  curve(dchisq(x, df = p_mahal), add = TRUE, col = "firebrick", lwd = 2)
+  abline(v = cortes[2], lty = 2)
+}
+par(mfrow = c(1, 1))
+```
+
+**Lectura, con cifras exactas:** con las variables crudas, el corte del
+97,5 % (`r round(corte_chi2, 1)`) deja por fuera
 `r format(n_atipicos_mahal, big.mark=".")` clientes, el
-`r round(100*n_atipicos_mahal/nrow(X_mahal),1)` % — más de tres veces lo
-esperado. El QQ-plot explica por qué: los puntos se despegan claramente
-de la recta de 45° en la cola superior, señal de que $\mathbf{d}^2$
-tiene colas más pesadas que una $\chi^2_{`r p_mahal`}$ teórica. La causa
-no es un error de cálculo, es la que ya se documentó en el Módulo 3:
-variables como `Cash_Advance_Amount`, `Dining_Spending` o
+`r round(100*n_atipicos_mahal/nrow(X_mahal),1)` %, cuando la teoría
+espera 2,5 %; en el 99,9 % se observa el
+`r round(100 * mean(d2 > cortes[3]), 2)` % contra 0,1 %. La curva roja
+no sigue al histograma: la cola es muchísimo más pesada de lo que una
+$\chi^2_{`r p_mahal`}$ permite. Con `log(x+1)` el histograma se acerca a
+la curva y el exceso cae a
+`r round(100 * mean(d2_log > cortes[2]), 2)` % en el corte del 99 %
+(contra `r round(100 * mean(d2 > cortes[2]), 2)` % sin transformar). La
+causa del exceso no es un error de cálculo: es la que ya documentó el
+Módulo 3 — variables como `Cash_Advance_Amount`, `Dining_Spending` o
 `Travel_Spending` son fuertemente asimétricas a la derecha (varias
-infladas en cero), no normales — y Mahalanobis hereda esa asimetría.
-**La conclusión correcta no es "el 8,8 % de los clientes son
-atípicos"**, sino que el corte $\chi^2$ es solo una guía bajo normalidad
-multivariante que aquí no se cumple exactamente; lo que sí es
-información real y utilizable es el **orden** que produce $d^2$: los
-clientes en el percentil 99,9 (`d² >` `r round(quantile(d2, 0.999),1)`)
-son, en cualquier caso, los que combinan sus 21 variables de una forma
-más alejada de lo típico en la cartera, con o sin el supuesto de
-normalidad.
+infladas en cero), y Mahalanobis hereda esa asimetría.
 
-## Las ideas del módulo
+## El gráfico Q-Q: ¿la cartera es una campana multivariante?
 
-1.  $\bar{\mathbf{x}} = \frac{1}{n}\mathbf{X}'\mathbf{1}$ es el
-    centroide: el punto que minimiza la suma de distancias al cuadrado a
-    la nube, verificado numéricamente sobre
-    `Annual_Income`/`Credit_Limit`.
-2.  El centroide describe **al conjunto**, no a cada segmento:
-    representa bien a `Credit_Score` (grupos de `Card_Type` casi
-    idénticos) y representa mal a `Credit_Limit` (grupos de `Card_Type`
-    que van de \$74.073 a \$4.114.793).
-3.  La media tiene punto de ruptura próximo a cero frente a errores
-    **sistemáticos** (250 filas de 50.000 bastan para dispararla
-    `r sprintf("%.0f%%", 100*(mean(Xb)/mean(X_original)-1))`), mientras
-    que la mediana marginal y la media recortada resisten. Ninguna de
-    las dos reemplaza, sin embargo, a una mediana multivariante genuina.
-4.  La distancia euclidiana ignora la correlación entre variables; la de
-    Mahalanobis la incorpora a través de $\mathbf{S}^{-1}$, y por eso
-    distingue a un cliente "raro" de uno perfectamente típico aunque
-    ambos estén a la misma distancia en línea recta del centro.
-5.  Aplicada a las 21 variables no redundantes de la cartera completa,
-    Mahalanobis señala más atípicos de los que predice la teoría bajo
-    normalidad — porque la cartera no es normal multivariante, no porque
-    el cálculo esté mal — y el QQ-plot es la forma correcta de
-    verificarlo antes de confiar en un corte $\chi^2$.
+El gráfico Q-Q de las distancias pone en el eje horizontal la distancia
+que **debería** tener cada cliente si la cartera fuera normal
+multivariante y en el vertical la que **tiene**. Si los datos se portan,
+los puntos caen sobre la recta de 45°.
+
+```{r, mahalanobis_qqplot, fig.width=11, fig.height=5.5}
+teoricos <- qchisq(ppoints(length(d2)), df = p_mahal)
+
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 3, 1))
+qqplot(teoricos, d2,
+       xlab = expression(paste("Cuantiles teóricos ", chi[p]^2)),
+       ylab = "d² observada", main = "Variables tal como vienen",
+       pch = 16, col = rgb(0.1, 0.4, 0.7, 0.2), cex = 0.5)
+abline(0, 1, col = "firebrick", lwd = 2, lty = 2)
+abline(v = qchisq(0.99, p_mahal), lty = 3)
+qqplot(teoricos, d2_log,
+       xlab = expression(paste("Cuantiles teóricos ", chi[p]^2)),
+       ylab = "d² observada", main = "Con log(x+1) en las asimétricas",
+       pch = 16, col = rgb(0.1, 0.5, 0.2, 0.2), cex = 0.5)
+abline(0, 1, col = "firebrick", lwd = 2, lty = 2)
+abline(v = qchisq(0.99, p_mahal), lty = 3)
+par(mfrow = c(1, 1))
+
+percentiles_qq <- c(0.50, 0.75, 0.90, 0.95, 0.99, 0.999)
+data.frame(
+  percentil = paste0(100 * percentiles_qq, " %"),
+  teorica = round(qchisq(percentiles_qq, p_mahal), 1),
+  observada_cruda = round(quantile(d2, percentiles_qq), 1),
+  observada_log = round(quantile(d2_log, percentiles_qq), 1),
+  row.names = NULL)
+```
+
+**Lectura:** en la versión cruda los puntos se apartan de la recta
+**desde el cuerpo**, no solo en la cola: la mediana de las distancias
+observadas es `r round(quantile(d2, 0.5), 1)` cuando la teórica es
+`r round(qchisq(0.5, p_mahal), 1)` (la mayoría de los clientes queda
+*más cerca* del centro de lo que una campana permite), la curva cruza
+la recta cerca del percentil 90 y después se dispara: en el 99,9 % la
+observada es `r round(quantile(d2, 0.999), 1)` contra
+`r round(qchisq(0.999, p_mahal), 1)`. Es el patrón de "se curva desde el
+principio" de la tabla de abajo: variables torcidas, con mucha masa
+apretada cerca de cero y colas larguísimas. Con `log(x+1)` el cuerpo se
+acomoda sobre la recta (mediana `r round(quantile(d2_log, 0.5), 1)`
+contra `r round(qchisq(0.5, p_mahal), 1)`, percentil 75
+`r round(quantile(d2_log, 0.75), 1)` contra
+`r round(qchisq(0.75, p_mahal), 1)`) y lo que queda despegado es la cola
+superior. **Decisión:** el corte $\chi^2$ se usa
+sobre la versión transformada, y solo como guía —la normalidad
+multivariante exacta se pone a prueba formalmente en el Módulo 14—; lo
+que sí es información real y utilizable en cualquier caso es el
+**orden** que produce $d^2$.
+
+| Qué se ve en el Q-Q | Qué significa | Qué se hace |
+|----|----|----|
+| Se despega **solo en la cola** | Hay casos raros, el cuerpo está bien | Identificarlos y decidir sobre ellos; seguir |
+| Se curva **desde el principio** (versión cruda) | Alguna variable está torcida | Transformarla (logaritmo, raíz) y volver a mirar |
+| Dos tramos con pendientes distintas | Hay **dos grupos** mezclados | Separarlos y analizar cada uno |
+| Se despega **hacia abajo** | Menos dispersión de la esperada | Sospechar de un tope o un piso en la escala |
+
+## Quiénes son los casos raros de verdad
+
+Tomamos como lista de casos a revisar a los clientes que superan el
+corte del 99 % en la versión transformada.
+
+```{r, raros_cruce}
+raros <- d2_log > qchisq(0.99, df = p_mahal)
+table(extremo_univariado = extremo_univariado, raro_en_la_combinacion = raros)
+```
+
+**Lectura:** de los `r format(sum(raros), big.mark=".")` casos raros,
+`r format(sum(raros & !extremo_univariado), big.mark=".")`
+(`r round(100 * mean(!extremo_univariado[raros]))` %) **no tienen
+ninguna variable a más de tres desviaciones**: son invisibles para la
+revisión columna por columna. Y de los
+`r format(sum(extremo_univariado), big.mark=".")` clientes con alguna
+variable extrema, `r format(sum(extremo_univariado & !raros), big.mark=".")`
+no son raros en la combinación.
+
+```{r, raros_perfil}
+vars_perfil <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount",
+                 "Monthly_Transactions", "Credit_Score", "Payment_Ratio", "Credit_Utilization")
+round(rbind(raros = sapply(credit[raros, vars_perfil], median),
+            resto = sapply(credit[!raros, vars_perfil], median)), 2)
+
+# Para los diez más lejanos: las dos variables en que más se apartan (en desviaciones)
+diez <- order(d2_log, decreasing = TRUE)[1:10]
+data.frame(
+  cliente = credit$Customer_ID[diez],
+  tarjeta = credit$Card_Type[diez],
+  d2 = round(d2_log[diez], 1),
+  se_aparta_en = sapply(diez, function(i) {
+    z <- Z_log[i, ]; k <- order(-abs(z))[1:2]
+    paste0(names(z)[k], " (", sprintf("%+.1f", z[k]), ")", collapse = ", ")
+  }))
+
+round(100 * rbind(raros = prop.table(table(tarjeta[raros])),
+                  resto = prop.table(table(tarjeta[!raros]))), 1)
+```
+
+**Lectura:** los diez más lejanos no son clientes enormes ni
+diminutos: casi todos tienen **una categoría de gasto prácticamente en
+cero** (combustible, viajes, entretenimiento, compras en línea) a cuatro
+o cinco desviaciones por debajo de lo normal **en escala logarítmica**,
+mientras el resto de su perfil es corriente o alto. Es el "perfil
+disparejo" de la sesión: un cliente que gasta en todo menos en una cosa
+rompe la regla de la cartera, donde todas las categorías suben juntas
+con el ingreso. Además, el grupo de raros **no sale al azar**: su
+puntaje mediano es `r round(median(credit$Credit_Score[raros]))` contra
+`r round(median(credit$Credit_Score[!raros]))` del resto, su proporción
+pagada `r round(median(credit$Payment_Ratio[raros]), 2)` contra
+`r round(median(credit$Payment_Ratio[!raros]), 2)`, y las tarjetas
+`Platinum` y `Signature` están sobrerrepresentadas. **Para la Gerencia
+de Riesgo, la lista de casos raros es también una lista con más riesgo
+que el promedio.**
+
+## La decisión: ¿se borran?
+
+```{r, raros_efecto}
+R_con <- cor(X_log); R_sin <- cor(X_log[!raros, ])
+c(cambio_maximo_en_R  = round(max(abs(R_con - R_sin)), 3),
+  media_score_con     = round(mean(credit$Credit_Score), 1),
+  media_score_sin     = round(mean(credit$Credit_Score[!raros]), 1))
+
+credit_marcas <- data.frame(Customer_ID = credit$Customer_ID, d2_mahalanobis = d2_log,
+                            caso_raro = raros)
+table(credit_marcas$caso_raro)
+```
+
+**Lectura:** quitando los `r format(sum(raros), big.mark=".")` casos
+raros, ninguna correlación de la matriz se mueve más de
+`r round(max(abs(R_con - R_sin)), 3)` y el puntaje medio pasa de
+`r round(mean(credit$Credit_Score), 1)` a
+`r round(mean(credit$Credit_Score[!raros]), 1)`. **Borrarlos no
+arreglaría nada, porque no están rompiendo nada**, y haría desaparecer
+del informe a un grupo con más riesgo que el promedio. Ninguno es un
+error de captura: la base no tiene faltantes, duplicados ni valores
+imposibles (Módulo 2). **Decisión final:**
+
+| Grupo | Cuántos | Qué es | Qué se hace |
+|----|---:|----|----|
+| Errores de captura | 0 | No hay (Módulo 2) | — |
+| Perfil disparejo (una categoría de gasto casi en cero) | `r format(sum(raros), big.mark=".")` | **Atípico real**: clientes de verdad | Se **dejan y se marcan** (`caso_raro`); son un hallazgo, con más riesgo que el promedio |
+
+La frase de la sesión, ahora con una herramienta que la aplica: *un
+atípico se estudia; un error se corrige.*
+
+## Conclusión del módulo
+
+1.  **Variable por variable no alcanza:**
+    `r round(100 * mean(!extremo_univariado[raros]))` % de los casos raros
+    no tienen ninguna variable extrema, y en el plano de riesgo hay
+    clientes fuera de la elipse con las dos variables dentro de las
+    bandas.
+2.  **Mahalanobis mide con la forma de la nube**: separa al cliente
+    grande pero coherente (lejano en euclidiana) del cliente disparejo.
+3.  **El Q-Q dice hasta dónde confiar en el corte $\chi^2$**: con las
+    variables crudas la cartera se aparta de la campana desde el cuerpo
+    (asimetría); con `log(x+1)` el cuerpo se acomoda y queda una cola de
+    casos a revisar.
+4.  **La decisión:** no hay errores que corregir; los casos raros se
+    marcan y se conservan, porque no mueven la estructura de correlación
+    y concentran más riesgo que el resto de la cartera.
 
 ------------------------------------------------------------------------
 
-# Módulo 10: Pruebas de Hipótesis
+# Módulo 14: Pruebas de Hipótesis
 
-El QQ-plot con el que cerró el Módulo 9 dejó una sospecha visual: los
+El gráfico Q-Q del Módulo 13 dejó una sospecha visual: los
 puntos se despegaban de la recta de 45°, señal de que la cartera no es
 normal multivariante. Este módulo convierte esa sospecha en tres pruebas
 formales — normalidad univariada, normalidad multivariante y
-significancia de las correlaciones ya usadas en los Módulos 6 y 7 — cada
+significancia de las correlaciones ya usadas en los Módulos 7 y 8 — cada
 una con su hipótesis nula declarada explícitamente, su estadístico y su
 $p$-valor.
 
@@ -3947,7 +5430,7 @@ desviación mínima de la normalidad —una cola apenas más pesada, un
 exceso de curtosis casi imperceptible al ojo— es estadísticamente
 detectable, porque el error estándar con el que se estima esa desviación
 se achica con $\sqrt{n}$. **El rechazo no dice "esta variable está mal"
-ni contradice el análisis descriptivo de los Módulos 3 y 4** — dice que,
+ni contradice el análisis descriptivo de los Módulos 3 a 5** — dice que,
 a $n = `r format(nrow(credit), big.mark=".")`$, casi ninguna variable
 real pasa una prueba formal de normalidad exacta, y por eso el criterio
 práctico para decidir qué tan "normal" es una variable sigue siendo el
@@ -3975,7 +5458,7 @@ más de 2.500 millones de celdas, computacionalmente inviable — así que,
 exactamente por la misma razón práctica que obliga a submuestrear para
 Shapiro–Wilk, aplicamos Mardia sobre una submuestra aleatoria de 1.500
 clientes y las mismas 21 variables no redundantes verificadas en el
-Módulo 9:
+Módulo 10:
 
 ```{r, mardia_multivariante}
 set.seed(42)
@@ -4018,18 +5501,62 @@ $H_0$ con $p < 2{,}2 \times 10^{-16}$. El estadístico de asimetría
 propio grado de libertad esperado bajo $H_0$ (`r gl_skew`), y la
 curtosis se aleja `r round(abs(z_kurt))` desviaciones estándar de lo que
 una normal multivariante predeciría. **Esta es la confirmación formal,
-no solo visual, de lo que el QQ-plot del Módulo 9 ya insinuaba**: con
+no solo visual, de lo que el gráfico Q-Q del Módulo 13 ya insinuaba**: con
 `r p_mardia` variables que incluyen varias fuertemente asimétricas a la
 derecha (`Cash_Advance_Amount`, `Travel_Spending`, y el resto de
 categorías de gasto), la cartera se aleja de la normalidad multivariante
 de forma contundente — razón adicional por la que el corte $\chi^2$ de
-Mahalanobis marcaba 8,8 % de atípicos en vez del 2,5 % teórico.
+Mahalanobis marcaba `r round(100*n_atipicos_mahal/nrow(X_mahal),1)` % de atípicos en vez del 2,5 % teórico.
+
+### ¿Y con `log(x+1)`?
+
+El Módulo 13 mostró que, al aplicar `log(x+1)` a las variables
+asimétricas, el gráfico Q-Q se acomoda mucho mejor sobre la recta.
+Repetimos Mardia sobre la misma submuestra de clientes, ahora con las
+variables transformadas, para ver cuánto de ese acercamiento se
+confirma formalmente:
+
+```{r, mardia_log}
+mardia <- function(X) {
+  X <- as.matrix(X); m <- nrow(X); p <- ncol(X)
+  Xc <- sweep(X, 2, colMeans(X))
+  G <- Xc %*% solve(cov(X)) %*% t(Xc)
+  sesgo <- m * (sum(G^3) / m^2) / 6
+  z_curt <- (mean(diag(G)^2) - p * (p + 2)) / sqrt(8 * p * (p + 2) / m)
+  c(asimetria = sesgo, gl_asimetria = p * (p + 1) * (p + 2) / 6,
+    p_asimetria = pchisq(sesgo, p * (p + 1) * (p + 2) / 6, lower.tail = FALSE),
+    curtosis_z = z_curt, p_curtosis = 2 * pnorm(-abs(z_curt)))
+}
+
+set.seed(42)
+idx_mardia <- sample(nrow(credit), m_mardia)
+comparacion_mardia <- rbind(
+  tal_como_vienen = mardia(credit[idx_mardia, vars_mahal]),
+  con_log         = mardia(X_log[idx_mardia, ]))
+signif(comparacion_mardia, 4)
+```
+
+**Lectura:** la transformación reduce el estadístico de asimetría de
+`r format(round(comparacion_mardia["tal_como_vienen", "asimetria"]), big.mark=".")`
+a `r format(round(comparacion_mardia["con_log", "asimetria"]), big.mark=".")`
+y la curtosis de
+`r round(comparacion_mardia["tal_como_vienen", "curtosis_z"], 1)` a
+`r round(comparacion_mardia["con_log", "curtosis_z"], 1)` desviaciones,
+pero la prueba **sigue rechazando** la normalidad multivariante. La
+lectura es la misma del Q-Q: `log(x+1)` acerca mucho la cartera a una
+campana —lo suficiente para que el cuerpo de las distancias siga la
+$\chi^2$—, pero las variables infladas en cero (`Cash_Advance_Amount`,
+`International_Transactions`) no se vuelven normales con ningún
+logaritmo. Por eso el informe usa la normal multivariante como
+referencia y no como supuesto exacto, y por eso el PCA de los Módulos 16
+y 17, que no necesita normalidad, es la técnica adecuada para lo que
+sigue.
 
 ## Pruebas de correlación
 
 $H_0: \rho = 0$ (no hay correlación lineal en la población) contra
 $H_1: \rho \neq 0$, aplicada con `cor.test()` a los tres pares que el
-Módulo 6 ya había seleccionado con un criterio objetivo:
+Módulo 7 ya había seleccionado con un criterio objetivo:
 
 ```{r, pruebas_correlacion}
 ct1 <- cor.test(credit$Annual_Income, credit$Credit_Limit)
@@ -4067,18 +5594,18 @@ cualquier umbral de significancia práctica.
     muestral: a $n=50.000$ la prueba detecta desviaciones mínimas que el
     histograma y la asimetría numérica ya habían calificado de leves.
 2.  La prueba de Mardia confirma **formalmente** —no solo con el QQ-plot
-    del Módulo 9— que la cartera no es normal multivariante, ni en
+    del Módulo 13— que la cartera no es normal multivariante, ni en
     asimetría ni en curtosis, calculada sobre una submuestra de 1.500
     clientes por la misma razón computacional que obliga a submuestrear
     para Shapiro–Wilk.
-3.  Las tres correlaciones clave del Módulo 6 rechazan $H_0: \rho=0$ con
+3.  Las tres correlaciones clave del Módulo 7 rechazan $H_0: \rho=0$ con
     enorme margen, pero a este tamaño de muestra esa prueba es casi un
     trámite: la decisión de qué variables importan siempre se apoyó en
     la magnitud de $r$, no en si el test rechazaba.
 
 ------------------------------------------------------------------------
 
-# Módulo 11: Preparación de Datos para PCA y Clustering
+# Módulo 15: Preparación de Datos para PCA y Clustering
 
 Todo el informe hasta aquí describió la cartera tal como es. Este módulo
 cierra el análisis exploratorio con la pregunta que de verdad importa
@@ -4093,10 +5620,10 @@ tres condiciones se cumple todavía en la matriz cruda.
 
 Construimos la recomendación de transformación de forma reproducible, no
 a mano: una variable se marca para **excluir** si ya se identificó como
-redundante o derivada (Módulo 9, función `revisar()`); si no, se
+redundante o derivada (Módulo 10, función `revisar()`); si no, se
 recomienda `log(x+1)` antes de estandarizar cuando su asimetría supera 1
 en valor absoluto (el mismo umbral, en espíritu, que separó los dos
-grupos de atípicos del Módulo 4), y `scale()` sola en caso contrario.
+grupos de atípicos del Módulo 5), y `scale()` sola en caso contrario.
 
 ```{r, tabla_transformaciones}
 skew <- function(x) mean(((x - mean(x)) / sd(x))^3)
@@ -4120,14 +5647,14 @@ tabla_transf
 `r sum(tabla_transf$Transformacion == "log(x+1) + scale()")` de las 26
 variables numéricas quedan marcadas para transformación logarítmica
 antes de estandarizar — casi todas las de gasto, saldo y conteo con masa
-en cero, exactamente el grupo que el Módulo 4 ya había señalado con más
+en cero, exactamente el grupo que el Módulo 5 ya había señalado con más
 del 8 % de atípicos univariados bajo la regla de Tukey.
 `r sum(tabla_transf$Transformacion == "scale()")` variables
 (`r paste(tabla_transf$Variable[tabla_transf$Transformacion == "scale()"], collapse = ", ")`)
 son razonablemente simétricas y solo necesitan estandarizarse. Las
 `r sum(tabla_transf$Transformacion == "Excluir (redundante/derivada)")`
 restantes se excluyen — no porque tengan mala calidad, sino porque ya se
-demostró (Módulo 9) que vuelven casi singular la matriz de covarianzas.
+demostró (Módulo 10) que vuelven casi singular la matriz de covarianzas.
 
 Las cuatro variables cualitativas requieren un tratamiento aparte,
 porque ni el logaritmo ni `scale()` tienen sentido sobre texto:
@@ -4140,8 +5667,8 @@ data.frame(
                       "Nominal (6 niveles)", "Ordinal (5 niveles)"),
   Transformacion = c("Quitar (no es variable de análisis)",
                      "factor()",
-                     "factor(), o codificación dummy si el algoritmo lo exige",
-                     "factor(ordered = TRUE) o codificación entera 1 a 5 (Basic=1 ... Signature=5), aprovechando la Tendencia 6 del Módulo 6")
+                     "factor(); one-hot para PCA y clustering (sección siguiente)",
+                     "factor(ordered = TRUE) o codificación entera 1 a 5 (Basic=1 ... Signature=5), aprovechando la Tendencia 6 del Módulo 7")
 )
 ```
 
@@ -4150,7 +5677,7 @@ data.frame(
 Consolidamos la decisión final combinando tres criterios ya aplicados
 por separado en el informe: la clasificación de variables (Módulo 1), la
 verificación de redundancia antes de invertir la matriz de covarianzas
-(Módulo 9) y la selección objetiva de variables bivariadas (Módulo 6).
+(Módulo 10) y la selección objetiva de variables bivariadas (Módulo 7).
 
 ```{r, variables_finales}
 retenidas <- setdiff(numeric_cols, excluir_num)
@@ -4167,7 +5694,7 @@ categorías de gasto individuales, los saldos y pagos no redundantes
 `Monthly_Transactions`, `Avg_Transaction_Value`), la demografía (`Age`)
 y la variable de riesgo (`Credit_Score`). Son, en conjunto, la base de
 gasto, capacidad e historial que efectivamente varía de forma
-independiente entre sí (Módulo 7: la matriz de correlación de estas
+independiente entre sí (Módulo 8: la matriz de correlación de estas
 variables ya no tiene el valor propio casi nulo que sí tenía la matriz
 completa).
 
@@ -4179,7 +5706,7 @@ completa).
     de gasto que se retienen por separado; incluirla junto con sus
     componentes es colinealidad garantizada ($r=1$ con su propia suma).
 3.  **`Outstanding_Balance`** — correlación de 0,997 con
-    `Statement_Balance` (Módulo 7): prácticamente la misma información
+    `Statement_Balance` (Módulo 8): prácticamente la misma información
     económica medida dos veces; se retiene `Statement_Balance` como
     representante del par.
 4.  **`Reward_Points_Earned`** — correlación de 0,980 con
@@ -4190,9 +5717,9 @@ completa).
     (`Payment_Amount`/`Statement_Balance` y
     `Outstanding_Balance`/`Credit_Limit`, respectivamente aproximados):
     mantenerlas junto con sus componentes vuelve la matriz de
-    covarianzas casi singular (Módulo 9). Se excluyen **de la matriz
+    covarianzas casi singular (Módulo 10). Se excluyen **de la matriz
     numérica que entra a PCA**, pero — precisamente por ser las dos
-    variables que de verdad predicen `Credit_Score` (Módulo 6) — se
+    variables que de verdad predicen `Credit_Score` (Módulo 7) — se
     recomienda reincorporarlas después como variables **suplementarias**
     para interpretar los componentes o los clusters resultantes, no para
     construirlos.
@@ -4204,14 +5731,154 @@ clusters que resulten de las 21 variables numéricas (¿un cluster de alto
 riesgo se concentra en algún `Occupation`?), y, en el caso de
 `Card_Type`, como candidata a codificarse como entero ordinal 1-5 y
 agregarse directamente a la matriz numérica, dado que la Tendencia 6 del
-Módulo 6 ya mostró que su orden se refleja linealmente en
+Módulo 7 ya mostró que su orden se refleja linealmente en
 `Credit_Limit`.
+
+## Codificación *one-hot* de las variables categóricas
+
+PCA y casi todos los algoritmos de *clustering* operan sobre una matriz
+numérica. Una variable nominal como `Occupation` no se puede convertir
+en número asignándole 1, 2, …, 6 a sus niveles: eso inventaría un orden
+(¿`Retired` está "entre" `Private Employee` y `Self-Employed`?) y una
+distancia (¿`Student` está "el doble de lejos" de `Business Owner` que
+`Government Employee`?) que no existen, y cualquier resultado cambiaría
+con solo reordenar los niveles. La codificación correcta es
+**one-hot**: una columna 0/1 por cada nivel, que vale 1 si el cliente
+pertenece a ese nivel y 0 si no.
+
+```{r, one_hot}
+categoricas <- data.frame(
+  Gender     = factor(credit$Gender),
+  Occupation = factor(credit$Occupation),
+  Card_Type  = factor(credit$Card_Type, levels = orden_tarjeta)
+)
+
+# Una matriz 0/1 por variable: ~ x - 1 pide TODOS los niveles (sin categoría de referencia)
+one_hot <- function(f, prefijo) {
+  D <- model.matrix(~ f - 1)
+  colnames(D) <- paste0(prefijo, "_", levels(f))
+  D
+}
+D_gender <- one_hot(categoricas$Gender, "Gender")
+D_ocup   <- one_hot(categoricas$Occupation, "Occupation")
+D_card   <- one_hot(categoricas$Card_Type, "Card_Type")
+D_onehot <- cbind(D_gender, D_ocup, D_card)
+
+dim(D_onehot)
+head(D_onehot[, c(colnames(D_gender), colnames(D_card))], 4)
+
+# Verificaciones: cada cliente tiene exactamente un 1 por variable,
+# y los conteos coinciden con las tablas de frecuencia del Módulo 2
+c(un_solo_1_por_bloque = all(rowSums(D_gender) == 1) && all(rowSums(D_ocup) == 1) &&
+                           all(rowSums(D_card) == 1),
+  conteos_coinciden = all(colSums(D_card) == as.vector(table(categoricas$Card_Type))) &&
+                      all(colSums(D_ocup) == as.vector(table(categoricas$Occupation))))
+```
+
+**Lectura:** las 3 variables categóricas se convierten en
+`r ncol(D_onehot)` columnas 0/1 (`r ncol(D_gender)` de género,
+`r ncol(D_ocup)` de ocupación y `r ncol(D_card)` de tipo de tarjeta), y
+las dos verificaciones confirman que la codificación no perdió ni
+inventó a ningún cliente.
+
+### La trampa de las *dummies*: el mismo problema del Módulo 10
+
+Dentro de cada bloque, las columnas **siempre suman 1** (todo cliente
+pertenece a exactamente un nivel). Eso es una combinación lineal exacta,
+la misma situación de `Monthly_Spending` frente a sus siete categorías
+de gasto:
+
+```{r, one_hot_singular}
+R_card <- cor(D_card)
+c(determinante_R_tarjeta = det(R_card),
+  menor_valor_propio     = min(eigen(R_card)$values))
+
+# Con k - 1 columnas (una categoría de referencia) la dependencia desaparece
+D_card_k1 <- model.matrix(~ categoricas$Card_Type)[, -1]
+c(determinante_con_k_menos_1 = det(cor(D_card_k1)))
+```
+
+**Lectura:** con las `r ncol(D_card)` columnas del tipo de tarjeta, el
+determinante de su matriz de correlación es prácticamente cero y su
+menor valor propio también: la nube de las *dummies* es plana en una
+dirección. De ahí salen las dos reglas que se aplican en el resto del
+informe:
+
+| Uso | Codificación | Por qué |
+|---|---|---|
+| Regresión, Mahalanobis, cualquier cosa que invierta $\mathbf{S}$ | $k-1$ columnas (una categoría de referencia) | Con las $k$ columnas $\mathbf{S}$ es singular |
+| PCA y *clustering* | Las $k$ columnas, **ponderadas por $1/\sqrt{k}$** después de estandarizar | Así todas las categorías quedan simétricas, y las $k$ columnas de una variable pesan juntas lo que pesa **una** variable numérica; la dependencia exacta solo produce una última componente con varianza cero |
+
+`Card_Type` admite además una codificación ordinal 1 a 5 (`Basic` = 1,
+…, `Signature` = 5), porque su orden se refleja en el cupo (Tendencia 6
+del Módulo 7). El Módulo 17 usa la versión *one-hot* ponderada para
+comparar el mapa de clientes con y sin el tipo de tarjeta.
+
+## La matriz final y su exportación (S02)
+
+Con todas las decisiones tomadas, se arman las dos matrices que usan
+los Módulos 16 y 17: la numérica (las `r length(retenidas)` retenidas, con
+`log(x+1)` en las asimétricas y estandarizadas) y la de *dummies*. La
+sesión S02 pide que toda limpieza quede **en código** y que el dato crudo
+no se toque: lo crudo vive en `data/bronze/`, la tabla limpia y tipada en
+`data/silver/` y la matriz lista para modelar en `data/gold/`.
+
+```{r, matriz_final}
+vars_log_pca <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+
+X_transf <- credit[, retenidas]
+X_transf[vars_log_pca] <- lapply(X_transf[vars_log_pca], log1p)
+Z_pca <- scale(X_transf)
+
+c(clientes = nrow(Z_pca), variables_numericas = ncol(Z_pca),
+  con_log = length(vars_log_pca), dummies = ncol(D_onehot),
+  medias_cero = all(abs(colMeans(Z_pca)) < 1e-10),
+  desviaciones_uno = all(abs(apply(Z_pca, 2, sd) - 1) < 1e-10))
+```
+
+```{r, exportacion}
+dir.create("../data/silver", showWarnings = FALSE)
+dir.create("../data/gold", showWarnings = FALSE)
+
+# Silver: la tabla limpia y tipada, con la marca de caso raro del Módulo 13
+credit_silver <- credit
+credit_silver$Gender     <- categoricas$Gender
+credit_silver$Occupation <- categoricas$Occupation
+credit_silver$Card_Type  <- factor(credit$Card_Type, levels = orden_tarjeta, ordered = TRUE)
+credit_silver$Banda_Riesgo <- credit_banda
+credit_silver$Caso_Raro_Mahalanobis <- raros
+
+write.csv(credit_silver, "../data/silver/credit_card_silver.csv", row.names = FALSE)
+saveRDS(credit_silver, "../data/silver/credit_card_silver.rds")   # conserva factores y orden
+
+# Gold: la matriz que entra a PCA / clustering
+credit_gold <- data.frame(Customer_ID = credit$Customer_ID, round(Z_pca, 6), D_onehot,
+                          check.names = FALSE)
+write.csv(credit_gold, "../data/gold/credit_card_gold_pca.csv", row.names = FALSE)
+
+# Verificación: se vuelve a leer y se compara
+silver_leido <- readRDS("../data/silver/credit_card_silver.rds")
+gold_leido   <- read.csv("../data/gold/credit_card_gold_pca.csv", check.names = FALSE)
+c(silver_dim_ok = identical(dim(silver_leido), dim(credit_silver)),
+  silver_tipos_ok = is.ordered(silver_leido$Card_Type),
+  gold_dim_ok = identical(dim(gold_leido), dim(credit_gold)),
+  gold_numerico = all(sapply(gold_leido[, -1], is.numeric)))
+```
+
+**Lectura:** las dos tablas se escriben y se vuelven a leer sin
+pérdidas. La versión `silver` va en `.csv` (para intercambiar, por
+ejemplo con Python) y en `.rds` (que conserva los factores y el orden
+de `Card_Type`, cosa que el `.csv` pierde); la `gold` es puramente
+numérica: `r ncol(Z_pca)` columnas estandarizadas más
+`r ncol(D_onehot)` *dummies*, con `Customer_ID` para poder volver a cada
+cliente. Las dos se regeneran cada vez que se teje este informe, así
+que nunca se editan a mano.
 
 ## Conclusión del módulo
 
 1.  La matriz que entra a PCA y clustering no es la matriz cruda de 26
     variables numéricas, sino un subconjunto de `r length(retenidas)`
-    que ya pasó, en los Módulos 6 a 9, las pruebas de redundancia y
+    que ya pasó, en los Módulos 7 a 10, las pruebas de redundancia y
     colinealidad que una matriz casi singular no pasaría.
 2.  Ninguna exclusión fue por baja calidad de los datos: las cinco
     variables numéricas descartadas son estadísticamente impecables,
@@ -4222,264 +5889,603 @@ Módulo 6 ya mostró que su orden se refleja linealmente en
     colinealidad, pero son las variables más útiles para interpretarlos
     después, precisamente porque son las que más se relacionan con el
     riesgo.
+4.  Las tres categóricas se codifican en *one-hot* (`r ncol(D_onehot)`
+    columnas 0/1), nunca numerando sus niveles. Con las $k$ columnas de
+    una variable la matriz es singular —la misma trampa de
+    `Monthly_Spending`—, así que se usan $k-1$ cuando hay que invertir
+    $\mathbf{S}$ y las $k$ ponderadas por $1/\sqrt{k}$ en PCA.
+5.  El resultado queda exportado por código: la tabla limpia y tipada en
+    `data/silver/` y la matriz lista para modelar en `data/gold/`, sin
+    tocar el archivo crudo de `data/bronze/`.
 
-# (Mahalanobis) Agregado para revisar
+------------------------------------------------------------------------
 
-## completos
+# Módulo 16: Componentes Principales I — ¿Un Número o Varios?
 
-ver 0 o sin registro (deberia dar 0 porque tenemos todos los datos)
+## El encargo
 
-```{r completos}
-# Filtramos las filas completas considerando únicamente las variables retenidas
-completos <- complete.cases(credit[retenidas])
-sc <- credit[completos, ]
+Hasta aquí el informe describió la cartera. Desde este módulo trabaja
+para un cliente: **la Gerencia de Riesgo de Crédito del banco emisor**
+de las `r format(nrow(credit), big.mark=".")` tarjetas. Cada mes la
+Gerencia decide qué clientes entran a un programa de seguimiento
+preventivo (llamada del gestor, congelar aumentos de cupo, ofrecer
+refinanciación antes de la mora), y hoy revisa para cada cliente una
+ficha de `r ncol(Z_pca)` variables numéricas — las retenidas en el
+Módulo 15. Su pregunta es la de la sesión de PCA I:
 
-# Resumen de registros
-c(
-  en_la_base = nrow(credit),
-  filas_completas = nrow(sc),
-  quedan_por_fuera = sum(!completos)
-)
+> *«No tengo tiempo de mirar `r ncol(Z_pca)` columnas por cliente.
+> ¿Puedo ordenar la cartera con un solo número? ¿Y a quién me estoy
+> perdiendo si lo hago?»*
 
-# Conteo de valores faltantes (NA) por cada variable retenida
-colSums(is.na(credit[retenidas]))
+La herramienta es el **análisis de componentes principales**. La idea,
+antes del nombre: buscar el mejor resumen posible de las variables y
+medir qué se queda por fuera.
+
+## ¿Se repiten? Por qué se puede resumir
+
+Si las variables fueran independientes, no habría forma de resumirlas:
+cada una traería información que las demás no tienen. **Se pueden
+resumir porque se repiten**, y el Módulo 8 ya mostró dónde. Lo
+cuantificamos, ya en la escala con la que se va a trabajar (`log(x+1)`
+en las asimétricas):
+
+```{r, pca_se_repiten}
+R_pca <- cor(Z_pca)
+fuera_diag <- R_pca; diag(fuera_diag) <- NA
+mayor_r <- apply(abs(fuera_diag), 1, max, na.rm = TRUE)
+sort(round(mayor_r, 2))
 ```
 
-## A mas de 3 desviaciones
+**Lectura:** `r sum(mayor_r > 0.6)` de las `r length(mayor_r)`
+variables tienen al menos una compañera con $|r|$ por encima de 0,6 —
+ingreso, cupo, saldo, pagos, las siete categorías de gasto,
+transacciones y uso de la app cuentan casi la misma historia: **el
+tamaño del cliente**. En el otro extremo quedan
+`r paste0("\x60", names(sort(mayor_r))[1:4], "\x60", collapse = ", ")`,
+que con ninguna pasan de
+`r round(max(sort(mayor_r)[1:4]), 2)`. Entre ellas está `Credit_Score`,
+la variable que más le importa a la Gerencia: **va sola**. Eso anticipa
+el resultado del módulo: un resumen del tamaño va a ser muy bueno, y va
+a decir muy poco del riesgo.
 
-aqui aplique transfomacion log+1 solo para trasnformar y ver que pasa
+## ¿Estandarizar? La decisión se toma antes de correr
 
-```{r revision univariada}
-# 1. Creamos una copia para trabajar las transformaciones
-sc_transf <- sc
+El Módulo 10 ya lo decidió: en esta cartera conviven rupias, conteos,
+meses, años, proporciones y un puntaje, así que se trabaja con
+$\mathbf{R}$ (PCA **normado**), no con $\mathbf{S}$. Lo mostramos
+corriendo el PCA de tres maneras y mirando cuánto guarda la primera
+componente y qué variable manda en ella:
 
-# 2. Identificamos las variables que requieren log(x + 1) según el criterio de asimetría
-vars_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+```{r, pca_estandarizar}
+pca_sin_escala <- prcomp(credit[, retenidas], scale. = FALSE)   # sobre S, en rupias
+pca_sin_log    <- prcomp(credit[, retenidas], scale. = TRUE)    # sobre R, sin log
+pca            <- prcomp(Z_pca)                                 # sobre R, con log (Módulo 15)
 
-# 3. Aplicamos log(x + 1) únicamente a esas variables
-for (v in vars_log) {
-  sc_transf[[v]] <- log1p(sc_transf[[v]])  # log1p(x) equivale a log(x + 1)
+guarda_1 <- function(pc) 100 * pc$sdev[1]^2 / sum(pc$sdev^2)
+manda_1  <- function(pc) names(which.max(abs(pc$rotation[, 1])))
+data.frame(
+  version = c("Sin estandarizar (S)", "Estandarizado, sin log (R)", "log(x+1) + estandarizado"),
+  guarda_la_C1 = round(c(guarda_1(pca_sin_escala), guarda_1(pca_sin_log), guarda_1(pca)), 1),
+  variable_que_mas_pesa = c(manda_1(pca_sin_escala), manda_1(pca_sin_log), manda_1(pca)),
+  peso_de_esa_variable = round(c(max(abs(pca_sin_escala$rotation[, 1])),
+                                 max(abs(pca_sin_log$rotation[, 1])),
+                                 max(abs(pca$rotation[, 1]))), 3))
+```
+
+**Lectura:** sin estandarizar, la primera componente "guarda"
+`r round(guarda_1(pca_sin_escala), 1)` de cada 100 partes de la
+información, y una sola variable tiene peso
+`r round(max(abs(pca_sin_escala$rotation[, 1])), 2)`: la componente no
+es un resumen de la cartera, es **`r manda_1(pca_sin_escala)` con otro
+nombre**, porque se mide en los números más grandes. Estandarizando, la
+primera componente guarda alrededor de la mitad y ninguna variable
+manda sola. Con `log(x+1)` el resultado casi no cambia en cantidad
+(`r round(guarda_1(pca_sin_log), 1)` frente a
+`r round(guarda_1(pca), 1)`), pero evita que unos pocos clientes enormes
+decidan la dirección de las componentes (Módulos 5 y 13). **Decisión:**
+el PCA del informe es el de la tercera fila.
+
+## ¿Cuánta información guarda cada componente?
+
+Las componentes **no crean ni destruyen información: la reparten**. Si
+$\lambda_1, \dots, \lambda_p$ son las varianzas de las componentes,
+
+$$\lambda_1 + \lambda_2 + \dots + \lambda_p \;=\; \operatorname{tr}(\mathbf{R}) \;=\; p$$
+
+—la traza del Módulo 10—, y $\lambda_k / p$ es la parte de la
+información que guarda la componente $k$.
+
+```{r, pca_reparto}
+lambda <- pca$sdev^2
+c(suma_lambdas = sum(lambda), traza_R = sum(diag(R_pca)))
+
+reparto <- data.frame(componente = paste0("C", seq_along(lambda)),
+                      lambda = round(lambda, 3),
+                      de_cada_100 = round(100 * lambda / sum(lambda), 1),
+                      acumulado = round(100 * cumsum(lambda) / sum(lambda), 1))
+head(reparto, 10)
+
+c(componentes_con_lambda_mayor_a_1 = sum(lambda > 1),
+  componentes_para_pasar_de_80     = which(cumsum(lambda) / sum(lambda) > 0.80)[1])
+```
+
+```{r, pca_reparto_plot, fig.width=9, fig.height=4.8}
+k_graf <- 12
+bp <- barplot(reparto$de_cada_100[1:k_graf], names.arg = reparto$componente[1:k_graf],
+              col = c("#2B6CB0", "#C05621", rep("grey75", k_graf - 2)), border = NA,
+              ylim = c(0, 108), las = 1, ylab = "De cada 100",
+              main = "De cada 100 partes de información, cuántas guarda cada componente")
+text(bp, reparto$de_cada_100[1:k_graf], labels = reparto$de_cada_100[1:k_graf], pos = 3, cex = 0.8)
+lines(bp, reparto$acumulado[1:k_graf], type = "b", pch = 19, col = "#C05621", lwd = 2)
+abline(h = 80, lty = 3)
+legend("right", c("cada componente", "acumulado", "80 %"), bty = "n",
+       col = c("grey50", "#C05621", "black"), pch = c(15, 19, NA), lty = c(NA, 1, 3))
+```
+
+**Lectura:** la primera componente guarda
+`r reparto$de_cada_100[1]` de cada 100 partes de la información de las
+`r ncol(Z_pca)` variables; la segunda, `r reparto$de_cada_100[2]`, y a
+partir de ahí cada una agrega muy poco y casi lo mismo. Solo
+`r sum(lambda > 1)` componentes tienen $\lambda > 1$ (guardan más que una
+variable original), y para pasar de 80 de cada 100 hacen falta
+`r which(cumsum(lambda) / sum(lambda) > 0.80)[1]`. **Para la Gerencia:**
+un solo número resume la mitad de lo que dice la ficha — mucho para un
+número, pero la otra mitad no cabe en él. Que la segunda componente
+guarde poco **no** quiere decir que no importe: lo que importa es qué
+mide, y eso es lo siguiente.
+
+## ¿Qué mide cada componente?
+
+Los pesos dicen qué mide cada componente. Como el signo de una
+componente es arbitrario (`prcomp()` podría devolver todos los pesos con
+el signo contrario y sería la misma componente), lo fijamos para que se
+lea fácil: **C1 positiva = cliente más grande**, **C2 positiva = más
+riesgo** (peor puntaje).
+
+```{r, pca_pesos}
+signo1 <- sign(sum(pca$rotation[, 1]))
+signo2 <- -sign(pca$rotation["Credit_Score", 2])
+signo3 <- sign(pca$rotation["Age", 3])
+pesos <- sweep(pca$rotation[, 1:3], 2, c(signo1, signo2, signo3), "*")
+colnames(pesos) <- c("C1", "C2", "C3")
+scores_pca <- sweep(pca$x[, 1:3], 2, c(signo1, signo2, signo3), "*")
+colnames(scores_pca) <- c("C1", "C2", "C3")
+
+round(pesos[order(-abs(pesos[, "C1"])), ], 2)
+```
+
+```{r, pca_pesos_plot, fig.width=12, fig.height=6}
+par(mfrow = c(1, 3), mar = c(4, 12, 3, 1))
+nombres_c <- c(C1 = "C1 · tamaño del cliente", C2 = "C2 · riesgo", C3 = "C3 · edad")
+for (k in colnames(pesos)) {
+  o <- order(pesos[, k])
+  barplot(pesos[o, k], horiz = TRUE, las = 1, cex.names = 0.75, xlim = c(-1, 1),
+          col = ifelse(pesos[o, k] > 0, "#2B6CB0", "#C05621"), border = NA,
+          main = nombres_c[k], xlab = "peso")
+  abline(v = 0, col = "grey40")
 }
-
-# 4. Ahora sí escalamos todas las variables retenidas
-Z <- scale(sc_transf[retenidas])
-
-# 5. Detección de atípicos univariados sobre los datos bien transformados
-extremo_univariado <- apply(abs(Z) > 3, 1, any)
-
-c(con_alguna_nota_extrema = sum(extremo_univariado),
-  porcentaje = round(100 * mean(extremo_univariado), 2))
+par(mfrow = c(1, 1))
 ```
 
-## Elipse (esto es lo que vimos del punto imposible)
-
-```{r elipse}
-# Elegimos dos variables con correlación fuerte pero no redundante
-vars_plano <- c("Payment_Ratio", "Credit_Score")
-
-# 1. Matriz y distancia de Mahalanobis para la elipse
-par2 <- as.matrix(sc[vars_plano])
-d_par <- mahalanobis(par2, colMeans(par2), cov(par2))
-
-# 2. Límites de la elipse al 95% (df = 2)
-fuera_elipse <- d_par > qchisq(0.95, df = 2)
-
-# 3. Límites univariados (±2 desviaciones estándar)
-Z_sub <- scale(sc[vars_plano])
-nota_extrema <- abs(Z_sub[, "Payment_Ratio"]) > 2 | abs(Z_sub[, "Credit_Score"]) > 2
-
-# 4. Conteo exactamente igual al del profesor
-data.frame(
-  situacion = c(
-    "Fuera de la elipse, con ambas variables dentro de ±2 sd (Raros en combinación)",
-    "Dentro de la elipse, pero con una variable fuera de ±2 sd (Falsas alarmas)",
-    "Fuera de la elipse (Total atípicos multivariados)"
-  ),
-  clientes = c(
-    sum(fuera_elipse & !nota_extrema),
-    sum(!fuera_elipse & nota_extrema),
-    sum(fuera_elipse)
-  )
-)
+```{r, pca_suplementarias}
+# Variables suplementarias (Módulo 15): no construyen las componentes, ayudan a leerlas
+sup <- credit[, c("Payment_Ratio", "Credit_Utilization", "Monthly_Spending")]
+round(cor(sup, scores_pca), 2)
+round(cor(credit$Credit_Score, scores_pca), 3)
 ```
 
-## Eucidiana vs mahalanobis
+**Lectura:**
 
-aqui una comparariva de las dos distancias
+- **C1 es el tamaño del cliente.** Todas las variables de dinero y de
+  actividad pesan parecido y en la misma dirección (ingreso, cupo,
+  saldo, pagos, las siete categorías de gasto, transacciones, uso de la
+  app), mientras `Credit_Score`, la edad y la antigüedad de la tarjeta
+  pesan casi cero. Sube cuando sube todo lo que se mide en rupias o en
+  frecuencia. Su correlación con el gasto mensual total, que no entró a
+  construirla, es `r round(cor(credit$Monthly_Spending, scores_pca[, "C1"]), 2)`.
+- **C2 es el riesgo.** La manda `Credit_Score` (peso
+  `r round(pesos["Credit_Score", "C2"], 2)`), acompañada por
+  `Cash_Advance_Amount` en la misma dirección de riesgo (los avances en
+  efectivo son señal de liquidez apretada) y por la antigüedad de la
+  tarjeta en contra (las tarjetas viejas son de clientes más estables).
+  Las dos variables suplementarias de pago, que no participaron en
+  construirla, lo confirman: `Payment_Ratio` se correlaciona
+  `r round(cor(credit$Payment_Ratio, scores_pca[, "C2"]), 2)` con C2 y
+  `Credit_Utilization`
+  `r round(cor(credit$Credit_Utilization, scores_pca[, "C2"]), 2)`.
+- **C3 es la edad**, casi sola (peso
+  `r round(pesos["Age", "C3"], 2)`): una dimensión demográfica que no se
+  parece a ninguna otra variable.
 
-```{r euclid-vs-maha}
-# 1. Matriz de variables numéricas retenidas (sin redundancias)
-M  <- as.matrix(sc[retenidas])
-mu <- colMeans(M)
+Lo que el primer número deja por fuera **no es ruido, tiene nombre**: es
+el riesgo, justamente lo que la Gerencia necesita ver.
 
-# 2. Distancia de Mahalanobis (calculamos d_M sacando la raíz cuadrada de d2)
-sc$d2 <- mahalanobis(M, mu, cov(M))
-sc$d_mahal <- sqrt(sc$d2)
+## El costo de decidir con un solo número
 
-# 3. Distancia Euclidiana (sobre variables estandarizadas para evitar sesgo de escala)
-M_scale <- scale(M)
-sc$euclid <- sqrt(rowSums(M_scale^2))
+Pasamos de "partes de información" a clientes. Supongamos que la
+Gerencia mete al programa de seguimiento al 20 % de la cartera, y que
+el grupo que de verdad le interesa es el **20 % con peor puntaje**.
+¿Cuántos de esos clientes encuentra un resumen de un solo número?
 
-# 4. Definimos el Top de atípicos (por ejemplo, el 1% superior o el umbral Chi-cuadrado al 97.5%)
-top_n <- round(0.01 * nrow(sc)) # Top 1% (500 clientes)
+```{r, pca_costo}
+en_riesgo <- credit$Credit_Score <= quantile(credit$Credit_Score, 0.20)
+seleccion <- function(v) v >= quantile(v, 0.80)       # el 20 % más alto del número usado
 
-# 5. Comparación directa
-c(
-  correlacion_entre_las_dos = round(cor(sc$euclid, sc$d_mahal), 3),
-  coinciden_en_el_top_500   = length(intersect(
-    order(sc$euclid,  decreasing = TRUE)[1:top_n],
-    order(sc$d_mahal, decreasing = TRUE)[1:top_n]
-  ))
-)
+costo <- data.frame(
+  ordenando_por = c("C1 (el mejor resumen de un número)", "C2 (riesgo)"),
+  clientes_en_riesgo = sum(en_riesgo),
+  los_encuentra = c(sum(en_riesgo & seleccion(scores_pca[, "C1"])),
+                    sum(en_riesgo & seleccion(scores_pca[, "C2"]))))
+costo$se_le_escapan <- costo$clientes_en_riesgo - costo$los_encuentra
+costo$de_cada_100_escapan <- round(100 * costo$se_le_escapan / costo$clientes_en_riesgo, 1)
+costo
 ```
 
-```{r distancia todos los modulos}
-round(summary(sc$d2))
+```{r, pca_costo_plot, fig.width=8, fig.height=3.8}
+par(mar = c(4, 16, 3, 1))
+barplot(t(as.matrix(costo[, c("los_encuentra", "se_le_escapan")])),
+        names.arg = costo$ordenando_por, horiz = TRUE, las = 1, border = NA,
+        col = c("#2B6CB0", "#C05621"), xlab = "clientes del 20 % con peor puntaje",
+        main = "¿Cuántos clientes en riesgo encuentra cada número?",
+        legend.text = c("los encuentra", "se le escapan"),
+        args.legend = list(x = "topright", bty = "n", cex = 0.85))
 ```
 
-## Chi\^2 con n=p_variables grados de libertad
+**Lectura:** de los `r format(sum(en_riesgo), big.mark=".")` clientes
+con peor puntaje, ordenar por C1 —el mejor resumen posible de un solo
+número— encuentra `r format(costo$los_encuentra[1], big.mark=".")`: el
+`r round(100 - costo$de_cada_100_escapan[1])` %, **lo mismo que se
+obtendría escogiendo clientes al azar**. C1 no sabe nada del riesgo
+(su correlación con el puntaje es
+`r round(cor(credit$Credit_Score, scores_pca[, "C1"]), 3)`). C2, en
+cambio, encuentra al `r round(100 - costo$de_cada_100_escapan[2])` %.
+**Decisión para la Gerencia:** un número no le basta. El resumen mínimo
+de la ficha son **dos números**: C1 para saber cuánto pesa el cliente en
+la cartera (exposición) y C2 para saber qué tan riesgoso es. Con uno
+solo, ordenaría a la cartera por tamaño y dejaría el riesgo por fuera.
 
-```{r CHI}
-# 1. Matriz de variables retenidas y distancia de Mahalanobis
-M  <- as.matrix(sc[retenidas])
-mu <- colMeans(M)
-d2_nuestras <- mahalanobis(M, mu, cov(M))
+## Qué no es una componente
 
-# 2. Número de variables retenidas
-p_vars <- length(retenidas) # Debería ser 21
+- **No es una causa.** Que C1 sea "el tamaño" no demuestra que exista
+  una variable oculta que produzca el ingreso, el cupo y el gasto; dice
+  que se mueven juntos. (El análisis factorial pregunta por esas
+  variables latentes; el PCA no.)
+- **No es un nombre que pone la técnica.** "Tamaño", "riesgo" y "edad"
+  son nombres que pusimos mirando los pesos y las suplementarias, y se
+  discuten con el cliente.
+- **No reemplaza a los datos.** Es un resumen para ordenar y para ver
+  qué se pierde; las variables originales siguen en la tabla `silver`.
 
-# 3. Cortes teóricos con df = 21
-cortes <- qchisq(c(0.95, 0.99, 0.999), df = p_vars)
+## Conclusión del módulo
 
-# 4. Tabla comparativa: Esperados vs. Observados
-data.frame(
-  corte = c("95 %", "99 %", "99,9 %"),
-  valor_de_la_distancia = round(cortes, 2),
-  esperados_por_encima = paste0(c(5, 1, 0.1), " %"),
-  observados_n = sapply(cortes, function(q) sum(d2_nuestras > q)),
-  observados_pct = paste0(round(100 * sapply(cortes, function(q) mean(d2_nuestras > q)), 2), " %")
-)
+1.  Se puede resumir porque las variables se repiten: la mayoría
+    comparte información con alguna otra; `Credit_Score`, la edad y la
+    antigüedad van solas.
+2.  Estandarizar no es un detalle: sin hacerlo, la primera componente es
+    solo `r manda_1(pca_sin_escala)` con otro nombre.
+3.  La primera componente guarda `r reparto$de_cada_100[1]` de cada 100
+    partes de la información, `r sum(lambda > 1)` componentes tienen
+    $\lambda > 1$ y hacen falta
+    `r which(cumsum(lambda) / sum(lambda) > 0.80)[1]` para pasar de 80.
+4.  **C1 = tamaño, C2 = riesgo, C3 = edad.** El mejor resumen de un
+    número no ve el riesgo: encuentra a los clientes de peor puntaje
+    como lo haría el azar. La Gerencia necesita al menos dos números.
 
-# 5. Gráfico de distancias con la curva Chi-cuadrado (df = 21)
-df_grafico <- data.frame(d2 = d2_nuestras)
+------------------------------------------------------------------------
 
-ggplot(df_grafico, aes(x = d2)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 70,
-                 fill = "steelblue", color = "white") +
-  stat_function(fun = dchisq, args = list(df = p_vars), color = "firebrick", linewidth = 1.1) +
-  geom_vline(xintercept = cortes[2], linetype = "dashed", color = "black") +
-  annotate("text", x = cortes[2] + 10, y = 0.03,
-           label = paste0("Corte 99%: ", round(cortes[2], 2)), size = 4) +
-  labs(title = paste0("Distancias de Mahalanobis con ", p_vars, " variables retenidas"),
-       subtitle = paste0("En rojo, la distribución Chi-cuadrado con ", p_vars, " grados de libertad"),
-       x = "Distancia de Mahalanobis (al cuadrado)", y = "Densidad")
+# Módulo 17: Componentes Principales II — el Mapa de la Cartera
+
+La Gerencia de Riesgo recibió la respuesta del Módulo 16 (un número no
+basta; hacen falta dos: tamaño y riesgo) y vuelve con la pregunta de la
+sesión de PCA II:
+
+> *«Entendido: dos números. Si pongo a cada cliente en un mapa con
+> esos dos ejes, ¿qué tipos de cliente aparecen? ¿Los segmentos que ya
+> manejo —tipo de tarjeta, ocupación— ocupan zonas distintas? ¿Y
+> cuántos clientes le tocan a cada nivel de seguimiento?»*
+
+## El mapa y sus dos direcciones
+
+Cada cliente es un punto con coordenadas (C1, C2). Con los signos ya
+fijados en el Módulo 16, **ir a la derecha es un cliente más grande** e
+**ir hacia arriba es un cliente más riesgoso**.
+
+```{r, mapa_pca, fig.width=7.5, fig.height=6}
+guarda_mapa <- sum(lambda[1:2]) / sum(lambda) * 100
+set.seed(17)
+idx_mapa <- sample(nrow(scores_pca), 6000)
+
+plot(scores_pca[idx_mapa, "C1"], scores_pca[idx_mapa, "C2"], pch = 16, cex = 0.45,
+     col = rgb(0, 0, 0, 0.2), asp = 1,
+     xlab = "C1 · tamaño del cliente", ylab = "C2 · riesgo",
+     main = sprintf("El mapa de la cartera (guarda %.1f de cada 100)", guarda_mapa))
+abline(h = 0, v = 0, lty = 3, col = "grey50")
 ```
 
-lo mismo pero viedno el comportamiento de log+1
+**Lectura:** el mapa guarda `r round(guarda_mapa, 1)` de cada 100
+partes de la información de la ficha — poco más que la primera
+componente sola, porque la segunda guarda poco; pero esa poca
+información es justamente la del riesgo. La
+nube no es una mancha redonda: se estira a lo largo de C1 (tamaño) con
+**varios lóbulos**, y en C2 se reparte de forma continua, sin huecos.
 
-```{r CHI con log+1}
-# 1. Identificamos las variables a transformar con log1p() según el criterio de Skewness > 1 (Módulo 11)
-vars_para_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+## El biplot: clientes y variables en el mismo dibujo
 
-# 2. Creamos la submatriz transformada
-M_log <- sc[retenidas]
-for (v in vars_para_log) {
-  M_log[[v]] <- log1p(M_log[[v]])  # log1p(x) es log(x + 1)
+En el biplot cada variable es una flecha cuyas coordenadas son sus
+pesos multiplicados por la desviación de cada componente,
+$\big(w_{j1}\sqrt{\lambda_1},\; w_{j2}\sqrt{\lambda_2}\big)$. Como el PCA
+se hizo sobre datos estandarizados, esas coordenadas son exactamente la
+**correlación de la variable con cada eje**: la flecha apunta hacia
+donde crece la variable, es más larga cuanto mejor la representa el
+mapa, y **el ángulo entre dos flechas dice cuánto van juntas** (pequeño:
+juntas; recto: nada que ver; abierto: en contra).
+
+```{r, biplot_flechas}
+flechas <- sweep(pesos[, 1:2], 2, sqrt(lambda[1:2]), "*")
+all.equal(unname(flechas), unname(cor(Z_pca, scores_pca[, 1:2])))   # son correlaciones
+
+largo <- sqrt(rowSums(flechas^2))
+round(cbind(flechas, largo = largo)[order(-largo), ], 2)
+```
+
+```{r, biplot, fig.width=8.5, fig.height=7.5}
+k_flecha <- 4.5      # las flechas se agrandan para que se vean sobre la nube
+bien_representadas <- names(largo)[largo > 0.3]
+etiq_corta <- c(Annual_Income = "ingreso", Credit_Limit = "cupo", Statement_Balance = "saldo",
+                Payment_Amount = "pago", Monthly_Transactions = "transacciones",
+                Avg_Transaction_Value = "valor/transacción", Mobile_App_Login = "app",
+                EMI_Count = "cuotas", International_Transactions = "internacionales",
+                Credit_Score = "puntaje", Cash_Advance_Amount = "avances efectivo",
+                Card_Age_Months = "antigüedad", Grocery_Spending = "mercado",
+                Utility_Bill_Spending = "servicios", Online_Shopping_Spending = "en línea",
+                Fuel_Spending = "combustible", Dining_Spending = "restaurantes",
+                Travel_Spending = "viajes", Entertainment_Spending = "entretenimiento")
+
+plot(scores_pca[idx_mapa, "C1"], scores_pca[idx_mapa, "C2"], pch = 16, cex = 0.4,
+     col = rgb(0, 0, 0, 0.12), asp = 1, xlim = c(-9, 11),
+     xlab = "C1 · tamaño del cliente", ylab = "C2 · riesgo",
+     main = "Biplot: clientes como puntos, variables como flechas")
+abline(h = 0, v = 0, lty = 3, col = "grey60")
+arrows(0, 0, k_flecha * flechas[bien_representadas, 1], k_flecha * flechas[bien_representadas, 2],
+       length = 0.08, col = "#C05621", lwd = 1.6)
+riesgo_vars <- intersect(c("Credit_Score", "Cash_Advance_Amount", "Card_Age_Months"), bien_representadas)
+text(k_flecha * flechas[riesgo_vars, 1] * 1.12, k_flecha * flechas[riesgo_vars, 2] * 1.12,
+     etiq_corta[riesgo_vars], col = "#9B2C2C", font = 2, cex = 0.85)
+text(k_flecha * 1.05, 0.6, "ingreso, cupo, saldo, pagos,\ngasto, transacciones, app",
+     col = "#C05621", font = 2, cex = 0.8, adj = 0)
+
+angulo <- function(a, b) acos(sum(a * b) / sqrt(sum(a^2) * sum(b^2))) * 180 / pi
+c(ingreso_vs_cupo      = angulo(flechas["Annual_Income", ], flechas["Credit_Limit", ]),
+  ingreso_vs_puntaje   = angulo(flechas["Annual_Income", ], flechas["Credit_Score", ]),
+  puntaje_vs_avances   = angulo(flechas["Credit_Score", ], flechas["Cash_Advance_Amount", ]))
+```
+
+**Lectura:** las flechas de dinero y actividad apuntan casi todas al
+mismo lado, a lo largo de C1: ingreso y cupo forman un ángulo de
+`r round(angulo(flechas["Annual_Income", ], flechas["Credit_Limit", ]))`°
+(van juntos, $r = 0{,}97$ en el Módulo 7). La flecha del puntaje apunta
+hacia **abajo**, en ángulo casi recto con el ingreso
+(`r round(angulo(flechas["Annual_Income", ], flechas["Credit_Score", ]))`°:
+nada que ver, como el $r = 0{,}03$ del Módulo 7), y la de los avances en
+efectivo hacia **arriba**, casi opuesta al puntaje
+(`r round(angulo(flechas["Credit_Score", ], flechas["Cash_Advance_Amount", ]))`°).
+El biplot dibuja en una figura lo que el informe fue encontrando por
+partes: **el dinero es una dirección y el riesgo es otra,
+perpendicular**. Las flechas cortas (edad, puntos redimidos) son las
+variables que el mapa no representa: viven en C3 y más allá.
+
+## ¿Los grupos que la Gerencia conoce se separan en el mapa?
+
+La sesión distinguió dos situaciones: grupos que **se separan** (una nube
+aparte, con un hueco, como setosa en iris) y grupos que **solo se
+desplazan** (nubes que se montan una sobre otra, como los estratos en
+Saber). Medimos, para cada eje, la distancia entre los centros de los
+grupos en desviaciones estándar dentro de grupo:
+
+```{r, grupos_mapa_tarjeta, fig.width=11, fig.height=5}
+separacion <- function(score, grupo) {
+  medias <- tapply(score, grupo, mean)
+  sd_dentro <- sqrt(sum(tapply(score, grupo, function(v) sum((v - mean(v))^2))) /
+                    (length(score) - nlevels(grupo)))
+  round(sort(medias) / sd_dentro, 2)    # centros en unidades de desviación dentro de grupo
 }
+rbind(C1_tamano = separacion(scores_pca[, "C1"], tarjeta)[orden_tarjeta],
+      C2_riesgo = separacion(scores_pca[, "C2"], tarjeta)[orden_tarjeta])
 
-# 3. Calculamos Mahalanobis sobre los datos con log1p + scale
-M_log_mat <- as.matrix(M_log)
-mu_log    <- colMeans(M_log_mat)
-d2_log    <- mahalanobis(M_log_mat, mu_log, cov(M_log_mat))
-
-# 4. Tabla comparativa: Solo scale() vs. log1p() + scale()
-p_vars <- length(retenidas)
-cortes <- qchisq(c(0.95, 0.99, 0.999), df = p_vars)
-
-data.frame(
-  Corte = c("95 %", "99 %", "99,9 %"),
-  Valor_Chi2 = round(cortes, 2),
-  Esperado_Pct = c("5.00 %", "1.00 %", "0.10 %"),
-  Obs_Solo_Scale_Pct = paste0(round(100 * sapply(cortes, function(q) mean(sc$d2 > q)), 2), " %"),
-  Obs_Log_Scale_Pct  = paste0(round(100 * sapply(cortes, function(q) mean(d2_log > q)), 2), " %")
-)
-
-df_comparacion <- rbind(
-  data.frame(d2 = sc$d2, Metodo = "Solo scale() (Datos Crudos)"),
-  data.frame(d2 = d2_log, Metodo = "log(x+1) + scale() (Transformados)")
-)
-
-ggplot(df_comparacion, aes(x = d2, fill = Metodo)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 70, alpha = 0.6, position = "identity", color = "white") +
-  stat_function(fun = dchisq, args = list(df = p_vars), color = "firebrick", linewidth = 1.2) +
-  geom_vline(xintercept = cortes[2], linetype = "dashed", color = "black") +
-  scale_fill_manual(values = c("Solo scale() (Datos Crudos)" = "steelblue", 
-                               "log(x+1) + scale() (Transformados)" = "darkgreen")) +
-  coord_cartesian(xlim = c(0, 150)) +  # Acercamos la vista para apreciar el cuerpo
-  labs(
-    title = "Efecto de la transformación log1p() en la Distancia de Mahalanobis",
-    subtitle = "En rojo, la distribución Chi-cuadrado teórica con 21 grados de libertad",
-    x = "Distancia de Mahalanobis (al cuadrado)",
-    y = "Densidad",
-    fill = "Estrategia"
-  ) +
-  theme_minimal()
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+plot(scores_pca[idx_mapa, "C1"], scores_pca[idx_mapa, "C2"], pch = 16, cex = 0.45, asp = 1,
+     col = adjustcolor(col_tarjeta[as.integer(tarjeta[idx_mapa])], 0.5),
+     xlab = "C1 · tamaño", ylab = "C2 · riesgo", main = "El mapa por tipo de tarjeta")
+legend("topleft", orden_tarjeta, col = col_tarjeta, pch = 16, bty = "n", cex = 0.8)
+plot(density(scores_pca[tarjeta == "Basic", "C1"]), col = col_tarjeta[1], lwd = 2,
+     xlim = range(scores_pca[, "C1"]), ylim = c(0, 0.32),
+     main = "C1 por tipo de tarjeta", xlab = "C1 · tamaño")
+for (k in 2:5) lines(density(scores_pca[tarjeta == orden_tarjeta[k], "C1"]), col = col_tarjeta[k], lwd = 2)
+par(mfrow = c(1, 1))
 ```
 
-Expliacion rapida para no olvidar: esto quiere decir que log+1 hace que
-el comportamiento del dataset se mas una normal multivariante que solo
-viendo los valores reales
+**Lectura:** en **tamaño** (C1), los tipos de tarjeta se ordenan de
+`Basic` a `Signature` y cada centro queda a entre 1,5 y 2 desviaciones
+del siguiente: las densidades de tarjetas vecinas se tocan, pero las no
+vecinas casi no se solapan, y `Signature` queda prácticamente aparte —
+los lóbulos que se veían en el mapa. Es lo más parecido a setosa que tiene esta cartera, y
+tiene sentido: el tipo de tarjeta es una decisión del banco basada en el
+ingreso. En **riesgo** (C2), en cambio, los cinco centros quedan a
+menos de dos décimas de desviación entre sí: las nubes se montan
+completas. Es la misma conclusión del $V$ de Cramér del Módulo 12, vista
+ahora en el mapa: **el tipo de tarjeta dice cuánto pesa un cliente, no
+qué tan riesgoso es**.
 
-## Prueba de mardia pero con log+1
+```{r, grupos_mapa_ocupacion}
+ocupacion <- factor(credit$Occupation)
+rbind(C1_tamano = separacion(scores_pca[, "C1"], ocupacion),
+      C2_riesgo = separacion(scores_pca[, "C2"], ocupacion))
+```
 
-aqui solo queiro ver que tanto cambia usando el log+1
+**Lectura:** con la ocupación pasa lo mismo, más suave. En tamaño, los
+`Student` y los `Retired` quedan a la izquierda y los `Business Owner` a
+la derecha (la ocupación explica el ingreso, Módulo 7); en riesgo, las
+seis ocupaciones tienen el centro prácticamente en el mismo lugar.
+**Diferencia no es separación**, y aquí en riesgo ni siquiera hay
+diferencia. **Decisión:** la Gerencia no puede escoger a quién
+seguir por tipo de tarjeta ni por ocupación; lo que sirve es el lugar de
+cada cliente en el eje de riesgo.
 
-```{r mardia con log+1}
-set.seed(42)
+## La decisión: el mapa de seguimiento
 
-# 1. Creamos la submatriz con la transformación log1p aplicada a las variables asimétricas
-M_log <- sc[retenidas]
-vars_para_log <- tabla_transf$Variable[tabla_transf$Transformacion == "log(x+1) + scale()"]
+Como el riesgo no viene en grupos hechos, la Gerencia los define con
+cortes. Proponemos uno sencillo: **más de una desviación típica por
+encima en C2** para "riesgo alto", y la mediana de C1 para separar
+clientes grandes (más exposición) de pequeños.
 
-for (v in vars_para_log) {
-  M_log[[v]] <- log1p(M_log[[v]]) # log1p(x) es log(x + 1)
+```{r, mapa_decision}
+corte_riesgo <- sd(scores_pca[, "C2"])
+corte_tamano <- median(scores_pca[, "C1"])
+zona <- ifelse(scores_pca[, "C2"] > corte_riesgo,
+               ifelse(scores_pca[, "C1"] > corte_tamano, "A · riesgo alto, cliente grande",
+                                                         "B · riesgo alto, cliente pequeño"),
+               "C · sin seguimiento")
+tabla_zonas <- as.data.frame(table(zona = zona))
+tabla_zonas$de_cada_100 <- round(100 * tabla_zonas$Freq / nrow(credit), 1)
+tabla_zonas$puntaje_medio <- round(tapply(credit$Credit_Score, zona, mean), 0)
+tabla_zonas$cupo_mediano <- round(tapply(credit$Credit_Limit, zona, median))
+tabla_zonas
+
+# ¿Cuántos del 20 % con peor puntaje caen en las zonas A o B?
+c(en_riesgo_dentro_de_A_o_B = sum(en_riesgo & zona != "C · sin seguimiento"),
+  de_cada_100 = round(100 * mean(zona[en_riesgo] != "C · sin seguimiento"), 1))
+```
+
+```{r, mapa_decision_plot, fig.width=7.5, fig.height=6}
+col_zona <- c("A · riesgo alto, cliente grande" = "#9B2C2C",
+              "B · riesgo alto, cliente pequeño" = "#C05621",
+              "C · sin seguimiento" = "grey75")
+plot(scores_pca[idx_mapa, "C1"], scores_pca[idx_mapa, "C2"], pch = 16, cex = 0.5, asp = 1,
+     col = adjustcolor(col_zona[zona[idx_mapa]], 0.6),
+     xlab = "C1 · tamaño del cliente", ylab = "C2 · riesgo",
+     main = "El mapa de seguimiento: dos cortes, tres zonas")
+abline(h = corte_riesgo, lty = 2); abline(v = corte_tamano, lty = 2)
+legend("bottomright", names(col_zona), col = col_zona, pch = 16, bty = "n", cex = 0.8)
+```
+
+**Lectura:** el corte deja
+`r format(sum(zona != "C · sin seguimiento"), big.mark=".")` clientes en
+seguimiento
+(`r round(100 * mean(zona != "C · sin seguimiento"), 1)` % de la
+cartera), con un puntaje medio muy por debajo del resto, y encuentra al
+`r round(100 * mean(zona[en_riesgo] != "C · sin seguimiento"), 1)` % del
+20 % con peor puntaje — con menos cupos que el 20 % del Módulo 16. La
+zona **A** es la prioridad: clientes con riesgo alto **y** cupo grande,
+donde una mora pesa más; la zona **B** puede atenderse con un
+seguimiento más barato (mensajes, no llamadas). **El corte de "una
+desviación" es una decisión de la Gerencia, no de la técnica**: si tiene
+menos gestores, lo sube.
+
+## Con y sin *one-hot*: ¿cambia el mapa si entra el tipo de tarjeta?
+
+El Módulo 15 dejó el tipo de tarjeta codificado en *one-hot*. La
+pregunta es si meterlo como variable activa cambia el mapa. Comparamos
+tres versiones: sin él, con las cinco *dummies* estandarizadas tal cual,
+y con las *dummies* ponderadas por $1/\sqrt{5}$ (para que juntas pesen
+como una variable, la regla del Módulo 15).
+
+```{r, pca_one_hot}
+D_card_z <- scale(D_card)
+pca_oh_pleno <- prcomp(cbind(Z_pca, D_card_z))
+pca_oh_pond  <- prcomp(cbind(Z_pca, D_card_z / sqrt(ncol(D_card))))
+
+resumen_oh <- function(pc, nombre) {
+  l <- pc$sdev^2
+  c(version = nombre,
+    columnas = nrow(pc$rotation),
+    guarda_C1 = round(100 * l[1] / sum(l), 1),
+    guarda_C2 = round(100 * l[2] / sum(l), 1),
+    cor_C1_con_original = round(abs(cor(pc$x[, 1], pca$x[, 1])), 4),
+    cor_C2_con_original = round(abs(cor(pc$x[, 2], pca$x[, 2])), 4),
+    ultimo_lambda = signif(min(l), 2))
 }
+as.data.frame(rbind(resumen_oh(pca, "Sin one-hot"),
+                    resumen_oh(pca_oh_pleno, "Con one-hot (5 dummies)"),
+                    resumen_oh(pca_oh_pond, "Con one-hot ponderado")))
 
-# 2. Tomamos una muestra aleatoria de 1.500 observaciones para no saturar memoria
-m_mardia <- 10000
-Xm_log <- as.matrix(M_log[sample(nrow(M_log), m_mardia), ])
-
-p_mardia <- ncol(Xm_log)
-xbar_m   <- colMeans(Xm_log)
-S_m      <- cov(Xm_log)
-Xc_m     <- sweep(Xm_log, 2, xbar_m)
-
-# 3. Matriz de distancias generalizadas (G)
-G_m <- Xc_m %*% solve(S_m) %*% t(Xc_m)
-
-# 4. Estadísticos de Mardia (Asimetría y Curtosis)
-b1p <- sum(G_m^3) / m_mardia^2
-b2p <- mean(diag(G_m)^2)
-
-# Grados de libertad y p-valores
-gl_skew   <- p_mardia * (p_mardia + 1) * (p_mardia + 2) / 6
-stat_skew <- m_mardia * b1p / 6
-pval_skew <- pchisq(stat_skew, df = gl_skew, lower.tail = FALSE)
-
-media_kurt <- p_mardia * (p_mardia + 2)
-var_kurt   <- 8 * p_mardia * (p_mardia + 2) / m_mardia
-z_kurt     <- (b2p - media_kurt) / sqrt(var_kurt)
-pval_kurt  <- 2 * pnorm(-abs(z_kurt))
-
-# 5. Resultado comparativo
-data.frame(
-  Estadistico = c("Asimetría de Mardia (stat_skew)", "Curtosis de Mardia (z_kurt)"),
-  Valor_Solo_Scale = c(122753.1, 194.2), # Valores aproximados de tu corrida cruda (Módulo 10)
-  Valor_Con_Log1p  = c(round(stat_skew, 1), round(z_kurt, 2)),
-  Ref_Teorica      = c(paste0("chi2, df=", gl_skew), "N(0,1)"),
-  p_valor_Log      = c(format.pval(pval_skew, digits = 3, eps = 2.2e-16),
-                       format.pval(pval_kurt, digits = 3, eps = 2.2e-16))
-)
+# ¿En qué componente se mete el tipo de tarjeta?
+round(cor(D_card, pca_oh_pond$x[, 1:3]), 2)
 ```
 
-Nota: anque log la lleve a una forma mas normal sigue rechazando H_0
+**Lectura:** las dos versiones con *one-hot* tienen un último valor
+propio prácticamente cero: las cinco *dummies* suman siempre 1, y el PCA
+lo detecta como una dirección sin varianza (la trampa de las *dummies*
+del Módulo 15; con PCA no rompe nada, solo sobra esa componente). Con
+las *dummies* ponderadas, **el mapa no cambia**: sus dos primeras
+componentes se correlacionan
+`r round(abs(cor(pca_oh_pond$x[, 1], pca$x[, 1])), 3)` y
+`r round(abs(cor(pca_oh_pond$x[, 2], pca$x[, 2])), 3)` con las
+originales. Sin ponderar, en cambio, la segunda componente **deja de
+ser el riesgo** (su correlación con la C2 original cae a
+`r round(abs(cor(pca_oh_pleno$x[, 2], pca$x[, 2])), 2)`): las cinco
+*dummies*, que pesan como cinco variables, se adueñan de ella. El tipo de tarjeta se mete **entero en C1** (`Basic` en un
+extremo, `Platinum` y `Signature` en el otro) y nada en C2: lo que dice
+la tarjeta ya estaba contenido en el ingreso y el cupo. Sin ponderar,
+además, le restan protagonismo al resto de la ficha (la C1 guarda
+`r round(100 * pca_oh_pleno$sdev[1]^2 / sum(pca_oh_pleno$sdev^2), 1)` en
+vez de `r round(guarda_1(pca), 1)`). **Decisión:** el mapa de la Gerencia
+se queda **sin** el tipo de tarjeta como variable activa; la tarjeta se
+usa como variable para colorear y leer el mapa, que es donde aporta.
+
+## Qué no dice el mapa
+
+- **No dice que haya tipos de cliente en riesgo.** En C2 la nube es un
+  continuo; las zonas de seguimiento las definimos nosotros con cortes.
+- **No muestra todo.** Guarda `r round(guarda_mapa, 1)` de cada 100: la
+  edad (C3) y varias dimensiones pequeñas no están dibujadas.
+- **No explica por qué.** Que los avances en efectivo apunten hacia el
+  riesgo no dice que los causen; puede ser al revés (quien está en
+  apuros pide avances).
+
+## Conclusión del módulo
+
+1.  El mapa de dos componentes ordena a cada cliente por **tamaño** (a
+    la derecha) y **riesgo** (hacia arriba); las flechas del dinero van
+    a lo largo de C1 y las del riesgo (puntaje, avances, antigüedad) a lo
+    largo de C2, casi perpendiculares.
+2.  El tipo de tarjeta **separa** a los clientes en tamaño —lo más
+    parecido a setosa de esta cartera— y **no los separa en absoluto**
+    en riesgo; la ocupación, igual. Ninguno sirve para escoger a quién
+    seguir.
+3.  Dos cortes en el mapa producen una lista de seguimiento con
+    prioridad (zona A: riesgo alto y cliente grande), que la Gerencia
+    puede ajustar moviendo el corte según sus cupos.
+4.  Meter el tipo de tarjeta con *one-hot* ponderado no cambia el
+    mapa: su información ya estaba en C1. Sin ponderar, las cinco
+    *dummies* desplazan al riesgo de la segunda componente — la razón de
+    la regla $1/\sqrt{k}$ del Módulo 15.
+
+------------------------------------------------------------------------
+
+# Conclusiones Generales
+
+El informe recorrió la cartera de
+`r format(nrow(credit), big.mark=".")` clientes de lo univariado a lo
+multivariado, y cada etapa dejó una conclusión que la siguiente usó:
+
+1.  **La matriz es confiable** (Módulos 1–2): no tiene faltantes,
+    duplicados ni valores imposibles; las 26 numéricas están bien
+    tipadas y las 4 categóricas tienen los niveles que deben.
+2.  **Las variables de dinero son asimétricas y redundantes** (Módulos
+    3–6, 8 y 10): casi todas tienen colas largas a la derecha —por eso
+    `log(x+1)`— y cinco columnas son derivadas o duplicadas de otras,
+    hasta volver singular la matriz de covarianzas.
+3.  **El riesgo no depende del dinero, sino de la conducta de pago**
+    (Módulos 7, 11 y 12): `Credit_Score` casi no se correlaciona con el
+    ingreso, y queda casi determinado por el uso del cupo y la
+    proporción pagada.
+4.  **Mirar de a una variable engaña** (Módulos 7, 11, 12 y 13): la
+    relación ingreso–cupo son cinco rectas y no una; transacciones y
+    valor medio invierten su relación según se condicione o no en la
+    tarjeta (Simpson); un monto pagado con $r \approx 0$ cambia la cola
+    de riesgo; y la mayoría de los casos raros no tiene ninguna variable
+    extrema.
+5.  **Para la Gerencia de Riesgo, la cartera se resume en dos números**
+    (Módulos 16–17): tamaño (C1, la mitad de la información) y riesgo
+    (C2). El primero solo no ve el riesgo; los dos juntos dan un mapa con
+    una lista de seguimiento priorizada.

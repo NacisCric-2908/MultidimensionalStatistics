@@ -1,0 +1,435 @@
+---
+title: "Estadística Multidimensional — Sesión 11"
+author: "26158 · grupo 020-81 · lunes 14 de septiembre de 2026 · Aula 404"
+subtitle: Distribución condicional e independencia
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    number_sections: true
+  pdf_document:
+    toc: true
+    toc_depth: '3'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+set.seed(2026)
+```
+
+# La deuda del sábado
+
+El sábado quedó un resultado sin explicar. Dos tratamientos contra cálculos renales:
+
+- En cálculos **pequeños** gana **A**: 93,1 % contra 86,7 %.
+- En cálculos **grandes** gana **A**: 73,0 % contra 68,8 %.
+- **Juntando** los dos tamaños gana **B**: 82,6 % contra 78,0 %.
+
+Juntar era **marginalizar** sobre el tamaño. Y marginalizar dio vuelta a la conclusión.
+
+> **La herramienta de hoy es la operación contraria.** En lugar de sumar sobre la variable que
+> estorba, **se fija su valor** y se mira qué pasa con lo demás. Eso es condicionar.
+
+Al final de la clase Simpson queda resuelto — y con él, la definición que más se usa mal en todo el
+curso: la de **independencia**.
+
+---
+
+# El caso discreto
+
+## La misma tabla del sábado
+
+$X$ = asignaturas perdidas, $Y$ = si trabaja.
+
+```{r tabla}
+f <- matrix(c(0.30, 0.10,
+              0.15, 0.20,
+              0.05, 0.20),
+            nrow = 3, byrow = TRUE,
+            dimnames = list(X = c("0", "1", "2"), Y = c("no", "sí")))
+addmargins(f)
+```
+
+## Condicionar es dividir por la marginal
+
+$$f(y \mid x) = \frac{f(x,y)}{f_X(x)} \qquad\text{siempre que } f_X(x) > 0$$
+
+Se toma **una fila** de la tabla y se reescala para que sume 1. Nada más.
+
+```{r condicional-filas}
+fX <- rowSums(f)
+fY <- colSums(f)
+
+cond_Y_dado_X <- prop.table(f, margin = 1)   # cada fila dividida por su total
+round(cond_Y_dado_X, 4)
+rowSums(cond_Y_dado_X)                        # cada fila suma 1: son distribuciones
+```
+
+Léanlo como una frase del negocio:
+
+- Entre quienes **no pierden ninguna**, el **25 %** trabaja.
+- Entre quienes pierden **una**, el **57 %**.
+- Entre quienes pierden **dos**, el **80 %**.
+
+> **Cada fila es una distribución completa.** Hay tantas distribuciones condicionales de $Y$ como
+> valores posibles de $X$ — aquí, tres. La marginal es una sola.
+
+Y en la otra dirección:
+
+```{r condicional-columnas}
+round(prop.table(f, margin = 2), 4)   # P(X | Y): cada columna suma 1
+```
+
+> **$P(Y \mid X)$ y $P(X \mid Y)$ no son lo mismo.** El 80 % de quienes pierden dos trabaja; pero
+> de quienes trabajan, solo el 40 % pierde dos. Confundirlas es el error más caro de la
+> estadística aplicada — en medicina tiene nombre propio: la falacia del fiscal.
+
+---
+
+# Independencia: tres definiciones que son la misma
+
+$X$ e $Y$ son **independientes** si y solo si se cumple cualquiera de estas —y entonces se cumplen
+las tres—:
+
+| | Forma | Qué dice en palabras |
+|---|---|---|
+| **1** | $f(x,y) = f_X(x)\,f_Y(y)$ para **todo** $x, y$ | La conjunta es el producto de las marginales |
+| **2** | $f(y \mid x) = f_Y(y)$ para **todo** $x$ | Saber $X$ no cambia nada sobre $Y$ |
+| **3** | $f(x \mid y) = f_X(x)$ para **todo** $y$ | Saber $Y$ no cambia nada sobre $X$ |
+
+La segunda es la que se entiende. **Si todas las filas condicionales son iguales entre sí —e iguales
+a la marginal—, no hay dependencia.**
+
+```{r comparar-con-marginal}
+comparacion <- rbind(cond_Y_dado_X, marginal = fY)
+round(comparacion, 4)
+```
+
+Las tres filas son distintas entre sí y distintas de la marginal $(0{,}5;\ 0{,}5)$. **No son
+independientes.** Es la misma conclusión del sábado con `outer()`, vista desde otro lado.
+
+## Una tabla que sí es independiente
+
+```{r tabla-independiente}
+g <- outer(fX, fY)          # la construimos a propósito como producto
+dimnames(g) <- dimnames(f)
+round(prop.table(g, margin = 1), 4)
+```
+
+Las tres filas son **idénticas** y son la marginal. Saber cuántas perdió no dice nada sobre si
+trabaja.
+
+> **Ojo con la palabra «todo».** Basta **una sola** fila distinta para que no haya independencia.
+> Y al revés: que dos filas coincidan no prueba nada si la tercera no coincide.
+
+---
+
+# El caso continuo: se condiciona con una rebanada
+
+$$f(y \mid x) = \frac{f(x,y)}{f_X(x)}$$
+
+La fórmula es la misma. Lo que cambia es la imagen: condicionar en $X = x$ es **cortar la campana
+con un plano vertical** en ese $x$ y reescalar el corte para que tenga área 1.
+
+## La normal bivariada, otra vez
+
+Horas de estudio a la semana ($X$) y nota del proyecto ($Y$):
+
+$$\mu_X = 10,\quad \sigma_X = 4,\qquad \mu_Y = 3{,}4,\quad \sigma_Y = 0{,}7,\qquad \rho = 0{,}6$$
+
+Para la normal, la condicional tiene forma cerrada, y es **otra normal**:
+
+$$Y \mid X = x \;\sim\; N\!\left(\mu_Y + \rho\,\frac{\sigma_Y}{\sigma_X}(x - \mu_X),\;\; \sigma_Y^2\,(1 - \rho^2)\right)$$
+
+Dos cosas que hay que ver en esa fórmula antes de calcular nada:
+
+1. **La media condicional es una recta en $x$.** Esa recta es, exactamente, la recta de regresión.
+2. **La varianza condicional no depende de $x$.** Es la misma en cualquier rebanada, y es **menor**
+   que la marginal por el factor $(1 - \rho^2)$.
+
+```{r normal-teoria}
+mX <- 10;  sX <- 4
+mY <- 3.4; sY <- 0.7
+rho <- 0.6
+
+media_cond <- function(x) mY + rho * sY / sX * (x - mX)
+sd_cond    <- sY * sqrt(1 - rho^2)
+
+data.frame(x = c(6, 10, 14),
+           media_condicional = media_cond(c(6, 10, 14)),
+           sd_condicional    = sd_cond)
+c(sd_marginal_Y = sY, sd_condicional_Y = sd_cond)
+```
+
+## Comprobarlo con datos: tres rebanadas
+
+```{r normal-rebanadas, fig.width = 10, fig.height = 4.2}
+n  <- 20000
+z1 <- rnorm(n); z2 <- rnorm(n)
+X  <- mX + sX * z1
+Y  <- mY + sY * (rho * z1 + sqrt(1 - rho^2) * z2)
+
+cortes <- c(6, 10, 14)
+
+par(mfrow = c(1, 4), mar = c(4, 4, 3, 1))
+plot(X, Y, pch = 16, cex = .15, col = "#00000030",
+     xlab = "horas/semana", ylab = "nota", main = "la conjunta")
+abline(v = cortes, col = c("#1b7837", "#762a83", "#b35806"), lwd = 2)
+curve(media_cond(x), add = TRUE, lwd = 2, lty = 2)
+
+for (k in seq_along(cortes)) {
+  y_corte <- Y[abs(X - cortes[k]) < 0.5]
+  hist(y_corte, breaks = 30, freq = FALSE, xlim = c(1, 6),
+       col = "grey88", border = "white",
+       main = paste0("Y | X ≈ ", cortes[k]), xlab = "nota")
+  curve(dnorm(x, media_cond(cortes[k]), sd_cond), add = TRUE, lwd = 2,
+        col = c("#1b7837", "#762a83", "#b35806")[k])
+}
+par(mfrow = c(1, 1))
+```
+
+```{r normal-rebanadas-tabla}
+rebanadas <- t(sapply(cortes, function(x0) {
+  y_corte <- Y[abs(X - x0) < 0.5]
+  c(x = x0, n = length(y_corte),
+    media_simulada = mean(y_corte), media_teorica = media_cond(x0),
+    sd_simulada = sd(y_corte),      sd_teorica = sd_cond)
+}))
+round(rebanadas, 3)
+```
+
+> **El centro se mueve y el ancho no.** Al pasar de 6 a 14 horas, la nota esperada sube de 2,98 a
+> 3,82 — y la dispersión se queda en 0,56 en las tres rebanadas. Eso es exactamente lo que dice la
+> fórmula, y es la huella de una dependencia **lineal**.
+
+---
+
+# La trampa: el centro quieto no prueba independencia
+
+Vuelve el caso **(C)** del sábado: la mezcla de $\rho = +0{,}9$ y $\rho = -0{,}9$, con correlación
+cero.
+
+```{r caso-c, fig.width = 10, fig.height = 4.2}
+n  <- 20000
+r  <- 0.9
+s  <- sample(c(-1, 1), n, replace = TRUE)
+Xc <- rnorm(n)
+Yc <- s * r * Xc + sqrt(1 - r^2) * rnorm(n)
+
+cortes_c <- c(-2, 0, 2)
+
+par(mfrow = c(1, 4), mar = c(4, 4, 3, 1))
+plot(Xc, Yc, pch = 16, cex = .15, col = "#00000030", asp = 1,
+     xlim = c(-3.5, 3.5), ylim = c(-3.5, 3.5), main = "(C) la mezcla", xlab = "x", ylab = "y")
+abline(v = cortes_c, col = "#b35806", lwd = 2)
+for (x0 in cortes_c) {
+  y_corte <- Yc[abs(Xc - x0) < 0.2]
+  hist(y_corte, breaks = 25, freq = FALSE, xlim = c(-4, 4),
+       col = "grey88", border = "white",
+       main = paste0("Y | X ≈ ", x0), xlab = "y")
+}
+par(mfrow = c(1, 1))
+
+tabla_c <- t(sapply(cortes_c, function(x0) {
+  y_corte <- Yc[abs(Xc - x0) < 0.2]
+  c(x = x0, n = length(y_corte), media = mean(y_corte), sd = sd(y_corte))
+}))
+round(tabla_c, 3)
+c(correlacion = cor(Xc, Yc))
+```
+
+> **La media condicional está quieta en 0 en las tres rebanadas.** Si solo miráramos el centro
+> —o solo la correlación— diríamos «no hay relación». Pero la **dispersión** pasa de apretada en
+> $x = 0$ a cuatro veces más ancha en $x = \pm 2$.
+>
+> Y miren los histogramas de los extremos: **no son una campana ancha, son dos jorobas**. En
+> $x = \pm 2$ la variable $Y$ vive cerca de $+1{,}8$ o cerca de $-1{,}8$, casi nunca en el medio.
+> **Cambió la forma**, no solo el ancho.
+>
+> **Las rebanadas no son iguales, así que no hay independencia.** La definición 2 pide que la
+> *distribución completa* no cambie, no solo su media.
+
+| Lo que se mira | ¿Detecta la dependencia de (C)? |
+|---|---|
+| Correlación | **No** — da cero |
+| Media condicional | **No** — está quieta |
+| **Distribución condicional completa** | **Sí** — el ancho cambia |
+
+Esto afina lo que pide el **Avance 1, §3.2**: no basta preguntar si el centro se mueve. Hay que
+mirar las **tres rebanadas enteras**.
+
+---
+
+# Simpson, resuelto
+
+```{r simpson}
+exitos <- matrix(c( 81, 234,
+                   192,  55), nrow = 2, byrow = TRUE,
+                 dimnames = list(tamano = c("pequeño", "grande"), trat = c("A", "B")))
+total  <- matrix(c( 87, 270,
+                   263,  80), nrow = 2, byrow = TRUE,
+                 dimnames = dimnames(exitos))
+
+# 1. La condicional que importa: éxito dado tratamiento Y tamaño
+round(exitos / total, 3)
+
+# 2. ¿Cómo se repartieron los casos? P(tamaño | tratamiento)
+round(prop.table(total, margin = 2), 3)
+
+# 3. ¿El tamaño afecta el éxito, sin importar el tratamiento? P(éxito | tamaño)
+round(rowSums(exitos) / rowSums(total), 3)
+```
+
+Ahí están las tres piezas del mecanismo:
+
+1. **Condicionando en el tamaño, A gana siempre.** Es la comparación honesta: casos iguales contra
+   casos iguales.
+2. **A recibió el 75 % de los casos grandes; B, el 23 %.** El tratamiento **no** es independiente
+   del tamaño.
+3. **Los casos grandes tienen peor pronóstico** con cualquier tratamiento: 72 % contra 88 %.
+
+Al marginalizar, B hereda los casos fáciles y A los difíciles. **La diferencia de composición se
+disfraza de diferencia de tratamiento.**
+
+> **La regla:** cuando una variable afecta **a la vez** a quién recibe qué y al resultado —aquí, el
+> tamaño—, hay que **condicionar en ella**. Esa variable se llama *confusora*, y es la razón de que
+> los ensayos clínicos se aleatoricen.
+
+---
+
+# Condicionales en $p$ dimensiones
+
+Para la normal multivariante hay forma cerrada, y es la generalización directa de la bivariada.
+Se parte el vector en dos bloques, $\mathbf{X} = (\mathbf{X}_1, \mathbf{X}_2)$:
+
+$$\boldsymbol\mu = \begin{pmatrix}\boldsymbol\mu_1\\ \boldsymbol\mu_2\end{pmatrix},\qquad
+  \boldsymbol\Sigma = \begin{pmatrix}\boldsymbol\Sigma_{11} & \boldsymbol\Sigma_{12}\\
+                                     \boldsymbol\Sigma_{21} & \boldsymbol\Sigma_{22}\end{pmatrix}$$
+
+$$\mathbf{X}_1 \mid \mathbf{X}_2 = \mathbf{x}_2 \;\sim\;
+  N\!\left(\boldsymbol\mu_1 + \boldsymbol\Sigma_{12}\boldsymbol\Sigma_{22}^{-1}(\mathbf{x}_2 - \boldsymbol\mu_2),\;\;
+           \boldsymbol\Sigma_{11} - \boldsymbol\Sigma_{12}\boldsymbol\Sigma_{22}^{-1}\boldsymbol\Sigma_{21}\right)$$
+
+Compárenla con la de ayer: **la marginal era tachar; la condicional es tachar y corregir.**
+
+```{r condicional-p}
+mu <- c(peso = 70, altura = 170, edad = 30, ingreso = 2500)
+Sigma <- matrix(c( 100,   60,   30,   400,
+                    60,   80,   10,   250,
+                    30,   10,  120,   900,
+                   400,  250,  900, 40000),
+                nrow = 4, byrow = TRUE,
+                dimnames = list(names(mu), names(mu)))
+
+condicional_normal <- function(mu, Sigma, i, j, x2) {
+  S11 <- Sigma[i, i, drop = FALSE]
+  S12 <- Sigma[i, j, drop = FALSE]
+  S22 <- Sigma[j, j, drop = FALSE]
+  media <- mu[i] + S12 %*% solve(S22, x2 - mu[j])
+  covar <- S11 - S12 %*% solve(S22, t(S12))
+  list(media = drop(media), covarianza = covar)
+}
+
+# peso sabiendo solo la altura
+condicional_normal(mu, Sigma, "peso", "altura", 180)
+
+# peso sabiendo altura e ingreso
+res <- condicional_normal(mu, Sigma, "peso", c("altura", "ingreso"), c(180, 3000))
+res
+c(sd_marginal = sqrt(Sigma["peso", "peso"]), sd_condicional = sqrt(drop(res$covarianza)))
+```
+
+- Sin saber nada: peso medio **70 kg**, desviación **10**.
+- Sabiendo que mide 180: peso medio **77,5**, desviación **7,4**.
+- Sabiendo además que gana 3000: **80,0**, desviación **7,3**.
+
+> **Cada variable que se conoce corre el centro y angosta la campana.** La varianza condicional
+> nunca es mayor que la marginal: condicionar es ganar información.
+
+## Y el requisito escondido en la fórmula
+
+La condicional necesita $\boldsymbol\Sigma_{22}^{-1}$. ¿Qué pasa si esa matriz no tiene inversa?
+
+```{r singular}
+# Alguien guardó el peso dos veces: en kilos y en gramos
+S_redundante <- matrix(c(100, 1e5,
+                         1e5, 1e8), nrow = 2,
+                       dimnames = list(c("peso_kg", "peso_g"), c("peso_kg", "peso_g")))
+det(S_redundante)
+
+tryCatch(solve(S_redundante),
+         error = function(e) paste("ERROR:", conditionMessage(e)))
+```
+
+> **Es el punto 5 del chequeo del Taller 2**, y aquí se ve para qué era: dos columnas redundantes
+> hacen el determinante cero, $\boldsymbol\Sigma$ no se puede invertir, y **no hay distribución
+> condicional que calcular**. Tampoco distancia de Mahalanobis, en la unidad 4.
+
+---
+
+# Sobre su propio dataset — 20 minutos
+
+La herramienta es la misma de la sección 4, sin fórmulas: **cortar una variable y comparar las
+rebanadas de otra**.
+
+```{r dataset-propio, fig.width = 9, fig.height = 4}
+datos <- data.frame(
+  horas = round(rgamma(400, shape = 4, scale = 2.5), 1)
+)
+datos$nota <- pmin(pmax(round(2.2 + 0.11 * datos$horas + rnorm(400, 0, 0.55), 2), 0), 5)
+
+datos$tercil_horas <- cut(datos$horas,
+                          breaks = quantile(datos$horas, c(0, 1/3, 2/3, 1)),
+                          include.lowest = TRUE,
+                          labels = c("pocas", "medias", "muchas"))
+
+par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+boxplot(nota ~ tercil_horas, data = datos, col = "grey88",
+        main = "nota | tercil de horas", xlab = "horas de estudio", ylab = "nota")
+plot(density(datos$nota[datos$tercil_horas == "pocas"]), lwd = 2, col = "#b35806",
+     main = "las tres condicionales", xlab = "nota", xlim = c(0, 5), ylim = c(0, 1.1))
+lines(density(datos$nota[datos$tercil_horas == "medias"]), lwd = 2, col = "#762a83")
+lines(density(datos$nota[datos$tercil_horas == "muchas"]), lwd = 2, col = "#1b7837")
+legend("topleft", legend = levels(datos$tercil_horas),
+       col = c("#b35806", "#762a83", "#1b7837"), lwd = 2, bty = "n")
+par(mfrow = c(1, 1))
+
+aggregate(nota ~ tercil_horas, data = datos,
+          FUN = function(v) c(media = mean(v), sd = sd(v), n = length(v)))
+```
+
+Con el dataset del grupo:
+
+1. Escojan **el par de variables más relevante para su pregunta** — el mismo del §3.1 del Avance 1.
+2. Corten la primera en **terciles** con `cut()` y `quantile()`.
+3. Comparen las tres condicionales de la segunda: boxplot **y** densidades.
+4. Contesten con las **tres** preguntas: ¿se mueve el centro?, ¿cambia el ancho?, ¿cambia la forma?
+
+> Si responden solo la primera, están mirando la correlación con otro nombre. **El caso (C) es la
+> razón de que se pregunten las tres.**
+
+---
+
+# Qué queda
+
+| | |
+|---|---|
+| **Se define hoy** | $f(y \mid x) = f(x,y)/f_X(x)$ — cada fila reescalada |
+| **Independencia** | Todas las condicionales iguales a la marginal. **Todas**, y **completas** |
+| **Normal bivariada** | Media condicional = recta de regresión · varianza condicional constante y menor |
+| **La trampa** | Correlación cero y media quieta **no** prueban independencia: el caso (C) |
+| **Simpson** | Se resuelve condicionando en la variable confusora |
+| **En $p$ dimensiones** | Tachar y corregir · exige que $\boldsymbol\Sigma_{22}$ sea invertible |
+| **Sábado 19** | Esperanza, varianza y **ley de la varianza total** |
+| **Lunes 21** | Repaso integrador U1–U3 |
+| **Sábado 26** | **Parcial 1** |
+
+> **Adelanto para el sábado.** Con los números de la sección 4:
+> $\sigma_Y^2 = 0{,}49$ se parte en $0{,}3136$ —la varianza **dentro** de cada rebanada— más
+> $0{,}1764$ —lo que se **mueven los centros** entre rebanadas—. Eso es la ley de la varianza total.
+
+---
+
+*Estadística Multidimensional · 26158 · grupo 020-81 · periodo 2026-3 ·
+Jhon Alejandro Varón Robayo · Universidad Distrital Francisco José de Caldas.*
