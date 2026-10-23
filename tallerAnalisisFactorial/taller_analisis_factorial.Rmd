@@ -1,0 +1,494 @@
+---
+title: "Taller: Lo que las variables comparten"
+subtitle: "Análisis factorial para la Gerencia de Riesgo de Crédito"
+author:
+  - "Oscar Manuel Contreras Gacha (20221020052)"
+  - "Juan Pablo Sarmiento Ramírez (20221020138)"
+  - "Steven Navarro Parrales (20221020048)"
+  - "Juan Diego Grajales Castillo (20221020128)"
+date: "Estadística Multidimensional · 26158 · grupo 020-81 · periodo 2026-3"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+    code_folding: show
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9, fig.height = 5.5)
+for (paquete in c("psych", "GPArotation", "ggrepel")) {
+  if (!requireNamespace(paquete, quietly = TRUE)) {
+    install.packages(paquete, repos = "https://cloud.r-project.org")
+  }
+}
+library(psych)
+library(ggplot2)
+library(ggrepel)
+theme_set(theme_minimal(base_size = 13))
+coma  <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = " ")
+miles <- function(x) formatC(round(x), format = "d", big.mark = " ")
+# «a, b y c» para armar frases con listas calculadas
+unir  <- function(x) if (length(x) <= 1) x else paste(paste(x[-length(x)], collapse = ", "), "y", x[length(x)])
+```
+
+Cada resultado se lee con tres frases:
+
+- 👀 **Qué vemos**: el número o el gráfico, sin interpretar.
+- 💼 **Qué significa para el cliente**: la traducción a la cartera de
+  tarjetas.
+- ✅ **Qué decide el cliente**: la consecuencia práctica.
+
+Este taller continúa los dos talleres de componentes principales, que a
+su vez parten de los Módulos 15 a 17 de
+`Entrega/analisis_synthetic_credit_card.Rmd`. Usamos **las mismas 9
+variables** de esos talleres y **la misma transformación** (`log(x+1)` a
+las de asimetría mayor que 1). La diferencia está en la pregunta: el PCA
+buscaba **el mejor resumen** de las variables; el análisis factorial
+busca **lo que las variables comparten** —una «habilidad» común que no
+se mide directamente— y separa en cada variable la **parte común** (lo
+que viene de esa habilidad) de la **parte propia** (lo que la variable
+dice por su cuenta).
+
+# El encargo
+
+```{r datos, results = "hide"}
+ruta <- c("../data/bronze/synthetic_credit_card_customer_behavior_dataset.csv",
+          "data/bronze/synthetic_credit_card_customer_behavior_dataset.csv")
+ruta <- ruta[file.exists(ruta)][1]
+if (is.na(ruta)) stop("No se encuentra el CSV: ajuste la ruta en este bloque.")
+credit <- read.csv(ruta, stringsAsFactors = FALSE)
+
+vars <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount",
+          "EMI_Count", "Monthly_Transactions", "Avg_Transaction_Value",
+          "International_Transactions", "Credit_Score")
+etiqueta <- c(Annual_Income = "Ingreso anual", Credit_Limit = "Cupo",
+              Statement_Balance = "Saldo facturado", Payment_Amount = "Monto pagado",
+              EMI_Count = "Compras a cuotas", Monthly_Transactions = "Compras al mes",
+              Avg_Transaction_Value = "Valor por compra",
+              International_Transactions = "Compras internacionales",
+              Credit_Score = "Puntaje crediticio")
+
+# Misma transformación de los talleres de PCA: log(x+1) si |asimetría| > 1
+skew <- function(x) mean(((x - mean(x)) / sd(x))^3)
+con_log <- vars[abs(sapply(credit[vars], skew)) > 1]
+X <- credit[vars]
+X[con_log] <- lapply(X[con_log], log1p)
+colnames(X) <- etiqueta[vars]      # nombres en español para todas las salidas
+p <- ncol(X)
+R <- cor(X)
+```
+
+**El cliente sigue siendo la Gerencia de Riesgo de Crédito del banco
+emisor** de las `r miles(nrow(credit))` tarjetas (rupias indias, ₹). Cada
+mes decide qué clientes entran al programa de seguimiento preventivo. En
+los talleres de PCA le mostramos que la cartera se resume en dos
+direcciones: **tamaño** y **riesgo**. Ahora la Gerencia pregunta otra
+cosa:
+
+> *«Mis analistas dicen que ingreso, cupo, saldo, pagos y número de
+> compras son "lo mismo": la capacidad económica del cliente. ¿Es
+> cierto que hay una sola capacidad detrás de todas? ¿Y el puntaje
+> crediticio, también es parte de esa capacidad?»*
+
+## Las variables que escogimos
+
+Escogemos `r p` variables numéricas que creemos que **comparten algo**:
+el dinero que maneja el cliente (ingreso, cupo, saldo, pago) y cuánto
+usa la tarjeta (compras al mes, valor por compra, cuotas, compras
+internacionales). Metemos a propósito el **puntaje crediticio**, que es
+lo que le importa a la Gerencia, para comprobar si comparte algo con las
+demás o va solo. `r length(con_log)` entran con logaritmo
+(`r unir(unname(etiqueta[con_log]))`); el análisis factorial trabaja
+sobre la matriz de correlación, así que no hace falta estandarizar a
+mano.
+
+## ¿Comparten lo suficiente? El KMO
+
+El KMO compara las correlaciones entre variables con las correlaciones
+**parciales** (lo que queda entre dos variables cuando se descuentan
+todas las demás). Si lo que comparten dos variables también lo comparten
+con las otras, la parcial es pequeña y el KMO se acerca a 1. Por debajo
+de 0,5 una variable no comparte lo suficiente con el grupo.
+
+```{r kmo}
+kmo <- KMO(R)
+data.frame(variable = names(kmo$MSAi), KMO = round(kmo$MSAi, 2),
+           lectura = cut(kmo$MSAi, c(0, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
+                         c("inaceptable", "miserable", "mediocre", "aceptable",
+                           "meritorio", "maravilloso")),
+           row.names = NULL)
+c(KMO_global = round(kmo$MSA, 2))
+```
+
+- 👀 **Qué vemos**: el KMO global es `r coma(kmo$MSA, 2)`, aceptable.
+  Todas las variables pasan de 0,6 salvo **una**: el puntaje
+  crediticio, con `r coma(kmo$MSAi["Puntaje crediticio"], 2)`, el valor
+  más bajo posible en la práctica.
+- 💼 **Qué significa para el cliente**: las ocho variables de dinero y
+  uso sí tienen algo en común; el puntaje, en cambio, no comparte nada
+  con ellas. Lo dejamos dentro de todos modos, porque la pregunta de la
+  Gerencia es justamente si el puntaje pertenece o no a la «capacidad»,
+  y el análisis factorial lo va a mostrar con números.
+- ✅ **Qué decide el cliente**: tiene sentido buscar una habilidad común
+  detrás de la ficha; el puntaje es el primer candidato a quedarse por
+  fuera.
+
+# Una sola habilidad
+
+```{r fa1}
+fa1 <- fa(R, nfactors = 1, fm = "ml", n.obs = nrow(X))
+carga1 <- fa1$loadings[, 1]
+if (sum(carga1) < 0) carga1 <- -carga1   # el signo es arbitrario: más capacidad = positivo
+
+partes <- data.frame(variable = names(carga1),
+                     carga = round(carga1, 3),
+                     comun = round(100 * carga1^2, 1),          # parte común, de cada 100
+                     propia = round(100 * fa1$uniquenesses, 1),  # parte propia, de cada 100
+                     row.names = NULL)
+partes <- partes[order(-partes$comun), ]
+partes
+```
+
+La **carga** es la correlación de cada variable con la habilidad común.
+Su cuadrado es la **parte común**: de cada 100 partes de las diferencias
+entre clientes en esa variable, cuántas vienen de la habilidad. Lo que
+falta para llegar a 100 es la **parte propia**.
+
+```{r grafico-partes, fig.height = 5}
+largo <- rbind(data.frame(variable = partes$variable, parte = "común", valor = partes$comun),
+               data.frame(variable = partes$variable, parte = "propia", valor = partes$propia))
+largo$variable <- factor(largo$variable, levels = rev(partes$variable))
+largo$parte <- factor(largo$parte, levels = c("propia", "común"))
+
+ggplot(largo, aes(valor, variable, fill = parte)) +
+  geom_col(width = 0.7) +
+  geom_text(data = subset(largo, parte == "común" & valor > 8),
+            aes(label = coma(valor, 0)), hjust = 1.2, colour = "white", size = 3.8) +
+  scale_fill_manual(values = c("común" = "#2B6CB0", "propia" = "grey80"),
+                    breaks = c("común", "propia")) +
+  geom_vline(xintercept = 50, linetype = 3) +
+  labs(x = "De cada 100 partes de las diferencias entre clientes", y = NULL, fill = NULL,
+       title = "Parte común y parte propia de cada variable (un factor)") +
+  theme(legend.position = "top")
+```
+
+- 👀 **Qué vemos**: la habilidad común explica casi todo del cupo
+  (`r coma(partes$comun[partes$variable == "Cupo"], 0)` de cada 100) y
+  del ingreso (`r coma(partes$comun[partes$variable == "Ingreso anual"], 0)`),
+  buena parte del saldo y del pago, y cerca de la mitad de las variables
+  de uso (compras al mes, cuotas, compras internacionales, valor por
+  compra). En total la habilidad reúne
+  `r coma(100 * sum(carga1^2) / p)` de cada 100 partes de la ficha.
+- 💼 **Qué significa para el cliente**: la habilidad común es la
+  **capacidad económica** del cliente: lo que hace que un cliente tenga
+  a la vez más ingreso, más cupo, más saldo y más compras. Los
+  analistas tienen razón **para el dinero**: ingreso y cupo son casi
+  pura capacidad. Para las variables de uso tienen razón a medias: la
+  mitad de lo que las mueve es otra cosa.
+- ✅ **Qué decide el cliente**: para medir capacidad bastan ingreso y
+  cupo; las variables de uso traen información que la capacidad no
+  explica y conviene mirarlas aparte.
+
+## ¿Qué variable es casi toda propia?
+
+```{r propia}
+mas_propia <- partes$variable[which.max(partes$propia)]
+partes[partes$variable == mas_propia, ]
+```
+
+- 👀 **Qué vemos**: el **`r tolower(mas_propia)`** es
+  `r coma(partes$propia[partes$variable == mas_propia], 1)` de cada 100
+  propio; su carga es `r coma(partes$carga[partes$variable == mas_propia], 3)`.
+  Es el mismo resultado del KMO, ahora medido de otra forma.
+- 💼 **Qué significa para el cliente**: **el riesgo no es parte de la
+  capacidad económica**. Saber cuánto gana, cuánto cupo tiene o cuánto
+  compra un cliente no dice nada de qué tan buen pagador es. No es que
+  el puntaje esté mal medido: mide otra cosa, la conducta de pago (en el
+  informe de entrega, el puntaje queda casi determinado por el uso del
+  cupo y la proporción pagada, no por el ingreso). Es lo mismo que
+  encontró el PCA, donde el riesgo salía en una dirección aparte.
+- ✅ **Qué decide el cliente**: no puede usar la capacidad (ni el tipo
+  de tarjeta, que se asigna por ingreso) como sustituto del riesgo. El
+  puntaje tiene que entrar **por su cuenta** a la decisión de
+  seguimiento.
+
+## ¿Alcanza una habilidad?
+
+Si una sola habilidad explica lo que comparten las variables, la
+correlación entre dos variables debe ser **el producto de sus cargas**:
+$r_{ij} \approx \ell_i \, \ell_j$. Las dos variables se parecen solo
+porque las dos se parecen a la habilidad. Lo comprobamos para los
+`r choose(p, 2)` pares.
+
+```{r alcanza-una}
+pares <- which(upper.tri(R), arr.ind = TRUE)
+comparacion <- data.frame(var_1 = rownames(R)[pares[, 1]],
+                          var_2 = colnames(R)[pares[, 2]],
+                          correlacion = R[pares],
+                          producto_cargas = carga1[pares[, 1]] * carga1[pares[, 2]])
+comparacion$diferencia <- comparacion$correlacion - comparacion$producto_cargas
+comparacion <- comparacion[order(-abs(comparacion$diferencia)), ]
+rownames(comparacion) <- NULL
+
+c(pares = nrow(comparacion),
+  diferencia_menor_a_0.05 = sum(abs(comparacion$diferencia) < 0.05),
+  diferencia_mayor_a_0.1 = sum(abs(comparacion$diferencia) > 0.1))
+transform(head(comparacion, 6), correlacion = round(correlacion, 3),
+          producto_cargas = round(producto_cargas, 3), diferencia = round(diferencia, 3))
+```
+
+```{r grafico-alcanza, fig.width = 7.5, fig.height = 6.5}
+comparacion$par <- paste(comparacion$var_1, "–", comparacion$var_2)
+ggplot(comparacion, aes(producto_cargas, correlacion)) +
+  geom_abline(slope = 1, intercept = 0, linetype = 2, colour = "grey50") +
+  geom_point(aes(colour = abs(diferencia) > 0.08), size = 2.6) +
+  geom_text_repel(data = subset(comparacion, abs(diferencia) > 0.08),
+                  aes(label = par), size = 3.3, colour = "#9B2C2C", min.segment.length = 0) +
+  scale_colour_manual(values = c("FALSE" = "#2B6CB0", "TRUE" = "#9B2C2C"), guide = "none") +
+  coord_equal(xlim = c(-0.25, 1), ylim = c(-0.25, 1)) +
+  labs(x = "Producto de las cargas (lo que predice una habilidad)",
+       y = "Correlación observada",
+       title = "¿Una habilidad explica las correlaciones?",
+       subtitle = "Sobre la diagonal: la habilidad común lo explica todo")
+```
+
+- 👀 **Qué vemos**: `r sum(abs(comparacion$diferencia) < 0.05)` de los
+  `r nrow(comparacion)` pares quedan a menos de 0,05 de la diagonal: una
+  sola habilidad reproduce casi todas las correlaciones. Se apartan
+  `r sum(abs(comparacion$diferencia) > 0.08)` pares, y no al azar. El
+  más lejano es **compras al mes – valor por compra**: la habilidad
+  predice `r coma(comparacion$producto_cargas[1], 2)` y la correlación
+  real es `r coma(comparacion$correlacion[1], 2)`. Le siguen el
+  **saldo** y el **pago** con el **puntaje**, y dos pares que se
+  parecen más de lo que predice la habilidad: cuotas – compras al mes y
+  saldo – pago.
+- 💼 **Qué significa para el cliente**: hay dos cosas que la capacidad
+  no explica. La primera es **cómo se gasta**: a igual capacidad, un
+  cliente hace muchas compras pequeñas u otro pocas grandes (es la
+  inversión de Simpson que el informe de entrega encontró entre
+  transacciones y valor medio dentro de cada tarjeta). La segunda es
+  que **el saldo baja el puntaje y el pago lo sube** más de lo que
+  la capacidad predice: eso es conducta de pago, no tamaño.
+- ✅ **Qué decide el cliente**: una habilidad alcanza para casi toda la
+  ficha, pero no para todo. Lo que sobra tiene nombre, y vale la pena
+  probar con dos.
+
+# Dos habilidades
+
+```{r fa2}
+fa2 <- fa(R, nfactors = 2, fm = "ml", rotate = "oblimin", n.obs = nrow(X))
+L2 <- unclass(fa2$loadings)
+# Cuál factor es la capacidad: el que más carga en el cupo. Se pone primero y con signo positivo.
+f_cap <- which.max(abs(L2["Cupo", ]))
+orden <- c(f_cap, setdiff(1:2, f_cap))
+L2 <- L2[, orden]
+signo <- c(sign(L2["Cupo", 1]), sign(L2[which.max(abs(L2[, 2])), 2]))
+L2 <- sweep(L2, 2, signo, `*`)
+colnames(L2) <- c("F1_capacidad", "F2_segundo")
+Phi <- fa2$Phi[orden, orden] * outer(signo, signo)
+
+data.frame(variable = rownames(L2), round(L2, 3),
+           comun_1_factor = round(100 * carga1^2, 1),
+           comun_2_factores = round(100 * fa2$communality, 1),
+           row.names = NULL)
+c(correlacion_entre_factores = round(Phi[1, 2], 3))
+
+dominante <- rownames(L2)[which.max(abs(L2[, 2]))]
+fuertes_F2 <- rownames(L2)[abs(L2[, 2]) > 0.3]
+```
+
+```{r fa2-residuos}
+# ¿Mejoró la reproducción de las correlaciones?
+residuo <- function(modelo) { E <- R - modelo$model; diag(E) <- 0; E }
+E1 <- residuo(fa1); E2 <- residuo(fa2)
+data.frame(modelo = c("Un factor", "Dos factores"),
+           mayor_diferencia = round(c(max(abs(E1)), max(abs(E2))), 3),
+           par_mas_lejano = c(paste(rownames(R)[which(abs(E1) == max(abs(E1)), arr.ind = TRUE)[1, ]], collapse = " – "),
+                              paste(rownames(R)[which(abs(E2) == max(abs(E2)), arr.ind = TRUE)[1, ]], collapse = " – ")),
+           de_cada_100_comun = round(100 * c(sum(fa1$communality), sum(fa2$communality)) / p, 1))
+```
+
+- 👀 **Qué vemos**: la primera habilidad sigue siendo la capacidad, con
+  las mismas cargas de antes. La segunda carga
+  `r coma(L2[dominante, 2], 3)` en el **`r tolower(dominante)`**, y
+  `r if (length(fuertes_F2) == 1) "ninguna otra variable pasa de 0,3" else paste("también pasan de 0,3:", unir(tolower(setdiff(fuertes_F2, dominante))))`;
+  las demás quedan cerca de cero (las más altas: saldo,
+  `r coma(L2["Saldo facturado", 2], 2)`, y pago,
+  `r coma(L2["Monto pagado", 2], 2)`). Las dos habilidades casi no se
+  correlacionan (`r coma(Phi[1, 2], 3)`). Y el par compras al mes –
+  valor por compra sigue sin explicarse.
+- 💼 **Qué significa para el cliente**: **la segunda no es una
+  habilidad con sentido, es una sola variable**. Una habilidad es algo
+  que *comparten* varias variables; este factor es el puntaje con otro
+  nombre, porque el puntaje no se parece a nada más. Que su parte común
+  pase de 0 a casi 100 no quiere decir que se descubrió algo: quiere
+  decir que el modelo le dio un factor para él solo. Lo único que agrega
+  es el pequeño vínculo puntaje–saldo–pago que ya habíamos visto.
+- ✅ **Qué decide el cliente**: para la Gerencia la respuesta es la
+  misma de antes, ahora con más seguridad: **una capacidad común, y el
+  riesgo aparte**. Nombrar el segundo factor «riesgo financiero» sería
+  inventar una habilidad donde solo hay una variable.
+
+## ¿Y si sacamos el puntaje?
+
+Como el puntaje se queda con el segundo factor, lo sacamos y volvemos a
+probar con dos, para ver si aparece la segunda cosa que la capacidad no
+explicaba (cómo se gasta).
+
+```{r fa2-sin-puntaje}
+R8 <- R[-p, -p]
+fa2b <- fa(R8, nfactors = 2, fm = "ml", rotate = "oblimin", n.obs = nrow(X))
+L2b <- unclass(fa2b$loadings)
+ob <- c(which.max(abs(L2b["Cupo", ])), which.max(abs(L2b["Compras al mes", ])))
+sb <- c(sign(L2b["Cupo", ob[1]]), sign(L2b["Compras al mes", ob[2]]))
+L2b <- sweep(L2b[, ob], 2, sb, `*`)
+colnames(L2b) <- c("F1_capacidad", "F2_frecuencia")
+round(L2b, 3)
+c(correlacion_entre_factores = round(fa2b$Phi[ob[1], ob[2]] * prod(sb), 3))
+```
+
+- 👀 **Qué vemos**: sin el puntaje, la segunda habilidad carga
+  `r coma(L2b["Compras al mes", 2], 2)` en compras al mes y
+  `r coma(L2b["Valor por compra", 2], 2)` en valor por compra: sube una
+  y baja la otra. Esta vez las dos habilidades **sí se correlacionan**
+  (`r coma(fa2b$Phi[ob[1], ob[2]] * prod(sb), 2)`).
+- 💼 **Qué significa para el cliente**: esta segunda habilidad tiene
+  más sentido —**frecuencia frente a ticket**: a igual capacidad, hay
+  quien compra mucho y barato y quien compra poco y caro—, pero sigue
+  colgada casi de una variable (compras al mes), así que la tratamos
+  como pista, no como hallazgo. Y no es independiente de la capacidad:
+  los clientes de más capacidad también compran más seguido.
+- ✅ **Qué decide el cliente**: nada cambia en la lista de seguimiento;
+  sirve para el área comercial (campañas por frecuencia o por ticket),
+  no para riesgo.
+
+## El factor frente al resumen del PCA
+
+```{r pca-vs-fa}
+lambda <- eigen(R)$values
+data.frame(metodo = c("PCA: primera componente", "Análisis factorial: un factor"),
+           de_cada_100 = round(100 * c(lambda[1], sum(fa1$communality)) / p, 1))
+```
+
+- 👀 **Qué vemos**: la primera componente guarda
+  `r coma(100 * lambda[1] / p)` de cada 100 partes de las 9 variables;
+  la habilidad común, `r coma(100 * sum(fa1$communality) / p)`.
+- 💼 **Qué significa para el cliente**: el PCA busca el resumen que más
+  guarde, y para eso se queda también con un pedazo de la parte propia
+  de cada variable. El factor solo cuenta lo **compartido**, así que
+  siempre guarda menos. Son respuestas a dos preguntas distintas: el
+  PCA dice *cómo resumir* la ficha; el factor dice *qué hay en común*
+  detrás de ella.
+- ✅ **Qué decide el cliente**: para ordenar la cartera usa el mapa del
+  PCA; para explicar por qué ingreso, cupo y saldo se mueven juntos, usa
+  la capacidad del análisis factorial.
+
+# Preguntas conceptuales
+
+**1. ¿Qué diferencia hay entre la parte común y la parte propia de un
+módulo?**
+
+La **parte común** es la porción de las diferencias entre personas en
+ese módulo que viene de la habilidad compartida con los demás módulos:
+es la carga al cuadrado. La **parte propia** es lo que queda: lo que el
+módulo mide y ningún otro mide, más su error de medición. Las dos suman
+100 de cada 100. En nuestra cartera, el cupo es
+`r coma(100 * carga1["Cupo"]^2, 0)` de cada 100 común (casi todo lo
+explica la capacidad) y el puntaje es
+`r coma(100 * fa1$uniquenesses["Puntaje crediticio"], 0)` de cada 100
+propio (no lo explica en absoluto).
+
+**2. Escritura tiene 15 de cada 100 partes comunes. ¿Significa que el
+módulo de escritura está mal hecho? ¿Por qué?**
+
+No. Significa que escritura **comparte poco** con los otros módulos,
+no que mida mal. Los otros 85 pueden ser una habilidad propia de
+escribir que los demás módulos no miden —información valiosa que solo
+ese módulo aporta— y solo una parte será error. El análisis factorial no
+distingue esas dos cosas dentro de la parte propia; para saber si el
+módulo es confiable habría que medir su fiabilidad por otro camino (por
+ejemplo, repetir la prueba). Es lo mismo que nuestro puntaje crediticio:
+100 de cada 100 propio, y es la variable más útil de la ficha para la
+Gerencia.
+
+**3. Si la correlación entre dos módulos es casi igual al producto de
+sus cargas, ¿qué nos dice eso sobre cuántas habilidades hay?**
+
+Que **una habilidad alcanza** para explicar lo que esos dos módulos
+comparten: se parecen entre sí solo porque los dos se parecen a la
+misma habilidad, y no queda nada en común entre ellos que necesite una
+segunda. Si eso pasa con todos los pares, hay una sola habilidad. En
+nuestra cartera pasa con `r sum(abs(comparacion$diferencia) < 0.05)` de
+`r nrow(comparacion)` pares; los que se apartan (compras al mes – valor
+por compra, saldo y pago con el puntaje) son los que piden mirar una
+segunda.
+
+**4. La segunda habilidad cae casi entera sobre lectura. ¿Por qué no la
+llamamos «habilidad verbal»?**
+
+Porque una habilidad es algo que **comparten varios módulos**, y esta
+la tiene uno solo. Un factor que carga en una única variable no es una
+habilidad nueva: es la parte propia de lectura a la que el modelo le
+dio un factor. Llamarla «verbal» afirmaría que hay una capacidad que
+también se ve en otros módulos, y los datos no lo muestran. Para
+llamarla así necesitaríamos al menos dos o tres módulos (por ejemplo,
+lectura y escritura) cargando fuerte en ella. Es exactamente lo que nos
+pasó con el puntaje: el segundo factor es el puntaje solo, y por eso no
+lo llamamos «riesgo financiero».
+
+**5. ¿Por qué el resumen de la sesión 3 guardaba más de cada 100 que la
+habilidad común de hoy?**
+
+Porque la primera componente principal se construye para **guardar lo
+máximo posible** de las diferencias totales, sin importar si son
+comunes o propias: usa también parte de la parte propia de cada
+variable. La habilidad común solo cuenta lo que las variables
+**comparten** (la suma de las partes comunes) y deja fuera, por
+diseño, la parte propia. Por eso el factor siempre guarda menos que la
+primera componente. En nuestros datos:
+`r coma(100 * lambda[1] / p)` frente a
+`r coma(100 * sum(fa1$communality) / p)` de cada 100.
+
+**6. ¿Cuál de estas afirmaciones es correcta?**
+
+La correcta es la **(b)**: *la carga al cuadrado es la parte de las
+diferencias en un módulo que viene de la habilidad común*. Las otras
+son falsas:
+
+- **(a)** La habilidad común **no** se mide directamente: es una
+  variable latente que se infiere de lo que los módulos comparten.
+  Nadie le puso a nuestros clientes una nota de «capacidad»; la
+  deducimos de ingreso, cupo, saldo y compras.
+- **(c)** La parte propia **no** es siempre error: incluye lo que el
+  módulo mide y los demás no. El puntaje crediticio es 100 % propio y
+  no es error, es otra cosa.
+- **(d)** Dos habilidades **no** son siempre independientes: con una
+  rotación oblicua (la que usa `fa()` por defecto) pueden
+  correlacionarse. En nuestros datos, sin el puntaje, capacidad y
+  frecuencia se correlacionan
+  `r coma(fa2b$Phi[ob[1], ob[2]] * prod(sb), 2)`.
+
+# Lo que le entregamos a la Gerencia
+
+1. **Sí hay una capacidad económica común** detrás de la ficha: explica
+   casi todo del ingreso y el cupo, buena parte del saldo y el pago, y
+   cerca de la mitad de las variables de uso. Reúne
+   `r coma(100 * sum(fa1$communality) / p)` de cada 100 partes de las
+   `r p` variables.
+2. **El puntaje crediticio no es parte de esa capacidad**: es 100 % parte
+   propia y su KMO es el más bajo posible. Medir el tamaño de un cliente
+   no dice nada de qué tan buen pagador es.
+3. **Una habilidad casi alcanza**: reproduce
+   `r sum(abs(comparacion$diferencia) < 0.05)` de las
+   `r nrow(comparacion)` correlaciones. Lo que no explica tiene nombre:
+   cómo se gasta (frecuencia frente a ticket) y la relación del puntaje
+   con el saldo y el pago.
+4. **La segunda habilidad no es una habilidad**: es el puntaje solo. La
+   recomendación es la misma de los talleres de PCA, ahora desde otro
+   método: la decisión de seguimiento necesita **dos cosas por
+   separado**, la capacidad (cuánto pesa el cliente) y el puntaje (qué
+   tan riesgoso es).
