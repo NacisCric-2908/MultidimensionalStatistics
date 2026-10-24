@@ -70,7 +70,7 @@ Se ejecutó `KMO(R)` del paquete `psych` para comparar las correlaciones observa
 | **Puntaje crediticio** | **0,02** | **Inaceptable** |
 | **KMO Global (`MSA`)** | **0,71** | **Aceptable** |
 
-- **Hallazgo y decisión:** El KMO global (0,71) confirma que tiene sentido buscar un factor común en la ficha, ya que las 8 variables de dinero y uso superan 0,60. El **puntaje crediticio (0,02)** no comparte prácticamente nada con el grupo, pero se conserva deliberadamente en el modelo para demostrarle con números a la Gerencia si pertenece o no a la capacidad económica.
+- **Hallazgo y decisión:** El KMO global (0,71) confirma que tiene sentido buscar un factor común en la ficha, ya que las 8 variables de dinero y uso superan 0,60. El **puntaje crediticio (0,02)** no comparte prácticamente nada con el grupo, pero se conserva deliberadamente en el modelo para mostrarle con números a la Gerencia si pertenece o no a la capacidad económica.
 
 ---
 

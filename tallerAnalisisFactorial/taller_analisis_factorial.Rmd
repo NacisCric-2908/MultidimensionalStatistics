@@ -124,18 +124,14 @@ data.frame(variable = names(kmo$MSAi), KMO = round(kmo$MSAi, 2),
 c(KMO_global = round(kmo$MSA, 2))
 ```
 
-- 👀 **Qué vemos**: el KMO global es `r coma(kmo$MSA, 2)`, aceptable.
-  Todas las variables pasan de 0,6 salvo **una**: el puntaje
-  crediticio, con `r coma(kmo$MSAi["Puntaje crediticio"], 2)`, el valor
-  más bajo posible en la práctica.
-- 💼 **Qué significa para el cliente**: las ocho variables de dinero y
-  uso sí tienen algo en común; el puntaje, en cambio, no comparte nada
-  con ellas. Lo dejamos dentro de todos modos, porque la pregunta de la
-  Gerencia es justamente si el puntaje pertenece o no a la «capacidad»,
-  y el análisis factorial lo va a mostrar con números.
-- ✅ **Qué decide el cliente**: tiene sentido buscar una habilidad común
-  detrás de la ficha; el puntaje es el primer candidato a quedarse por
-  fuera.
+- 👀 **Qué vemos**: el KMO global es `r coma(kmo$MSA, 2)` (aceptable) y todas las
+  variables pasan de 0,6 salvo el puntaje crediticio, con
+  `r coma(kmo$MSAi["Puntaje crediticio"], 2)`.
+- 💼 **Qué significa para el cliente**: las ocho variables de dinero y uso comparten algo,
+  y el puntaje no comparte casi nada con ellas; lo dejamos para ver si pertenece o no a la
+  «capacidad» de la que hablan los analistas.
+- ✅ **Qué decide el cliente**: tiene sentido buscar una habilidad común en la ficha, y el
+  puntaje es el primer candidato a quedar por fuera.
 
 # Una sola habilidad
 
@@ -177,21 +173,19 @@ ggplot(largo, aes(valor, variable, fill = parte)) +
 ```
 
 - 👀 **Qué vemos**: la habilidad común explica casi todo del cupo
-  (`r coma(partes$comun[partes$variable == "Cupo"], 0)` de cada 100) y
-  del ingreso (`r coma(partes$comun[partes$variable == "Ingreso anual"], 0)`),
-  buena parte del saldo y del pago, y cerca de la mitad de las variables
-  de uso (compras al mes, cuotas, compras internacionales, valor por
-  compra). En total la habilidad reúne
-  `r coma(100 * sum(carga1^2) / p)` de cada 100 partes de la ficha.
-- 💼 **Qué significa para el cliente**: la habilidad común es la
-  **capacidad económica** del cliente: lo que hace que un cliente tenga
-  a la vez más ingreso, más cupo, más saldo y más compras. Los
-  analistas tienen razón **para el dinero**: ingreso y cupo son casi
-  pura capacidad. Para las variables de uso tienen razón a medias: la
-  mitad de lo que las mueve es otra cosa.
-- ✅ **Qué decide el cliente**: para medir capacidad bastan ingreso y
-  cupo; las variables de uso traen información que la capacidad no
-  explica y conviene mirarlas aparte.
+  (`r coma(partes$comun[partes$variable == "Cupo"], 0)` de cada 100) y del ingreso
+  (`r coma(partes$comun[partes$variable == "Ingreso anual"], 0)`), buena parte del saldo y del
+  pago, y entre
+  `r coma(min(partes$comun[partes$variable %in% c("Compras a cuotas", "Compras al mes", "Valor por compra", "Compras internacionales")]), 0)`
+  y `r coma(max(partes$comun[partes$variable %in% c("Compras a cuotas", "Compras al mes", "Valor por compra", "Compras internacionales")]), 0)`
+  de cada 100 de las de uso; en total reúne `r coma(100 * sum(carga1^2) / p)` de cada 100 partes de la
+  ficha.
+- 💼 **Qué significa para el cliente**: llamamos a esa habilidad **capacidad económica**
+  (un nombre nuestro, leído de las cargas), y los analistas tienen razón para el dinero,
+  porque ingreso y cupo son casi pura capacidad, pero solo a medias para el uso, donde más de
+  la mitad de lo que mueve cada variable es otra cosa.
+- ✅ **Qué decide el cliente**: para medir capacidad le bastan ingreso y cupo, y las variables
+  de uso conviene mirarlas aparte.
 
 ## ¿Qué variable es casi toda propia?
 
@@ -201,20 +195,16 @@ partes[partes$variable == mas_propia, ]
 ```
 
 - 👀 **Qué vemos**: el **`r tolower(mas_propia)`** es
-  `r coma(partes$propia[partes$variable == mas_propia], 1)` de cada 100
-  propio; su carga es `r coma(partes$carga[partes$variable == mas_propia], 3)`.
-  Es el mismo resultado del KMO, ahora medido de otra forma.
-- 💼 **Qué significa para el cliente**: **el riesgo no es parte de la
-  capacidad económica**. Saber cuánto gana, cuánto cupo tiene o cuánto
-  compra un cliente no dice nada de qué tan buen pagador es. No es que
-  el puntaje esté mal medido: mide otra cosa, la conducta de pago (en el
-  informe de entrega, el puntaje queda casi determinado por el uso del
-  cupo y la proporción pagada, no por el ingreso). Es lo mismo que
-  encontró el PCA, donde el riesgo salía en una dirección aparte.
-- ✅ **Qué decide el cliente**: no puede usar la capacidad (ni el tipo
-  de tarjeta, que se asigna por ingreso) como sustituto del riesgo. El
-  puntaje tiene que entrar **por su cuenta** a la decisión de
-  seguimiento.
+  `r coma(partes$propia[partes$variable == mas_propia], 1)` de cada 100 propio (carga
+  `r coma(partes$carga[partes$variable == mas_propia], 3)`), el mismo resultado del KMO medido
+  de otra forma.
+- 💼 **Qué significa para el cliente**: **el riesgo no es parte de la capacidad económica**,
+  porque saber cuánto gana, cuánto cupo tiene o cuánto compra un cliente no dice nada de su
+  puntaje; no sabemos si esa parte propia es error de medición, pero el informe de entrega
+  muestra que el puntaje se mueve con la proporción pagada y el uso del cupo.
+- ✅ **Qué decide el cliente**: no puede usar la capacidad, ni el tipo de tarjeta (que se
+  asigna por ingreso), como sustituto del riesgo, y el puntaje debe entrar **por su cuenta**
+  a la decisión de seguimiento.
 
 ## ¿Alcanza una habilidad?
 
@@ -257,25 +247,18 @@ ggplot(comparacion, aes(producto_cargas, correlacion)) +
 ```
 
 - 👀 **Qué vemos**: `r sum(abs(comparacion$diferencia) < 0.05)` de los
-  `r nrow(comparacion)` pares quedan a menos de 0,05 de la diagonal: una
-  sola habilidad reproduce casi todas las correlaciones. Se apartan
-  `r sum(abs(comparacion$diferencia) > 0.08)` pares, y no al azar. El
-  más lejano es **compras al mes – valor por compra**: la habilidad
-  predice `r coma(comparacion$producto_cargas[1], 2)` y la correlación
-  real es `r coma(comparacion$correlacion[1], 2)`. Le siguen el
-  **saldo** y el **pago** con el **puntaje**, y dos pares que se
-  parecen más de lo que predice la habilidad: cuotas – compras al mes y
-  saldo – pago.
-- 💼 **Qué significa para el cliente**: hay dos cosas que la capacidad
-  no explica. La primera es **cómo se gasta**: a igual capacidad, un
-  cliente hace muchas compras pequeñas u otro pocas grandes (es la
-  inversión de Simpson que el informe de entrega encontró entre
-  transacciones y valor medio dentro de cada tarjeta). La segunda es
-  que **el saldo baja el puntaje y el pago lo sube** más de lo que
-  la capacidad predice: eso es conducta de pago, no tamaño.
-- ✅ **Qué decide el cliente**: una habilidad alcanza para casi toda la
-  ficha, pero no para todo. Lo que sobra tiene nombre, y vale la pena
-  probar con dos.
+  `r nrow(comparacion)` pares quedan a menos de 0,05 de la diagonal y se apartan
+  `r sum(abs(comparacion$diferencia) > 0.08)`: el más lejano es **compras al mes – valor por
+  compra** (la habilidad predice `r coma(comparacion$producto_cargas[1], 2)` y la correlación
+  real es `r coma(comparacion$correlacion[1], 2)`), seguido de **saldo** y **pago** con el
+  **puntaje**, y de cuotas – compras al mes y saldo – pago.
+- 💼 **Qué significa para el cliente**: una habilidad reproduce casi toda la ficha, y lo que
+  no explica son dos cosas: **cómo se gasta** (a igual capacidad, muchas compras pequeñas o
+  pocas grandes, la paradoja de Simpson del informe de entrega) y que **el saldo baja el
+  puntaje y el pago lo sube** más de lo que predice la capacidad, que es conducta de pago y
+  no tamaño.
+- ✅ **Qué decide el cliente**: una habilidad alcanza para casi toda la ficha pero no para
+  todo, así que vale la pena probar con dos.
 
 # Dos habilidades
 
@@ -312,26 +295,17 @@ data.frame(modelo = c("Un factor", "Dos factores"),
            de_cada_100_comun = round(100 * c(sum(fa1$communality), sum(fa2$communality)) / p, 1))
 ```
 
-- 👀 **Qué vemos**: la primera habilidad sigue siendo la capacidad, con
-  las mismas cargas de antes. La segunda carga
-  `r coma(L2[dominante, 2], 3)` en el **`r tolower(dominante)`**, y
-  `r if (length(fuertes_F2) == 1) "ninguna otra variable pasa de 0,3" else paste("también pasan de 0,3:", unir(tolower(setdiff(fuertes_F2, dominante))))`;
-  las demás quedan cerca de cero (las más altas: saldo,
-  `r coma(L2["Saldo facturado", 2], 2)`, y pago,
-  `r coma(L2["Monto pagado", 2], 2)`). Las dos habilidades casi no se
-  correlacionan (`r coma(Phi[1, 2], 3)`). Y el par compras al mes –
-  valor por compra sigue sin explicarse.
-- 💼 **Qué significa para el cliente**: **la segunda no es una
-  habilidad con sentido, es una sola variable**. Una habilidad es algo
-  que *comparten* varias variables; este factor es el puntaje con otro
-  nombre, porque el puntaje no se parece a nada más. Que su parte común
-  pase de 0 a casi 100 no quiere decir que se descubrió algo: quiere
-  decir que el modelo le dio un factor para él solo. Lo único que agrega
-  es el pequeño vínculo puntaje–saldo–pago que ya habíamos visto.
-- ✅ **Qué decide el cliente**: para la Gerencia la respuesta es la
-  misma de antes, ahora con más seguridad: **una capacidad común, y el
-  riesgo aparte**. Nombrar el segundo factor «riesgo financiero» sería
-  inventar una habilidad donde solo hay una variable.
+- 👀 **Qué vemos**: la primera habilidad sigue siendo la capacidad, con las mismas cargas, y la
+  segunda carga `r coma(L2[dominante, 2], 3)` en el **`r tolower(dominante)`**
+  (`r if (length(fuertes_F2) == 1) "ninguna otra variable pasa de 0,3" else paste("también pasan de 0,3:", unir(tolower(setdiff(fuertes_F2, dominante))))`);
+  las dos casi no se correlacionan (`r coma(Phi[1, 2], 3)`) y el par compras al mes – valor por
+  compra sigue sin explicarse.
+- 💼 **Qué significa para el cliente**: **la segunda no es una habilidad con sentido, es una
+  sola variable**, el puntaje con otro nombre, y que su parte común pase de 0 a casi 100
+  solo quiere decir que el modelo le dio un factor para él solo.
+- ✅ **Qué decide el cliente**: la respuesta no cambia, una capacidad común y el riesgo
+  aparte, y llamar «riesgo financiero» al segundo factor sería inventar una habilidad donde
+  hay una sola variable.
 
 ## ¿Y si sacamos el puntaje?
 
@@ -353,18 +327,14 @@ c(correlacion_entre_factores = round(fa2b$Phi[ob[1], ob[2]] * prod(sb), 3))
 
 - 👀 **Qué vemos**: sin el puntaje, la segunda habilidad carga
   `r coma(L2b["Compras al mes", 2], 2)` en compras al mes y
-  `r coma(L2b["Valor por compra", 2], 2)` en valor por compra: sube una
-  y baja la otra. Esta vez las dos habilidades **sí se correlacionan**
+  `r coma(L2b["Valor por compra", 2], 2)` en valor por compra (sube una y baja la otra), y esta
+  vez las dos habilidades **sí se correlacionan**
   (`r coma(fa2b$Phi[ob[1], ob[2]] * prod(sb), 2)`).
-- 💼 **Qué significa para el cliente**: esta segunda habilidad tiene
-  más sentido —**frecuencia frente a ticket**: a igual capacidad, hay
-  quien compra mucho y barato y quien compra poco y caro—, pero sigue
-  colgada casi de una variable (compras al mes), así que la tratamos
-  como pista, no como hallazgo. Y no es independiente de la capacidad:
-  los clientes de más capacidad también compran más seguido.
-- ✅ **Qué decide el cliente**: nada cambia en la lista de seguimiento;
-  sirve para el área comercial (campañas por frecuencia o por ticket),
-  no para riesgo.
+- 💼 **Qué significa para el cliente**: es **frecuencia frente a ticket** (a igual capacidad,
+  hay quien compra mucho y barato y quien compra poco y caro), pero cuelga casi de una
+  variable, así que es una pista y no un hallazgo.
+- ✅ **Qué decide el cliente**: la lista de seguimiento no cambia, y la pista le sirve al área
+  comercial para campañas por frecuencia o por ticket.
 
 ## El factor frente al resumen del PCA
 
@@ -374,18 +344,13 @@ data.frame(metodo = c("PCA: primera componente", "Análisis factorial: un factor
            de_cada_100 = round(100 * c(lambda[1], sum(fa1$communality)) / p, 1))
 ```
 
-- 👀 **Qué vemos**: la primera componente guarda
-  `r coma(100 * lambda[1] / p)` de cada 100 partes de las 9 variables;
-  la habilidad común, `r coma(100 * sum(fa1$communality) / p)`.
-- 💼 **Qué significa para el cliente**: el PCA busca el resumen que más
-  guarde, y para eso se queda también con un pedazo de la parte propia
-  de cada variable. El factor solo cuenta lo **compartido**, así que
-  siempre guarda menos. Son respuestas a dos preguntas distintas: el
-  PCA dice *cómo resumir* la ficha; el factor dice *qué hay en común*
-  detrás de ella.
-- ✅ **Qué decide el cliente**: para ordenar la cartera usa el mapa del
-  PCA; para explicar por qué ingreso, cupo y saldo se mueven juntos, usa
-  la capacidad del análisis factorial.
+- 👀 **Qué vemos**: la primera componente guarda `r coma(100 * lambda[1] / p)` de cada 100
+  partes de las 9 variables y la habilidad común `r coma(100 * sum(fa1$communality) / p)`.
+- 💼 **Qué significa para el cliente**: el PCA busca el resumen que más guarde y por eso se
+  lleva también parte de lo propio de cada variable, mientras que el factor solo cuenta lo
+  compartido y por eso guarda menos.
+- ✅ **Qué decide el cliente**: para ordenar la cartera usa el mapa del PCA, y para explicar por
+  qué ingreso, cupo y saldo se mueven juntos usa la capacidad del análisis factorial.
 
 # Preguntas conceptuales
 
