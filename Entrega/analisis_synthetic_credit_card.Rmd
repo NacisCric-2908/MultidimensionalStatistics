@@ -1,6 +1,6 @@
 ---
 title: "Estadística Multidimensional — Análisis Exploratorio Integral"
-subtitle: "Dataset Sintético: Comportamiento Crediticio y Riesgo Financiero (S01 a S10, Mahalanobis y Componentes Principales)"
+subtitle: "Dataset Sintético: Comportamiento Crediticio y Riesgo Financiero (S01 a S10, Mahalanobis, Componentes Principales y Análisis Factorial)"
 author:
   - "Oscar Manuel Contreras Gacha (20221020052)"
   - "Juan Pablo Sarmiento Ramírez (20221020138)"
@@ -6149,7 +6149,7 @@ solo, ordenaría a la cartera por tamaño y dejaría el riesgo por fuera.
 - **No es una causa.** Que C1 sea "el tamaño" no demuestra que exista
   una variable oculta que produzca el ingreso, el cupo y el gasto; dice
   que se mueven juntos. (El análisis factorial pregunta por esas
-  variables latentes; el PCA no.)
+  variables latentes; el PCA no. Lo hacemos en el Módulo 18.)
 - **No es un nombre que pone la técnica.** "Tamaño", "riesgo" y "edad"
   son nombres que pusimos mirando los pesos y las suplementarias, y se
   discuten con el cliente.
@@ -6462,6 +6462,443 @@ usa como variable para colorear y leer el mapa, que es donde aporta.
 
 ------------------------------------------------------------------------
 
+# Módulo 18: Análisis Factorial — ¿Hay Algo Detrás de las Variables?
+
+El Módulo 16 cerró con una advertencia: que C1 sea "el tamaño" no
+demuestra que exista una variable oculta que produzca el ingreso, el
+cupo y el gasto. La Gerencia de Riesgo toma esa advertencia como
+pregunta:
+
+> *«Si el ingreso, el cupo y el gasto se mueven juntos, ¿es porque hay
+> un rasgo del cliente que no medimos y que los mueve a todos? ¿Y el
+> riesgo también es un rasgo así, algo que se manifiesta en varias
+> columnas de la ficha a la vez?»*
+
+Esa es la pregunta del **análisis factorial**. El PCA busca el mejor
+resumen de las variables; el análisis factorial propone un **modelo**
+de dónde salen.
+
+## El modelo: lo común y lo propio
+
+Cada variable estandarizada se escribe como una combinación de unos
+pocos **factores** comunes $f_1, \dots, f_m$ (no observados) más una
+parte que es solo suya:
+
+$$x_j \;=\; \lambda_{j1} f_1 + \dots + \lambda_{jm} f_m + \varepsilon_j$$
+
+Los $\lambda_{jk}$ son las **cargas**. Si los factores son
+independientes entre sí y de los $\varepsilon_j$, la matriz de
+correlaciones queda partida en dos:
+
+$$\mathbf{R} \;=\; \boldsymbol\Lambda \boldsymbol\Lambda^{\top} + \boldsymbol\Psi$$
+
+donde $\boldsymbol\Psi$ es diagonal. En la diagonal, eso dice que la
+varianza de cada variable (que vale 1) se reparte en
+$h_j^2 = \sum_k \lambda_{jk}^2$, la **comunalidad** (lo que comparte con
+las demás a través de los factores), y $\psi_j = 1 - h_j^2$, la
+**unicidad** (lo que es solo suyo: su variación específica más el error
+de medida). Fuera de la diagonal, dice algo más fuerte: **toda la
+correlación entre dos variables tiene que pasar por los factores**.
+
+Esa es la diferencia con el PCA. El PCA reparte **toda** la varianza,
+incluida la propia de cada variable; el análisis factorial solo intenta
+explicar la parte **común**. Una variable que no se parece a ninguna
+otra puede mandar en una componente del PCA (como la edad en C3); en un
+análisis factorial no define ningún factor, porque no tiene nada en
+común que explicar.
+
+## ¿Hay algo común que explicar? KMO y Bartlett
+
+Antes de extraer factores se verifica que valga la pena. Hay dos
+pruebas clásicas:
+
+- **Esfericidad de Bartlett:** contrasta $H_0: \mathbf{R} = \mathbf{I}$
+  (las variables no se correlacionan en absoluto). Si no se rechaza, no
+  hay nada que factorizar.
+- **KMO (Kaiser–Meyer–Olkin):** compara las correlaciones simples con
+  las **parciales** (la correlación de dos variables descontando todas
+  las demás). Si dos variables se correlacionan porque comparten un
+  factor con el resto, al descontar el resto su correlación parcial
+  debe ser pequeña. El índice va de 0 a 1; por debajo de 0,5 el
+  análisis factorial no es apropiado, y por encima de 0,8 es bueno. El
+  **MSA** es el mismo índice calculado para cada variable.
+
+```{r, fa_paquete}
+if (!requireNamespace("psych", quietly = TRUE)) {
+  install.packages("psych", repos = "https://cloud.r-project.org")
+}
+# Se usa psych:: sin library() para no tapar funciones usadas antes en el informe
+```
+
+```{r, fa_adecuacion}
+R_fa <- cor(Z_pca)                     # la misma matriz del PCA (Módulos 15 y 16)
+n_fa <- nrow(Z_pca)
+
+bartlett <- psych::cortest.bartlett(R_fa, n = n_fa)
+c(chi2 = round(bartlett$chisq), gl = bartlett$df, p_valor = bartlett$p.value)
+
+kmo <- psych::KMO(R_fa)
+round(kmo$MSA, 3)                      # KMO global
+msa <- sort(kmo$MSAi)
+smc <- psych::smc(R_fa)                # comunalidad inicial: R^2 de cada variable con las demás
+round(data.frame(MSA = msa, R2_con_las_demas = smc[names(msa)]), 3)
+```
+
+```{r, fa_adecuacion_plot, fig.width=9, fig.height=6}
+par(mar = c(4, 13, 3, 1))
+barplot(msa, horiz = TRUE, las = 1, cex.names = 0.75, xlim = c(0, 1), border = NA,
+        col = ifelse(msa < 0.5, "#C05621", "#2B6CB0"), xlab = "MSA",
+        main = "¿Cuánto comparte cada variable con las demás? (MSA)")
+abline(v = c(0.5, 0.8), lty = c(2, 3))
+```
+
+**Lectura:** Bartlett rechaza con un $\chi^2$ de
+`r format(round(bartlett$chisq), big.mark = ".")`, pero con
+`r format(n_fa, big.mark = ".")` clientes rechazaría casi cualquier
+correlación por pequeña que fuera (la lección del Módulo 14 sobre $n$
+grande): **solo dice que $\mathbf{R}$ no es la identidad, no que haya
+factores**. El KMO global es `r round(kmo$MSA, 2)`, bueno, pero el
+detalle por variable muestra que tres variables están muy por debajo de
+0,5: **`Credit_Score` (`r round(kmo$MSAi["Credit_Score"], 2)`),
+`Card_Age_Months` (`r round(kmo$MSAi["Card_Age_Months"], 2)`) y
+`Cash_Advance_Amount` (`r round(kmo$MSAi["Cash_Advance_Amount"], 2)`)**
+— justamente las tres que formaban la C2 de "riesgo" del PCA. Además,
+`Age` y `Reward_Points_Redeemed` tienen un MSA aceptable pero un $R^2$
+con las demás de `r round(smc["Age"], 2)` y
+`r round(smc["Reward_Points_Redeemed"], 2)`: no comparten nada con
+nadie.
+
+El caso de `Credit_Score` merece una mirada aparte, porque parece una
+contradicción: su MSA es casi cero, pero su $R^2$ con las demás es
+`r round(smc["Credit_Score"], 2)`, el de una variable muy bien
+explicada.
+
+```{r, fa_credit_score_parciales}
+P_fa <- -cov2cor(solve(R_fa)); diag(P_fa) <- 1      # correlaciones parciales
+top_p <- names(sort(abs(P_fa["Credit_Score", -which(colnames(P_fa) == "Credit_Score")]),
+                    decreasing = TRUE))[1:4]
+round(rbind(simple  = R_fa["Credit_Score", top_p],
+            parcial = P_fa["Credit_Score", top_p]), 3)
+```
+
+**Lectura:** con el saldo y con el pago, `Credit_Score` casi no se
+correlaciona por separado
+(`r round(R_fa["Credit_Score", "Statement_Balance"], 2)` y
+`r round(R_fa["Credit_Score", "Payment_Amount"], 2)`), pero descontando
+lo demás las correlaciones son
+`r round(P_fa["Credit_Score", "Statement_Balance"], 2)` y
+`r round(P_fa["Credit_Score", "Payment_Amount"], 2)`. **El puntaje no
+sigue al saldo ni al pago, sigue a la diferencia entre los dos**: con
+`log(x+1)`, $\log(\text{pago}) - \log(\text{saldo})$ es el logaritmo de
+la proporción pagada, la variable que el Módulo 7 encontró detrás del
+puntaje. Es un **contraste** entre dos variables que, por lo demás, van
+juntas; un factor común no puede producir eso, porque un factor empuja
+a las variables en la misma dirección. El MSA bajo lo detecta: correlaciones
+parciales grandes con correlaciones simples pequeñas.
+
+**Decisión:** las cinco variables (`Credit_Score`, `Card_Age_Months`,
+`Cash_Advance_Amount`, `Age`, `Reward_Points_Redeemed`) quedan fuera del
+modelo factorial; no se borran, se usan después como variables
+suplementarias para leerlo (como `Payment_Ratio` en el Módulo 16).
+
+```{r, fa_reducida}
+fuera_fa <- c("Credit_Score", "Card_Age_Months", "Cash_Advance_Amount",
+              "Age", "Reward_Points_Redeemed")
+Z_fa <- Z_pca[, setdiff(colnames(Z_pca), fuera_fa)]
+R_fa2 <- cor(Z_fa)
+kmo2 <- psych::KMO(R_fa2)
+c(variables = ncol(Z_fa), KMO_global = round(kmo2$MSA, 3),
+  MSA_minimo = round(min(kmo2$MSAi), 3))
+```
+
+Con las `r ncol(Z_fa)` restantes el KMO sube a `r round(kmo2$MSA, 2)`
+y ninguna variable queda por debajo de `r round(min(kmo2$MSAi), 2)`.
+
+## ¿Cuántos factores?
+
+Tres criterios, de la sesión:
+
+1.  **Kaiser** ($\lambda > 1$ en $\mathbf{R}$): heredado del PCA, rápido
+    y conocido por quedarse corto o pasarse.
+2.  **Análisis paralelo:** compara los valores propios de los datos con
+    los que saldrían de datos **sin ninguna estructura** del mismo
+    tamaño. Se retiene un factor mientras el de los datos supere al del
+    azar.
+3.  **Ajuste del modelo:** con máxima verosimilitud se puede medir qué
+    tan bien reproduce $\mathbf{R}$ cada número de factores (TLI cerca
+    de 1 y RMSEA bajo 0,08 son las referencias usuales).
+
+```{r, fa_numero}
+lambda_fa <- eigen(R_fa2)$values
+c(kaiser = sum(lambda_fa > 1))
+
+set.seed(18)
+idx_fa <- sample(n_fa, 5000)            # el análisis paralelo simula: con 5.000 basta
+paralelo <- psych::fa.parallel(Z_fa[idx_fa, ], fa = "fa", plot = FALSE)
+
+ajuste <- t(sapply(1:4, function(k) {
+  f <- psych::fa(R_fa2, nfactors = k, n.obs = n_fa, fm = "ml", rotate = "varimax")
+  c(factores = k, TLI = round(f$TLI, 3), RMSEA = round(unname(f$RMSEA[1]), 3),
+    residuo_medio = round(f$rms, 3))
+}))
+ajuste
+```
+
+```{r, fa_numero_plot, fig.width=8, fig.height=4.5}
+k_par <- 6
+plot(1:k_par, paralelo$fa.values[1:k_par], type = "b", pch = 19, col = "#2B6CB0", lwd = 2,
+     log = "y", xlab = "factor", ylab = "valor propio (escala log)",
+     main = "Análisis paralelo: datos frente a azar")
+lines(1:k_par, paralelo$fa.sim[1:k_par], type = "b", pch = 1, col = "#C05621", lwd = 2, lty = 2)
+legend("topright", c("datos", "datos sin estructura"), col = c("#2B6CB0", "#C05621"),
+       pch = c(19, 1), lty = c(1, 2), bty = "n")
+```
+
+```{r, fa_tercer_factor}
+f3 <- psych::fa(R_fa2, nfactors = 3, n.obs = n_fa, fm = "ml", rotate = "varimax")
+carga3 <- unclass(f3$loadings)
+# ¿Qué variables tienen su carga más alta en cada factor?
+table(factor_dominante = colnames(carga3)[apply(abs(carga3), 1, which.max)])
+round(sort(carga3[, which.min(colSums(carga3^2))], decreasing = TRUE)[1:4], 2)
+```
+
+**Lectura:** los criterios no coinciden, y es normal. Kaiser da
+`r sum(lambda_fa > 1)`: el primer valor propio es enorme
+(`r round(lambda_fa[1], 1)`) y el segundo ya está bajo 1. El análisis
+paralelo da `r paralelo$nfact`. El ajuste mejora con cada factor que se
+agrega, pero con `r format(n_fa, big.mark = ".")` clientes ningún
+modelo pequeño pasa las pruebas formales (otra vez $n$ grande), así que
+el RMSEA se lee como tendencia. El tercer factor, mirado de cerca, es
+débil: **ninguna variable tiene en él su carga más alta**, y las que más
+cargan en él son solo dos, el saldo y el pago
+(`r round(sort(carga3[, which.min(colSums(carga3^2))], decreasing = TRUE)[1], 2)`
+y
+`r round(sort(carga3[, which.min(colSums(carga3^2))], decreasing = TRUE)[2], 2)`),
+cuando una regla básica pide **al menos tres variables por factor** para
+que no sea un par de variables parecidas con otro nombre.
+**Decisión:** dos factores. El tercero queda anotado: saldo y pago
+comparten algo más allá de los otros dos factores, lo que tiene sentido
+porque el pago se calcula sobre el saldo.
+
+## Extracción y rotación: qué es cada factor
+
+Se estima por **máxima verosimilitud** y se rota con **varimax**. La
+rotación no cambia el ajuste (las comunalidades y $\boldsymbol\Lambda
+\boldsymbol\Lambda^{\top}$ quedan iguales); gira los ejes para que cada
+variable cargue fuerte en un factor y poco en los demás, que es lo que
+permite ponerles nombre.
+
+```{r, fa_extraccion}
+fa2 <- psych::fa(Z_fa, nfactors = 2, fm = "ml", rotate = "varimax", scores = "regression")
+cargas <- unclass(fa2$loadings)
+
+# Orden y nombres: F2 es el factor donde carga Monthly_Transactions; signos positivos
+f_frec <- which.max(abs(cargas["Monthly_Transactions", ]))
+orden_f <- c(setdiff(1:2, f_frec), f_frec)
+signos_f <- sign(colSums(cargas[, orden_f]))
+cargas <- sweep(cargas[, orden_f], 2, signos_f, "*")
+colnames(cargas) <- c("F1", "F2")
+scores_fa <- sweep(fa2$scores[, orden_f], 2, signos_f, "*")
+colnames(scores_fa) <- c("F1", "F2")
+
+tabla_fa <- data.frame(round(cargas, 2),
+                       comunalidad = round(fa2$communality, 2),
+                       unicidad = round(fa2$uniquenesses, 2))
+tabla_fa[order(-(tabla_fa$F1 - tabla_fa$F2)), ]
+
+round(rbind(varianza_comun = colSums(cargas^2),
+            de_cada_100    = 100 * colSums(cargas^2) / ncol(Z_fa)), 2)
+```
+
+```{r, fa_cargas_plot, fig.width=8, fig.height=7}
+plot(cargas, pch = 19, col = "#2B6CB0", xlim = c(0, 1.05), ylim = c(0, 1.05), asp = 1,
+     xlab = "carga en F1", ylab = "carga en F2",
+     main = "Cargas factoriales (varimax): cada punto es una variable")
+abline(0, 1, lty = 3, col = "grey60")
+etiq_fa <- etiq_corta[rownames(cargas)]
+text(cargas, labels = ifelse(is.na(etiq_fa), rownames(cargas), etiq_fa),
+     pos = 4, cex = 0.75, col = "grey20")
+```
+
+**Lectura:** los dos factores tienen nombre claro.
+
+- **F1 · capacidad (cuánto por vez).** Lo definen el ingreso
+  (`r round(cargas["Annual_Income", "F1"], 2)`), el cupo
+  (`r round(cargas["Credit_Limit", "F1"], 2)`), el **valor medio por
+  transacción** (`r round(cargas["Avg_Transaction_Value", "F1"], 2)`),
+  el saldo y el pago: el tamaño de la billetera del cliente.
+- **F2 · frecuencia de uso (cuántas veces).** Lo define casi solo el
+  número de transacciones
+  (`r round(cargas["Monthly_Transactions", "F2"], 2)`), con la app y las
+  compras a cuotas en segundo plano.
+- **Las siete categorías de gasto cargan en los dos**, por debajo de la
+  diagonal pero cerca de ella. No es un defecto del modelo: un gasto es
+  **cuántas veces compra el cliente por cuánto gasta cada vez**, y en
+  logaritmos ese producto se vuelve una suma,
+  $\log(\text{gasto}) \approx \log(\text{veces}) + \log(\text{valor por
+  vez})$. El modelo factorial encontró por su cuenta la forma en que se
+  arma el gasto.
+
+Juntos, los dos factores explican
+`r round(100 * sum(cargas^2) / ncol(Z_fa))` de cada 100 partes de la
+varianza de las `r ncol(Z_fa)` variables. Las comunalidades más bajas
+son las de viajes, transacciones internacionales, entretenimiento y
+cuotas: tienen
+bastante variación propia que ningún factor común recoge.
+
+**Una señal de cuidado:** `Monthly_Transactions` queda con unicidad
+`r round(fa2$uniquenesses["Monthly_Transactions"], 3)`, prácticamente
+cero. Es un caso **casi Heywood**: el modelo pone a la variable entera
+en el factor, lo que pasa cuando un factor depende casi de una sola
+variable. No invalida el resultado, pero dice que F2 es, en esencia,
+el número de transacciones medido con algo de ruido de las demás.
+
+## ¿El modelo reproduce las correlaciones?
+
+Si el modelo es bueno, $\boldsymbol\Lambda \boldsymbol\Lambda^{\top} +
+\boldsymbol\Psi$ debe parecerse a $\mathbf{R}$. Los **residuos** son la
+diferencia.
+
+```{r, fa_residuos}
+R_modelo <- cargas %*% t(cargas) + diag(fa2$uniquenesses)
+residuos <- R_fa2 - R_modelo
+fuera_d <- residuos[upper.tri(residuos)]
+c(residuo_max = round(max(abs(fuera_d)), 3),
+  pares = length(fuera_d),
+  pares_con_residuo_mayor_0.05 = sum(abs(fuera_d) > 0.05))
+ij <- which(abs(residuos) == max(abs(fuera_d)), arr.ind = TRUE)[1, ]
+c(par = paste(rownames(residuos)[ij[1]], "–", colnames(residuos)[ij[2]]),
+  r_observado = round(R_fa2[ij[1], ij[2]], 3), r_del_modelo = round(R_modelo[ij[1], ij[2]], 3))
+```
+
+**Lectura:** de `r length(fuera_d)` pares de variables, solo
+`r sum(abs(fuera_d) > 0.05)` tienen un residuo mayor a 0,05. El peor
+es `r round(max(abs(fuera_d)), 2)`, en el par
+`r rownames(residuos)[ij[1]]`–`r colnames(residuos)[ij[2]]`
+(observado `r round(R_fa2[ij[1], ij[2]], 2)`, modelo
+`r round(R_modelo[ij[1], ij[2]], 2)`): esas dos variables se parecen
+entre sí un poco más de lo que explican los factores. Dos factores
+reproducen bien la estructura de la ficha.
+
+## Varimax o promax: ¿los factores se correlacionan?
+
+Varimax obliga a que los factores sean independientes. En una cartera
+real eso es dudoso: es natural que los clientes con más capacidad
+también usen más la tarjeta. Una rotación **oblicua** (promax) deja que
+los factores se correlacionen y lo mide.
+
+```{r, fa_promax}
+fa2_obl <- psych::fa(R_fa2, nfactors = 2, n.obs = n_fa, fm = "ml", rotate = "promax")
+round(fa2_obl$Phi, 2)
+round(max(abs(fa2_obl$loadings)), 2)
+```
+
+**Lectura:** con promax los dos factores se correlacionan
+`r round(abs(fa2_obl$Phi[1, 2]), 2)`: capacidad y frecuencia **no son
+independientes**, los clientes que gastan más por vez también compran
+más veces. Pero la solución oblicua tiene cargas mayores que 1
+(`r round(max(abs(fa2_obl$loadings)), 2)`), otra señal de que el
+modelo está forzado por el número de transacciones. Para leer los
+factores nos quedamos con varimax, sabiendo que la independencia es una
+simplificación.
+
+## Los factores frente a las componentes, y la pregunta del riesgo
+
+Con los puntajes factoriales de cada cliente se puede comparar con el
+PCA y volver a la pregunta de la Gerencia.
+
+```{r, fa_vs_pca}
+round(cor(scores_fa, cbind(scores_pca,
+                           Credit_Score = credit$Credit_Score,
+                           Payment_Ratio = credit$Payment_Ratio,
+                           Credit_Utilization = credit$Credit_Utilization)), 3)
+
+# ¿C1 es la suma de los dos factores?
+c(R2_de_C1_con_F1_y_F2 = round(summary(lm(scores_pca[, "C1"] ~ scores_fa))$r.squared, 3))
+
+# El mismo costo del Módulo 16: el 20 % más alto de cada factor, ¿a cuántos en riesgo encuentra?
+c(clientes_en_riesgo = sum(en_riesgo),
+  F1_los_encuentra = sum(en_riesgo & seleccion(scores_fa[, "F1"])),
+  F2_los_encuentra = sum(en_riesgo & seleccion(scores_fa[, "F2"])))
+```
+
+**Lectura:**
+
+- **C1 es la suma de los dos factores.** F1 y F2 explican el
+  `r round(100 * summary(lm(scores_pca[, "C1"] ~ scores_fa))$r.squared)` %
+  de la C1 del PCA. Lo que el PCA llamó "tamaño" el análisis factorial
+  lo separa en dos rasgos: **cuánto gasta el cliente cada vez** y
+  **cuántas veces usa la tarjeta**. Para la Gerencia la distinción es
+  útil: un cliente de cupo alto que casi no usa la tarjeta y uno de cupo
+  medio que la usa a diario tienen la misma C1, y no son el mismo
+  cliente.
+- **Ningún factor ve el riesgo.** Su correlación con `Credit_Score`,
+  con la proporción pagada y con el uso del cupo es prácticamente cero,
+  y el 20 % más alto de cada factor encuentra a
+  `r sum(en_riesgo & seleccion(scores_fa[, "F1"]))` y
+  `r sum(en_riesgo & seleccion(scores_fa[, "F2"]))` de los
+  `r format(sum(en_riesgo), big.mark = ".")` clientes de peor puntaje:
+  lo mismo que el azar, igual que C1 en el Módulo 16.
+
+**Respuesta a la Gerencia:** **sí hay rasgos detrás del dinero** (dos:
+capacidad y frecuencia), pero **el riesgo no es un rasgo de ese tipo**.
+Las variables que la C2 del PCA juntaba (puntaje, avances en efectivo,
+antigüedad) casi no se correlacionan entre ellas (las tres
+correlaciones están entre
+`r round(min(R_fa[c("Credit_Score", "Cash_Advance_Amount", "Card_Age_Months"), c("Credit_Score", "Cash_Advance_Amount", "Card_Age_Months")]), 2)`
+y
+`r round(max(R_fa[c("Credit_Score", "Cash_Advance_Amount", "Card_Age_Months"), c("Credit_Score", "Cash_Advance_Amount", "Card_Age_Months")][upper.tri(diag(3))]), 2)`),
+y el puntaje depende de un contraste entre pago y saldo, no de un
+factor común. La C2 del PCA tenía un valor propio de
+`r round(lambda[2], 2)`: el equivalente a **una sola variable**, y
+esa variable es casi el puntaje (correlación
+`r round(abs(cor(credit$Credit_Score, scores_pca[, "C2"])), 2)`).
+
+**Decisión:** el mapa del Módulo 17 sigue siendo válido, y su eje de
+riesgo funciona **porque C2 es, en lo esencial, `Credit_Score`**. Lo
+que cambia es cómo se lee: C2 no mide un rasgo oculto del cliente,
+mide el puntaje. Para el tamaño, la Gerencia puede usar C1 o, si quiere
+distinguir clientes, los dos factores; para el riesgo, el eje del mapa
+se apoya en el puntaje y en sus dos componentes observables, la
+proporción pagada y el uso del cupo.
+
+## Qué no es un factor
+
+- **No es una causa demostrada.** El modelo es *compatible* con un
+  rasgo oculto de capacidad; no prueba que exista. El mismo
+  $\mathbf{R}$ podría salir de una regla del banco que asigna cupos
+  según el ingreso.
+- **No es único.** Cualquier rotación de $\boldsymbol\Lambda$ ajusta
+  igual; los nombres "capacidad" y "frecuencia" dependen de haber
+  escogido varimax, y se discuten con el cliente.
+- **No es una componente.** Deja por fuera la varianza propia de cada
+  variable; por eso no ve a `Credit_Score`, que es casi toda varianza
+  propia respecto a los factores del dinero.
+
+## Conclusión del módulo
+
+1.  Bartlett rechaza, pero con $n$ grande eso no dice nada; el KMO
+    global es bueno (`r round(kmo$MSA, 2)`) y el MSA por variable deja
+    fuera justamente a las variables del riesgo (`Credit_Score`,
+    antigüedad, avances) y a dos que no comparten nada (edad, puntos
+    redimidos).
+2.  `Credit_Score` tiene MSA casi cero y $R^2$ de
+    `r round(smc["Credit_Score"], 2)` a la vez: depende de la
+    **diferencia** entre pago y saldo, un contraste que ningún factor
+    común puede producir.
+3.  Con dos factores (varimax, máxima verosimilitud) las
+    `r ncol(Z_fa)` variables restantes se explican en
+    `r round(100 * sum(cargas^2) / ncol(Z_fa))` de cada 100 partes:
+    **F1 = capacidad (cuánto por vez)** y **F2 = frecuencia (cuántas
+    veces)**; el gasto carga en los dos porque es su producto. Con
+    promax se correlacionan `r round(abs(fa2_obl$Phi[1, 2]), 2)`.
+4.  Los dos factores reconstruyen la C1 del PCA y no ven el riesgo. El
+    riesgo no es un rasgo latente de la cartera: la C2 del Módulo 16 es,
+    en lo esencial, el propio `Credit_Score`, y así hay que leer el eje
+    de riesgo del mapa del Módulo 17.
+
+------------------------------------------------------------------------
+
 # Conclusiones Generales
 
 El informe recorrió la cartera de
@@ -6489,3 +6926,9 @@ multivariado, y cada etapa dejó una conclusión que la siguiente usó:
     (Módulos 16–17): tamaño (C1, la mitad de la información) y riesgo
     (C2). El primero solo no ve el riesgo; los dos juntos dan un mapa con
     una lista de seguimiento priorizada.
+6.  **El tamaño tiene dos rasgos detrás; el riesgo, ninguno** (Módulo
+    18): el análisis factorial separa la C1 en capacidad (cuánto gasta
+    el cliente por vez) y frecuencia (cuántas veces usa la tarjeta), y
+    muestra que el riesgo no es un factor común: `Credit_Score` depende
+    de un contraste entre pago y saldo, y la C2 del mapa es, en lo
+    esencial, el propio puntaje.
