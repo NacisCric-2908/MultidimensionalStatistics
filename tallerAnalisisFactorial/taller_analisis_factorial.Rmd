@@ -53,6 +53,10 @@ se mide directamente— y separa en cada variable la **parte común** (lo
 que viene de esa habilidad) de la **parte propia** (lo que la variable
 dice por su cuenta).
 
+El Módulo 18 del informe hace un análisis factorial más amplio (16 variables, sin el
+puntaje) y llega a lo mismo: detrás del dinero hay capacidad y frecuencia de uso, y el riesgo
+va aparte. Aquí respondemos con la ficha de la Gerencia y con el puntaje adentro.
+
 # El encargo
 
 ```{r datos, results = "hide"}
@@ -124,14 +128,39 @@ data.frame(variable = names(kmo$MSAi), KMO = round(kmo$MSAi, 2),
 c(KMO_global = round(kmo$MSA, 2))
 ```
 
+El KMO del puntaje es tan bajo que vale la pena ver de dónde sale: comparamos sus
+correlaciones simples con las parciales, y medimos cuánto de él predicen las otras ocho
+variables.
+
+```{r puntaje-parciales}
+P <- -cov2cor(solve(R)); diag(P) <- 1          # correlaciones parciales
+otras <- setdiff(colnames(R), "Puntaje crediticio")
+round(rbind(simple  = R["Puntaje crediticio", otras],
+            parcial = P["Puntaje crediticio", otras]), 2)
+
+r2_puntaje <- unname(smc(R)["Puntaje crediticio"])   # R² del puntaje con las otras 8
+r2_tamano  <- summary(lm(`Puntaje crediticio` ~ `Ingreso anual` + Cupo + `Compras al mes` +
+                           `Valor por compra` + `Compras a cuotas` + `Compras internacionales`,
+                         data = X))$r.squared        # sin saldo ni pago
+c(R2_con_las_otras_8 = round(r2_puntaje, 3), R2_sin_saldo_ni_pago = round(r2_tamano, 3))
+```
+
 - 👀 **Qué vemos**: el KMO global es `r coma(kmo$MSA, 2)` (aceptable) y todas las
   variables pasan de 0,6 salvo el puntaje crediticio, con
-  `r coma(kmo$MSAi["Puntaje crediticio"], 2)`.
-- 💼 **Qué significa para el cliente**: las ocho variables de dinero y uso comparten algo,
-  y el puntaje no comparte casi nada con ellas; lo dejamos para ver si pertenece o no a la
-  «capacidad» de la que hablan los analistas.
+  `r coma(kmo$MSAi["Puntaje crediticio"], 2)`; por separado el puntaje casi no se correlaciona
+  con nada (`r coma(min(R["Puntaje crediticio", otras]), 2)` a
+  `r coma(max(R["Puntaje crediticio", otras]), 2)`), pero descontando las demás va
+  `r coma(P["Puntaje crediticio", "Saldo facturado"], 2)` con el saldo y
+  `r coma(P["Puntaje crediticio", "Monto pagado"], 2)` con el pago (y
+  `r coma(P["Puntaje crediticio", "Cupo"], 2)` con el cupo).
+- 💼 **Qué significa para el cliente**: el puntaje no sigue al tamaño del cliente sino a la
+  **diferencia entre lo que paga y lo que debe** (la proporción pagada, y el saldo frente al
+  cupo): combinando pago, saldo y cupo, las otras variables predicen
+  `r coma(100 * r2_puntaje, 0)` de cada 100 del puntaje, y sin saldo ni pago apenas `r coma(100 * r2_tamano, 1)`; un factor común no puede producir ese
+  contraste, porque empuja a las variables en la misma dirección, y eso es lo que delata su
+  KMO bajo.
 - ✅ **Qué decide el cliente**: tiene sentido buscar una habilidad común en la ficha, y el
-  puntaje es el primer candidato a quedar por fuera.
+  puntaje se queda adentro para mostrar con números que no pertenece a ella.
 
 # Una sola habilidad
 
@@ -196,12 +225,12 @@ partes[partes$variable == mas_propia, ]
 
 - 👀 **Qué vemos**: el **`r tolower(mas_propia)`** es
   `r coma(partes$propia[partes$variable == mas_propia], 1)` de cada 100 propio (carga
-  `r coma(partes$carga[partes$variable == mas_propia], 3)`), el mismo resultado del KMO medido
-  de otra forma.
+  `r coma(partes$carga[partes$variable == mas_propia], 3)`), coherente con el KMO: no tiene
+  nada en común con la capacidad.
 - 💼 **Qué significa para el cliente**: **el riesgo no es parte de la capacidad económica**,
-  porque saber cuánto gana, cuánto cupo tiene o cuánto compra un cliente no dice nada de su
-  puntaje; no sabemos si esa parte propia es error de medición, pero el informe de entrega
-  muestra que el puntaje se mueve con la proporción pagada y el uso del cupo.
+  porque saber cuánto gana, cuánto cupo tiene o cuánto compra un cliente predice apenas
+  `r coma(100 * r2_tamano, 1)` de cada 100 de su puntaje; y esa parte propia **no es error de
+  medición**, porque la combinación de pago, saldo y cupo predice `r coma(100 * r2_puntaje, 0)` de cada 100.
 - ✅ **Qué decide el cliente**: no puede usar la capacidad, ni el tipo de tarjeta (que se
   asigna por ingreso), como sustituto del riesgo, y el puntaje debe entrar **por su cuenta**
   a la decisión de seguimiento.
@@ -331,10 +360,11 @@ c(correlacion_entre_factores = round(fa2b$Phi[ob[1], ob[2]] * prod(sb), 3))
   vez las dos habilidades **sí se correlacionan**
   (`r coma(fa2b$Phi[ob[1], ob[2]] * prod(sb), 2)`).
 - 💼 **Qué significa para el cliente**: es **frecuencia frente a ticket** (a igual capacidad,
-  hay quien compra mucho y barato y quien compra poco y caro), pero cuelga casi de una
-  variable, así que es una pista y no un hallazgo.
-- ✅ **Qué decide el cliente**: la lista de seguimiento no cambia, y la pista le sirve al área
-  comercial para campañas por frecuencia o por ticket.
+  hay quien compra mucho y barato y quien compra poco y caro); en estas ocho variables
+  cuelga casi de una sola, compras al mes, pero el Módulo 18 del informe, con 16 variables,
+  también la encuentra como un factor de frecuencia.
+- ✅ **Qué decide el cliente**: la lista de seguimiento no cambia, y la frecuencia le sirve al
+  área comercial para campañas por frecuencia o por ticket.
 
 ## El factor frente al resumen del PCA
 
@@ -378,7 +408,9 @@ distingue esas dos cosas dentro de la parte propia; para saber si el
 módulo es confiable habría que medir su fiabilidad por otro camino (por
 ejemplo, repetir la prueba). Es lo mismo que nuestro puntaje crediticio:
 100 de cada 100 propio, y es la variable más útil de la ficha para la
-Gerencia.
+Gerencia. En su caso sí tenemos ese otro camino: la combinación de pago, saldo y cupo
+predice `r coma(100 * r2_puntaje, 0)` de cada 100 del puntaje, así que
+su parte propia no es error.
 
 **3. Si la correlación entre dos módulos es casi igual al producto de
 sus cargas, ¿qué nos dice eso sobre cuántas habilidades hay?**
@@ -430,7 +462,8 @@ son falsas:
   deducimos de ingreso, cupo, saldo y compras.
 - **(c)** La parte propia **no** es siempre error: incluye lo que el
   módulo mide y los demás no. El puntaje crediticio es 100 % propio y
-  no es error, es otra cosa.
+  no es error: la combinación de pago, saldo y cupo predice
+  `r coma(100 * r2_puntaje, 0)` de cada 100 de él.
 - **(d)** Dos habilidades **no** son siempre independientes: con una
   rotación oblicua (la que usa `fa()` por defecto) pueden
   correlacionarse. En nuestros datos, sin el puntaje, capacidad y
@@ -445,8 +478,10 @@ son falsas:
    `r coma(100 * sum(fa1$communality) / p)` de cada 100 partes de las
    `r p` variables.
 2. **El puntaje crediticio no es parte de esa capacidad**: es 100 % parte
-   propia y su KMO es el más bajo posible. Medir el tamaño de un cliente
-   no dice nada de qué tan buen pagador es.
+   propia y su KMO es `r coma(kmo$MSAi["Puntaje crediticio"], 2)`, porque
+   no sigue al tamaño del cliente sino a la diferencia entre lo que paga
+   y lo que debe. Medir el tamaño de un cliente no dice nada de qué tan
+   buen pagador es.
 3. **Una habilidad casi alcanza**: reproduce
    `r sum(abs(comparacion$diferencia) < 0.05)` de las
    `r nrow(comparacion)` correlaciones. Lo que no explica tiene nombre:

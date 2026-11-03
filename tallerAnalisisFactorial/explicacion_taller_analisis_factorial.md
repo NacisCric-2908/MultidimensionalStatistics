@@ -70,7 +70,7 @@ Se ejecutó `KMO(R)` del paquete `psych` para comparar las correlaciones observa
 | **Puntaje crediticio** | **0,02** | **Inaceptable** |
 | **KMO Global (`MSA`)** | **0,71** | **Aceptable** |
 
-- **Hallazgo y decisión:** El KMO global (0,71) confirma que tiene sentido buscar un factor común en la ficha, ya que las 8 variables de dinero y uso superan 0,60. El **puntaje crediticio (0,02)** no comparte prácticamente nada con el grupo, pero se conserva deliberadamente en el modelo para mostrarle con números a la Gerencia si pertenece o no a la capacidad económica.
+- **Hallazgo y decisión:** El KMO global (0,71) confirma que tiene sentido buscar un factor común en la ficha, ya que las 8 variables de dinero y uso superan 0,60. El **puntaje crediticio (0,02)** casi no se correlaciona por separado con ninguna variable (−0,17 a 0,11), pero descontando las demás va −0,94 con el saldo, +0,91 con el pago y +0,52 con el cupo: no sigue al tamaño del cliente sino a la diferencia entre lo que paga y lo que debe (la proporción pagada). Combinando pago, saldo y cupo, las otras ocho variables predicen 89 de cada 100 del puntaje; sin ellos, menos de 1. Un factor común no puede producir ese contraste, y por eso el KMO del puntaje es tan bajo. Se conserva en el modelo para mostrarle con números a la Gerencia que no pertenece a la capacidad económica.
 
 ---
 
@@ -96,7 +96,7 @@ Se estimó el modelo factorial de 1 factor por máxima verosimilitud (`fm = "ml"
 
 ### 4.2. ¿Qué variable es casi toda propia y qué significa para el cliente? (Sección 2.1)
 - **Variable identificada:** El **puntaje crediticio** tiene **100,0 de cada 100 partes propias** (carga de `0,018`, parte común `0,0`).
-- **Significado de negocio:** El riesgo crediticio no forma parte de la capacidad económica. Que un cliente gane más, tenga mayor cupo o compre más no dice nada sobre qué tan buen pagador es. No significa que el puntaje esté mal medido, sino que mide otra dimensión (la conducta de pago: utilización del cupo y proporción pagada).
+- **Significado de negocio:** El riesgo crediticio no forma parte de la capacidad económica. Que un cliente gane más, tenga mayor cupo o compre más no dice nada sobre qué tan buen pagador es. Esa parte propia no es error de medición: la combinación de pago, saldo y cupo predice 89 de cada 100 del puntaje, que sigue a la conducta de pago (proporción pagada), no al tamaño.
 - **Decisión:** La Gerencia no puede usar el tamaño del cliente ni la categoría de su tarjeta como sustituto del riesgo; el puntaje debe entrar **por separado** en la regla de seguimiento preventivo.
 
 ### 4.3. ¿Alcanza una habilidad? Comparación $r_{ij}$ vs. $\ell_i \ell_j$ (Sección 2.2)
@@ -122,7 +122,7 @@ Se ajustó `fa(R, nfactors = 2, fm = "ml", rotate = "oblimin", n.obs = nrow(X))`
 ### 5.2. Prueba adicional con 2 factores retirando el puntaje (`fa2b`, Sección 3.1)
 Al quitar el puntaje crediticio y correr 2 factores sobre las 8 variables restantes:
 - El segundo factor carga fuerte en `Compras al mes` (`0,903`) y en sentido opuesto en `Valor por compra` (`-0,372`), capturando la tensión **frecuencia vs. ticket**, con una correlación oblicua de **`0,427`** respecto a la capacidad económica.
-- Aun así, al depender casi por completo de una sola variable (`Compras al mes`), se interpreta como una pista comercial (para segmentar campañas por frecuencia o por monto de compra) y no como un factor robusto de riesgo.
+- En estas ocho variables depende casi de una sola (`Compras al mes`), pero el Módulo 18 del informe, con 16 variables, también encuentra un factor de frecuencia. No cambia la lista de seguimiento; le sirve al área comercial para campañas por frecuencia o por monto de compra.
 
 ### 5.3. El factor común frente a la primera componente del PCA (Sección 3.2)
 Se comparó la proporción de varianza explicada por ambos métodos sobre las 9 variables:
@@ -137,7 +137,7 @@ Se comparó la proporción de varianza explicada por ambos métodos sobre las 9 
 En el documento se responden todas las preguntas conceptuales del taller conectándolas con la evidencia empírica de la cartera:
 
 1. **Diferencia entre parte común y parte propia:** La parte común ($\ell_i^2$) es la fracción de las diferencias en un módulo explicada por la habilidad compartida con los demás; la parte propia ($1 - \ell_i^2$) es lo específico de ese módulo más el error de medición. Ambas suman 100 (ej.: en nuestra cartera, Cupo es 99 % común y Puntaje es 100 % propio).
-2. **¿Un módulo con 15/100 de parte común (Escritura) está mal hecho?:** **No.** Tener poca parte común solo indica que comparte poco con los demás módulos evaluados. El 85 % restante incluye tanto habilidad específica valiosa (propia de escribir) como error, los cuales el análisis factorial no puede separar sin una medición externa de fiabilidad (exactamente igual al puntaje crediticio, que tiene 0 % de parte común pero es indispensable para medir riesgo).
+2. **¿Un módulo con 15/100 de parte común (Escritura) está mal hecho?:** **No.** Tener poca parte común solo indica que comparte poco con los demás módulos evaluados. El 85 % restante incluye tanto habilidad específica valiosa (propia de escribir) como error, los cuales el análisis factorial no puede separar sin una medición externa de fiabilidad (exactamente igual al puntaje crediticio, que tiene 0 % de parte común pero es indispensable para medir riesgo; en su caso sí hay otro camino: la combinación de pago, saldo y cupo predice 89 de cada 100 del puntaje, así que su parte propia no es error).
 3. **Si $r_{ij} \approx \ell_i \ell_j$, ¿cuántas habilidades hay?:** Indica que **una sola habilidad común basta** para explicar el parecido entre esos dos módulos (en el caso de negocio ocurre en 31 de los 36 pares).
 4. **¿Por qué no llamar «habilidad verbal» a un segundo factor que cae casi entero sobre Lectura?:** Porque una habilidad común requiere ser compartida por varios módulos (al menos dos o tres con cargas importantes). Si recae sobre una sola variable, es simplemente su parte propia disfrazada de factor (como ocurrió con el puntaje crediticio en el modelo de 2 factores).
 5. **¿Por qué el resumen del PCA (sesión 3) guardaba más de cada 100 que la habilidad común de hoy?:** Porque la CP1 maximiza varianza total (mezclando parte común y parte propia), mientras que el factor común solo contabiliza lo compartido entre variables (`64,3 %` en PCA vs. `61,9 %` en FA).
