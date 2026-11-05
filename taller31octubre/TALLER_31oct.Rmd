@@ -106,9 +106,26 @@ propongamos tienen sentido.
 ## Qué casos entran y cuáles quedan por fuera
 
 ```{r limpieza}
-# --- Limpieza del primer corte -------------------------------------------------------------
-# (Pegue aquí, si lo tienen, el código exacto de limpieza del primer corte. En los talleres
-#  anteriores la base no tenía celdas vacías en estas variables, Módulo 2 de la entrega.)
+# --- Limpieza del primer corte (Módulo 2 de Entrega/analisis_synthetic_credit_card.Rmd) ----
+# 1. Faltantes: celdas vacías (is.na) y filas que sobreviven completas (complete.cases)
+total_celdas <- prod(dim(credit))
+celdas_na <- sum(is.na(credit))
+filas_completas <- sum(complete.cases(credit))
+faltantes_por_col <- colSums(is.na(credit))
+# 2. Duplicados: filas idénticas en todas las columnas e identificadores repetidos
+n_duplicados_filas <- sum(duplicated(credit))
+n_duplicados_id <- sum(duplicated(credit$Customer_ID))
+# 3. Rangos de las reglas de negocio (valores imposibles o códigos de faltante)
+rango_edad <- range(credit$Age)
+rango_pr <- range(credit$Payment_Ratio)
+rango_cu <- range(credit$Credit_Utilization)
+
+c(celdas_vacias = celdas_na, filas_completas = filas_completas,
+  filas_duplicadas = n_duplicados_filas, Customer_ID_repetidos = n_duplicados_id)
+faltantes_por_col[faltantes_por_col > 0]          # vacío si ninguna columna tiene NA
+rbind(Age = rango_edad, Payment_Ratio = rango_pr, Credit_Utilization = rango_cu)
+
+# --- Casos que entran a este taller (las 9 variables) ---------------------------------------
 n_inicial <- nrow(credit)
 
 vacias_antes <- sapply(credit[vars], function(x) sum(is.na(x) | trimws(as.character(x)) == ""))
@@ -140,6 +157,11 @@ datos <- credit[completos, ]
   `r miles(n_completos)` tienen las `r p` variables completas y
   `r miles(n_fuera)` quedan por fuera.
   `r if (n_fuera == 0) "Ninguno se excluye: no hay celdas vacías ni valores no numéricos en estas variables." else paste0("El único motivo de exclusión es tener al menos una de las ", p, " variables vacía o no numérica (tabla de arriba, por variable).")`
+  La auditoría del primer corte tampoco encontró filas duplicadas
+  (`r n_duplicados_filas`), identificadores repetidos (`r n_duplicados_id`)
+  ni valores imposibles: la edad va de
+  `r rango_edad[1]` a `r rango_edad[2]` años y la proporción pagada y el
+  uso del cupo están entre 0 y 1.
 - 💼 **Qué significa para el cliente:** el análisis habla de la cartera
   completa que la Gerencia tiene en la base (`r miles(n_completos)`
   tarjetas)`r if (n_fuera > 0) paste0(", y de los ", miles(n_fuera), " clientes que faltan no sabemos nada")`.
@@ -198,8 +220,10 @@ aun con el logaritmo va de `r coma(min(sd_log), 2)` a
   `r coma(info_c1(pca))` y ninguna variable manda sola.
 - 💼 **Qué significa para el cliente:** si no se estandariza, el resumen
   copia a la variable de números más grandes y no a lo que distingue a
-  los clientes: sería un resumen del ingreso en rupias presentado como
-  resumen de la ficha.
+  los clientes: como los montos ya entran en log, la que tiene los
+  números más grandes es el `r tolower(manda(pca_sin))` (desviación de
+  `r coma(max(sd_log), 2)` puntos), y el resultado sería ese puntaje
+  presentado como resumen de toda la ficha.
 - ✅ **Qué decide el cliente:** todo lo que sigue se hace con las
   variables en log (las `r length(con_log)` de cola larga) y
   estandarizadas; así ninguna manda solo por tener números grandes.
@@ -254,8 +278,8 @@ data.frame(variable = etiqueta[vars], su_mayor_correlacion_con_otra = round(mayo
   pocos indicadores, y no tiene sentido meter el puntaje en ese mismo
   resumen sin revisar.
 - ✅ **Qué decide el cliente:** puede acortar la ficha en el bloque de
-  dinero (le basta una variable de tamaño, la más barata de obtener),
-  pero debe conservar el puntaje como variable aparte.
+  dinero (ingreso y cupo bastan para leer el tamaño), pero debe
+  conservar el puntaje como variable aparte.
 
 # El resumen con componentes principales
 
@@ -594,8 +618,8 @@ c(clientes_alejados_del_comportamiento_general = sum(lejos), de_cada_100 = round
   mapa y tienen cupos de `r miles(datos$Credit_Limit[i])` y
   `r miles(datos$Credit_Limit[j])`, puntajes de
   `r datos$Credit_Score[i]` y `r datos$Credit_Score[j]`. Quedan
-  `r miles(sum(lejos))` clientes (`r coma(100 * mean(lejos), 2)` de cada
-  100) muy alejados del comportamiento general; el más alejado es el
+  `r miles(sum(lejos))` clientes (`r coma(100 * mean(lejos), 2)` de cada 100)
+  muy alejados del comportamiento general; el más alejado es el
   `r datos$id_cliente[k]`, con cupo de `r miles(datos$Credit_Limit[k])`
   y puntaje de `r datos$Credit_Score[k]`.
 - 💼 **Qué significa para el cliente:** clientes cercanos en el mapa
@@ -722,9 +746,10 @@ comun_uso <- partes$comun[partes$variable %in% etiqueta[uso]]
   `r coma(min(comun_uso), 0)` y `r coma(max(comun_uso), 0)` de las de
   uso y solo `r coma(cp("Puntaje crediticio"), 0)` del puntaje. En total
   reúne `r coma(comun_total)` de cada 100 partes de la ficha.
-- 💼 **Qué significa para el cliente:** hay una **capacidad económica**
-  común (nombre nuestro, leído de las variables que más cargan) detrás
-  del dinero; en las variables de uso, buena parte de lo que cada una
+- 💼 **Qué significa para el cliente:** lo que comparten las variables
+  de dinero puede leerse como una **capacidad económica** común (nombre
+  nuestro, leído de las variables que más cargan; el modelo no la mide
+  ni demuestra que exista como tal); en las variables de uso, buena parte de lo que cada una
   dice es propio, y del puntaje casi todo lo es.
 - ✅ **Qué decide el cliente:** para medir capacidad le bastan ingreso y
   cupo; las variables de uso y el puntaje debe mirarlos aparte.
@@ -809,7 +834,7 @@ c(R2_con_las_otras_8 = round(r2_resto, 3), R2_sin_saldo_ni_pago = round(r2_sin_p
 - 💼 **Qué significa para el cliente:** esta variable representa **qué
   tan buen pagador es el cliente y cómo lo ve el buró**, algo que el
   tamaño no dice. No debería desaparecer dentro de un indicador general:
-  su parte propia **no es error de medición**, porque saldo, pago y
+  su parte propia **no es solo error de medición**, porque saldo, pago y
   cupo, combinados, sí la predicen en buena parte.
 - ✅ **Qué decide el cliente:** si resume la ficha en un índice de
   capacidad, ignorar esta variable cambiaría la lista de seguimiento
@@ -822,7 +847,10 @@ c(R2_con_las_otras_8 = round(r2_resto, 3), R2_sin_saldo_ni_pago = round(r2_sin_p
 
 Con `r p` variables, un modelo de `k` dimensiones solo se puede estimar
 si tiene grados de libertad no negativos:
-`((p − k)² − (p + k)) / 2 ≥ 0`.
+`((p − k)² − (p + k)) / 2 ≥ 0`. Los **grados de libertad** son las
+relaciones entre variables que sobran después de estimar el modelo: si
+son negativos, el modelo tendría más cosas por estimar que relaciones
+con las cuales estimarlas.
 
 ```{r cuantas}
 kk <- 1:6
@@ -844,8 +872,12 @@ k_max <- max(kk[gl >= 0])
 
 ## Dos dimensiones
 
+La rotación **oblimin** reacomoda las dimensiones para que cada variable
+cargue sobre todo en una, y les permite estar relacionadas entre sí (no
+las obliga a ser independientes).
+
 ```{r fa2}
-fa2 <- fa(XE, nfactors = 2, fm = "ml", rotate = "oblimin")
+fa2 <-fa(XE, nfactors = 2, fm = "ml", rotate = "oblimin")
 
 # Pone primero la dimensión que más carga en el cupo (la «capacidad»), con signo positivo
 alinear_fa <- function(m) {
@@ -924,7 +956,9 @@ bind_rows(
 
 - 👀 **Qué vemos:** `r coma(100 * mismas, 0)` de cada 100 variables
   siguen en la misma dimensión; la mayor diferencia entre una carga y la
-  otra es `r coma(dif_max, 3)`; la correspondencia entre dimensiones es
+  otra es `r coma(dif_max, 3)`; la correspondencia entre dimensiones
+  (la «congruencia»: 1 si los dos métodos dan exactamente el mismo
+  patrón de cargas, 0 si no se parecen en nada) es
   de `r coma(cong[1], 3)` (primera) y `r coma(cong[2], 3)` (segunda), y
   la correlación entre ellas pasa de `r coma(a_ml$phi, 2)` a
   `r coma(a_mr$phi, 2)`.
@@ -952,7 +986,9 @@ bind_rows(
     separado, el **`r tolower(mas_propia)`**, con
     `r coma(partes$propia[partes$variable == mas_propia], 0)` de cada
     100 propio; las variables de uso conservan buena parte de
-    información propia y conviene seguirlas viendo aparte.
+    información propia y conviene seguirlas viendo aparte (el par que
+    una dimensión peor explica es compras al mes – valor por compra:
+    a igual capacidad, unos compran mucho y barato y otros poco y caro).
 4.  **¿Qué decisión recomendamos?** Reportar **dos números, tamaño y
     puntaje con hábito de pago**, y escoger para el seguimiento
     preventivo primero al grupo de clientes grandes y de riesgo
@@ -964,7 +1000,7 @@ bind_rows(
     clientes de puntaje bajo.
 
 ::: {style="border: 2px solid #C05621; border-radius: 6px; padding: 8px 18px; background: #FFF8F1; margin-top: 24px;"}
-### Qué no sabemos todavía
+### Qué no sabemos todavía {-}
 
 - **No sabemos por qué.** Todo lo que vemos son variables que aparecen
   juntas. No podemos decir que ser grande cause un mal pago, ni que la
