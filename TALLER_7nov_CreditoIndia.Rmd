@@ -49,13 +49,16 @@ una_en <- function(p) {
 # Convención NUESTRA para poner palabras a la distancia D (no es una ley de la estadística)
 tam_D <- function(D) as.character(cut(D, c(-Inf, 0.2, 0.5, 1, 2, Inf),
                                       labels = c("pequeña", "moderada", "grande", "muy grande", "enorme")))
-lee_D <- function(D, sujeto) {
-  switch(tam_D(D),
-    "pequeña"    = paste0("una distancia pequeña: ", sujeto, " se parece a la referencia mucho más de lo que se diferencia"),
-    "moderada"   = paste0("una distancia moderada: se nota, pero ", sujeto, " se parece a la referencia más de lo que se diferencia"),
-    "grande"     = paste0("una distancia grande: ", sujeto, " ya se aparta con claridad de la referencia"),
-    "muy grande" = paste0("una distancia muy grande: ", sujeto, " queda en otra zona de la distribución"),
-    "enorme"     = paste0("una distancia enorme: ", sujeto, " y la referencia casi no se tocan"))
+# D compara PROMEDIOS: dice dónde queda el cliente típico, no si cada cliente se separa (eso lo dice «¿separa?»)
+lee_D <- function(D, sujeto, ref = "la referencia") {
+  txt <- switch(tam_D(D),
+    "pequeña"    = paste0("una distancia pequeña: ", sujeto, " se parece a ", ref, " mucho más de lo que se diferencia"),
+    "moderada"   = paste0("una distancia moderada: se nota, pero ", sujeto, " se parece a ", ref, " más de lo que se diferencia"),
+    "grande"     = paste0("una distancia grande: ", sujeto, " ya se aparta con claridad de ", ref),
+    "muy grande" = paste0("una distancia muy grande: ", sujeto, " queda en otra zona que ", ref),
+    "enorme"     = paste0("una distancia enorme entre promedios: ", sujeto, " queda muy lejos de ", ref,
+                          " (si eso alcanza para separar a cada cliente se ve más abajo)"))
+  gsub("\\ba el ", "al ", gsub("\\bde el ", "del ", txt))
 }
 # Convención NUESTRA para «separa»: acierto al clasificar contra el acierto de adivinar siempre el grupo más grande
 veredicto_separa <- function(acierto, base) {
@@ -321,6 +324,12 @@ round(D1, 3)
 w1      <- solve(cov(Yg), dif1)
 idx_ref <- as.numeric(X %*% w1)
 pct_medio1 <- 100 * mean(idx_ref < mean(idx_ref[g1]))
+
+# hotelling_1() mide la distancia con la variación DENTRO de la gama alta. ¿Es esa variación parecida a la de la cartera?
+razon_sd <- apply(Yg, 2, sd) / sd_base
+D1_cartera <- sqrt(as.numeric(t(dif1) %*% solve(cov(X)) %*% dif1))   # la misma distancia, medida con la variación de toda la cartera
+round(setNames(razon_sd, etiqueta[vars]), 2)
+c(D_con_la_variacion_de_la_gama_alta = round(D1, 3), D_con_la_variacion_de_la_cartera = round(D1_cartera, 3))
 ```
 
 > 📝 **Apunte: qué mide $D$.** Con una sola variable, la distancia es
@@ -328,8 +337,10 @@ pct_medio1 <- 100 * mean(idx_ref < mean(idx_ref[g1]))
 > «desviaciones» separan los dos promedios. Con las seis variables se
 > hace lo mismo descontando que se mueven juntas. Una distancia de 1 es
 > una desviación completa (mucho); una de 0,1 casi no se ve. Las palabras
-> que usamos (pequeña < 0,2; moderada < 0,5; grande < 1; muy grande < 2)
-> son una convención **nuestra** para hablar con el cliente.
+> que usamos (pequeña < 0,2; moderada < 0,5; grande < 1; muy grande < 2;
+> enorme desde 2) son una convención **nuestra** para hablar con el
+> cliente. Ojo: $D$ compara **promedios**; que el cliente típico esté
+> lejos no dice que cada cliente lo esté (eso es «¿separa?»).
 
 - 👀 **Qué vemos:** el promedio de la gama alta está a
   `r coma(D1, 2)` desviaciones del promedio de la cartera, contando las
@@ -337,10 +348,18 @@ pct_medio1 <- 100 * mean(idx_ref < mean(idx_ref[g1]))
   «índice de parecido a la gama alta» (el que mejor la distingue), el
   cliente promedio de gama alta queda por encima de
   `r coma(pct_medio1, 0)` de cada 100 clientes.
-- 💼 **Qué significa para el cliente:** es `r lee_D(D1, "el cliente típico de gama alta")`.
-- ✅ **Qué decide el cliente:** en el informe dice
-  «la gama alta está a `r coma(D1, 2)` desviaciones de la cartera
-  (`r tam_D(D1)`)», no «es muy distinta» ni «es igual».
+  La gama alta varía menos que la cartera (en cupo, su desviación es
+  `r coma(razon_sd["Credit_Limit"], 2)` veces la de la cartera), y como
+  `hotelling_1()` mide con la variación del grupo, la distancia se ve
+  más grande: medida con la variación de toda la cartera es
+  `r coma(D1_cartera, 2)`.
+- 💼 **Qué significa para el cliente:** es `r lee_D(D1, "el cliente típico de gama alta", "el promedio de la cartera")`.
+  Aun con la medida más conservadora (`r coma(D1_cartera, 2)`,
+  `r tam_D(D1_cartera)`) la gama alta se aparta con claridad.
+- ✅ **Qué decide el cliente:** en el informe dice «la gama alta está
+  entre `r coma(D1_cartera, 2)` y `r coma(D1, 2)` desviaciones de la
+  cartera (`r tam_D(D1_cartera)` a `r tam_D(D1)`)», no «es muy
+  distinta» ni «es igual»; falta ver si eso separa a cada cliente.
 
 ## ¿Es real? ¿O puede ser mala suerte?
 
@@ -403,35 +422,214 @@ base1    <- 100 * max(table(grp1)) / length(grp1)
 sep1     <- veredicto_separa(acierto1, base1)
 c(acierto_con_las_seis = round(acierto1, 1), acierto_diciendo_siempre_resto = round(base1, 1))
 
-# Un caso concreto: los 3 clientes de gama alta que quedan más del lado contrario
+# ¿Dónde se equivoca? Tabla de clasificación
+conf1 <- table(real = grp1, clasificado_como = predict(lda1)$class)
+conf1
+ga_perdidos <- 100 * conf1["Gama alta", "Resto"] / sum(conf1["Gama alta", ])
+# El otro lado de la mezcla: clientes del resto con un índice tan alto como el del cliente típico de gama alta
+p10_g1      <- quantile(idx_ref[g1], 0.10)
+resto_arriba <- 100 * mean(idx_ref[!g1] > p10_g1)
+c(gama_alta_clasificados_como_resto_de_cada_100 = round(ga_perdidos, 1),
+  resto_por_encima_del_decil_10_de_la_gama_alta_de_cada_100 = round(resto_arriba, 1))
+
+# Casos concretos: el cliente de gama alta con el índice más bajo, y uno del resto con índice igual al típico de gama alta
 ficha1 <- function(ix) data.frame(
   cliente = datos$id_cliente[ix], tarjeta = datos$Card_Type[ix], cupo = miles(datos$Credit_Limit[ix]),
   saldo = miles(datos$Statement_Balance[ix]), pagado = miles(datos$Payment_Amount[ix]),
   compras_al_mes = round(datos$Monthly_Transactions[ix], 1), valor_por_compra = miles(datos$Avg_Transaction_Value[ix]),
   puntaje = round(datos$Credit_Score[ix]),
   de_cada_100_de_la_cartera_con_indice_mayor = round(sapply(ix, function(i) 100 * mean(idx_ref > idx_ref[i])), 1))
-ord1 <- which(g1)[order(idx_ref[g1])][1:3]
-ficha1(ord1)
+ord1  <- which(g1)[order(idx_ref[g1])][1]
+i_res <- which(!g1)[which.min(abs(idx_ref[!g1] - median(idx_ref[g1])))]
+ficha1(c(ord1, i_res))
 mediana_cartera <- sapply(datos[vars], median)
 round(setNames(mediana_cartera, etiqueta[vars]), 1)
 ```
 
 - 👀 **Qué vemos:** `r miles(sum(idx_ref[g1] < med_ref))` clientes de
   gama alta (`r coma(otro_lado1, 1)` de cada 100) quedan por debajo de
-  la mediana de la cartera en el índice. Con las seis variables se
-  acierta si un cliente es de gama alta o del resto en
+  la mediana de la cartera en el índice (en el Atlántico eran 31,5 por
+  encima). Pero eso solo dice que la gama alta está en la mitad de
+  arriba, donde también vive la mitad del resto. Con las seis variables
+  se acierta si un cliente es de gama alta o del resto en
   `r coma(acierto1, 1)` de cada 100, cuando diciendo siempre «resto» se
-  acierta en `r coma(base1, 1)`. El cliente `r datos$id_cliente[ord1[1]]`
-  tiene tarjeta `r datos$Card_Type[ord1[1]]` y un cupo de
-  `r miles(datos$Credit_Limit[ord1[1]])` ₹ (mediana de la cartera:
-  `r miles(mediana_cartera["Credit_Limit"])`); su índice es más bajo que
-  el de `r coma(100 * mean(idx_ref > idx_ref[ord1[1]]), 1)` de cada 100
-  clientes de la cartera.
+  acierta en `r coma(base1, 1)`; el error se concentra en la gama alta:
+  `r coma(ga_perdidos, 0)` de cada 100 de sus clientes quedan
+  clasificados como «resto». Los dos casos de la tabla lo muestran: el
+  cliente `r datos$id_cliente[ord1]` tiene tarjeta
+  `r datos$Card_Type[ord1]` y un cupo de
+  `r miles(datos$Credit_Limit[ord1])` ₹ (mediana de la cartera:
+  `r miles(mediana_cartera["Credit_Limit"])` ₹), y su índice es más
+  bajo que el de `r coma(100 * mean(idx_ref > idx_ref[ord1]), 1)` de
+  cada 100 clientes de la cartera: está en la mitad, con ficha de
+  cliente corriente; el cliente
+  `r datos$id_cliente[i_res]` tiene tarjeta
+  `r datos$Card_Type[i_res]` (no es de gama alta), pero su ficha es la
+  del cliente típico de gama alta, con un cupo de
+  `r miles(datos$Credit_Limit[i_res])` ₹.
 - 💼 **Qué significa para el cliente:**
-  `r switch(sep1, "no" = "la gama alta está desplazada pero no separada: sus clientes se mezclan con los del resto, y el cliente de la tabla es un ejemplo de alguien con tarjeta de gama alta cuya ficha es la de un cliente corriente.", "en parte" = "la gama alta se separa en parte del resto: hay una zona común donde clientes de gama alta y del resto son indistinguibles por su ficha.", "sí" = "la gama alta y el resto casi no se tocan: con la ficha se sabe de qué grupo es el cliente.")`
+  `r switch(sep1, "no" = "la gama alta está desplazada pero no separada: sus clientes se mezclan con los del resto.", "en parte" = paste0("la gama alta se separa en parte del resto: sus clientes están en la mitad alta de la cartera, pero ahí se cruzan con clientes del resto que tienen la misma ficha (", coma(resto_arriba, 1), " de cada 100 clientes del resto superan al 10 por ciento más bajo de la gama alta, y como el resto es mucho más numeroso, esa zona común pesa). Por eso la distancia enorme entre promedios no se traduce en grupos que no se tocan."), "sí" = "la gama alta y el resto casi no se tocan: con la ficha se sabe de qué grupo es el cliente.")`
 - ✅ **Qué decide el cliente:** `r switch(sep1, "no" = "la tarjeta de gama alta no es una etiqueta confiable para tratar a un cliente: cada cliente se decide con su propia ficha.", "en parte" = "puede usar reglas de segmento, revisando caso a caso a los que quedan en la zona común.", "sí" = "puede tratar la gama alta como una población aparte.")`
 
-## ¿Qué viaja con la gama alta? (la variable que explica parte)
+# Dos muestras: ¿los jóvenes y los mayores son distintos?
+
+Ahora comparamos dos grupos entre sí: los **jóvenes** (hasta
+`r edad_max_j` años) y los **mayores** (desde `r edad_min_m` años).
+
+## Variable por variable: ¿nivel o perfil?
+
+```{r dos-diferencias}
+A <- X[joven, , drop = FALSE]; B <- X[mayor, , drop = FALSE]
+n_a <- nrow(A); n_b <- nrow(B)
+Sp  <- ((n_a - 1) * cov(A) + (n_b - 1) * cov(B)) / (n_a + n_b - 2)
+dif2     <- colMeans(A) - colMeans(B)
+dif2_std <- dif2 / sqrt(diag(Sp))            # en desviaciones de los clientes
+
+orig2 <- rbind(jovenes = colMeans(datos[joven, vars]), mayores = colMeans(datos[mayor, vars]))
+colnames(orig2) <- etiqueta[vars]
+round(orig2, 1)
+
+data.frame(variable = factor(etiqueta[vars], levels = rev(etiqueta[vars])), dif = dif2_std) |>
+  ggplot(aes(dif, variable, fill = dif > 0)) +
+  geom_col(width = 0.6) +
+  geom_vline(xintercept = 0, color = "grey40") +
+  geom_text(aes(label = coma(dif, 2), hjust = ifelse(dif > 0, -0.2, 1.2)), size = 4.2) +
+  scale_fill_manual(values = c("TRUE" = "#805AD5", "FALSE" = "#2B6CB0"), guide = "none") +
+  scale_x_continuous(expand = expansion(mult = 0.25), labels = function(x) coma(x, 2)) +
+  labs(title = "Jóvenes menos mayores, en cada variable",
+       subtitle = "Morado: los jóvenes tienen más · azul: los mayores tienen más (montos en log)",
+       x = "Desviaciones", y = NULL)
+```
+
+```{r dos-diferencias-texto, include=FALSE}
+j_mas <- names(dif2_std)[dif2_std >  0.05]
+m_mas <- names(dif2_std)[dif2_std < -0.05]
+tipo2 <- if (length(j_mas) > 0 && length(m_mas) > 0) "perfil" else if (length(j_mas) + length(m_mas) > 0) "nivel" else "ninguna"
+mayor2 <- names(which.max(abs(dif2_std)))
+txt_tipo2 <- switch(tipo2,
+  perfil  = "es una diferencia de **perfil**: no todo sube o baja a la vez; unas variables favorecen a los jóvenes y otras a los mayores, y al resumirlas en un solo número esas ventajas se compensan",
+  nivel   = paste0("es una diferencia de **nivel**: todas las variables que se apartan van del mismo lado (más en ", ifelse(length(j_mas) > 0, "los jóvenes", "los mayores"), ")"),
+  ninguna = "no es una diferencia de **nivel** (no todo sube en un grupo) ni de **perfil** (no hay variables que suban en uno y bajen en el otro): en las seis variables los jóvenes y los mayores tienen, en promedio, la misma ficha")
+txt_ve2 <- if (tipo2 == "ninguna") {
+  paste0("ninguna de las seis variables se aparta más de 0,05 desviaciones entre jóvenes y mayores; la diferencia más grande es la de ",
+         tolower(etiqueta[mayor2]), ", de apenas ", coma(dif2_std[mayor2], 2), " desviaciones (jóvenes menos mayores)")
+} else {
+  paste0("los jóvenes tienen más en ", lista(tolower(etiqueta[j_mas])), " y los mayores en ", lista(tolower(etiqueta[m_mas])),
+         "; la diferencia más grande es la de ", tolower(etiqueta[mayor2]), " (", coma(dif2_std[mayor2], 2),
+         " desviaciones, jóvenes menos mayores)")
+}
+txt_dec_ve2 <- if (tipo2 == "ninguna") {
+  "no tiene, a simple vista, una razón para diseñar campañas distintas por edad; falta comprobar con una sola medida que las seis diferencias juntas tampoco suman algo."
+} else {
+  "no juzgar a los dos grupos por un solo indicador; falta saber cuánto pesa la diferencia en conjunto."
+}
+```
+
+- 👀 **Qué vemos:** `r txt_ve2`.
+- 💼 **Qué significa para el cliente:** `r txt_tipo2`.
+- ✅ **Qué decide el cliente:** `r txt_dec_ve2`
+
+## ¿Qué tan lejos y qué tan real? Distancia $D$ y comprobación con `manova()`
+
+```{r dos-D}
+h2 <- hotelling_2(A, B)
+D2 <- h2[["D"]]; p2 <- h2[["p"]]; real2 <- p2 < 0.05
+signif(h2, 4)
+
+# Comprobación: R lo calcula con manova(); debe dar el mismo T²
+XY <- rbind(A, B)
+gr <- factor(rep(c("Jóvenes", "Mayores"), c(n_a, n_b)))
+L  <- summary(manova(XY ~ gr), test = "Wilks")$stats[1, 2]
+T2_manova <- (nrow(XY) - 2) * (1 / L - 1)
+round(c(T2_hotelling = h2[["T2"]], T2_manova = T2_manova), 2)
+```
+
+- 👀 **Qué vemos:** los dos grupos están a `r coma(D2, 2)` desviaciones;
+  la probabilidad de que sea azar es **`r una_en(p2)`**. El T² de
+  Hotelling (`r coma(h2[["T2"]], 2)`) coincide con el que da
+  `manova()` (`r coma(T2_manova, 2)`).
+- 💼 **Qué significa para el cliente:**
+  `r if (real2) "la diferencia es real" else "no se puede descartar el azar"`
+  y es `r lee_D(D2, "el joven típico", "el mayor típico")`.
+- ✅ **Qué decide el cliente:**
+  `r if (!real2) "no debe hablar de perfiles distintos por edad con estas variables." else if (D2 < 0.2) "no justifica separar campañas por edad por un efecto tan pequeño, aunque sea real." else "la diferencia de perfil por edad existe y tiene el tamaño que dice D; entra al diseño de las campañas, pero falta saber si separa."`
+
+## Dos clientes con un resultado parecido y perfiles opuestos
+
+Como los dos estudiantes que sacaron 100 de global: buscamos un joven y
+un mayor con el **mismo índice general** (el promedio de las seis
+variables, cada una en desviaciones) y la **mayor diferencia de perfil**
+entre `r tolower(etiqueta[names(which.max(dif2_std))])` y
+`r tolower(etiqueta[names(which.min(dif2_std))])`.
+`r if (tipo2 == "ninguna") "Son las dos variables con la diferencia más grande entre los grupos, aunque esa diferencia es casi nula: el caso **no** ilustra una brecha entre jóvenes y mayores, sino que dentro de cada grupo hay fichas opuestas con el mismo resultado general." else "Son las dos variables en que más se separan los grupos."`
+
+```{r dos-casos}
+Z      <- scale(X)
+nivel  <- rowMeans(Z)
+a_var  <- names(which.max(dif2_std)); b_var <- names(which.min(dif2_std))
+brecha <- Z[, a_var] - Z[, b_var]
+
+cerca <- abs(nivel) <= 0.25
+i_j <- which(joven & cerca)[which.max(brecha[joven & cerca])]
+i_m <- NA
+for (tol in c(0.05, 0.10, 0.20)) {
+  cand <- which(mayor & abs(nivel - nivel[i_j]) <= tol)
+  if (length(cand) > 0) { i_m <- cand[which.min(brecha[cand])]; break }
+}
+
+ficha2 <- function(ix, rotulo) data.frame(
+  caso = rotulo, cliente = datos$id_cliente[ix], edad = datos$Age[ix],
+  cupo = miles(datos$Credit_Limit[ix]), saldo = miles(datos$Statement_Balance[ix]),
+  pagado = miles(datos$Payment_Amount[ix]), compras_al_mes = round(datos$Monthly_Transactions[ix], 1),
+  valor_por_compra = miles(datos$Avg_Transaction_Value[ix]), puntaje = round(datos$Credit_Score[ix]),
+  indice_general = round(nivel[ix], 2))
+rbind(ficha2(i_j, "Joven"), ficha2(i_m, "Mayor"))
+c(joven_en_a = round(Z[i_j, a_var], 2), joven_en_b = round(Z[i_j, b_var], 2),
+  mayor_en_a = round(Z[i_m, a_var], 2), mayor_en_b = round(Z[i_m, b_var], 2))
+```
+
+- 👀 **Qué vemos:** el cliente `r datos$id_cliente[i_j]` (joven,
+  `r datos$Age[i_j]` años) y el `r datos$id_cliente[i_m]` (mayor,
+  `r datos$Age[i_m]` años) tienen el mismo índice general
+  (`r coma(nivel[i_j], 2)` y `r coma(nivel[i_m], 2)`). En
+  `r tolower(etiqueta[a_var])` el joven está en
+  `r coma(Z[i_j, a_var], 2)` y el mayor en `r coma(Z[i_m, a_var], 2)`;
+  en `r tolower(etiqueta[b_var])`, el joven en `r coma(Z[i_j, b_var], 2)`
+  y el mayor en `r coma(Z[i_m, b_var], 2)` (desviaciones frente a toda
+  la cartera).
+- 💼 **Qué significa para el cliente:** dos clientes que un resumen
+  único vería como iguales tienen fichas opuestas y necesitan cosas
+  distintas. Es el caso extremo, escogido a propósito: no dice cómo son
+  la mayoría de los jóvenes y de los mayores`r if (tipo2 == "ninguna") ", y en promedio los dos grupos son iguales; podría haberse encontrado la misma pareja con el joven y el mayor intercambiados" else ""`.
+- ✅ **Qué decide el cliente:** el seguimiento no se diseña con un
+  índice general; se diseña con el perfil, y cada cliente se mira por su
+  propia ficha.
+
+## ¿Separa? El acierto al clasificar, contra adivinar
+
+```{r dos-separa}
+datos_lda <- data.frame(XY, grupo = gr)
+lda2      <- MASS::lda(grupo ~ ., data = datos_lda)
+acierto2  <- 100 * mean(predict(lda2)$class == gr)
+acierto2_cv <- 100 * mean(MASS::lda(grupo ~ ., data = datos_lda, CV = TRUE)$class == gr)   # sin «hacer trampa»
+base2     <- 100 * max(table(gr)) / length(gr)
+sep2      <- veredicto_separa(acierto2, base2)
+c(acierto_con_las_seis = round(acierto2, 1), acierto_validacion_cruzada = round(acierto2_cv, 1),
+  acierto_diciendo_siempre_el_grupo_mas_grande = round(base2, 1))
+```
+
+- 👀 **Qué vemos:** con las seis variables se acierta si un cliente es
+  joven o mayor en `r coma(acierto2, 1)` de cada 100
+  (`r coma(acierto2_cv, 1)` con validación cruzada), cuando diciendo
+  siempre el grupo más grande («`r levels(gr)[which.max(table(gr))]`»)
+  se acierta en `r coma(base2, 1)`: los puntajes mejoran el acierto en
+  `r coma(acierto2 - base2, 1)` puntos.
+- 💼 **Qué significa para el cliente:**
+  `r if (sep2 == "no" && !real2) "conocer las seis variables de un cliente no ayuda a saber si es joven o mayor: es lo mismo que lanzar una moneda. Cuadra con lo anterior: la diferencia no es real y los dos grupos se montan por completo." else switch(sep2, "no" = "la diferencia es real pero los dos grupos se montan casi por completo: la mayoría de los jóvenes y de los mayores tienen fichas que se confunden.", "en parte" = "los grupos se separan en parte: hay clientes que se reconocen por su ficha y una zona donde se confunden.", "sí" = "los dos grupos casi no se tocan: con la ficha se reconoce la edad del cliente.")`
+- ✅ **Qué decide el cliente:**
+  `r if (sep2 == "no" && !real2) "no diseña campañas distintas por edad a partir de estas variables: el contenido de las campañas se define por el comportamiento de cada cliente (cupo, saldo, pago, uso y puntaje), no por su edad." else switch(sep2, "no" = "el perfil por edad sirve para prever qué piden las campañas (mensajes y canales), pero no para decidirle nada a un cliente por su edad; a cada cliente se le atiende por su propio comportamiento.", "en parte" = "puede diseñar campañas por edad, revisando que no dejen a medias a los clientes de la zona común.", "sí" = "puede tratar los dos grupos de edad como dos poblaciones distintas.")`
+
+# ¿Qué viaja con el grupo? La gama alta y las compras internacionales
 
 > 📝 **Apunte:** una variable «viaja con el grupo» cuando el grupo no es
 > una muestra al azar de la cartera en esa variable. Entonces parte de la
@@ -449,10 +647,27 @@ data.frame(variable = etiqueta[candidatas], gama_alta_menos_cartera_en_desviacio
            row.names = NULL) |> arrange(desc(abs(gama_alta_menos_cartera_en_desviaciones)))
 ```
 
-La que más viaja con la gama alta es **`r tolower(etiqueta[viaja])`**
-(a `r coma(d_cand[viaja], 2)` desviaciones). Dividimos a toda la cartera
-en tres niveles de `r tolower(etiqueta[viaja])` y comparamos a la gama
-alta con la cartera **dentro del mismo nivel**:
+- 👀 **Qué vemos:** de las variables que quedaron fuera de la
+  distancia, la que más se aparta en la gama alta es
+  **`r tolower(etiqueta[viaja])`**, a `r coma(d_cand[viaja], 2)`
+  desviaciones de la cartera; la que menos, la
+  `r tolower(etiqueta[names(which.min(abs(d_cand)))])`
+  (`r coma(d_cand[which.min(abs(d_cand))], 2)`).
+- 💼 **Qué significa para el cliente:** la gama alta no es una muestra
+  al azar de la cartera en `r tolower(etiqueta[viaja])`: quien tiene
+  tarjeta de gama alta suele tener también más de eso, así que parte de
+  su diferencia puede ir con esa variable. Ojo: a diferencia del estrato
+  en las notas, `r tolower(etiqueta[viaja])` es un comportamiento con la
+  tarjeta, no algo que el cliente traía antes; con estos datos no se
+  sabe si va con el tipo de tarjeta o con quién la pide.
+- ✅ **Qué decide el cliente:** antes de armar una política «para la
+  gama alta», revisa si la diferencia sigue entre clientes parecidos en
+  `r tolower(etiqueta[viaja])`.
+
+Dividimos a toda la cartera en niveles de
+`r tolower(etiqueta[viaja])` (tercios cuando la variable lo permite; si
+muchos clientes tienen el mismo valor, quedan menos niveles) y
+comparamos a la gama alta con la cartera **dentro del mismo nivel**:
 
 ```{r viaja-estratos}
 x_v <- W[[viaja]]
@@ -538,156 +753,6 @@ txt_viaja <- if (D1 < 0.2) {
   gama alta y esa variable aparecen juntas.
 - ✅ **Qué decide el cliente:** `r txt_viaja_dec`
 
-# Dos muestras: ¿los jóvenes y los mayores son distintos?
-
-Ahora comparamos dos grupos entre sí: los **jóvenes** (hasta
-`r edad_max_j` años) y los **mayores** (desde `r edad_min_m` años).
-
-## Variable por variable: ¿nivel o perfil?
-
-```{r dos-diferencias}
-A <- X[joven, , drop = FALSE]; B <- X[mayor, , drop = FALSE]
-n_a <- nrow(A); n_b <- nrow(B)
-Sp  <- ((n_a - 1) * cov(A) + (n_b - 1) * cov(B)) / (n_a + n_b - 2)
-dif2     <- colMeans(A) - colMeans(B)
-dif2_std <- dif2 / sqrt(diag(Sp))            # en desviaciones de los clientes
-
-orig2 <- rbind(jovenes = colMeans(datos[joven, vars]), mayores = colMeans(datos[mayor, vars]))
-colnames(orig2) <- etiqueta[vars]
-round(orig2, 1)
-
-data.frame(variable = factor(etiqueta[vars], levels = rev(etiqueta[vars])), dif = dif2_std) |>
-  ggplot(aes(dif, variable, fill = dif > 0)) +
-  geom_col(width = 0.6) +
-  geom_vline(xintercept = 0, color = "grey40") +
-  geom_text(aes(label = coma(dif, 2), hjust = ifelse(dif > 0, -0.2, 1.2)), size = 4.2) +
-  scale_fill_manual(values = c("TRUE" = "#805AD5", "FALSE" = "#2B6CB0"), guide = "none") +
-  scale_x_continuous(expand = expansion(mult = 0.25), labels = function(x) coma(x, 2)) +
-  labs(title = "Jóvenes menos mayores, en cada variable",
-       subtitle = "Morado: los jóvenes tienen más · azul: los mayores tienen más (montos en log)",
-       x = "Desviaciones", y = NULL)
-```
-
-```{r dos-diferencias-texto, include=FALSE}
-j_mas <- names(dif2_std)[dif2_std >  0.05]
-m_mas <- names(dif2_std)[dif2_std < -0.05]
-tipo2 <- if (length(j_mas) > 0 && length(m_mas) > 0) "perfil" else if (length(j_mas) + length(m_mas) > 0) "nivel" else "ninguna"
-mayor2 <- names(which.max(abs(dif2_std)))
-txt_tipo2 <- switch(tipo2,
-  perfil  = "es una diferencia de **perfil**: no todo sube o baja a la vez; unas variables favorecen a los jóvenes y otras a los mayores, y al resumirlas en un solo número esas ventajas se compensan",
-  nivel   = paste0("es una diferencia de **nivel**: todas las variables que se apartan van del mismo lado (más en ", ifelse(length(j_mas) > 0, "los jóvenes", "los mayores"), ")"),
-  ninguna = "ninguna variable se aparta más de 0,05 desviaciones: a simple vista los dos grupos son iguales")
-```
-
-- 👀 **Qué vemos:** los jóvenes tienen más en
-  `r lista(tolower(etiqueta[j_mas]))` y los mayores en
-  `r lista(tolower(etiqueta[m_mas]))`; la diferencia más grande es la de
-  `r tolower(etiqueta[mayor2])`
-  (`r coma(dif2_std[mayor2], 2)` desviaciones, jóvenes menos mayores).
-- 💼 **Qué significa para el cliente:** `r txt_tipo2`.
-- ✅ **Qué decide el cliente:** no juzgar a los dos grupos por un solo
-  indicador; falta saber cuánto pesa la diferencia en conjunto.
-
-## ¿Qué tan lejos y qué tan real? Distancia $D$ y comprobación con `manova()`
-
-```{r dos-D}
-h2 <- hotelling_2(A, B)
-D2 <- h2[["D"]]; p2 <- h2[["p"]]; real2 <- p2 < 0.05
-signif(h2, 4)
-
-# Comprobación: R lo calcula con manova(); debe dar el mismo T²
-XY <- rbind(A, B)
-gr <- factor(rep(c("Jóvenes", "Mayores"), c(n_a, n_b)))
-L  <- summary(manova(XY ~ gr), test = "Wilks")$stats[1, 2]
-T2_manova <- (nrow(XY) - 2) * (1 / L - 1)
-round(c(T2_hotelling = h2[["T2"]], T2_manova = T2_manova), 2)
-```
-
-- 👀 **Qué vemos:** los dos grupos están a `r coma(D2, 2)` desviaciones;
-  la probabilidad de que sea azar es **`r una_en(p2)`**. El T² de
-  Hotelling (`r coma(h2[["T2"]], 2)`) coincide con el que da
-  `manova()` (`r coma(T2_manova, 2)`).
-- 💼 **Qué significa para el cliente:**
-  `r if (real2) "la diferencia es real" else "no se puede descartar el azar"`
-  y es `r lee_D(D2, "el joven típico")`.
-- ✅ **Qué decide el cliente:**
-  `r if (!real2) "no debe hablar de perfiles distintos por edad con estas variables." else if (D2 < 0.2) "no justifica separar campañas por edad por un efecto tan pequeño, aunque sea real." else "la diferencia de perfil por edad existe y tiene el tamaño que dice D; entra al diseño de las campañas, pero falta saber si separa."`
-
-## Dos clientes con un resultado parecido y perfiles opuestos
-
-Como los dos estudiantes que sacaron 100 de global: buscamos un joven y
-un mayor con el **mismo índice general** (el promedio de las seis
-variables, cada una en desviaciones) y la **mayor diferencia de perfil**
-entre `r tolower(etiqueta[names(which.max(dif2_std))])` y
-`r tolower(etiqueta[names(which.min(dif2_std))])`, que son las dos
-variables en que más se separan los grupos.
-
-```{r dos-casos}
-Z      <- scale(X)
-nivel  <- rowMeans(Z)
-a_var  <- names(which.max(dif2_std)); b_var <- names(which.min(dif2_std))
-brecha <- Z[, a_var] - Z[, b_var]
-
-cerca <- abs(nivel) <= 0.25
-i_j <- which(joven & cerca)[which.max(brecha[joven & cerca])]
-i_m <- NA
-for (tol in c(0.05, 0.10, 0.20)) {
-  cand <- which(mayor & abs(nivel - nivel[i_j]) <= tol)
-  if (length(cand) > 0) { i_m <- cand[which.min(brecha[cand])]; break }
-}
-
-ficha2 <- function(ix, rotulo) data.frame(
-  caso = rotulo, cliente = datos$id_cliente[ix], edad = datos$Age[ix],
-  cupo = miles(datos$Credit_Limit[ix]), saldo = miles(datos$Statement_Balance[ix]),
-  pagado = miles(datos$Payment_Amount[ix]), compras_al_mes = round(datos$Monthly_Transactions[ix], 1),
-  valor_por_compra = miles(datos$Avg_Transaction_Value[ix]), puntaje = round(datos$Credit_Score[ix]),
-  indice_general = round(nivel[ix], 2))
-rbind(ficha2(i_j, "Joven"), ficha2(i_m, "Mayor"))
-c(joven_en_a = round(Z[i_j, a_var], 2), joven_en_b = round(Z[i_j, b_var], 2),
-  mayor_en_a = round(Z[i_m, a_var], 2), mayor_en_b = round(Z[i_m, b_var], 2))
-```
-
-- 👀 **Qué vemos:** el cliente `r datos$id_cliente[i_j]` (joven,
-  `r datos$Age[i_j]` años) y el `r datos$id_cliente[i_m]` (mayor,
-  `r datos$Age[i_m]` años) tienen el mismo índice general
-  (`r coma(nivel[i_j], 2)` y `r coma(nivel[i_m], 2)`). En
-  `r tolower(etiqueta[a_var])` el joven está en
-  `r coma(Z[i_j, a_var], 2)` y el mayor en `r coma(Z[i_m, a_var], 2)`;
-  en `r tolower(etiqueta[b_var])`, el joven en `r coma(Z[i_j, b_var], 2)`
-  y el mayor en `r coma(Z[i_m, b_var], 2)` (desviaciones frente a toda
-  la cartera).
-- 💼 **Qué significa para el cliente:** dos clientes que un resumen
-  único vería como iguales tienen fichas opuestas y necesitan cosas
-  distintas. Es el caso extremo, escogido a propósito: no dice cómo son
-  la mayoría de los jóvenes y de los mayores.
-- ✅ **Qué decide el cliente:** el seguimiento no se diseña con un
-  índice general; se diseña con el perfil, y cada cliente se mira por su
-  propia ficha.
-
-## ¿Separa? El acierto al clasificar, contra adivinar
-
-```{r dos-separa}
-datos_lda <- data.frame(XY, grupo = gr)
-lda2      <- MASS::lda(grupo ~ ., data = datos_lda)
-acierto2  <- 100 * mean(predict(lda2)$class == gr)
-acierto2_cv <- 100 * mean(MASS::lda(grupo ~ ., data = datos_lda, CV = TRUE)$class == gr)   # sin «hacer trampa»
-base2     <- 100 * max(table(gr)) / length(gr)
-sep2      <- veredicto_separa(acierto2, base2)
-c(acierto_con_las_seis = round(acierto2, 1), acierto_validacion_cruzada = round(acierto2_cv, 1),
-  acierto_diciendo_siempre_el_grupo_mas_grande = round(base2, 1))
-```
-
-- 👀 **Qué vemos:** con las seis variables se acierta si un cliente es
-  joven o mayor en `r coma(acierto2, 1)` de cada 100
-  (`r coma(acierto2_cv, 1)` con validación cruzada), cuando diciendo
-  siempre el grupo más grande («`r levels(gr)[which.max(table(gr))]`»)
-  se acierta en `r coma(base2, 1)`: los puntajes mejoran el acierto en
-  `r coma(acierto2 - base2, 1)` puntos.
-- 💼 **Qué significa para el cliente:**
-  `r switch(sep2, "no" = "la diferencia es real pero los dos grupos se montan casi por completo: la mayoría de los jóvenes y de los mayores tienen fichas que se confunden.", "en parte" = "los grupos se separan en parte: hay clientes que se reconocen por su ficha y una zona donde se confunden.", "sí" = "los dos grupos casi no se tocan: con la ficha se reconoce la edad del cliente.")`
-- ✅ **Qué decide el cliente:**
-  `r switch(sep2, "no" = "el perfil por edad sirve para prever qué piden las campañas (mensajes y canales), pero no para decidirle nada a un cliente por su edad; a cada cliente se le atiende por su propio comportamiento.", "en parte" = "puede diseñar campañas por edad, revisando que no dejen a medias a los clientes de la zona común.", "sí" = "puede tratar los dos grupos de edad como dos poblaciones distintas.")`
-
 # Las tres preguntas y la decisión
 
 ```{r tres-preguntas}
@@ -744,7 +809,8 @@ dec_viaja <- if (D1 < 0.2) {
 **Decisión para el cliente.**
 
 > La gama alta está a `r coma(D1, 2)` desviaciones de la cartera
-> (`r tam_D(D1)`) y los jóvenes a `r coma(D2, 2)` de los mayores
+> (`r tam_D(D1)`; `r coma(D1_cartera, 2)` medida con la variación de
+> toda la cartera) y los jóvenes a `r coma(D2, 2)` de los mayores
 > (`r tam_D(D2)`); la referencia de una diferencia que sí separa es la de
 > iris, a `r coma(h_iris[["D"]], 1)` desviaciones y con
 > `r coma(acierto_iris, 0)` de cada 100 aciertos. **Gama alta:** `r dec1`
