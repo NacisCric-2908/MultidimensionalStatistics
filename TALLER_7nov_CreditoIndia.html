@@ -2997,6 +2997,19 @@ data.frame(variable = etiqueta[vars], asimetria = round(asimetria, 2),
 {"columns":[{"label":["variable"],"name":[1],"type":["chr"],"align":["left"]},{"label":["asimetria"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["entra_con_log"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"Cupo","2":"3.01","3":"sí"},{"1":"Saldo facturado","2":"3.80","3":"sí"},{"1":"Monto pagado","2":"4.20","3":"sí"},{"1":"Compras al mes","2":"0.54","3":"no"},{"1":"Valor por compra","2":"3.90","3":"sí"},{"1":"Puntaje crediticio","2":"-0.58","3":"no"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+<ul>
+<li>👀 <strong>Qué vemos:</strong> cupo, saldo facturado, monto pagado y
+valor por compra tienen cola larga (asimetría mayor que 1: unos pocos
+clientes con montos muy altos) y entran en logaritmo; compras al mes y
+puntaje crediticio son casi simétricas y entran tal cual.</li>
+<li>💼 <strong>Qué significa para el cliente:</strong> sin el logaritmo,
+los pocos clientes con montos enormes dominarían los promedios y las
+distancias; con él, las diferencias se leen como diferencias
+«proporcionales» (en porcentaje) y no en rupias sueltas.</li>
+<li>✅ <strong>Qué decide el cliente:</strong> leer las diferencias en
+montos como diferencias relativas; los valores en rupias se muestran
+aparte, en las tablas en unidades originales.</li>
+</ul>
 <pre class="r"><code># --- Comparación 1: gama alta (Platinum y Signature) ---
 tipo &lt;- tolower(trimws(datos$Card_Type))
 alta &lt;- c(&quot;platinum&quot;, &quot;signature&quot;)
@@ -3108,13 +3121,17 @@ round(orig1, 1)</code></pre>
 <li>👀 <strong>Qué vemos:</strong> frente al promedio de la cartera, la
 gama alta queda por encima en cupo, saldo facturado, monto pagado,
 compras al mes, valor por compra y puntaje crediticio y por debajo en
-ninguna. La diferencia más grande es la de cupo, a 1,29
-desviaciones.</li>
+ninguna. La diferencia más grande es la de cupo, a 1,29 desviaciones. En
+rupias (tabla de arriba), el cupo promedio de la gama alta es 2,9 veces
+el de la cartera (2 072 148 ₹ frente a 709 677 ₹) y el valor por compra
+2,0 veces; el puntaje crediticio, en cambio, apenas se mueve (635 frente
+a 629 puntos).</li>
 <li>💼 <strong>Qué significa para el cliente:</strong> es una diferencia
 de nivel: todas las variables que se apartan van en el mismo sentido
 (hacia arriba). Pero estas barras no son seis hallazgos independientes:
 cupo, saldo y pago se relacionan (correlaciones de 0,88 a 0,94), así que
-una brecha en el cupo casi siempre arrastra a las otras dos.</li>
+una brecha en el cupo casi siempre va acompañada de brechas en las otras
+dos.</li>
 <li>✅ <strong>Qué decide el cliente:</strong> no presentar seis barras
 sueltas al comité; pedir <strong>una sola medida</strong> de cuánto se
 aleja la gama alta de la cartera.</li>
@@ -3189,9 +3206,9 @@ D_azar &lt;- replicate(1000, {
 })
 p1    &lt;- h1[[&quot;p&quot;]]
 real1 &lt;- p1 &lt; 0.05
-signif(h1, 4)</code></pre>
+round(h1, 3)</code></pre>
 <pre><code>##         n         D        T2         F         p 
-## 10790.000     2.952 94040.000 15670.000     0.000</code></pre>
+## 10788.000     2.952 94036.992 15665.567     0.000</code></pre>
 <pre class="r"><code>c(distancia_tipica_por_azar = round(median(D_azar), 3), la_mayor_de_1000 = round(max(D_azar), 3),
   la_de_la_gama_alta = round(D1, 3))</code></pre>
 <pre><code>## distancia_tipica_por_azar          la_mayor_de_1000        la_de_la_gama_alta 
@@ -3344,7 +3361,9 @@ round(orig2, 1)</code></pre>
 <li>👀 <strong>Qué vemos:</strong> ninguna de las seis variables se
 aparta más de 0,05 desviaciones entre jóvenes y mayores; la diferencia
 más grande es la de compras al mes, de apenas 0,01 desviaciones (jóvenes
-menos mayores).</li>
+menos mayores). En unidades originales (tabla de arriba) pasa lo mismo:
+el cupo promedio es de 718 094 ₹ en los jóvenes y 701 425 ₹ en los
+mayores, y el puntaje de 629,2 frente a 629,1.</li>
 <li>💼 <strong>Qué significa para el cliente:</strong> no es una
 diferencia de <strong>nivel</strong> (no todo sube en un grupo) ni de
 <strong>perfil</strong> (no hay variables que suban en uno y bajen en el
@@ -3374,8 +3393,8 @@ round(c(T2_hotelling = h2[[&quot;T2&quot;]], T2_manova = T2_manova), 2)</code></
 ##         5.89         5.89</code></pre>
 <ul>
 <li>👀 <strong>Qué vemos:</strong> los dos grupos están a 0,03
-desviaciones; la probabilidad de que sea azar es <strong>una en
-2</strong>. El T² de Hotelling (5,89) coincide con el que da
+desviaciones; la probabilidad de que sea azar es <strong>alrededor de 44
+de cada 100</strong>. El T² de Hotelling (5,89) coincide con el que da
 <code>manova()</code> (5,89).</li>
 <li>💼 <strong>Qué significa para el cliente:</strong> no se puede
 descartar el azar y es una distancia pequeña: el joven típico se parece
@@ -3462,7 +3481,8 @@ c(acierto_con_las_seis = round(acierto2, 1), acierto_validacion_cruzada = round(
 <li>👀 <strong>Qué vemos:</strong> con las seis variables se acierta si
 un cliente es joven o mayor en 50,4 de cada 100 (49,9 con validación
 cruzada), cuando diciendo siempre el grupo más grande («Mayores») se
-acierta en 50,2: los puntajes mejoran el acierto en 0,2 puntos.</li>
+acierta en 50,2: las seis variables mejoran el acierto en 0,2
+puntos.</li>
 <li>💼 <strong>Qué significa para el cliente:</strong> conocer las seis
 variables de un cliente no ayuda a saber si es joven o mayor: es lo
 mismo que lanzar una moneda. Cuadra con lo anterior: la diferencia no es
@@ -3605,7 +3625,7 @@ data.frame(
   check.names = FALSE)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Comparación"],"name":[1],"type":["chr"],"align":["left"]},{"label":["¿Es real?"],"name":[2],"type":["chr"],"align":["left"]},{"label":["¿Es grande? (D)"],"name":[3],"type":["chr"],"align":["left"]},{"label":["¿Separa?"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"Gama alta frente a la cartera (una muestra)","2":"sí · azar: menos de una en un millón","3":"2,95 · enorme","4":"en parte · acierta 91 de cada 100; adivinando, 78"},{"1":"Jóvenes frente a mayores (dos muestras)","2":"no · azar: una en 2","3":"0,03 · pequeña","4":"no · acierta 50 de cada 100; adivinando, 50"},{"1":"Setosa frente a versicolor (iris, referencia)","2":"sí · azar: menos de una en un millón","3":"10,16 · enorme","4":"sí · acierta 100 de cada 100; adivinando, 50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Comparación"],"name":[1],"type":["chr"],"align":["left"]},{"label":["¿Es real?"],"name":[2],"type":["chr"],"align":["left"]},{"label":["¿Es grande? (D)"],"name":[3],"type":["chr"],"align":["left"]},{"label":["¿Separa?"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"Gama alta frente a la cartera (una muestra)","2":"sí · azar: menos de una en un millón","3":"2,95 · enorme","4":"en parte · acierta 91 de cada 100; adivinando, 78"},{"1":"Jóvenes frente a mayores (dos muestras)","2":"no · azar: alrededor de 44 de cada 100","3":"0,03 · pequeña","4":"no · acierta 50 de cada 100; adivinando, 50"},{"1":"Setosa frente a versicolor (iris, referencia)","2":"sí · azar: menos de una en un millón","3":"10,16 · enorme","4":"sí · acierta 100 de cada 100; adivinando, 50"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p><strong>Decisión para el cliente.</strong></p>

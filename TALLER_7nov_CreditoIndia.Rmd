@@ -43,7 +43,7 @@ lista <- function(x) if (length(x) == 0) "ninguna" else unir(x)
 una_en <- function(p) {
   if (is.na(p)) "sin dato"
   else if (p < 1e-6) "menos de una en un millón"
-  else if (p < 0.5) paste0("una en ", miles(1 / p))
+  else if (p < 0.1) paste0("una en ", miles(1 / p))
   else paste0("alrededor de ", coma(100 * p, 0), " de cada 100")
 }
 # Convención NUESTRA para poner palabras a la distancia D (no es una ley de la estadística)
@@ -186,6 +186,18 @@ data.frame(variable = etiqueta[vars], asimetria = round(asimetria, 2),
            entra_con_log = ifelse(vars %in% con_log, "sí", "no"), row.names = NULL)
 ```
 
+- 👀 **Qué vemos:** `r lista(tolower(etiqueta[con_log]))` tienen cola
+  larga (asimetría mayor que 1: unos pocos clientes con montos muy
+  altos) y entran en logaritmo; `r lista(tolower(etiqueta[setdiff(vars, con_log)]))`
+  son casi simétricas y entran tal cual.
+- 💼 **Qué significa para el cliente:** sin el logaritmo, los pocos
+  clientes con montos enormes dominarían los promedios y las distancias;
+  con él, las diferencias se leen como diferencias «proporcionales»
+  (en porcentaje) y no en rupias sueltas.
+- ✅ **Qué decide el cliente:** leer las diferencias en montos como
+  diferencias relativas; los valores en rupias se muestran aparte, en
+  las tablas en unidades originales.
+
 ```{r grupos}
 # --- Comparación 1: gama alta (Platinum y Signature) ---
 tipo <- tolower(trimws(datos$Card_Type))
@@ -294,7 +306,7 @@ txt_tipo1 <- switch(tipo1,
   ninguna = "ninguna variable se aparta más de 0,05 desviaciones: a simple vista la gama alta es como la cartera")
 rd <- cor(X[, c("Credit_Limit", "Statement_Balance", "Payment_Amount")]); rd <- rd[upper.tri(rd)]
 txt_juntos <- if (min(rd) >= 0.5) {
-  "así que una brecha en el cupo casi siempre arrastra a las otras dos."
+  "así que una brecha en el cupo casi siempre va acompañada de brechas en las otras dos."
 } else {
   "y aunque se relacionan menos de lo esperado, siguen sin ser independientes."
 }
@@ -304,7 +316,14 @@ txt_juntos <- if (min(rd) >= 0.5) {
   por encima en `r lista(tolower(etiqueta[arriba1]))` y por debajo en
   `r lista(tolower(etiqueta[abajo1]))`. La diferencia más grande es la de
   `r tolower(etiqueta[mayor1])`, a `r coma(dif1_std[mayor1], 2)`
-  desviaciones.
+  desviaciones. En rupias (tabla de arriba), el cupo promedio de la gama
+  alta es `r coma(orig1["gama_alta", "Cupo"] / orig1["cartera", "Cupo"], 1)`
+  veces el de la cartera (`r miles(orig1["gama_alta", "Cupo"])` ₹ frente
+  a `r miles(orig1["cartera", "Cupo"])` ₹) y el valor por compra
+  `r coma(orig1["gama_alta", "Valor por compra"] / orig1["cartera", "Valor por compra"], 1)`
+  veces; el puntaje crediticio, en cambio, apenas se mueve
+  (`r coma(orig1["gama_alta", "Puntaje crediticio"], 0)` frente a
+  `r coma(orig1["cartera", "Puntaje crediticio"], 0)` puntos).
 - 💼 **Qué significa para el cliente:** `r txt_tipo1`. Pero estas
   barras no son seis hallazgos independientes: cupo, saldo y pago se
   relacionan (correlaciones de `r coma(min(rd), 2)` a
@@ -375,7 +394,7 @@ D_azar <- replicate(1000, {
 })
 p1    <- h1[["p"]]
 real1 <- p1 < 0.05
-signif(h1, 4)
+round(h1, 3)
 c(distancia_tipica_por_azar = round(median(D_azar), 3), la_mayor_de_1000 = round(max(D_azar), 3),
   la_de_la_gama_alta = round(D1, 3))
 
@@ -525,7 +544,12 @@ txt_dec_ve2 <- if (tipo2 == "ninguna") {
 }
 ```
 
-- 👀 **Qué vemos:** `r txt_ve2`.
+- 👀 **Qué vemos:** `r txt_ve2`. En unidades originales (tabla de
+  arriba) pasa lo mismo: el cupo promedio es de
+  `r miles(orig2["jovenes", "Cupo"])` ₹ en los jóvenes y
+  `r miles(orig2["mayores", "Cupo"])` ₹ en los mayores, y el puntaje de
+  `r coma(orig2["jovenes", "Puntaje crediticio"], 1)` frente a
+  `r coma(orig2["mayores", "Puntaje crediticio"], 1)`.
 - 💼 **Qué significa para el cliente:** `r txt_tipo2`.
 - ✅ **Qué decide el cliente:** `r txt_dec_ve2`
 
@@ -622,7 +646,7 @@ c(acierto_con_las_seis = round(acierto2, 1), acierto_validacion_cruzada = round(
   joven o mayor en `r coma(acierto2, 1)` de cada 100
   (`r coma(acierto2_cv, 1)` con validación cruzada), cuando diciendo
   siempre el grupo más grande («`r levels(gr)[which.max(table(gr))]`»)
-  se acierta en `r coma(base2, 1)`: los puntajes mejoran el acierto en
+  se acierta en `r coma(base2, 1)`: las seis variables mejoran el acierto en
   `r coma(acierto2 - base2, 1)` puntos.
 - 💼 **Qué significa para el cliente:**
   `r if (sep2 == "no" && !real2) "conocer las seis variables de un cliente no ayuda a saber si es joven o mayor: es lo mismo que lanzar una moneda. Cuadra con lo anterior: la diferencia no es real y los dos grupos se montan por completo." else switch(sep2, "no" = "la diferencia es real pero los dos grupos se montan casi por completo: la mayoría de los jóvenes y de los mayores tienen fichas que se confunden.", "en parte" = "los grupos se separan en parte: hay clientes que se reconocen por su ficha y una zona donde se confunden.", "sí" = "los dos grupos casi no se tocan: con la ficha se reconoce la edad del cliente.")`
