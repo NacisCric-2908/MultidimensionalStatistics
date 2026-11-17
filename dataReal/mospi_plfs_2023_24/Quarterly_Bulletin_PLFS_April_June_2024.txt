@@ -1,0 +1,2759 @@
+ğैमाͧसक बुलेǑटन/Quarterly Bulletin, PLFS, April - June 2024/QB-23 
+ 
+ 
+ 
+ 
+ğैमाͧसक बुलेǑटन 
+Quarterly Bulletin 
+ 
+ 
+आवͬधक Įमबल सवȶ¢ण(पीएलएफएस) 
+Periodic Labour Force Survey (PLFS) 
+ 
+(अĤैल – जून 2024) 
+(APRIL – JUNE 2024) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+भारत सरकार 
+Government of India 
+सांिÉयकȧ और काय[Đम काया[Ûवयन मंğालय 
+Ministry of Statistics and Programme Implementation 
+ राç Ěȣय ĤǓतदश[ सवȶ¢ण काया[लय  
+National Sample Survey Office 
+ 
+16 अगèत, 2024 
+16th August, 2024 
+ 
+ 
+ www.mospi.gov.in  GoIStats  GoIStats  goistats 
+ 
+ 
+ 
+CONTENTS 
+ 
+1 Introduction 1-2 
+1.1   Periodic Labour Force Survey (PLFS)  1 
+1.2   Indicators presented in this Bulletin  1 
+1.3 PLFS fieldwork during the quarter April – June 2024 1 
+2 Key findings 2-6 
+   2.1 Labour Force Participation Rate (LFPR) in current weekly status 2 
+   2.2 Worker Population Ratio (WPR) in current weekly status 3 
+   2.3 Distribution of workers in current weekly status by broad status in 
+employment 
+4 
+   2.4 Distribution of workers in current weekly status by broad industry of 
+employment 
+5 
+   2.5 Unemployment Rate (UR) in current weekly status 6 
+   
+3 Sample Size 7 
+   
+Detailed Tables   
+ List of Detailed Tables (hyperlinked to Excel files) A-(i) 
+Detailed Tables 1 to 7 A-1-A-37 
+RSE of estimates  
+ List of RSE Tables (hyperlinked to Excel files) B-(i) 
+RSE Tables 1 to 3 B-1-B-9 
+  
+  
+Key findings 
+ 
+1 
+ 
+ 
+Quarterly Bulletin on Employment and Unemployment Indicators 
+ 
+ 
+1. Introduction 
+ 
+1.1 Periodic Labour Force Survey (PLFS)  
+ 
+1.1.1 Considering the importance of availability of labour force data at more frequent time 
+intervals, National Sample Survey Office (NSSO) launched Periodic Labour Force Survey 
+(PLFS) in April 2017. On the basis of PLFS1, Quarterly Bulletins are brought out, 
+corresponding to different quarters of the survey period, giving estimates of labour force 
+indicators, viz., Labour Force Participation Rate (LFPR), Worker Population Ratio 
+(WPR), Unemployment Rate (UR), distribution of workers by broad status in employment 
+and industry of work in the Current Weekly Status (CWS) for the urban areas. Twenty-two 
+Quarterly Bulletins starting from the quarter October - December 2018 upto the quarter 
+January - March 2024 have already been released. 
+ 
+This Bulletin for the quarter ending June 2024 is the twenty-third in the series. 
+ 
+1.2 Indicators presented in this Bulletin 
+ 
+1.2.1In this Bulletin indicators of employment and unemployment in current weekly status 
+(CWS) are presented for the urban areas separately for the periods: 
+ 
+ April – June 2023 
+ July – September 2023 
+ October – December 2023 
+ January – March 2024 
+ April – June 2024 
+ 
+1.3 PLFS fieldwork during the quarter April – June 2024 
+ 
+The fieldwork for collection of information in respect of all the samples allotted for the 
+period April-June, 2024 were completed timely for the first visit as well as revisit samples, 
+except for 8 first visit FSUs; three  in the State of Tripura; one each from States of 
+Madhya Pradesh, Punjab, Odisha, Chhattisgarh and Telangana and 14 revisit FSUs (5 
+from State of Manipur, two from States of Telangana and Maharashtra and one each from 
+States of West Bengal, Meghalaya, Tripura, Kerala & Karnataka), which were treated as 
+casualty cases. 
+ 
+These aspects may be kept in mind while using the estimates of PLFS for the concerned 
+quarter.  
+ 
+1The ‘Concepts and Definitions’, ‘Sample Design and Estimation Procedure’ and Schedule of 
+PLFS (Schedule 10.4) (first visit and revisit) may be perused as Appendix C, Appendix D and Appendix E, 
+respectively in the Annual Report, PLFS: 2022-23, which is accessible at www.mospi.gov.in. 
+Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+2 
+ 
+2. Key findings 
+ 
+2.1 Labour Force Participation Rate (LFPR) in current weekly status 
+ 
+2.1.1 Labour force refers to the part of the population which supplies or offers to supply 
+labour for pursuing economic activities for the production of goods and services and 
+therefore, includes both ‘employed’ and ‘unemployed’ persons. Labour Force 
+Participation Rate (LFPR) is defined as the percentage of population in the labour force. 
+Labour force according to current weekly status (CWS) is the number of persons either 
+employed or unemployed on an average in a week of 7 days preceding the date of survey. 
+In Statement 1, estimates of LFPR in CWS are presented.   
+ 
+ 
+Statement 1: Labour Force Participation Rate (in per cent) in CWS in 
+urban areas 
+all-India 
+survey period male$ female  person$ 
+           (1) (2) (3) (4) 
+ age: 15-29 years 
+April – June 2023 57.2 19.2 39.3 
+July – September 2023 57.7 19.9 39.9 
+October – December 2023 57.6 20.8 40.2 
+January – March 2024 58.2 21.3 40.7 
+April – June 2024 58.9 21.3 40.8 
+ age: 15 years and above 
+April – June 2023 73.5 23.2 48.8 
+July – September 2023 73.8 24.0 49.3 
+October – December 2023 74.1 25.0 49.9 
+January – March 2024 74.4 25.6 50.2 
+April – June 2024 74.7 25.2 50.1 
+ age: all ages 
+April – June 2023 57.4 18.5 38.4 
+July – September 2023 57.6 19.0 38.8 
+October – December 2023 57.8 19.9 39.2 
+January – March 2024 58.0  20.3 39.5 
+April – June 2024 58.0 20.0 39.3 
+$: includes Transgender 
+ 
+  Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+ 
+3 
+ 
+ 
+2.2 Worker Population Ratio (WPR) in current weekly status  
+ 
+2.2.1 Worker Population Ratio (WPR) is defined as the percentage of workers in the 
+population. The workforce measured in CWS gives the average picture of the workforce in 
+a short period of one week during the survey period. The estimate of workforce in the 
+CWS provides the number of persons who worked for at least 1 hour on any day during 
+the 7 days preceding the date of survey. In Statement 2, estimates of WPR in current 
+weekly status are presented.   
+ 
+ 
+Statement 2: Worker Population Ratio (in per cent) in CWS in 
+urban areas 
+all-India 
+survey period male$ female  person$ 
+           (1) (2) (3) (4) 
+ age: 15-29 years 
+April – June 2023 48.1 14.7 32.3 
+July – September 2023 48.7 15.3 33.0 
+October – December 2023 49.2 16.1 33.5 
+January – March 2024 49.4 16.5 33.8 
+April – June 2024 50.2 16.4 33.9 
+ age: 15 years and above 
+April – June 2023 69.2 21.1 45.5 
+July – September 2023 69.4 21.9 46.0 
+October – December 2023 69.8 22.9 46.6 
+January – March 2024 69.8 23.4 46.9 
+April – June 2024 70.4 23.0 46.8 
+ age: all ages 
+April – June 2023 54.1 16.8 35.9 
+July – September 2023 54.2 17.4 36.2 
+October – December 2023 54.5 18.2 36.7 
+January – March 2024 54.5 18.6 36.9 
+April – June 2024 54.7 18.2 36.7 
+$: includes Transgender 
+ 
+  Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+4 
+ 
+2.3 Distribution of workers in current weekly status by broad status in employment  
+ 
+2.3.1 The workers in current weekly status are classified into three broad categories 
+according to their status in employment. These broad categories are: (i) self-employed, (ii) 
+regular wage/salaried employee and (iii) casual labour. Within the category of self-
+employed two sub-categories have been made as follows: (i) own account worker and 
+employer combined together and (ii) unpaid helper in household enterprises. In Statement 
+3, distribution of the workers of age 15 years and above in CWS by status in employment 
+are presented. It may be noted that self-employed persons who did not work either due to 
+sickness or due to other reasons though they had self-employment work are included in 
+column 4 of this Statement. Thus, the estimates given in column 4 may be higher than the 
+sum of the estimates in column 2 and column 3.  
+ 
+Statement 3: Percentage distribution of persons (of age 15 years and above) working according to 
+CWS by broad status in employment in urban areas 
+all-India 
+survey period status in employment 
+own 
+account 
+worker, 
+employer 
+ 
+helper in 
+household 
+enterprise 
+ 
+self 
+employed 
+regular 
+wage/ 
+salaried 
+employees 
+ 
+casual 
+labour 
+ 
+all 
+           (1) (2) (3) (4) (5) (6) (7) 
+ male$ 
+April – June 2023 34.4 4.4 39.5 47.8 12.7 100.0 
+July – September 2023 34.9 4.7 40.4 47.0 12.7 100.0 
+October – December 2023 34.9 4.7 40.6 47.3 12.1 100.0 
+January – March 2024 34.9 4.3 40.2 47.5 12.3 100.0 
+April – June 2024 34.6 4.4 40.0 47.4 12.6 100.0 
+ female 
+April – June 2023 26.3 11.9 39.2 54.0 6.8 100.0 
+July – September 2023 26.7 12.7 40.3 52.8 6.9 100.0 
+October – December 2023 25.7 13.0 40.3 53.0 6.7 100.0 
+January – March 2024 27.5 12.6 41.3 52.3 6.5 100.0 
+April – June 2024 27.5 11.4 40.0 54.0 6.0 100.0 
+ person$ 
+April – June 2023 32.6 6.1 39.4 49.2 11.4 100.0 
+July – September 2023 32.9 6.6 40.4 48.3 11.3 100.0 
+October – December 2023 32.7 6.7 40.6 48.7 10.8 100.0 
+January – March 2024 33.0 6.4 40.5 48.7 10.8 100.0 
+April – June 2024 32.9 6.1 40.0 49.0 11.0 100.0 
+$: includes Transgender 
+ 
+  Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+ 
+5 
+ 
+2.4 Distribution of workers in current weekly status by broad industry of work  
+ 
+2.4.1 Three broad industries of work which have been considered here are agriculture 
+sector (NIC-2008 codes 01-03), secondary sector including mining and quarrying (NIC-
+2008 codes 05-43) and tertiary sector (NIC-2008 codes 45-99). Distribution of workers of 
+age 15 years and above in CWS, in these three broad industries of work are given in 
+Statement 4. 
+ 
+ 
+Statement 4: Percentage distribution of workers (of age 15 years and above) in CWS by 
+broad industry of work in urban areas 
+all-India 
+survey period agriculture 
+sector 
+(NIC-2008 
+codes 01-03) 
+secondary sector 
+including mining 
+& quarrying 
+(NIC-2008  
+codes 05-43) 
+ tertiary 
+sector 
+(NIC-2008 
+codes 45-99) 
+all 
+           (1) (2) (3) (4) (5) 
+ male$ 
+April – June 2023 4.4 34.9 60.8 100.0 
+July – September 2023 4.7 34.3 61.0 100.0 
+October – December 2023 4.5 33.9 61.6 100.0 
+January – March 2024 4.5 33.8 61.7 100.0 
+April – June 2024 4.3 33.9 61.8 100.0 
+ female 
+April – June 2023 9.0 27.1 63.9 100.0 
+July – September 2023 10.8 26.3 63.0 100.0 
+October – December 2023 10.1 26.6 63.3 100.0 
+January – March 2024 9.8 26.7 63.4 100.0 
+April – June 2024 8.9 26.9 64.2 100.0 
+ person$ 
+April – June 2023 5.4 33.1 61.5 100.0 
+July – September 2023 6.1 32.4 61.5 100.0 
+October – December 2023 5.9 32.1 62.0 100.0 
+January – March 2024 5.8 32.0 62.2 100.0 
+April – June 2024 5.9 32.1 62.4 100.0 
+$: includes Transgender 
+ 
+ 
+  Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+6 
+ 
+2.5 Unemployment Rate (UR) in current weekly status 
+ 
+ 
+2.5.1 Unemployment rate (UR) is defined as the percentage of unemployed persons in the 
+labour force. The estimates of unemployed in CWS give an average picture of 
+unemployment in a short period of 7 days during the survey period. According to the 
+current weekly status (CWS) approach, a person was considered as unemployed in a week 
+if he/she did not work even for 1 hour on any day during the reference week but sought or 
+was available for work at least for 1 hour on any day during the reference week. In 
+Statement 5, estimates of Unemployment Rate in CWS for the periods are presented. 
+ 
+Statement 5: Unemployment Rate (in per cent) in current weekly status in urban 
+areas 
+all-India 
+survey period male$ female  person$ 
+           (1) (2) (3) (4) 
+ age: 15-29 years 
+April – June 2023 15.9 23.4 17.6 
+July – September 2023 15.5 22.9 17.3 
+October – December 2023 14.6 22.5 16.5 
+January – March 2024 15.1 22.7 17.0 
+April – June 2024 14.8 23.0 16.8 
+ age: 15 years and above 
+April – June 2023 5.9 9.1 6.6 
+July – September 2023 6.0 8.6 6.6 
+October – December 2023 5.8 8.6 6.5 
+January – March 2024 6.1 8.5 6.7 
+April – June 2024 5.8 9.0 6.6 
+ age: all ages 
+April – June 2023 5.9 9.2 6.7 
+July – September 2023 6.0 8.6 6.6 
+October – December 2023 5.8 8.6 6.5 
+January – March 2024 6.1 8.4 6.7 
+April – June 2024 5.8 8.9 6.6 
+$: includes Transgender 
+ 
+ 
+  Key findings 
+ 
+Quarterly Bulletin, PLFS, April - June 2024 
+ 
+7 
+ 
+3.  Sample Size 
+ 
+3.1 Sample Size in urban areas in each of the survey period April – June 2023, July – 
+September 2023, October – December 2023, January – March 2024 and April – June 
+2024: In urban areas, a rotational panel sampling design was used and in this rotational 
+panel scheme each selected household in urban areas is visited four times – one with first 
+visit schedule and other three with revisit schedule. In the Table below, the sample size in 
+terms of FSUs (Urban Frame Survey blocks), households and persons in urban areas is 
+given, separately for each of the survey period April – June 2023, July – September 2023, 
+October – December 2023, January – March 2024 and April – June 2024. It may be noted 
+that in each of these periods, besides the first visit sample (25 per cent of total sample 
+size), samples in respect to three revisits (75 per cent of total sample size) were also 
+surveyed.  
+ 
+Table: Sample size in urban areas in each of the survey period April – June 2023, July –
+September 2023, October – December 2023, January – March 2023 and April – June 2023 
+all-India 
+survey period FSU (UFS blocks#) household person 
+April - June 2023 5,639 44,190 1,67,916 
+July - September 2023 5,706 44,738 1,70,004 
+October- December 2023 5,697 44,544 1,69,209 
+January - March 2024 5,706 44,598 1,69,459 
+April - June 2024 5,735 45,016 1,71,121 
+#: Urban Frame Survey (UFS) blocks 
+ 
+3.2 Considering low sample sizes for giving estimates at different levels of disaggregation, 
+the tables are presented in respect of Andhra Pradesh, Assam, Bihar, Chhattisgarh, 
+Gujarat, Haryana, Himachal Pradesh, Jammu & Kashmir, Jharkhand, Karnataka, Kerala, 
+Madhya Pradesh, Maharashtra, Odisha, Punjab, Rajasthan, Tamil Nadu, Telangana, 
+Uttarakhand, Uttar Pradesh, West Bengal and Delhi. 
+   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Detailed Tables 
+(hyperlinked to Excel files)  
+Quarterly Bulletin, PLFS, April - June, 2024 
+A-(i) 
+ 
+ 
+List of Detailed Tables 
+(hyperlinked with the corresponding Excel tables) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+   
+Table No. Title 
+Table (1)   Number of Urban Frame Survey (UFS) blocks, households and persons 
+surveyed by age and gender for different States 
+  Table (2)   Labour Force Participation Rate (LFPR) (in per cent) according to Current 
+Weekly Status (CWS) for different States 
+  Table (3) Worker Population Ratio (WPR) (in per cent) according to Current Weekly 
+Status (CWS) for different States 
+  Table (4) Percentage distribution of persons of age 15 years and above working 
+according to CWS by broad industry of work for different States 
+  Table (5) Percentage distribution of persons of age 15 years and above by different 
+activity statuses between adjacent quarters in Current Weekly Status (CWS) 
+  Table (6) Percentage distribution of workers of age 15 years and above in CWS by 
+broad industry of work between adjacent quarters 
+  Table (7) Unemployment Rate (UR) (in per cent) according to Current Weekly Status 
+(CWS) for different States 
+  Detailed Tables
+M F P M F P M F P M F P M F P M F P
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21)
+Andhra Pradesh 221 1,742 186 132 318 393 346 739 811 757 1,568 1,995 2,120 4,116 2,318 2,448 4,767 2,897 2,926 5,824
+Assam 112 893 99 68 167 264 188 452 437 408 845 1,163 1,142 2,305 1,354 1,332 2,686 1,717 1,588 3,305
+Bihar 168 1,344 357 255 612 559 535 1,094 920 766 1,686 2,002 1,818 3,820 2,276 2,053 4,329 3,192 2,843 6,035
+Chhattisgarh 104 830 115 98 213 233 243 476 481 472 953 1,163 1,163 2,326 1,340 1,337 2,677 1,688 1,678 3,366
+Delhi 120 833 78 75 153 208 184 392 481 398 879 1,058 921 1,979 1,188 1,067 2,255 1,474 1,326 2,800
+Gujarat 232 1,816 254 204 458 553 449 1,002 1,143 1,000 2,143 2,740 2,536 5,276 3,187 3,004 6,191 3,994 3,657 7,651
+Haryana 160 1,178 149 146 295 428 327 755 725 569 1,294 1,682 1,480 3,162 1,932 1,757 3,689 2,509 2,230 4,739
+Himachal Pradesh 48 373 28 28 56 99 74 173 144 148 292 381 368 749 423 442 865 550 544 1,094
+Jharkhand 135 1,065 155 138 293 422 314 736 661 616 1,277 1,444 1,419 2,863 1,647 1,594 3,241 2,224 2,046 4,270
+Karnataka 296 2,354 241 232 473 553 466 1,019 1,199 1,135 2,334 2,878 2,777 5,655 3,323 3,214 6,537 4,117 3,912 8,029
+Kerala 302 2,389 260 223 483 589 535 1,124 845 902 1,747 2,346 2,776 5,122 3,160 3,677 6,837 4,009 4,435 8,444
+Madhya Pradesh 245 1,918 267 260 527 611 547 1,158 1,226 1,129 2,355 2,816 2,710 5,526 3,184 3,092 6,276 4,062 3,899 7,961
+Maharashtra 555 4,366 466 420 886 1,177 1,102 2,279 2,181 1,928 4,109 5,623 5,279 10,902 6,550 6,304 12,854 8,193 7,826 16,019
+Odisha 136 1,068 113 114 227 253 235 488 509 482 991 1,277 1,276 2,553 1,517 1,483 3,000 1,883 1,832 3,715
+Punjab 208 1,483 158 161 319 435 381 816 800 608 1,409 1,928 1,724 3,653 2,265 2,101 4,367 2,858 2,643 5,502
+Rajasthan 216 1,629 261 193 454 615 512 1,127 1,135 990 2,125 2,474 2,300 4,774 2,856 2,679 5,535 3,732 3,384 7,116
+Tamil Nadu 438 3,493 301 278 579 677 666 1,343 1,530 1,407 2,937 3,872 3,966 7,838 4,734 4,857 9,591 5,712 5,801 11,513
+Telangana 198 1,581 157 160 317 453 378 831 788 722 1,510 1,928 1,859 3,787 2,180 2,111 4,291 2,790 2,649 5,439
+Uttarakhand 96 730 91 79 170 250 228 478 416 346 762 959 887 1,846 1,101 1,018 2,119 1,442 1,325 2,767
+Uttar Pradesh 408 3,251 656 575 1,231 1,347 1,093 2,440 2,274 2,043 4,317 4,914 4,693 9,607 5,501 5,280 10,781 7,504 6,948 14,452
+West Bengal 375 2,984 265 276 541 634 593 1,227 1,397 1,420 2,817 3,806 3,868 7,674 4,616 4,629 9,245 5,515 5,498 11,013
+Jammu & Kashmir 168 1,344 195 171 366 453 395 848 715 646 1,361 1,895 1,834 3,729 2,255 2,167 4,422 2,903 2,733 5,636
+all-India 5,639 44,190 5,488 4,998 10,486 12,890 11,464 24,354 23,526 21,583 45,110 57,532 56,165 1,13,700 67,118 65,955 1,33,076 85,496 82,417 1,67,916
+Table (1):  Number of Urban Frame Survey (UFS) blocks, households and persons surveyed by age and gender for different States
+urban                      April - June 2023
+Note:
+1. M: male; F: female; P: person; Person includes Transgender
+State 
+number of 
+Urban 
+Frame 
+Survey 
+blocks 
+surveyed
+Households
+persons of age
+0-4 years 5-14 years 15-29 years 15-59 years 15 years & above all ages
+A-1 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+M F P M F P M F P M F P M F P M F P
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21)
+Andhra Pradesh 221 1,757 190 138 328 395 367 762 791 740 1,531 1,959 2,108 4,067 2,285 2,429 4,714 2,870 2,934 5,804
+Assam 112 893 99 75 174 263 192 455 403 400 803 1,141 1,128 2,269 1,332 1,325 2,657 1,694 1,592 3,286
+Bihar 168 1,343 368 250 618 568 546 1,114 914 780 1,694 2,009 1,849 3,858 2,267 2,081 4,348 3,203 2,877 6,080
+Chhattisgarh 104 832 110 94 204 244 233 477 503 479 982 1,205 1,188 2,393 1,384 1,367 2,751 1,738 1,694 3,432
+Delhi 120 805 69 70 139 214 199 413 455 355 810 1,046 861 1,907 1,165 995 2,160 1,448 1,264 2,712
+Gujarat 232 1,831 260 198 458 503 431 934 1,155 986 2,141 2,739 2,504 5,243 3,157 2,973 6,130 3,920 3,602 7,522
+Haryana 160 1,186 158 145 303 403 318 721 725 575 1,300 1,672 1,481 3,153 1,910 1,756 3,666 2,471 2,219 4,690
+Himachal Pradesh 48 370 32 32 64 95 69 164 158 146 304 403 363 766 441 421 862 568 522 1,090
+Jharkhand 135 1,071 153 137 290 408 318 726 679 614 1,294 1,469 1,442 2,912 1,675 1,624 3,300 2,236 2,079 4,316
+Karnataka 296 2,362 249 222 471 534 461 995 1,189 1,131 2,320 2,885 2,803 5,688 3,328 3,279 6,607 4,111 3,962 8,073
+Kerala 303 2,401 240 248 488 610 580 1,190 830 900 1,730 2,330 2,807 5,137 3,111 3,705 6,816 3,961 4,533 8,494
+Madhya Pradesh 246 1,923 274 247 521 627 568 1,195 1,178 1,090 2,268 2,743 2,672 5,415 3,108 3,076 6,184 4,009 3,891 7,900
+Maharashtra 555 4,394 455 433 888 1,205 1,114 2,319 2,218 1,939 4,157 5,692 5,307 10,999 6,632 6,331 12,963 8,292 7,878 16,170
+Odisha 136 1,065 107 119 226 246 230 476 524 493 1,017 1,298 1,297 2,595 1,540 1,519 3,059 1,893 1,868 3,761
+Punjab 208 1,495 171 162 333 455 408 863 779 604 1,384 1,913 1,725 3,639 2,263 2,101 4,365 2,889 2,671 5,561
+Rajasthan 216 1,578 247 207 454 578 490 1,068 1,127 964 2,091 2,418 2,261 4,679 2,774 2,618 5,392 3,599 3,315 6,914
+Tamil Nadu 438 3,483 294 280 574 706 674 1,380 1,477 1,415 2,892 3,828 4,005 7,834 4,655 4,875 9,531 5,655 5,829 11,485
+Telangana 198 1,583 158 155 313 434 400 834 777 704 1,481 1,899 1,839 3,738 2,154 2,104 4,258 2,746 2,659 5,405
+Uttarakhand 96 739 91 81 172 249 239 488 400 349 749 954 890 1,844 1,096 1,017 2,113 1,436 1,337 2,773
+Uttar Pradesh 408 3,249 624 547 1,171 1,363 1,130 2,493 2,272 2,018 4,290 4,931 4,702 9,633 5,502 5,272 10,774 7,489 6,949 14,438
+West Bengal 376 2,991 269 281 550 664 604 1,268 1,387 1,437 2,824 3,842 3,913 7,755 4,659 4,685 9,344 5,592 5,570 11,162
+Jammu & Kashmir 168 1,342 190 181 371 440 373 813 713 634 1,347 1,905 1,807 3,712 2,247 2,130 4,377 2,877 2,684 5,561
+all-India 5,706 44,738 5,510 5,089 10,599 13,090 11,816 24,906 23,621 21,680 45,303 58,111 56,866 1,14,981 67,697 66,798 1,34,499 86,297 83,703 1,70,004
+Note:
+1. M: male; F: female; P: person; Person includes Transgender
+Table (1):  Number of Urban Frame Survey (UFS) blocks, households and persons surveyed by age and gender for different States
+urban                      July - September 2023
+State 
+number of 
+Urban 
+Frame 
+Survey 
+blocks 
+surveyed
+Households
+persons of age
+0-4 years 5-14 years 15-29 years 15-59 years 15 years & above all ages
+A-2 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+M F P M F P M F P M F P M F P M F P
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21)
+Andhra Pradesh 222 1,751 161 138 299 392 384 776 781 722 1,503 1,949 2,101 4,050 2,281 2,439 4,720 2,834 2,961 5,795
+Assam 112 889 94 83 177 249 189 438 393 392 785 1,129 1,118 2,247 1,314 1,311 2,625 1,657 1,583 3,240
+Bihar 168 1,335 364 266 630 570 559 1,129 917 776 1,693 2,013 1,837 3,850 2,241 2,049 4,290 3,175 2,874 6,049
+Chhattisgarh 103 823 93 100 193 241 221 462 469 446 915 1,165 1,140 2,305 1,335 1,324 2,659 1,669 1,645 3,314
+Delhi 120 841 79 74 153 227 193 420 452 355 807 1,062 896 1,958 1,208 1,043 2,251 1,514 1,310 2,824
+Gujarat 232 1,812 224 190 414 506 427 933 1,082 961 2,043 2,623 2,455 5,078 3,026 2,901 5,927 3,756 3,518 7,274
+Haryana 160 1,232 165 149 314 393 295 688 753 589 1,342 1,703 1,507 3,210 1,951 1,800 3,751 2,509 2,244 4,753
+Himachal Pradesh 48 372 32 27 59 93 72 165 179 136 315 428 357 785 471 417 888 596 516 1,112
+Jharkhand 136 1,080 154 152 306 378 349 727 652 602 1,255 1,482 1,434 2,917 1,700 1,625 3,326 2,232 2,126 4,359
+Karnataka 293 2,301 226 220 446 498 437 935 1,138 1,080 2,218 2,774 2,678 5,452 3,209 3,172 6,381 3,933 3,829 7,762
+Kerala 303 2,385 246 264 510 588 583 1,171 819 834 1,653 2,275 2,718 4,993 3,066 3,631 6,698 3,900 4,478 8,379
+Madhya Pradesh 246 1,918 287 247 534 614 576 1,190 1,147 1,056 2,203 2,705 2,643 5,348 3,091 3,064 6,155 3,992 3,887 7,879
+Maharashtra 555 4,302 462 444 906 1,186 1,106 2,292 2,188 1,905 4,093 5,597 5,255 10,852 6,514 6,264 12,778 8,162 7,814 15,976
+Odisha 136 1,067 113 119 232 262 253 515 505 524 1,029 1,292 1,334 2,626 1,521 1,542 3,063 1,896 1,914 3,810
+Punjab 208 1,600 186 189 375 476 416 892 854 683 1,538 2,072 1,884 3,957 2,445 2,290 4,736 3,107 2,895 6,003
+Rajasthan 216 1,635 252 220 472 610 534 1,144 1,133 992 2,125 2,486 2,385 4,871 2,854 2,760 5,614 3,716 3,514 7,230
+Tamil Nadu 437 3,438 276 282 558 700 673 1,373 1,421 1,438 2,859 3,788 3,984 7,773 4,543 4,814 9,358 5,519 5,769 11,289
+Telangana 197 1,538 147 146 293 447 419 866 722 705 1,427 1,821 1,815 3,636 2,080 2,078 4,158 2,674 2,643 5,317
+Uttarakhand 96 733 91 88 179 240 246 486 365 340 705 910 900 1,810 1,059 1,029 2,088 1,390 1,363 2,753
+Uttar Pradesh 408 3,238 605 524 1,129 1,357 1,117 2,474 2,243 1,942 4,185 4,882 4,585 9,467 5,492 5,174 10,666 7,454 6,815 14,269
+West Bengal 372 2,926 285 298 583 669 593 1,262 1,323 1,416 2,739 3,745 3,856 7,601 4,557 4,618 9,175 5,511 5,509 11,020
+Jammu & Kashmir 168 1,340 185 186 371 448 388 836 741 607 1,348 1,934 1,768 3,702 2,274 2,094 4,368 2,907 2,668 5,575
+all-India 5,697 44,544 5,434 5,169 10,603 13,120 11,916 25,036 23,227 21,437 44,666 57,560 56,534 1,14,098 67,052 66,513 1,33,570 85,606 83,598 1,69,209
+Note:
+1. M: male; F: female; P: person; Person includes Transgender
+Table (1):  Number of Urban Frame Survey (UFS) blocks, households and persons surveyed by age and gender for different States
+urban                       October-December 2023
+State 
+number of 
+Urban 
+Frame 
+Survey 
+blocks 
+surveyed
+Households
+persons of age
+0-4 years 5-14 years 15-29 years 15-59 years 15 years & above all ages
+A-3 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+M F P M F P M F P M F P M F P M F P
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21)
+Andhra Pradesh 223 1,751 131 135 266 366 368 734 762 708 1,470 1,925 2,044 3,969 2,274 2,413 4,687 2,771 2,916 5,687
+Assam 112 890 88 81 169 228 200 428 386 383 769 1,123 1,122 2,245 1,314 1,320 2,634 1,630 1,601 3,231
+Bihar 168 1,335 336 279 615 564 556 1,120 952 807 1,759 2,041 1,867 3,909 2,278 2,088 4,367 3,178 2,923 6,102
+Chhattisgarh 103 816 80 92 172 237 194 431 469 457 926 1,164 1,138 2,302 1,323 1,301 2,624 1,640 1,587 3,227
+Delhi 120 810 74 77 151 209 186 395 402 334 736 983 848 1,831 1,126 994 2,120 1,409 1,257 2,666
+Gujarat 231 1,809 242 196 438 479 448 927 1,073 988 2,061 2,590 2,470 5,061 3,000 2,906 5,907 3,721 3,550 7,272
+Haryana 160 1,236 185 156 341 407 307 714 740 594 1,334 1,694 1,505 3,199 1,959 1,794 3,753 2,551 2,257 4,808
+Himachal Pradesh 48 372 32 26 58 87 68 155 175 130 305 422 352 774 484 423 907 603 517 1,120
+Jharkhand 136 1,072 157 144 301 376 348 724 642 600 1,244 1,486 1,436 2,924 1,696 1,638 3,336 2,229 2,130 4,361
+Karnataka 295 2,314 223 210 433 508 432 940 1,117 998 2,115 2,751 2,625 5,376 3,199 3,153 6,352 3,930 3,795 7,725
+Kerala 304 2,385 234 267 501 584 581 1,165 792 817 1,609 2,281 2,697 4,978 3,048 3,618 6,667 3,866 4,466 8,333
+Madhya Pradesh 246 1,917 293 256 549 625 590 1,215 1,110 1,052 2,162 2,676 2,641 5,317 3,087 3,069 6,156 4,005 3,915 7,920
+Maharashtra 557 4,350 471 434 905 1,205 1,071 2,276 2,270 1,953 4,224 5,714 5,346 11,061 6,627 6,341 12,969 8,303 7,846 16,150
+Odisha 136 1,047 113 123 236 269 253 522 510 474 984 1,308 1,293 2,601 1,537 1,495 3,032 1,919 1,871 3,790
+Punjab 208 1,645 180 198 378 499 461 960 881 737 1,619 2,167 2,013 4,181 2,547 2,425 4,973 3,226 3,084 6,311
+Rajasthan 216 1,637 252 226 478 604 554 1,158 1,122 978 2,100 2,458 2,365 4,823 2,846 2,777 5,623 3,702 3,557 7,259
+Tamil Nadu 438 3,451 317 308 625 729 671 1,400 1,318 1,381 2,699 3,679 3,942 7,622 4,459 4,828 9,288 5,505 5,807 11,313
+Telangana 198 1,549 155 150 305 444 431 875 701 663 1,364 1,817 1,810 3,627 2,095 2,095 4,190 2,694 2,676 5,370
+Uttarakhand 96 720 104 81 185 220 238 458 378 346 724 931 892 1,823 1,070 1,022 2,092 1,394 1,341 2,735
+Uttar Pradesh 408 3,231 563 503 1,066 1,371 1,127 2,498 2,205 1,921 4,126 4,878 4,557 9,435 5,502 5,155 10,657 7,436 6,785 14,221
+West Bengal 370 2,909 293 311 604 631 604 1,235 1,345 1,410 2,755 3,730 3,811 7,541 4,507 4,592 9,099 5,431 5,507 10,938
+Jammu & Kashmir 168 1,327 189 169 358 451 404 855 721 622 1,343 1,931 1,787 3,718 2,250 2,127 4,377 2,890 2,700 5,590
+all-India 5,706 44,598 5,421 5,157 10,578 13,045 11,956 25,001 23,018 21,302 44,324 57,528 56,473 1,14,009 67,135 66,736 1,33,880 85,601 83,849 1,69,459
+Note:
+1. M: male; F: female; P: person; Person includes Transgender
+Table (1):  Number of Urban Frame Survey (UFS) blocks, households and persons surveyed by age and gender for different States
+urban                      Janury - March 2024
+State 
+number of 
+Urban 
+Frame 
+Households
+persons of age
+0-4 years 5-14 years 15-29 years 15-59 years 15 years & above all ages
+A-4 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+M F P M F P M F P M F P M F P M F P
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16) (17) (18) (19) (20) (21)
+Andhra Pradesh 224 1,753 144 136 280 364 372 736 755 759 1,514 1,976 2,092 4,068 2,317 2,466 4,783 2,825 2,974 5,799
+Assam 112 892 100 76 176 208 210 418 384 388 772 1,134 1,142 2,276 1,319 1,330 2,649 1,627 1,616 3,243
+Bihar 168 1,341 310 286 596 597 537 1,134 966 842 1,808 2,045 1,880 3,926 2,285 2,107 4,393 3,192 2,930 6,123
+Chhattisgarh 103 817 72 97 169 228 187 415 458 449 908 1,133 1,111 2,245 1,280 1,264 2,545 1,580 1,548 3,129
+Delhi 120 874 93 84 177 234 182 416 441 349 790 1,077 930 2,007 1,227 1,096 2,323 1,554 1,362 2,916
+Gujarat 231 1,785 245 218 463 503 454 957 1,065 968 2,033 2,582 2,429 5,012 2,998 2,856 5,855 3,746 3,528 7,275
+Haryana 160 1,249 182 143 325 403 309 712 740 574 1,314 1,698 1,517 3,215 1,951 1,793 3,744 2,536 2,245 4,781
+Himachal Pradesh 48 373 31 29 60 75 80 155 191 118 309 441 345 786 505 411 916 611 520 1,131
+Jharkhand 136 1,071 172 135 307 383 348 731 619 607 1,228 1,462 1,456 2,920 1,673 1,668 3,343 2,228 2,151 4,381
+Karnataka 295 2,310 236 200 436 509 476 985 1,087 957 2,044 2,703 2,588 5,291 3,131 3,132 6,263 3,876 3,808 7,684
+Kerala 304 2,390 217 252 469 588 550 1,138 785 814 1,599 2,264 2,693 4,957 3,032 3,656 6,689 3,837 4,458 8,296
+Madhya Pradesh 247 1,938 305 256 561 671 617 1,288 1,130 1,070 2,200 2,743 2,700 5,443 3,135 3,143 6,278 4,111 4,016 8,127
+Maharashtra 557 4,380 460 435 895 1,177 1,036 2,213 2,262 1,985 4,248 5,649 5,351 11,001 6,584 6,346 12,931 8,221 7,817 16,039
+Odisha 135 1,049 118 120 238 275 276 551 513 495 1,008 1,343 1,338 2,681 1,567 1,550 3,117 1,960 1,946 3,906
+Punjab 208 1,653 200 194 394 500 478 978 871 757 1,628 2,190 2,042 4,232 2,576 2,437 5,013 3,276 3,109 6,385
+Rajasthan 216 1,639 241 237 478 650 559 1,209 1,111 975 2,086 2,457 2,402 4,859 2,854 2,823 5,677 3,745 3,619 7,364
+Tamil Nadu 438 3,461 344 315 659 708 708 1,416 1,338 1,400 2,739 3,703 3,979 7,684 4,466 4,847 9,316 5,518 5,870 11,391
+Telangana 197 1,550 165 141 306 454 450 904 691 656 1,347 1,794 1,781 3,575 2,076 2,076 4,152 2,695 2,667 5,362
+Uttarakhand 96 736 110 94 204 243 233 476 395 379 774 966 941 1,907 1,091 1,066 2,157 1,444 1,393 2,837
+Uttar Pradesh 408 3,227 528 492 1,020 1,329 1,123 2,452 2,184 1,966 4,150 4,843 4,601 9,444 5,477 5,238 10,715 7,334 6,853 14,187
+West Bengal 370 2,914 268 296 564 645 615 1,260 1,295 1,373 2,668 3,669 3,746 7,415 4,457 4,545 9,002 5,370 5,456 10,826
+Jammu & Kashmir 168 1,337 183 175 358 448 402 850 736 641 1,377 1,935 1,785 3,720 2,259 2,128 4,387 2,890 2,705 5,595
+all-India 5,735 45,016 5,482 5,197 10,679 13,240 12,174 25,414 23,075 21,552 44,632 57,890 57,044 1,14,942 67,520 67,498 1,35,028 86,242 84,869 1,71,121
+Note:
+1. M: male; F: female; P: person; Person includes Transgender
+Table (1):  Number of Urban Frame Survey (UFS) blocks, households and persons surveyed by age and gender for different States
+urban                      April - June 2024
+State 
+number of 
+Urban 
+Frame 
+Households
+persons of age
+0-4 years 5-14 years 15-29 years 15-59 years 15 years & above all ages
+A-5 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 56.2 57.5 56.6 54.8 57.4 25.9 25.0 24.0 22.9 20.2 41.2 41.2 40.4 39.2 38.1
+Assam 55.5 56.5 57.5 61.8 64.2 28.3 27.6 27.6 24.4 25.3 42.3 42.3 43.0 43.9 44.9
+Bihar 44.7 46.4 41.0 40.6 41.0 6.9 9.0 8.5 8.2 7.2 27.6 29.1 26.2 25.9 25.3
+Chhattisgarh 59.5 62.4 61.7 60.9 59.4 24.1 26.0 28.5 24.4 27.3 41.4 43.6 44.7 42.1 43.4
+Delhi 50.8 49.9 49.6 41.6 39.5 11.6 13.3 16.0 13.6 14.9 33.3 34.2 35.3 30.0 29.1
+Gujarat 66.4 69.0 66.0 67.3 67.6 21.2 24.6 25.0 24.8 23.9 45.4 49.3 47.8 47.9 47.1
+Haryana 51.9 57.1 56.3 58.5 58.3 13.8 14.0 16.3 15.2 16.6 35.8 38.5 39.0 38.7 39.7
+Himachal Pradesh 52.0 57.2 61.3 65.8 62.8 30.0 23.7 25.4 33.1 36.3 39.9 39.0 44.5 51.1 52.6
+Jharkhand 48.0 49.0 50.2 46.9 43.7 9.5 12.6 14.7 13.4 13.9 29.3 31.4 32.8 31.0 29.1
+Karnataka 55.4 57.2 53.1 54.5 57.8 26.8 25.0 25.0 25.1 23.2 41.8 41.9 39.9 40.9 41.4
+Kerala 48.2 49.0 49.8 50.7 48.7 23.9 23.1 24.6 24.7 26.1 36.0 35.8 37.3 37.4 36.9
+Madhya Pradesh 58.4 58.6 58.5 62.0 62.6 10.5 13.3 15.8 14.9 14.5 35.3 36.9 37.7 38.6 39.0
+Maharashtra 59.9 61.8 61.9 63.2 64.5 23.2 22.8 25.2 27.4 27.5 42.8 44.3 45.1 47.1 47.3
+Odisha 51.0 48.9 53.0 52.0 54.3 18.3 19.9 21.1 24.5 27.4 35.4 35.2 37.3 39.4 41.8
+Punjab 63.3 64.2 65.7 65.3 65.8 22.3 23.4 18.3 21.4 20.1 45.1 45.9 44.1 45.0 44.1
+Rajasthan 56.0 52.2 55.4 58.1 58.5 16.5 17.3 18.3 20.3 20.5 38.0 36.6 38.2 40.8 41.2
+Tamil Nadu 59.0 56.4 55.6 54.9 56.4 20.5 19.4 19.6 20.5 22.2 40.9 38.2 37.5 36.9 38.6
+Telangana 52.3 50.7 57.1 59.8 63.2 18.4 24.0 26.5 29.4 24.3 36.1 37.9 41.9 44.9 44.1
+Uttarakhand 52.2 53.7 53.8 52.5 56.8 15.2 10.6 16.3 20.6 23.0 35.0 33.3 35.2 36.7 39.7
+Uttar Pradesh 57.6 58.7 59.4 59.6 59.7 12.1 13.6 13.3 12.5 13.0 36.4 37.7 38.2 37.6 37.5
+West Bengal 62.3 62.7 62.9 65.0 65.2 22.5 23.0 24.0 25.9 27.4 42.4 42.3 42.6 44.6 44.9
+Jammu & Kashmir 50.8 50.8 51.4 51.8 51.8 24.2 25.6 26.0 27.6 29.0 38.4 38.8 39.7 40.5 41.3
+all-India 57.2 57.7 57.6 58.2 58.9 19.2 19.9 20.8 21.3 21.3 39.3 39.9 40.2 40.7 40.8
+October-
+December 
+2023
+July-
+September 
+2023
+July-
+September 
+2023
+January-
+March 
+2024
+Table (2): Labour Force Participation Rate (LFPR) (in per cent) according to Current Weekly Status for different States 
+age group: 15-29 years                                                            urban
+October-
+December 
+2023
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+April-June 
+2024
+Note:
+1. $: includes Transgender
+April-June 
+2024
+State
+male$ female person$
+April-June 
+2023
+January-
+March 
+2024
+April-June 
+2023
+January-
+March 
+2024
+A-6 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 71.9 73.1 72.2 71.6 72.5 29.3 29.7 30.3 30.5 26.5 49.9 50.6 50.4 50.3 48.5
+Assam 75.5 75.4 76.3 78.2 79.5 29.7 29.2 28.7 29.4 28.9 52.6 52.3 52.6 54.1 54.1
+Bihar 68.4 70.1 68.5 67.8 67.3 11.9 14.3 13.7 15.4 13.8 41.5 43.3 42.3 42.8 41.6
+Chhattisgarh 76.2 77.8 77.1 76.6 77.2 29.1 30.7 31.3 29.4 29.3 52.2 53.7 53.7 53.2 53.9
+Delhi 73.5 72.3 72.2 67.9 65.7 13.7 14.0 13.4 16.4 16.9 45.8 46.1 45.8 44.7 43.1
+Gujarat 77.9 78.4 78.0 78.9 78.9 25.1 25.5 26.5 26.5 27.1 52.3 52.9 53.2 53.4 53.7
+Haryana 71.8 73.7 72.3 73.3 72.9 17.2 18.9 20.7 20.2 20.2 46.7 48.1 47.7 47.8 47.5
+Himachal Pradesh 74.8 77.4 77.9 80.1 78.0 37.4 38.1 40.2 42.2 44.2 55.2 57.5 60.4 62.8 63.4
+Jharkhand 68.5 68.0 69.0 67.8 66.4 12.1 15.3 16.4 15.6 16.6 40.6 41.7 42.9 42.2 41.5
+Karnataka 72.4 73.5 72.2 72.3 74.1 28.8 29.9 30.2 29.1 26.9 51.1 52.2 51.8 51.3 50.8
+Kerala 67.4 68.1 68.8 69.6 70.2 27.1 27.2 28.8 29.3 29.9 45.9 46.0 47.2 47.7 48.1
+Madhya Pradesh 75.7 76.1 76.6 77.0 77.2 17.1 20.1 23.6 23.1 22.4 46.8 48.2 50.0 49.9 49.6
+Maharashtra 75.3 75.6 75.3 75.6 75.9 26.4 26.4 26.8 28.2 27.6 51.5 51.9 51.8 52.7 52.4
+Odisha 71.2 71.0 73.1 72.6 73.5 23.6 26.3 27.3 28.1 29.5 48.2 49.1 50.4 50.9 51.7
+Punjab 75.5 76.3 77.9 78.4 79.0 22.9 22.3 22.5 23.3 23.0 50.0 50.2 51.4 51.8 51.9
+Rajasthan 71.5 69.5 71.9 73.0 72.9 22.4 22.6 24.8 26.3 25.5 48.0 47.1 48.9 50.3 49.8
+Tamil Nadu 72.3 72.0 72.2 72.0 73.1 26.7 25.8 26.0 26.5 28.1 49.3 48.3 48.4 48.2 49.6
+Telangana 72.3 72.2 75.2 76.4 77.4 25.2 29.3 30.9 32.0 28.7 49.2 51.0 53.0 54.1 53.1
+Uttarakhand 72.4 73.1 73.1 72.2 74.7 16.1 15.7 20.6 23.2 23.8 45.2 45.3 46.7 47.8 49.1
+Uttar Pradesh 73.1 74.0 74.9 75.7 76.1 13.1 14.8 15.9 15.4 15.8 43.9 45.1 46.4 46.6 46.6
+West Bengal 76.5 76.6 76.9 77.9 77.4 25.3 25.9 27.3 29.8 29.4 50.9 51.3 52.1 53.6 52.9
+Jammu & Kashmir 71.2 72.2 72.4 73.8 73.9 23.6 26.9 26.5 27.9 29.1 48.2 50.2 50.2 51.4 52.2
+all-India 73.5 73.8 74.1 74.4 74.7 23.2 24.0 25.0 25.6 25.2 48.8 49.3 49.9 50.2 50.1
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+April-June 
+2024
+Table (2): Labour Force Participation Rate (LFPR) (in per cent) according to Current Weekly Status for different States 
+age group: 15 years and above                                                            urban
+State
+male$ female person$
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+October-
+December 
+2023
+Note:
+1. $: includes Transgender
+A-7 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 56.7 56.9 57.2 57.8 58.3 24.1 24.1 24.5 24.7 21.6 40.2 40.2 40.3 40.7 39.3
+Assam 58.6 58.4 59.6 62.3 63.8 24.7 24.2 23.9 23.9 23.4 42.3 41.9 42.4 43.5 43.7
+Bihar 48.6 48.6 47.3 47.6 47.2 8.6 10.4 9.7 10.9 9.8 29.8 30.6 29.5 30.1 29.3
+Chhattisgarh 60.1 62.1 61.6 61.9 62.4 23.5 24.8 25.4 24.2 24.1 41.7 43.1 43.2 43.4 43.9
+Delhi 56.2 56.1 56.5 53.9 50.3 10.4 10.4 10.2 12.5 13.2 35.0 35.0 35.5 34.9 33.3
+Gujarat 60.4 62.0 61.9 62.7 61.6 19.7 20.1 21.3 21.0 21.5 40.8 41.9 42.4 42.4 42.3
+Haryana 55.8 57.1 56.0 55.2 55.1 13.4 14.9 16.6 15.9 16.2 36.4 37.5 37.5 36.7 36.9
+Himachal Pradesh 57.1 59.3 62.0 64.8 65.5 30.9 31.0 32.7 34.1 34.8 44.0 45.5 48.5 50.7 51.7
+Jharkhand 50.3 50.8 52.5 51.8 50.0 9.4 11.9 12.6 12.0 12.9 30.6 31.8 32.8 32.4 31.6
+Karnataka 58.3 59.3 59.1 59.0 59.6 23.5 24.5 24.9 23.9 21.9 41.5 42.4 42.6 42.0 41.1
+Kerala 53.2 53.3 53.7 54.4 55.0 22.5 22.2 23.3 23.8 24.5 37.3 36.8 37.6 38.1 38.6
+Madhya Pradesh 58.2 57.5 57.6 57.9 57.4 13.3 15.7 18.5 18.1 17.5 36.3 36.9 38.2 38.1 37.6
+Maharashtra 59.6 59.9 59.8 60.3 60.5 21.1 21.0 21.3 22.7 22.3 40.9 41.2 41.1 42.2 42.0
+Odisha 55.6 56.3 57.1 57.2 57.7 18.4 20.8 21.8 22.2 23.3 37.6 38.9 39.7 40.1 40.7
+Punjab 60.9 60.2 61.6 62.0 62.3 18.3 17.4 17.6 18.2 17.8 40.1 39.4 40.4 40.7 40.6
+Rajasthan 54.1 53.8 55.3 56.2 56.0 17.5 18.1 19.5 20.7 20.0 36.9 37.0 38.1 39.1 38.6
+Tamil Nadu 59.1 58.2 58.4 57.1 57.9 21.9 21.2 21.3 21.5 22.7 40.4 39.3 39.4 38.7 39.7
+Telangana 56.5 55.8 56.9 57.7 57.7 19.7 22.5 24.0 24.8 22.0 38.5 39.3 40.6 41.4 40.2
+Uttarakhand 54.6 55.5 55.7 55.4 55.5 11.9 11.8 15.7 17.7 18.0 33.9 34.1 35.6 36.6 36.8
+Uttar Pradesh 53.8 54.4 54.9 55.7 56.7 9.8 11.1 12.2 11.8 12.1 32.7 33.7 34.7 34.9 35.2
+West Bengal 62.8 63.4 62.6 63.3 62.6 21.1 21.7 22.5 24.6 24.1 42.1 42.7 42.7 43.9 43.1
+Jammu & Kashmir 55.3 56.3 56.1 56.8 57.6 18.9 21.6 20.9 21.9 22.6 38.1 39.7 39.2 39.9 40.7
+all-India 57.4 57.6 57.8 58.0 58.0 18.5 19.0 19.9 20.3 20.0 38.4 38.8 39.2 39.5 39.3
+October-
+December 
+2023
+April-June 
+2024
+January-
+March 
+2024
+April-June 
+2023
+July-
+September 
+2023
+January-
+March 
+2024
+Table (2): Labour Force Participation Rate (LFPR) (in per cent) according to Current Weekly Status for different States 
+age group: all                                                            urban
+State
+male$ female person$
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+April-June 
+2024
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+Note:
+1. $: includes Transgender
+A-8 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 44.3 46.5 44.7 44.3 45.2 18.5 18.3 16.3 17.5 14.6 31.6 32.4 30.6 31.2 29.3
+Assam 48.1 47.6 47.4 51.0 52.2 16.5 18.7 20.3 16.6 15.9 32.7 33.4 34.2 34.6 34.2
+Bihar 37.0 37.6 34.3 32.0 32.9 4.8 5.5 5.8 6.3 5.3 22.4 22.8 21.3 20.3 20.0
+Chhattisgarh 42.7 46.9 48.2 49.0 47.1 16.1 18.4 19.9 17.5 19.4 29.0 32.2 33.7 32.8 33.3
+Delhi 46.9 45.2 45.8 40.6 38.0 10.4 12.9 15.1 12.8 14.5 30.5 31.4 32.8 29.1 28.1
+Gujarat 62.5 64.4 61.3 61.7 62.0 19.7 22.5 23.0 22.1 22.0 42.6 45.8 44.3 43.6 43.2
+Haryana 42.2 49.3 51.3 53.5 52.6 9.5 12.1 15.5 13.0 13.7 28.4 33.2 35.8 35.0 35.2
+Himachal Pradesh 41.9 42.8 49.6 59.1 56.0 15.2 11.6 14.3 21.2 21.2 27.2 25.8 33.1 42.1 42.6
+Jharkhand 35.6 38.9 39.4 38.6 35.0 6.6 10.0 11.6 9.4 11.5 21.5 24.9 25.8 24.8 23.5
+Karnataka 48.9 50.0 48.1 48.9 50.8 23.9 22.1 21.6 21.3 19.5 37.0 36.8 35.6 36.2 36.0
+Kerala 37.5 39.4 39.5 38.4 39.4 13.2 12.5 13.7 13.2 15.2 25.2 25.6 26.7 25.5 26.7
+Madhya Pradesh 47.8 50.5 51.3 54.7 55.4 7.7 10.8 13.4 12.9 13.0 28.5 31.5 32.9 34.0 34.6
+Maharashtra 51.0 52.2 52.1 53.3 55.2 18.7 18.7 21.8 23.3 22.9 35.9 37.2 38.2 39.8 40.2
+Odisha 40.5 40.7 43.4 41.3 40.5 13.2 13.5 14.7 17.1 18.1 27.5 27.8 29.3 30.2 30.1
+Punjab 52.4 53.0 58.2 55.5 56.1 16.2 16.1 12.5 15.8 15.7 36.3 36.5 37.4 37.1 36.9
+Rajasthan 41.6 37.8 43.4 46.1 45.5 10.1 10.5 11.4 13.1 12.9 27.3 25.6 28.5 31.0 30.7
+Tamil Nadu 49.6 48.4 48.1 47.5 49.2 16.0 14.9 14.4 15.9 16.9 33.8 31.9 31.1 31.1 32.4
+Telangana 38.2 38.6 45.5 47.7 52.3 12.8 18.2 18.9 18.1 17.4 26.1 28.8 32.3 33.2 35.1
+Uttarakhand 44.4 45.5 45.7 44.5 51.0 9.3 8.3 9.8 12.5 13.7 28.1 27.9 27.9 28.6 32.1
+Uttar Pradesh 49.3 49.9 49.2 48.2 50.1 8.9 9.4 9.2 8.3 8.5 30.5 31.0 30.8 29.6 30.3
+West Bengal 54.3 53.6 55.1 56.8 55.9 18.7 18.7 19.2 21.9 21.8 36.5 35.8 36.4 38.6 37.6
+Jammu & Kashmir 41.0 40.8 41.1 42.2 42.1 10.1 12.3 14.2 14.2 13.7 26.6 27.3 28.7 29.1 29.0
+all-India 48.1 48.7 49.2 49.4 50.2 14.7 15.3 16.1 16.5 16.4 32.3 33.0 33.5 33.8 33.9
+Note:
+1. $: includes Transgender
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+Table (3): Worker Population Ratio (WPR) (in per cent) according to Current Weekly Status for different States 
+age group: 15-29 years                                                            urban
+State
+male$ female person$
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+July-
+September 
+2023
+October-
+December 
+2023
+A-9 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 66.3 67.8 66.8 67.0 66.7 26.3 27.2 27.5 28.5 24.0 45.7 46.7 46.3 47.1 44.4
+Assam 72.7 72.4 72.9 74.6 75.3 22.9 24.0 24.6 26.4 25.1 47.9 48.1 48.9 50.8 50.1
+Bihar 64.4 65.6 64.5 63.3 62.9 11.0 12.9 12.6 14.5 12.9 39.0 40.3 39.7 40.0 38.8
+Chhattisgarh 68.6 70.9 70.9 70.2 70.3 24.9 26.7 27.2 26.1 25.8 46.4 48.2 48.5 48.4 48.6
+Delhi 71.6 69.5 69.8 66.6 63.9 13.3 13.6 12.9 16.1 16.7 44.6 44.4 44.3 43.9 42.0
+Gujarat 75.7 76.0 75.4 75.3 76.1 24.4 24.5 25.5 25.2 25.9 50.9 51.3 51.4 51.0 51.7
+Haryana 67.4 69.6 69.7 70.3 69.7 15.8 18.2 20.4 19.4 18.9 43.7 45.6 46.3 45.9 45.3
+Himachal Pradesh 69.1 70.2 72.4 76.3 73.6 28.1 28.6 30.6 34.2 36.7 47.6 49.2 52.9 57.1 57.6
+Jharkhand 61.7 62.1 63.6 63.2 61.5 11.0 14.2 15.2 13.9 15.6 36.6 38.2 39.6 39.0 38.6
+Karnataka 69.6 70.4 69.9 69.6 70.8 27.6 28.6 28.8 27.6 25.7 49.1 50.0 49.9 49.2 48.5
+Kerala 62.4 63.6 63.2 63.7 65.0 22.9 23.2 24.6 24.9 25.4 41.3 41.7 42.4 42.6 43.3
+Madhya Pradesh 70.2 71.7 72.1 72.7 73.2 15.4 18.8 22.1 22.0 21.6 43.2 45.4 47.0 47.2 47.3
+Maharashtra 70.8 70.5 70.4 70.0 71.0 24.3 24.4 24.9 26.1 24.9 48.1 48.3 48.3 48.8 48.6
+Odisha 66.8 67.6 68.6 67.5 67.5 21.6 23.9 24.7 25.4 26.1 44.9 46.2 46.8 47.0 47.0
+Punjab 70.1 70.6 73.9 73.1 74.1 19.8 19.3 20.0 20.7 21.1 45.7 45.8 48.1 47.8 48.4
+Rajasthan 64.1 61.6 65.7 66.4 66.4 18.7 19.4 21.5 23.3 22.2 42.4 41.4 44.1 45.4 44.8
+Tamil Nadu 67.9 68.3 67.9 68.0 69.4 24.3 23.6 23.7 24.5 26.2 45.9 45.3 45.1 45.3 46.9
+Telangana 66.2 66.9 69.8 71.1 72.7 22.7 26.7 27.8 27.7 25.9 44.9 47.1 48.7 49.4 49.4
+Uttarakhand 68.3 69.0 68.2 68.4 72.0 13.6 14.4 17.6 19.4 19.4 41.8 42.6 42.9 44.0 45.6
+Uttar Pradesh 68.8 69.5 69.9 70.0 71.5 11.6 13.0 14.1 13.5 13.8 41.0 42.0 42.9 42.7 43.3
+West Bengal 73.4 72.9 73.4 74.2 73.4 23.9 24.3 25.4 28.0 27.0 48.7 48.7 49.3 50.9 49.7
+Jammu & Kashmir 67.2 68.0 68.3 70.0 70.2 17.1 20.3 20.3 20.4 20.6 43.0 44.8 45.1 45.8 46.2
+all-India 69.2 69.4 69.8 69.8 70.4 21.1 21.9 22.9 23.4 23.0 45.5 46.0 46.6 46.9 46.8
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2024
+April-June 
+2023
+April-June 
+2023
+Note:
+1. $: includes Transgender
+Table (3): Worker Population Ratio (WPR) (in per cent) according to Current Weekly Status for different States 
+age group: 15 years and above                                                            urban
+State
+male$ female person$
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+A-10 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 52.3 52.7 52.9 54.2 53.6 21.6 22.1 22.2 23.1 19.6 36.8 37.2 37.1 38.2 36.0
+Assam 56.4 56.0 57.0 59.4 60.5 19.1 19.9 20.5 21.4 20.4 38.5 38.6 39.4 40.9 40.5
+Bihar 45.7 45.5 44.6 44.3 44.1 8.0 9.3 8.9 10.3 9.2 28.0 28.5 27.7 28.1 27.4
+Chhattisgarh 54.1 56.6 56.6 56.7 56.7 20.1 21.6 22.1 21.5 21.2 37.0 38.8 39.1 39.4 39.5
+Delhi 54.8 54.0 54.7 52.9 48.9 10.1 10.1 9.9 12.3 13.1 34.1 33.8 34.3 34.2 32.5
+Gujarat 58.8 60.2 59.8 59.8 59.4 19.1 19.4 20.5 20.0 20.6 39.6 40.5 40.9 40.5 40.7
+Haryana 52.4 53.9 54.0 53.0 52.7 12.3 14.2 16.3 15.2 15.1 34.0 35.5 36.4 35.2 35.2
+Himachal Pradesh 52.0 53.1 57.6 61.7 61.7 23.2 23.3 24.9 27.6 28.9 37.6 38.6 42.5 46.1 47.0
+Jharkhand 45.3 46.4 48.4 48.3 46.2 8.5 11.1 11.7 10.7 12.1 27.6 29.2 30.3 30.0 29.4
+Karnataka 56.0 56.8 57.2 56.9 56.9 22.5 23.5 23.8 22.7 20.9 39.8 40.6 41.0 40.3 39.3
+Kerala 49.3 49.8 49.3 49.8 51.0 19.0 18.9 19.9 20.2 20.8 33.6 33.4 33.7 34.0 34.7
+Madhya Pradesh 54.0 54.2 54.2 54.6 54.4 12.0 14.6 17.4 17.2 16.9 33.5 34.7 36.0 36.0 35.8
+Maharashtra 56.1 55.9 55.8 55.8 56.6 19.3 19.4 19.8 21.0 20.1 38.2 38.3 38.3 39.1 39.0
+Odisha 52.2 53.6 53.6 53.2 53.0 16.8 18.9 19.7 20.1 20.6 35.1 36.6 36.9 37.1 37.0
+Punjab 56.6 55.6 58.4 57.8 58.4 15.8 15.0 15.6 16.2 16.3 36.7 36.0 37.8 37.6 37.9
+Rajasthan 48.5 47.7 50.5 51.2 51.0 14.7 15.5 16.9 18.3 17.3 32.6 32.5 34.4 35.4 34.7
+Tamil Nadu 55.5 55.2 54.9 53.9 55.1 19.9 19.4 19.4 19.9 21.2 37.6 36.9 36.7 36.4 37.6
+Telangana 51.8 51.7 52.8 53.6 54.2 17.8 20.6 21.6 21.5 19.8 35.1 36.3 37.4 37.8 37.3
+Uttarakhand 51.4 52.2 52.1 52.4 53.5 10.1 10.7 13.4 14.8 14.7 31.3 32.0 32.6 33.7 34.1
+Uttar Pradesh 50.7 51.1 51.2 51.6 53.3 8.7 9.8 10.8 10.3 10.6 30.6 31.3 32.1 32.0 32.7
+West Bengal 60.3 60.4 59.7 60.2 59.3 19.9 20.4 20.9 23.1 22.2 40.2 40.5 40.4 41.6 40.5
+Jammu & Kashmir 52.2 53.1 52.9 53.9 54.7 13.8 16.3 16.0 15.9 16.0 33.9 35.4 35.2 35.5 36.0
+all-India 54.1 54.2 54.5 54.5 54.7 16.8 17.4 18.2 18.6 18.2 35.9 36.2 36.7 36.9 36.7
+April-June 
+2024
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+Note:
+1. $: includes Transgender
+Table (3): Worker Population Ratio (WPR) (in per cent) according to Current Weekly Status for different States 
+age group: all                                                            urban
+State
+male$ female person$
+A-11 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 5.59 29.43 64.97 100.00
+Assam 1.86 26.65 71.50 100.00
+Bihar 8.85 27.24 63.89 100.00
+Chhattisgarh 5.28 31.79 62.93 100.00
+Delhi 0.16 37.33 62.52 100.00
+Gujarat 3.28 47.80 48.93 100.00
+Haryana 2.79 41.05 56.13 100.00
+Himachal Pradesh 1.00 36.39 62.61 100.00
+Jharkhand 2.29 41.47 56.23 100.00
+Karnataka 4.58 31.11 64.32 100.00
+Kerala 10.44 34.71 54.85 100.00
+Madhya Pradesh 8.25 30.26 61.47 100.00
+Maharashtra 3.04 31.31 65.65 100.00
+Odisha 4.04 31.79 64.18 100.00
+Punjab 4.21 34.07 61.72 100.00
+Rajasthan 3.12 42.12 54.77 100.00
+Tamil Nadu 6.05 37.27 56.68 100.00
+Telangana 2.07 26.63 71.32 100.00
+Uttarakhand 4.62 38.89 56.47 100.00
+Uttar Pradesh 4.98 34.18 60.83 100.00
+West Bengal 2.40 34.71 62.88 100.00
+Jammu & Kashmir 4.47 28.87 66.64 100.00
+all-India 4.39 34.85 60.77 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  male$                                                        April - June 2023       
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. $: includes Transgender
+A-12
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 7.74 26.11 66.15 100.00
+Assam 7.32 17.72 74.96 100.00
+Bihar 21.50 15.77 62.73 100.00
+Chhattisgarh 7.22 18.92 73.84 100.00
+Delhi ** 27.40 72.57 100.00
+Gujarat 8.54 44.32 47.14 100.00
+Haryana 5.78 25.77 68.46 100.00
+Himachal Pradesh 11.65 27.93 60.43 100.00
+Jharkhand 7.59 25.69 66.72 100.00
+Karnataka 6.23 24.72 69.04 100.00
+Kerala 14.18 19.10 66.72 100.00
+Madhya Pradesh 15.02 23.04 61.95 100.00
+Maharashtra 4.45 21.65 73.89 100.00
+Odisha 7.47 22.25 70.28 100.00
+Punjab 4.00 20.57 75.43 100.00
+Rajasthan 20.62 31.80 47.59 100.00
+Tamil Nadu 13.06 32.17 54.76 100.00
+Telangana 4.39 29.97 65.65 100.00
+Uttarakhand 12.90 14.37 72.72 100.00
+Uttar Pradesh 14.78 29.28 55.96 100.00
+West Bengal 5.00 27.60 67.42 100.00
+Jammu & Kashmir 20.62 20.39 59.01 100.00
+all-India 9.01 27.11 63.88 100.00
+Note: 
+1. **: Nil or negligible sample size/value of estimates
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  female                                                       April - June 2023                     
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-13
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 6.23 28.44 65.33 100.00
+Assam 3.16 24.52 72.32 100.00
+Bihar 10.54 25.71 63.74 100.00
+Chhattisgarh 5.81 28.27 65.92 100.00
+Delhi 0.14 35.97 63.89 100.00
+Gujarat 4.50 46.98 48.51 100.00
+Haryana 3.29 38.52 58.21 100.00
+Himachal Pradesh 4.28 33.77 61.94 100.00
+Jharkhand 3.07 39.12 57.80 100.00
+Karnataka 5.03 29.36 65.61 100.00
+Kerala 11.54 30.12 58.34 100.00
+Madhya Pradesh 9.44 29.00 61.57 100.00
+Maharashtra 3.39 28.94 67.68 100.00
+Odisha 4.84 29.58 65.58 100.00
+Punjab 4.17 31.23 64.61 100.00
+Rajasthan 6.83 39.94 53.24 100.00
+Tamil Nadu 7.92 35.92 56.15 100.00
+Telangana 2.65 27.45 69.89 100.00
+Uttarakhand 5.92 35.04 59.03 100.00
+Uttar Pradesh 6.33 33.52 60.16 100.00
+West Bengal 3.04 32.96 64.00 100.00
+Jammu & Kashmir 7.58 27.24 65.18 100.00
+all-India 5.44 33.08 61.48 100.00
+Note: 
+1. $: includes Transgender
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  person$                                                    April - June 2023          
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-14
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 6.70 27.93 65.37 100.00
+Assam 1.56 22.81 75.63 100.00
+Bihar 8.28 28.68 63.04 100.00
+Chhattisgarh 8.05 31.53 60.39 100.00
+Delhi 0.23 34.47 65.30 100.00
+Gujarat 3.24 44.68 52.08 100.00
+Haryana 3.77 38.28 57.95 100.00
+Himachal Pradesh 0.62 43.00 56.39 100.00
+Jharkhand 3.64 42.37 53.97 100.00
+Karnataka 5.12 32.11 62.75 100.00
+Kerala 8.60 34.53 56.88 100.00
+Madhya Pradesh 8.14 31.70 60.16 100.00
+Maharashtra 3.37 31.54 65.08 100.00
+Odisha 4.06 31.33 64.62 100.00
+Punjab 2.68 38.62 58.71 100.00
+Rajasthan 4.20 42.83 52.96 100.00
+Tamil Nadu 6.27 36.17 57.56 100.00
+Telangana 3.52 28.77 67.72 100.00
+Uttarakhand 4.34 33.83 61.81 100.00
+Uttar Pradesh 5.66 32.58 61.76 100.00
+West Bengal 3.05 32.99 63.97 100.00
+Jammu & Kashmir 4.23 30.76 65.01 100.00
+all-India 4.69 34.29 61.04 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  male$                                                        July - September 2023       
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. $: includes Transgender
+A-15
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 11.97 23.12 64.91 100.00
+Assam 12.68 13.26 74.05 100.00
+Bihar 34.60 11.11 54.28 100.00
+Chhattisgarh 15.59 15.13 69.26 100.00
+Delhi ** 11.97 88.03 100.00
+Gujarat 7.92 42.29 49.79 100.00
+Haryana 8.26 26.09 65.64 100.00
+Himachal Pradesh 5.23 29.67 65.10 100.00
+Jharkhand 17.81 26.06 56.14 100.00
+Karnataka 7.83 26.38 65.77 100.00
+Kerala 12.49 19.94 67.57 100.00
+Madhya Pradesh 20.31 24.91 54.78 100.00
+Maharashtra 5.36 24.72 69.94 100.00
+Odisha 9.20 26.44 64.36 100.00
+Punjab 1.96 22.17 75.86 100.00
+Rajasthan 21.93 24.95 53.12 100.00
+Tamil Nadu 14.07 31.69 54.26 100.00
+Telangana 8.21 30.45 61.33 100.00
+Uttarakhand 17.68 11.05 71.28 100.00
+Uttar Pradesh 15.33 26.00 58.66 100.00
+West Bengal 5.52 26.60 67.87 100.00
+Jammu & Kashmir 23.30 16.35 60.34 100.00
+all-India 10.77 26.28 62.96 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  female                                                      July - September 2023                      
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. **: Nil or negligible sample size/value of estimates
+A-16
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 8.29 26.48 65.24 100.00
+Assam 4.33 20.42 75.24 100.00
+Bihar 12.33 25.97 61.69 100.00
+Chhattisgarh 10.18 26.91 62.93 100.00
+Delhi 0.20 31.37 68.43 100.00
+Gujarat 4.32 44.13 51.55 100.00
+Haryana 4.61 36.01 59.39 100.00
+Himachal Pradesh 1.98 39.08 58.94 100.00
+Jharkhand 6.27 39.34 54.38 100.00
+Karnataka 5.88 30.52 63.62 100.00
+Kerala 9.77 30.13 60.10 100.00
+Madhya Pradesh 10.65 30.31 59.04 100.00
+Maharashtra 3.86 29.88 66.28 100.00
+Odisha 5.36 30.10 64.55 100.00
+Punjab 2.54 35.29 62.20 100.00
+Rajasthan 8.17 38.83 53.00 100.00
+Tamil Nadu 8.36 34.97 56.68 100.00
+Telangana 4.84 29.24 65.92 100.00
+Uttarakhand 6.53 30.10 63.37 100.00
+Uttar Pradesh 7.12 31.59 61.29 100.00
+West Bengal 3.66 31.39 64.95 100.00
+Jammu & Kashmir 8.43 27.58 63.99 100.00
+all-India 6.11 32.41 61.48 100.00
+Note: 
+1. $: includes Transgender
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  person$                                                  July - September 2023         
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-17
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 6.23 28.61 65.14 100.00
+Assam 2.20 23.85 73.95 100.00
+Bihar 7.24 25.28 67.47 100.00
+Chhattisgarh 7.08 32.64 60.30 100.00
+Delhi 0.22 30.11 69.67 100.00
+Gujarat 2.35 44.63 53.04 100.00
+Haryana 4.00 38.72 57.28 100.00
+Himachal Pradesh 1.48 48.61 49.89 100.00
+Jharkhand 3.09 39.44 57.48 100.00
+Karnataka 4.49 31.15 64.36 100.00
+Kerala 9.10 32.78 58.13 100.00
+Madhya Pradesh 9.17 30.12 60.71 100.00
+Maharashtra 3.45 31.47 65.09 100.00
+Odisha 3.86 31.06 65.08 100.00
+Punjab 3.59 39.28 57.14 100.00
+Rajasthan 3.86 43.38 52.77 100.00
+Tamil Nadu 5.34 35.19 59.46 100.00
+Telangana 4.08 29.51 66.40 100.00
+Uttarakhand 5.71 30.99 63.31 100.00
+Uttar Pradesh 5.81 32.54 61.65 100.00
+West Bengal 2.51 33.63 63.88 100.00
+Jammu & Kashmir 4.60 32.24 63.16 100.00
+all-India 4.51 33.90 61.59 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  male$                                                                October - December 2023          
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. $: includes Transgender
+A-18
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 10.14 24.92 64.94 100.00
+Assam 12.70 14.60 72.71 100.00
+Bihar 27.49 11.61 60.89 100.00
+Chhattisgarh 13.48 15.25 71.26 100.00
+Delhi ** 13.71 86.31 100.00
+Gujarat 6.11 40.05 53.84 100.00
+Haryana 11.40 18.97 69.63 100.00
+Himachal Pradesh 8.28 32.54 59.20 100.00
+Jharkhand 17.22 26.04 56.73 100.00
+Karnataka 7.27 28.53 64.20 100.00
+Kerala 11.39 18.31 70.28 100.00
+Madhya Pradesh 18.72 27.55 53.74 100.00
+Maharashtra 4.98 25.62 69.41 100.00
+Odisha 8.08 32.93 59.01 100.00
+Punjab 4.55 20.62 74.85 100.00
+Rajasthan 18.98 30.61 50.42 100.00
+Tamil Nadu 12.94 30.58 56.49 100.00
+Telangana 7.92 27.75 64.31 100.00
+Uttarakhand 14.77 12.64 72.59 100.00
+Uttar Pradesh 17.08 25.35 57.59 100.00
+West Bengal 4.37 27.24 68.38 100.00
+Jammu & Kashmir 24.26 19.12 56.62 100.00
+all-India 10.10 26.57 63.33 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  female                                                        October - December 2023                  
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. **: Nil or negligible sample size/value of estimates
+A-19
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 7.44 27.47 65.09 100.00
+Assam 4.83 21.54 73.62 100.00
+Bihar 10.31 23.21 66.47 100.00
+Chhattisgarh 8.92 27.63 63.43 100.00
+Delhi 0.19 27.96 71.85 100.00
+Gujarat 3.25 43.53 53.23 100.00
+Haryana 5.55 34.57 59.89 100.00
+Himachal Pradesh 3.31 44.29 52.40 100.00
+Jharkhand 5.79 36.89 57.33 100.00
+Karnataka 5.27 30.41 64.33 100.00
+Kerala 9.82 28.25 61.94 100.00
+Madhya Pradesh 11.43 29.51 59.06 100.00
+Maharashtra 3.84 30.01 66.15 100.00
+Odisha 4.97 31.55 63.48 100.00
+Punjab 3.78 35.56 60.67 100.00
+Rajasthan 7.44 40.34 52.21 100.00
+Tamil Nadu 7.40 33.95 58.66 100.00
+Telangana 5.18 29.01 65.82 100.00
+Uttarakhand 7.58 27.20 65.21 100.00
+Uttar Pradesh 7.59 31.40 61.00 100.00
+West Bengal 2.99 31.98 65.03 100.00
+Jammu & Kashmir 8.89 29.37 61.75 100.00
+all-India 5.87 32.13 62.01 100.00
+Note: 
+1. $: includes Transgender
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  person$                                                                       October - December 2023         
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-20
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 7.05 29.09 63.86 100.00
+Assam 2.86 24.30 72.83 100.00
+Bihar 6.10 26.07 67.85 100.00
+Chhattisgarh 5.72 32.89 61.41 100.00
+Delhi 0.17 28.42 71.41 100.00
+Gujarat 2.61 45.18 52.22 100.00
+Haryana 3.82 40.43 55.75 100.00
+Himachal Pradesh 1.99 50.04 47.95 100.00
+Jharkhand 2.79 41.15 56.03 100.00
+Karnataka 4.89 30.97 64.14 100.00
+Kerala 9.53 31.29 59.20 100.00
+Madhya Pradesh 8.82 31.46 59.74 100.00
+Maharashtra 3.08 31.71 65.21 100.00
+Odisha 4.46 31.91 63.64 100.00
+Punjab 3.50 36.80 59.69 100.00
+Rajasthan 4.56 40.53 54.92 100.00
+Tamil Nadu 5.91 33.51 60.59 100.00
+Telangana 2.75 29.62 67.63 100.00
+Uttarakhand 3.70 32.16 64.15 100.00
+Uttar Pradesh 6.05 33.43 60.53 100.00
+West Bengal 2.50 33.68 63.83 100.00
+Jammu & Kashmir 4.05 30.89 65.07 100.00
+all-India 4.52 33.76 61.72 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  male$                                                        January - March 2024       
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. $: includes Transgender
+A-21
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 10.57 25.43 64.00 100.00
+Assam 13.74 15.61 70.67 100.00
+Bihar 33.14 12.16 54.70 100.00
+Chhattisgarh 10.94 13.70 75.37 100.00
+Delhi ** 20.04 79.97 100.00
+Gujarat 6.41 41.00 52.59 100.00
+Haryana 9.62 19.18 71.20 100.00
+Himachal Pradesh 10.03 28.27 61.70 100.00
+Jharkhand 12.07 26.33 61.63 100.00
+Karnataka 6.27 27.26 66.46 100.00
+Kerala 12.14 19.20 68.68 100.00
+Madhya Pradesh 19.15 28.65 52.21 100.00
+Maharashtra 4.66 25.40 69.94 100.00
+Odisha 7.79 31.63 60.57 100.00
+Punjab 6.03 24.21 69.79 100.00
+Rajasthan 20.79 33.64 45.56 100.00
+Tamil Nadu 11.15 26.61 62.24 100.00
+Telangana 5.75 30.27 63.96 100.00
+Uttarakhand 8.06 15.85 76.10 100.00
+Uttar Pradesh 16.09 25.16 58.76 100.00
+West Bengal 5.64 28.77 65.58 100.00
+Jammu & Kashmir 20.52 23.04 56.43 100.00
+all-India 9.83 26.73 63.44 100.00
+Note: 
+1. **: Nil or negligible sample size/value of estimates
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  female                                                       January - March 2024                     
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-22
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 8.16 27.94 63.92 100.00
+Assam 5.65 22.08 72.26 100.00
+Bihar 10.80 23.66 65.55 100.00
+Chhattisgarh 7.11 27.77 65.12 100.00
+Delhi 0.14 27.05 72.81 100.00
+Gujarat 3.52 44.17 52.31 100.00
+Haryana 5.00 36.12 58.88 100.00
+Himachal Pradesh 4.20 44.07 51.72 100.00
+Jharkhand 4.42 38.55 57.01 100.00
+Karnataka 5.26 29.96 64.76 100.00
+Kerala 10.36 27.44 62.19 100.00
+Madhya Pradesh 11.24 30.80 57.97 100.00
+Maharashtra 3.49 30.08 66.41 100.00
+Odisha 5.34 31.83 62.82 100.00
+Punjab 4.03 34.17 61.79 100.00
+Rajasthan 8.61 38.81 52.57 100.00
+Tamil Nadu 7.39 31.56 61.08 100.00
+Telangana 3.59 29.79 66.60 100.00
+Uttarakhand 4.66 28.59 66.78 100.00
+Uttar Pradesh 7.58 32.17 60.27 100.00
+West Bengal 3.37 32.30 64.31 100.00
+Jammu & Kashmir 7.63 29.18 63.19 100.00
+all-India 5.83 32.02 62.15 100.00
+Note: 
+1. $: includes Transgender
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  person$                                                                   January - March 2024            
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-23
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 6.11 31.53 62.40 100.00
+Assam 2.18 25.36 72.45 100.00
+Bihar 6.90 26.84 66.27 100.00
+Chhattisgarh 5.14 36.38 58.49 100.00
+Delhi 0.21 29.92 69.86 100.00
+Gujarat 1.94 45.33 52.69 100.00
+Haryana 3.89 38.36 57.75 100.00
+Himachal Pradesh 2.62 49.99 47.39 100.00
+Jharkhand 3.90 37.27 58.82 100.00
+Karnataka 4.76 30.66 64.58 100.00
+Kerala 10.10 30.34 59.56 100.00
+Madhya Pradesh 7.91 32.31 59.78 100.00
+Maharashtra 2.86 31.50 65.64 100.00
+Odisha 2.73 31.29 66.00 100.00
+Punjab 3.11 38.20 58.68 100.00
+Rajasthan 3.44 37.47 59.09 100.00
+Tamil Nadu 5.31 35.15 59.55 100.00
+Telangana 2.94 29.56 67.51 100.00
+Uttarakhand 3.63 32.36 64.01 100.00
+Uttar Pradesh 6.15 33.55 60.32 100.00
+West Bengal 2.95 33.17 63.88 100.00
+Jammu & Kashmir 4.03 30.49 65.48 100.00
+all-India 4.32 33.85 61.80 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  male$                                                        April - June 2024    
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. $: includes Transgender
+A-24
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 8.52 25.83 65.65 100.00
+Assam 13.63 13.45 72.90 100.00
+Bihar 22.06 16.97 60.95 100.00
+Chhattisgarh 11.90 19.57 68.53 100.00
+Delhi 0.00 22.68 77.31 100.00
+Gujarat 3.37 40.18 56.43 100.00
+Haryana 7.81 18.80 73.39 100.00
+Himachal Pradesh 8.65 28.28 63.06 100.00
+Jharkhand 13.20 26.31 60.49 100.00
+Karnataka 7.34 28.02 64.64 100.00
+Kerala 11.70 17.70 70.63 100.00
+Madhya Pradesh 16.08 28.17 55.74 100.00
+Maharashtra 3.54 26.75 69.71 100.00
+Odisha 6.35 31.35 62.30 100.00
+Punjab 4.71 24.98 70.30 100.00
+Rajasthan 15.53 32.28 52.17 100.00
+Tamil Nadu 12.09 27.14 60.77 100.00
+Telangana 5.94 26.49 67.55 100.00
+Uttarakhand 7.02 19.96 73.03 100.00
+Uttar Pradesh 16.99 21.57 61.44 100.00
+West Bengal 5.64 30.15 64.23 100.00
+Jammu & Kashmir 24.61 25.03 50.35 100.00
+all-India 8.94 26.86 64.21 100.00
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  female                                                       April - June 2024                   
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+Note: 
+1. **: Nil or negligible sample size/value of estimates
+A-25
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+Andhra Pradesh 6.79 29.91 63.32 100.00
+Assam 5.05 22.38 72.56 100.00
+Bihar 9.33 25.26 65.40 100.00
+Chhattisgarh 6.89 32.01 61.11 100.00
+Delhi 0.17 28.60 71.23 100.00
+Gujarat 2.29 44.09 53.62 100.00
+Haryana 4.68 34.42 60.88 100.00
+Himachal Pradesh 4.28 44.01 51.71 100.00
+Jharkhand 5.78 35.05 59.19 100.00
+Karnataka 5.43 29.96 64.60 100.00
+Kerala 10.61 26.27 63.12 100.00
+Madhya Pradesh 9.79 31.35 58.84 100.00
+Maharashtra 3.03 30.30 66.67 100.00
+Odisha 3.73 31.31 64.96 100.00
+Punjab 3.45 35.42 61.14 100.00
+Rajasthan 6.36 36.23 57.41 100.00
+Tamil Nadu 7.29 32.80 59.90 100.00
+Telangana 3.73 28.76 67.53 100.00
+Uttarakhand 4.36 29.71 65.93 100.00
+Uttar Pradesh 7.84 31.68 60.46 100.00
+West Bengal 3.69 32.32 63.99 100.00
+Jammu & Kashmir 8.47 29.31 62.22 100.00
+all-India 5.45 32.13 62.40 100.00
+Note: 
+1. $: includes Transgender
+Table (4): Percentage distribution of persons of age 15 years and above working according to CWS 
+by broad industry of work  for different States
+urban                                  person$                                                    April - June 2024          
+State
+broad industry of work
+agriculture sector
+(NIC-2008 codes 
+01-03)
+secondary sector 
+including mining 
+& quarrying
+(NIC-2008 
+codes 05-43)
+ tertiary sector
+(NIC-2008 codes 
+45-99)
+all
+A-26
+Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+own account worker, 
+employer
+helper in household 
+enterprise
+all self-
+employed#
+(1) (2) (3) (4) (5) (6) (7) (8) (9)
+own account worker, employer 22.8 * 23.1 0.1 0.1 * 0.1 23.4
+helper in household enterprise * 3.0 3.1 * * * * 3.2
+self employed 23.10 3.1 26.6 0.2 0.1 0.1 0.1 27.1
+regular wage/ salary 0.1 0.0 0.1 32.4 0.1 0.2 0.1 32.9
+casual labour 0.1 * 0.1 0.1 8.6 0.3 0.2 9.3
+unemployed 0.1 0.1 0.2 0.2 0.3 3.6 0.1 4.4
+not in labour force 0.1 * 0.1 0.1 0.1 0.1 25.9 26.3
+all 23.4 3.2 27.1 32.9 9.1 4.3 26.5 100.0
+own account worker, employer 5.1 * 5.1 * * * 0.3 5.4
+helper in household enterprise * 2.4 2.4 * * * 0.2 2.6
+self employed 5.2 2.4 7.7 * * * 0.4 8.2
+regular wage/ salary * * * 11.0 * * 0.2 11.3
+casual labour * * * * 1.1 0.1 0.2 1.4
+unemployed * * * 0.1 0.1 1.7 0.2 2.1
+not in labour force 0.2 0.1 0.3 0.1 0.1 0.1 76.3 77.0
+all 5.5 2.5 8.1 11.2 1.3 2.0 77.4 100.0
+own account worker, employer 13.9 * 14.0 0.1 * * 0.2 14.4
+helper in household enterprise 0.0 2.7 2.8 * * * 0.1 2.9
+self employed 14.1 2.7 17.1 0.1 * * 0.3 17.6
+regular wage/ salary 0.1 * 0.1 21.6 0.1 0.1 0.2 22.0
+casual labour * * 0.1 0.1 4.8 0.2 0.2 5.3
+unemployed * 0.1 0.1 0.1 0.2 2.7 0.2 3.3
+not in labour force 0.1 0.1 0.2 0.1 0.1 0.1 51.3 51.8
+all 14.4 2.9 17.5 22.0 5.2 3.1 52.1 100.0
+3. $: includes Transgender
+4.The Table gives the distribution of the persons who were surveyed in both the adjacent quarters 
+male$
+female
+person$
+Note: 
+1.*:Nil or negligible sample size/value of estimates
+2. #:  It may be noted that self-employed persons who did not work either due to sickness or due to other reasons though they had self-employment work are included in 
+column 4. Thus, the estimates given in column 4 may be higher than the sum of the estimates in column 2 and column 3. 
+Table (5): Percentage distribution of persons of age 15 years and above by different activity statuses between adjacent quarters in current weekly 
+status
+all-India                                urban
+activity statuses in CWS during   
+April - June 2023
+activity statuses in CWS during July - September 2023
+self employed regular
+wage/ salary
+casual labour unemployed not in labour 
+force
+all
+A-27 Quarterly Bulletin, PLFS, April- June 2024Detailed Tables
+own account worker, 
+employer
+helper in household 
+enterprise
+all self-
+employed#
+(1) (2) (3) (4) (5) (6) (7) (8) (9)
+own account worker, employer 23.5 * 24.0 0.2 0.2 0.1 0.2 24.7
+helper in household enterprise 0.1 3.1 3.2 * * * 0.1 3.4
+self employed 24.00 3.2 27.8 0.3 0.2 0.1 0.3 28.7
+regular wage/ salary 0.2 * 0.3 31.7 0.1 0.3 0.1 32.5
+casual labour 0.1 0.0 0.2 0.2 7.7 0.4 0.2 8.6
+unemployed 0.1 0.1 0.2 0.4 0.3 3.3 0.1 4.3
+not in labour force 0.1 0.1 0.2 0.2 0.1 0.2 25.2 25.9
+all 24.6 3.3 28.6 32.7 8.6 4.2 25.9 100.0
+own account worker, employer 5.2 0.1 5.5 0.1 * * 0.4 5.9
+helper in household enterprise 0.1 2.6 2.7 * * * 0.2 3.0
+self employed 5.3 2.7 8.3 0.1 * * 0.7 9.1
+regular wage/ salary * * * 11.1 * 0.1 0.3 11.6
+casual labour * * * * 1.3 0.1 0.2 1.6
+unemployed * * * 0.1 0.1 1.6 0.2 2.0
+not in labour force 0.4 0.3 0.7 0.5 0.2 0.2 74.2 75.7
+all 5.8 3.0 9.1 11.8 1.6 2.0 75.6 100.0
+own account worker, employer 14.3 * 14.7 0.1 0.1 0.1 0.3 15.3
+helper in household enterprise 0.1 2.9 3.0 * * * 0.2 3.2
+self employed 14.7 2.9 18.1 0.2 0.1 0.1 0.5 18.9
+regular wage/ salary 0.1 * 0.2 21.4 0.1 0.2 0.2 22.0
+casual labour 0.1 * 0.1 0.1 4.5 0.2 0.2 5.1
+unemployed 0.1 * 0.1 0.3 0.2 2.4 0.2 3.1
+not in labour force 0.3 0.2 0.4 0.3 0.2 0.2 49.7 50.8
+all 15.2 3.1 18.8 22.3 5.1 3.1 50.7 100.0
+3. $: includes Transgender
+4.The Table gives the distribution of the persons who were surveyed in both the adjacent quarters 
+male$
+female
+person$
+Note: 
+1.*:Nil or negligible sample size/value of estimates
+2. #:  It may be noted that self-employed persons who did not work either due to sickness or due to other reasons though they had self-employment work are included in 
+column 4. Thus, the estimates given in column 4 may be higher than the sum of the estimates in column 2 and column 3. 
+Table (5): Percentage distribution of persons of age 15 years and above by different activity statuses between adjacent quarters in current weekly 
+status
+all-India                                urban
+activity statuses in CWS during 
+July - September 2023
+activity statuses in CWS during October - December 2023
+self employed regular
+wage/ salary
+casual labour unemployed not in labour 
+force
+all
+A-28 Quarterly Bulletin, PLFS, April- June 2024Detailed Tables
+own account worker, 
+employer
+helper in household 
+enterprise
+all self-
+employed#
+(1) (2) (3) (4) (5) (6) (7) (8) (9)
+own account worker, employer 23.3 0.1 23.7 0.3 0.1 0.1 0.2 24.4
+helper in household enterprise 0.1 2.9 3.0 * * * 0.1 3.2
+self employed 23.90 3.0 27.4 0.3 0.2 0.2 0.3 28.4
+regular wage/ salary 0.3 * 0.3 32.1 0.2 0.4 0.1 33.1
+casual labour 0.1 * 0.2 0.1 7.7 0.5 0.1 8.6
+unemployed 0.1 * 0.1 0.2 0.4 3.4 0.1 4.2
+not in labour force 0.1 * 0.2 0.1 0.2 0.1 25.2 25.7
+all 24.5 3.1 28.2 32.9 8.6 4.5 25.8 100.0
+own account worker, employer 5.5 0.1 5.7 0.1 * * 0.4 6.2
+helper in household enterprise 0.1 2.7 2.7 * * * 0.3 3.1
+self employed 5.8 2.8 8.8 0.1 * * 0.7 9.6
+regular wage/ salary 0.1 * 0.1 11.5 * 0.1 0.3 12.0
+casual labour * * 0.1 * 1.2 0.1 0.2 1.5
+unemployed * * * 0.1 0.1 1.8 0.2 2.1
+not in labour force 0.3 0.2 0.6 0.3 0.1 0.2 73.5 74.7
+all 6.2 3.0 9.5 12.0 1.4 2.1 74.9 100.0
+own account worker, employer 14.4 0.1 14.7 0.2 0.1 0.1 0.3 15.3
+helper in household enterprise 0.1 2.8 2.9 * * * 0.2 3.1
+self employed 14.8 2.9 18.1 0.2 0.1 0.1 0.5 19.0
+regular wage/ salary 0.2 * 0.2 21.8 0.1 0.2 0.2 22.5
+casual labour 0.1 * 0.1 0.1 4.4 0.3 0.2 5.1
+unemployed 0.1 * 0.1 0.1 0.2 2.6 0.1 3.2
+not in labour force 0.2 0.1 0.4 0.2 0.2 0.2 49.4 50.2
+all 15.3 3.0 18.8 22.4 5.0 3.3 50.4 100.0
+3. $: includes Transgender
+4.The Table gives the distribution of the persons who were surveyed in both the adjacent quarters 
+male$
+female
+person$
+Note: 
+1.*:Nil or negligible sample size/value of estimates
+2. #:  It may be noted that self-employed persons who did not work either due to sickness or due to other reasons though they had self-employment work are included in 
+column 4. Thus, the estimates given in column 4 may be higher than the sum of the estimates in column 2 and column 3. 
+Table (5): Percentage distribution of persons of age 15 years and above by different activity statuses between adjacent quarters in current weekly 
+status
+all-India                                urban
+activity statuses in CWS during 
+October - December 2023
+activity statuses in CWS during January - March 2024
+self employed regular
+wage/ salary
+casual labour unemployed not in labour 
+force
+all
+A-29 Quarterly Bulletin, PLFS, April- June 2024Detailed Tables
+own account worker, 
+employer
+helper in household 
+enterprise
+all self-
+employed#
+(1) (2) (3) (4) (5) (6) (7) (8) (9)
+own account worker, employer 23.3 0.1 23.8 0.2 0.1 0.1 0.1 24.3
+helper in household enterprise 0.1 3.0 3.1 * * * 0.1 3.2
+self employed 23.90 3.0 27.5 0.2 0.1 0.1 0.2 28.2
+regular wage/ salary 0.2 * 0.2 32.2 0.1 0.3 0.1 32.9
+casual labour 0.1 * 0.1 0.1 8.1 0.3 0.1 8.8
+unemployed 0.1 0.1 0.2 0.3 0.4 3.6 0.1 4.6
+not in labour force 0.1 0.1 0.1 0.1 0.1 0.1 25.1 25.5
+all 24.4 3.2 28.2 32.9 8.9 4.4 25.7 100.0
+own account worker, employer 5.7 * 5.9 0.1 0.1 * 0.5 6.5
+helper in household enterprise * 2.5 2.6 * * * 0.4 3.0
+self employed 5.9 2.6 8.7 0.1 0.1 * 0.9 9.8
+regular wage/ salary 0.1 * 0.1 11.9 * 0.1 0.3 12.3
+casual labour * * * * 1.2 0.1 0.2 1.6
+unemployed * * * 0.1 0.1 1.8 0.2 2.2
+not in labour force 0.3 0.2 0.5 0.3 0.1 0.2 73.0 74.1
+all 6.4 2.8 9.4 12.3 1.4 2.2 74.7 100.0
+own account worker, employer 14.5 0.0 14.8 0.1 0.1 * 0.3 15.4
+helper in household enterprise 0.1 2.7 2.8 * * * 0.2 3.1
+self employed 14.9 2.8 18.1 0.2 0.1 0.1 0.6 19.0
+regular wage/ salary 0.1 * 0.1 22.0 0.1 0.2 0.2 22.6
+casual labour 0.1 * 0.1 0.1 4.6 0.2 0.2 5.2
+unemployed 0.1 * 0.1 0.2 0.2 2.7 0.2 3.4
+not in labour force 0.2 0.1 0.3 0.2 0.1 0.1 49.0 49.8
+all 15.4 3.0 18.8 22.6 5.2 3.3 50.2 100.0
+3. $: includes Transgender
+4.The Table gives the distribution of the persons who were surveyed in both the adjacent quarters 
+male$
+female
+person$
+Note: 
+1.*:Nil or negligible sample size/value of estimates
+2. #:  It may be noted that self-employed persons who did not work either due to sickness or due to other reasons though they had self-employment work are included in 
+column 4. Thus, the estimates given in column 4 may be higher than the sum of the estimates in column 2 and column 3. 
+Table (5): Percentage distribution of persons of age 15 years and above by different activity statuses between adjacent quarters in current weekly 
+status
+all-India                                urban
+activity statuses in CWS during 
+January - March 2024
+activity statuses in CWS during April - June 2024
+self employed regular
+wage/ salary
+casual labour unemployed not in labour 
+force
+all
+A-30 Quarterly Bulletin, PLFS, April- June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+agriculture 
+(NIC-2008 codes 01-03) 4.0 * 0.1 4.1
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 34.4 0.6 35.2
+tertiary (NIC-2008 codes 45-99) 0.1 0.6 60.0 60.7
+all (NIC-2008 codes 01-99) 4.3 35.0 60.7 100.0
+agriculture 
+(NIC-2008 codes 01-03) 8.2 0.2 0.1 8.5
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 25.8 0.3 26.3
+tertiary (NIC-2008 codes 45-99) 0.1 0.4 64.8 65.2
+all (NIC-2008 codes 01-99) 8.5 26.3 65.2 100.0
+agriculture 
+(NIC-2008 codes 01-03) 5.0 0.1 0.1 5.1
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 32.4 0.5 33.1
+tertiary (NIC-2008 codes 45-99) 0.1 0.5 61.1 61.8
+all (NIC-2008 codes 01-99) 5.2 33.0 61.8 100.0
+Note:
+1. $: includes Transgender
+male$
+female
+person$
+2. The Table gives the distribution of those who were workers in CWS in both the adjacent quarters
+3.* :Nil or negligible sample size/value of estimates
+Table (6): Percentage distribution of workers of age 15 years and above in CWS by broad industry of 
+work  between adjacent quarters
+all-India                    urban
+industry of work in CWS during 
+April - June 2023
+industry of work in CWS during July - September 2023
+agriculture 
+(NIC-2008 
+codes 01-03)
+secondary including 
+mining & quarrying 
+(NIC-2008 
+code 05-43)
+tertiary
+ (NIC-2008
+codes 45-99)
+all 
+(NIC-2008 
+codes 01-99)
+A-31 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+agriculture 
+(NIC-2008 codes 01-03) 4.2 0.1 0.1 4.5
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 32.8 0.7 33.6
+tertiary (NIC-2008 codes 45-99) 0.1 0.8 60.9 61.9
+all (NIC-2008 codes 01-99) 4.5 33.7 61.7 100.0
+agriculture 
+(NIC-2008 codes 01-03) 9.5 0.3 0.1 9.9
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 25.3 0.5 25.9
+tertiary (NIC-2008 codes 45-99) 0.1 0.3 63.8 64.2
+all (NIC-2008 codes 01-99) 9.8 25.8 64.4 100.0
+agriculture 
+(NIC-2008 codes 01-03) 5.5 0.2 0.1 5.8
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 31.0 0.6 31.8
+tertiary (NIC-2008 codes 45-99) 0.1 0.7 61.6 62.4
+all (NIC-2008 codes 01-99) 5.8 31.9 62.4 100.0
+Note:
+1. $: includes Transgender
+male$
+female
+person$
+2. The Table gives the distribution of those who were workers in CWS in both the adjacent quarters
+3.* :Nil or negligible sample size/value of estimates
+Table (6): Percentage distribution of workers of age 15 years and above in CWS by broad industry of 
+work  between adjacent quarters
+all-India                    urban
+industry of work in CWS during 
+July - September 2023
+industry of work in CWS during October - December 2023
+agriculture 
+(NIC-2008 
+codes 01-03)
+secondary including 
+mining & quarrying 
+(NIC-2008 
+code 05-43)
+tertiary
+ (NIC-2008
+codes 45-99)
+all 
+(NIC-2008 
+codes 01-99)
+A-32 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+agriculture 
+(NIC-2008 codes 01-03) 4.2 0.2 0.2 4.6
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.1 32.8 0.8 33.8
+tertiary (NIC-2008 codes 45-99) 0.1 0.8 60.7 61.6
+all (NIC-2008 codes 01-99) 4.4 33.8 61.7 100.0
+agriculture 
+(NIC-2008 codes 01-03) 9.5 0.2 0.2 10.0
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 25.7 0.3 26.2
+tertiary (NIC-2008 codes 45-99) * 0.4 63.4 63.8
+all (NIC-2008 codes 01-99) 9.8 26.3 63.9 100.0
+agriculture 
+(NIC-2008 codes 01-03) 5.5 0.2 0.2 5.9
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 31.1 0.7 32.0
+tertiary (NIC-2008 codes 45-99) 0.1 0.7 61.4 62.1
+all (NIC-2008 codes 01-99) 5.7 32.0 62.3 100.0
+Note:
+1. $: includes Transgender
+male$
+female
+person$
+2. The Table gives the distribution of those who were workers in CWS in both the adjacent quarters
+3.* :Nil or negligible sample size/value of estimates
+Table (6): Percentage distribution of workers of age 15 years and above in CWS by broad industry of 
+work  between adjacent quarters
+all-India                    urban
+industry of work in CWS during 
+October - December 2023
+industry of work in CWS during January - March 2024
+agriculture 
+(NIC-2008 
+codes 01-03)
+secondary including 
+mining & quarrying 
+(NIC-2008 
+code 05-43)
+tertiary
+ (NIC-2008
+codes 45-99)
+all 
+(NIC-2008 
+codes 01-99)
+A-33 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5)
+agriculture 
+(NIC-2008 codes 01-03) 4.2 0.1 0.2 4.5
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.1 32.8 0.8 33.7
+tertiary (NIC-2008 codes 45-99) 0.1 0.8 61.0 61.8
+all (NIC-2008 codes 01-99) 4.4 33.7 61.9 100.0
+agriculture 
+(NIC-2008 codes 01-03) 8.7 0.2 0.2 9.1
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.2 25.8 0.4 26.4
+tertiary (NIC-2008 codes 45-99) * 0.4 64.1 64.5
+all (NIC-2008 codes 01-99) 8.9 26.4 64.7 100.0
+agriculture 
+(NIC-2008 codes 01-03) 5.3 0.1 0.2 5.6
+secondary including mining & 
+quarrying  (NIC-2008 
+codes 05-43) 0.1 31.1 0.7 31.9
+tertiary (NIC-2008 codes 45-99) 0.1 0.7 61.7 62.5
+all (NIC-2008 codes 01-99) 5.5 31.9 62.6 100.0
+Note:
+1. $: includes Transgender
+male$
+female
+person$
+2. The Table gives the distribution of those who were workers in CWS in both the adjacent quarters
+3.* :Nil or negligible sample size/value of estimates
+Table (6): Percentage distribution of workers of age 15 years and above in CWS by broad industry of 
+work  between adjacent quarters
+all-India                    urban
+industry of work in CWS during 
+January - March 2024
+industry of work in CWS during April - June 2024
+agriculture 
+(NIC-2008 
+codes 01-03)
+secondary including 
+mining & quarrying 
+(NIC-2008 
+code 05-43)
+tertiary
+ (NIC-2008
+codes 45-99)
+all 
+(NIC-2008 
+codes 01-99)
+A-34 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 21.1 19.2 21.0 19.1 21.4 28.7 26.7 32.1 23.9 27.5 23.4 21.5 24.2 20.5 23.1
+Assam 13.4 15.8 17.7 17.4 18.7 41.9 32.3 26.6 32.1 37.1 22.6 21.1 20.5 21.3 23.9
+Bihar 17.2 18.8 16.5 21.2 19.8 31.2 38.8 31.3 23.3 27.3 18.8 21.7 18.7 21.5 20.8
+Chhattisgarh 28.3 24.9 21.9 19.6 20.8 33.4 29.1 30.2 28.3 28.8 29.8 26.2 24.6 22.1 23.3
+Delhi 7.8 9.5 7.6 2.5 3.8 10.3 3.2 5.2 5.7 3.3 8.2 8.4 7.2 3.1 3.7
+Gujarat 6.0 6.6 7.2 8.4 8.3 6.9 8.7 7.9 10.9 8.1 6.2 7.1 7.3 9.0 8.3
+Haryana 18.8 13.6 9.0 8.5 9.9 30.6 13.9 5.4 13.9 17.2 20.7 13.7 8.3 9.5 11.2
+Himachal Pradesh 19.5 25.3 19.1 10.2 10.9 49.2 51.2 43.8 35.9 41.6 31.9 33.9 25.7 17.7 19.0
+Jharkhand 26.0 20.7 21.5 17.6 19.9 30.7 20.8 20.9 30.2 16.8 26.7 20.7 21.4 20.2 19.2
+Karnataka 11.8 12.5 9.5 10.1 12.1 10.9 11.7 13.4 15.0 15.6 11.5 12.2 10.6 11.5 13.0
+Kerala 22.2 19.6 20.7 24.3 19.2 45.1 46.2 44.2 46.6 41.9 29.9 28.4 28.4 31.8 27.7
+Madhya Pradesh 18.1 13.9 12.2 11.7 11.5 26.9 18.5 15.3 13.5 10.2 19.4 14.6 12.8 12.1 11.2
+Maharashtra 14.8 15.6 15.8 15.8 14.4 19.5 17.8 13.7 15.2 17.0 16.0 16.1 15.2 15.6 15.1
+Odisha 20.6 16.9 18.2 20.6 25.4 27.9 31.9 30.3 30.0 33.8 22.4 20.9 21.5 23.3 28.0
+Punjab 17.2 17.4 11.4 15.0 14.7 27.6 31.2 31.6 26.0 21.8 19.5 20.5 15.3 17.4 16.2
+Rajasthan 25.7 27.7 21.7 20.6 22.2 38.7 39.4 38.1 35.4 36.9 28.3 30.2 25.3 24.0 25.5
+Tamil Nadu 15.8 14.2 13.5 13.5 12.8 22.0 23.3 26.7 22.0 23.7 17.3 16.5 17.0 15.9 16.1
+Telangana 27.0 23.8 20.3 20.3 17.3 30.2 24.3 28.6 38.4 28.4 27.8 23.9 22.9 26.1 20.3
+Uttarakhand 14.8 15.4 15.1 15.3 10.2 38.8 21.8 39.8 39.4 40.6 19.7 16.4 20.8 22.0 19.1
+Uttar Pradesh 14.4 14.9 17.2 19.2 16.1 26.9 30.9 31.2 33.9 34.9 16.4 17.6 19.4 21.4 19.2
+West Bengal 12.9 14.4 12.3 12.7 14.3 16.8 18.4 20.1 15.3 20.4 13.9 15.5 14.6 13.5 16.3
+Jammu & Kashmir 19.3 19.8 19.9 18.6 18.8 58.2 51.8 45.5 48.6 52.7 30.7 29.8 27.7 28.2 29.8
+all-India 15.9 15.5 14.6 15.1 14.8 23.4 22.9 22.5 22.7 23.0 17.6 17.3 16.5 17.0 16.8
+April-June 
+2024
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+Note:
+1. $: includes Transgender
+April-June 
+2023
+Table (7): Unemployment Rate (UR) (in per cent) according to current weekly status for different States 
+age group: 15-29 years                                                            urban
+State
+male$ female person$
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 2024
+April-June 
+2024
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 2024
+April-June 
+2024
+April-June 
+2023
+A-35 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 7.8 7.4 7.4 6.3 8.0 10.2 8.3 9.3 6.4 9.4 8.5 7.7 8.0 6.3 8.4
+Assam 3.6 4.0 4.5 4.6 5.2 22.7 17.9 14.0 10.3 13.2 9.0 7.9 7.1 6.2 7.3
+Bihar 5.9 6.3 5.8 6.8 6.5 7.3 9.9 8.3 5.8 6.5 6.1 6.9 6.2 6.6 6.5
+Chhattisgarh 9.9 8.9 8.1 8.3 9.0 14.4 13.1 13.1 11.4 12.0 11.2 10.1 9.6 9.2 9.8
+Delhi 2.6 3.8 3.3 1.8 2.8 3.3 2.5 3.5 1.8 1.1 2.7 3.6 3.3 1.8 2.5
+Gujarat 2.7 3.0 3.4 4.6 3.5 3.0 3.6 3.9 4.7 4.4 2.8 3.1 3.5 4.6 3.7
+Haryana 6.2 5.5 3.5 4.1 4.3 8.4 3.9 1.4 4.1 6.5 6.5 5.2 3.1 4.1 4.7
+Himachal Pradesh 7.7 9.3 7.1 4.7 5.7 24.9 25.0 23.9 19.0 17.1 13.8 14.5 12.3 9.1 9.1
+Jharkhand 9.8 8.7 7.9 6.8 7.5 9.6 6.6 7.0 10.5 5.9 9.8 8.3 7.7 7.4 7.2
+Karnataka 3.9 4.2 3.2 3.7 4.5 4.1 4.3 4.7 5.0 4.4 4.0 4.2 3.6 4.1 4.5
+Kerala 7.3 6.6 8.1 8.5 7.3 15.7 14.8 14.7 15.0 15.2 10.0 9.2 10.3 10.7 10.0
+Madhya Pradesh 7.2 5.8 6.0 5.6 5.1 9.8 6.5 6.2 4.9 3.4 7.7 5.9 6.0 5.4 4.7
+Maharashtra 6.0 6.8 6.6 7.4 6.4 8.2 7.5 7.0 7.6 9.8 6.5 6.9 6.7 7.5 7.3
+Odisha 6.2 4.8 6.1 7.0 8.2 8.5 9.0 9.8 9.4 11.6 6.7 5.9 7.1 7.7 9.2
+Punjab 7.1 7.5 5.1 6.8 6.2 13.7 13.6 11.2 10.9 8.4 8.6 8.8 6.4 7.7 6.7
+Rajasthan 10.4 11.3 8.7 9.0 9.0 16.3 14.5 13.3 11.5 13.2 11.7 12.0 9.8 9.6 10.1
+Tamil Nadu 6.0 5.1 5.8 5.5 5.0 9.0 8.8 9.1 7.5 6.7 6.8 6.1 6.7 6.1 5.5
+Telangana 8.4 7.3 7.2 7.0 6.0 9.9 8.7 10.2 13.2 9.9 8.8 7.7 8.1 8.8 7.1
+Uttarakhand 5.8 5.7 6.6 5.3 3.6 15.3 8.3 14.4 16.4 18.4 7.4 6.1 8.3 8.0 7.2
+Uttar Pradesh 5.8 6.1 6.7 7.5 6.0 11.2 11.9 11.7 12.6 12.6 6.6 7.0 7.5 8.3 7.1
+West Bengal 4.1 4.7 4.6 4.8 5.2 5.5 6.1 7.2 6.1 8.0 4.4 5.1 5.3 5.1 6.0
+Jammu & Kashmir 5.7 5.8 5.6 5.2 5.1 27.4 24.6 23.5 27.1 29.1 10.9 10.7 10.2 11.0 11.5
+all-India 5.9 6.0 5.8 6.1 5.8 9.1 8.6 8.6 8.5 9.0 6.6 6.6 6.5 6.7 6.6
+Note:
+1. $: includes Transgender
+January-
+March 2024
+October-
+December 
+2023
+July-
+September 
+2023
+April-June 
+2024
+October-
+December 
+2023
+January-
+March 
+2024
+April-June 
+2024
+April-June 
+2023
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+Table (7): Unemployment Rate (UR) (in per cent) according to current weekly status for different States 
+age group: 15 years and above                                                            urban
+July-
+September 
+2023State
+male$ female person$
+April-June 
+2023
+October-
+December 
+2023
+January-
+March 2024
+A-36 Quarterly Bulletin, PLFS, April - June 2024Detailed Tables
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 7.8 7.4 7.4 6.3 8.0 10.2 8.3 9.3 6.4 9.4 8.5 7.7 8.0 6.3 8.4
+Assam 3.6 4.0 4.5 4.6 5.2 22.7 17.9 14.0 10.3 13.2 9.0 7.9 7.1 6.1 7.3
+Bihar 5.9 6.4 5.8 6.8 6.6 7.2 9.8 8.3 5.7 6.5 6.1 6.9 6.2 6.6 6.6
+Chhattisgarh 9.9 9.0 8.1 8.4 9.1 14.4 13.1 13.1 11.4 12.0 11.2 10.2 9.6 9.2 9.8
+Delhi 2.6 3.8 3.3 1.8 2.8 3.3 2.5 3.5 1.8 1.1 2.7 3.6 3.3 1.8 2.5
+Gujarat 2.7 3.0 3.4 4.6 3.5 3.0 3.6 3.9 4.7 4.4 2.8 3.1 3.5 4.6 3.7
+Haryana 6.2 5.5 3.5 4.1 4.3 8.4 4.2 1.4 4.1 6.5 6.5 5.2 3.1 4.1 4.7
+Himachal Pradesh 8.9 10.3 7.1 4.7 5.9 24.9 25.0 23.9 19.0 17.1 14.5 15.2 12.3 9.1 9.3
+Jharkhand 9.8 8.7 7.9 6.8 7.5 9.6 6.6 7.0 10.5 5.9 9.8 8.3 7.7 7.4 7.2
+Karnataka 3.9 4.2 3.2 3.7 4.5 4.1 4.3 4.7 5.0 4.4 4.0 4.2 3.6 4.1 4.5
+Kerala 7.3 6.6 8.1 8.5 7.3 15.7 14.8 14.7 15.0 15.2 10.0 9.2 10.3 10.7 10.0
+Madhya Pradesh 7.2 5.8 5.9 5.6 5.1 9.8 6.5 6.0 4.8 3.3 7.7 5.9 6.0 5.4 4.7
+Maharashtra 5.9 6.8 6.6 7.4 6.4 8.2 7.5 7.2 7.6 9.8 6.5 6.9 6.7 7.5 7.3
+Odisha 6.2 4.8 6.1 7.0 8.2 8.5 9.0 9.8 9.3 11.6 6.7 5.9 7.1 7.6 9.1
+Punjab 7.1 7.5 5.2 6.8 6.3 13.7 13.6 11.2 10.9 8.4 8.6 8.8 6.4 7.7 6.8
+Rajasthan 10.4 11.3 8.7 9.0 9.0 16.2 14.7 13.3 11.4 13.2 11.7 12.1 9.8 9.6 10.0
+Tamil Nadu 6.0 5.1 5.8 5.5 5.0 9.1 8.8 9.1 7.5 6.7 6.9 6.1 6.7 6.1 5.5
+Telangana 8.4 7.3 7.2 7.0 6.0 9.9 8.7 10.2 13.2 9.9 8.8 7.7 8.1 8.8 7.1
+Uttarakhand 6.0 5.9 6.6 5.3 3.6 15.3 8.7 14.4 16.4 18.3 7.5 6.4 8.3 8.0 7.2
+Uttar Pradesh 5.8 6.1 6.7 7.5 6.0 11.2 11.9 11.7 12.6 12.6 6.6 7.0 7.5 8.3 7.1
+West Bengal 4.1 4.7 4.6 4.8 5.2 5.5 6.1 7.2 6.1 8.0 4.4 5.1 5.3 5.2 6.0
+Jammu & Kashmir 5.7 5.8 5.6 5.2 5.1 27.4 24.6 23.5 27.1 29.1 10.9 10.7 10.2 11.0 11.5
+all-India 5.9 6.0 5.8 6.1 5.8 9.2 8.6 8.6 8.4 8.9 6.7 6.6 6.5 6.7 6.6
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 2024
+April-June 
+2024
+January-
+March 2024
+April-June 
+2024
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+State
+male$ female person$
+April-June 
+2023
+July-
+September 
+2023
+October-
+December 
+2023
+January-
+March 
+2024
+Table (7): Unemployment Rate (UR) (in per cent) according to current weekly status for different States 
+age group: all                                                            urban
+Note:
+1. $: includes Transgender
+A-37 Quarterly Bulletin, PLFS, April - June 2024 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+RSE of the Estimates 
+(hyperlinked to Excel files)  
+Quarterly Bulletin, PLFS, April - June, 2024 
+B-(i) 
+ 
+ 
+List of Relative Standard Error (RSE) Tables 
+(hyperlinked with the corresponding Excel tables) 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+  
+Table No. Title 
+  Table (1RSE) RSE (in per cent) for Labour Force Participation Rate (LFPR) according to 
+Current Weekly Status (CWS) for different States 
+  Table (2RSE) RSE (in per cent) for Worker Population Ratio (WPR) according to Current 
+Weekly Status (CWS) for different States 
+  Table (3RSE) RSE (in per cent) for Unemployment Rate (UR) according to Current Weekly 
+Status (CWS) for different States 
+ RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 4.9 8.4 2.9 5.9 8.0 4.3 5.5 9.8 4.7 6.0 9.9 5.6 6.9 8.7 5.5
+Assam 6.2 13.8 7.2 5.1 11.2 5.6 4.1 14.7 4.7 7.7 16.2 9.0 7.4 22.5 9.3
+Bihar 7.0 16.2 5.5 6.9 14.8 6.0 7.0 8.6 4.2 5.6 8.0 4.7 3.3 19.6 5.7
+Chhattisgarh 5.2 12.1 6.3 4.0 6.2 4.2 5.3 10.4 4.2 6.0 12.9 3.3 7.0 14.8 2.8
+Delhi 8.0 35.4 11.8 4.0 45.4 10.1 5.3 35.1 6.2 8.6 9.3 6.2 10.1 16.7 6.8
+Gujarat 5.7 11.1 5.3 4.8 10.9 5.3 7.3 11.5 7.3 5.4 8.8 5.0 5.2 8.1 4.6
+Haryana 2.6 14.5 4.4 4.4 10.7 3.7 4.7 16.2 4.4 2.4 14.5 2.2 1.8 26.3 4.2
+Himachal Pradesh 8.3 24.3 12.1 11.7 18.7 10.4 7.4 18.0 4.9 15.0 8.2 9.6 15.3 5.9 12.1
+Jharkhand 7.9 13.5 7.2 4.3 26.6 6.0 5.3 37.1 9.4 5.1 25.4 6.8 5.8 20.1 6.4
+Karnataka 2.8 7.4 3.6 3.8 7.9 4.7 4.5 11.9 3.8 4.8 5.0 5.4 5.0 6.4 5.9
+Kerala 6.3 5.3 4.3 6.9 5.3 3.6 6.7 10.3 1.1 4.2 4.9 2.6 3.1 6.4 2.8
+Madhya Pradesh 3.6 12.2 3.4 2.4 9.9 3.1 3.5 12.7 4.8 4.3 12.2 5.2 3.7 15.8 4.3
+Maharashtra 2.7 5.1 2.4 3.1 4.5 2.1 1.7 8.7 2.5 2.2 7.0 2.8 1.8 7.2 2.5
+Odisha 6.3 9.4 5.2 4.3 12.5 6.3 7.1 10.5 7.6 4.9 13.4 5.1 6.2 12.9 4.3
+Punjab 5.2 7.1 5.8 3.2 14.3 3.3 4.2 13.9 4.1 2.8 8.2 3.1 2.8 7.7 3.4
+Rajasthan 5.2 13.1 3.8 10.6 11.8 9.6 8.2 17.1 8.9 6.9 15.9 8.0 5.9 12.6 7.3
+Tamil Nadu 2.7 3.8 2.9 3.8 6.1 3.7 3.6 5.5 2.7 4.1 7.8 3.6 3.5 8.0 2.8
+Telangana 4.8 3.4 4.7 4.6 6.5 4.4 2.5 5.5 1.7 4.6 8.4 5.9 9.0 9.9 8.5
+Uttarakhand 2.8 20.0 2.6 9.0 10.6 9.0 7.4 6.9 7.0 8.2 9.8 5.9 6.6 3.4 5.0
+Uttar Pradesh 2.7 11.1 3.4 2.3 9.9 3.2 2.1 7.7 2.2 2.6 8.2 2.5 2.8 8.5 2.4
+West Bengal 3.1 5.9 2.5 2.4 6.0 3.1 2.1 7.4 3.0 2.3 8.7 3.2 2.3 7.5 4.0
+Jammu & Kashmir 2.6 6.1 2.5 3.1 4.0 2.9 3.2 9.2 3.8 4.4 6.7 4.5 5.1 5.6 5.0
+all-India 1.0 2.2 1.0 1.2 2.3 1.2 1.1 2.8 1.2 1.1 2.4 1.2 1.1 2.5 1.1
+Table (1RSE): RSE (in per cent) for Labour Force Participation Rate (LFPR) according to Current Weekly Status for different States
+age group: 15-29 years                                 urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024
+Note:
+1.$: includes Transgender
+April-June 2024
+B-1 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 2.5 5.2 2.1 2.4 5.8 2.7 1.5 4.4 1.6 1.8 4.5 2.2 1.8 5.3 2.4
+Assam 1.1 7.5 2.3 1.0 5.2 1.7 1.3 7.8 1.9 1.8 7.7 2.8 1.9 8.6 3.1
+Bihar 2.4 10.1 2.4 2.1 7.2 1.6 2.4 9.0 2.1 3.2 7.1 2.3 1.2 11.6 2.3
+Chhattisgarh 1.8 9.2 3.4 1.4 7.5 3.0 1.2 3.3 1.3 2.3 3.6 1.5 2.2 6.6 1.8
+Delhi 5.3 17.5 7.5 2.7 15.2 4.8 1.9 15.9 3.5 2.7 4.3 1.1 3.6 5.3 1.8
+Gujarat 2.6 6.8 1.7 2.2 5.0 1.9 2.7 4.4 2.4 1.7 4.8 1.8 1.9 5.4 1.8
+Haryana 1.1 7.1 1.7 1.9 8.3 1.6 2.1 4.2 1.8 1.0 5.0 1.6 0.9 9.2 2.5
+Himachal Pradesh 2.6 6.9 4.0 1.9 3.1 2.8 0.6 9.8 2.5 3.4 3.8 2.6 5.2 2.9 3.8
+Jharkhand 3.0 6.6 3.2 2.1 17.0 3.5 2.0 19.8 4.1 3.3 14.6 1.9 2.6 13.0 2.5
+Karnataka 0.9 3.8 1.2 0.9 2.9 1.1 0.8 2.8 0.8 1.0 4.5 1.5 1.1 4.3 1.4
+Kerala 2.3 2.6 0.8 1.4 2.4 1.0 1.4 4.0 1.6 1.0 2.8 1.5 0.6 1.8 0.6
+Madhya Pradesh 1.3 5.9 1.6 1.3 4.8 1.4 1.4 4.7 1.8 1.5 4.3 1.8 1.6 4.4 1.6
+Maharashtra 1.0 2.8 1.0 1.4 3.8 1.4 0.9 3.3 1.0 0.8 3.4 1.2 0.7 4.1 1.2
+Odisha 1.6 7.9 2.6 1.8 5.7 2.3 2.6 5.3 2.0 1.6 6.5 2.3 2.5 8.2 2.2
+Punjab 2.5 2.9 2.1 1.8 6.2 1.7 1.2 10.0 2.5 0.8 6.8 1.6 0.7 5.5 0.9
+Rajasthan 1.3 6.2 1.8 3.9 7.5 4.3 2.9 8.3 3.8 2.6 9.1 3.9 2.7 8.5 3.7
+Tamil Nadu 0.9 3.3 1.2 0.9 3.2 1.0 1.3 2.5 1.1 1.4 3.1 1.5 1.5 2.6 1.3
+Telangana 1.6 4.6 2.7 1.4 2.9 2.1 0.9 3.4 1.6 0.6 6.3 2.4 1.4 5.5 2.1
+Uttarakhand 3.9 15.2 4.5 4.9 11.3 5.6 3.1 5.3 3.6 3.0 1.9 2.8 1.3 5.0 1.3
+Uttar Pradesh 1.2 5.7 1.2 1.3 5.7 1.6 1.0 4.9 1.2 1.0 4.3 1.0 1.2 4.1 1.0
+West Bengal 1.1 2.8 1.4 1.1 4.0 1.6 1.0 2.8 1.3 0.7 4.0 1.4 0.7 4.0 1.4
+Jammu & Kashmir 1.3 6.7 2.3 0.8 4.8 1.3 1.4 4.7 1.6 1.4 5.1 1.2 1.5 2.9 1.5
+all-India 0.4 1.2 0.4 0.5 1.2 0.5 0.4 1.1 0.4 0.4 1.2 0.5 0.4 1.2 0.4
+Note:
+1.$: includes Transgender
+Table (1RSE): RSE (in per cent) for Labour Force Participation Rate (LFPR) according to Current Weekly Status for different States
+age group: 15 years and above                                     urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024 April-June 2024
+B-2 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 2.3 4.6 1.8 1.9 5.3 2.2 1.4 4.6 1.5 2.1 4.1 2.1 2.9 5.0 2.5
+Assam 2.1 6.9 2.7 1.9 5.1 2.1 1.8 7.4 2.0 2.2 8.5 3.4 1.6 9.3 3.5
+Bihar 2.2 10.3 1.7 2.6 7.1 0.7 2.4 9.3 2.6 2.8 7.0 2.0 1.3 11.4 2.0
+Chhattisgarh 2.1 10.9 4.5 1.6 7.7 3.4 1.4 2.3 1.1 2.5 2.7 1.9 2.5 5.7 2.1
+Delhi 3.1 14.0 4.5 2.6 12.8 3.4 1.2 14.3 2.2 1.3 3.5 1.4 2.7 6.5 2.7
+Gujarat 2.5 5.9 1.8 1.9 4.5 1.7 2.3 4.0 2.1 1.5 4.9 1.5 1.6 6.0 1.6
+Haryana 1.3 7.7 2.5 1.6 9.7 2.5 1.4 4.6 1.6 1.0 5.6 1.6 0.9 9.7 2.7
+Himachal Pradesh 2.1 5.1 2.2 1.5 4.6 2.2 1.4 11.7 3.9 3.7 6.2 3.3 5.7 4.2 4.4
+Jharkhand 2.0 5.5 2.2 1.8 17.1 3.4 1.9 20.4 4.0 3.6 15.5 2.3 3.1 14.1 2.9
+Karnataka 0.9 3.6 0.9 1.1 2.8 1.0 0.9 2.4 0.9 0.8 5.4 1.9 1.3 4.9 1.8
+Kerala 1.8 2.5 0.8 1.4 2.5 1.4 1.5 3.9 1.6 1.2 2.4 1.3 0.3 2.2 0.7
+Madhya Pradesh 1.3 6.1 1.8 1.7 4.7 1.5 1.8 5.0 1.5 2.0 4.1 1.6 1.7 4.9 1.4
+Maharashtra 1.1 3.2 1.4 1.1 4.1 1.3 0.6 3.7 1.1 0.8 3.7 1.4 0.6 4.1 1.2
+Odisha 2.4 7.7 2.6 3.1 5.0 2.5 3.2 5.7 2.0 2.6 6.2 2.1 2.8 8.1 2.2
+Punjab 1.9 2.7 1.6 1.5 6.2 1.4 0.9 10.2 2.3 1.1 6.8 1.5 1.2 5.6 1.0
+Rajasthan 2.0 5.9 1.9 3.1 7.1 3.6 2.3 8.3 3.2 2.0 8.8 3.2 2.0 8.4 3.1
+Tamil Nadu 0.7 3.3 1.1 0.8 3.4 1.1 1.1 2.5 1.0 1.3 2.9 1.4 1.5 2.6 1.2
+Telangana 2.7 4.2 2.9 2.5 2.9 2.6 1.6 3.3 2.4 1.6 6.8 2.7 2.1 6.4 3.0
+Uttarakhand 1.9 14.5 3.0 1.3 8.6 2.5 2.2 4.4 2.3 1.0 1.8 1.3 1.0 5.7 2.4
+Uttar Pradesh 0.6 5.6 1.1 0.8 5.5 1.3 1.0 5.1 1.3 0.9 4.5 1.0 1.3 4.2 1.0
+West Bengal 1.1 3.1 1.5 0.8 4.2 1.6 0.7 3.1 1.5 0.9 4.4 1.6 1.0 3.9 1.3
+Jammu & Kashmir 1.6 6.7 2.3 2.1 4.3 1.6 1.9 4.4 1.8 1.2 5.2 1.5 1.6 2.7 1.4
+all-India 0.4 1.2 0.4 0.4 1.2 0.5 0.4 1.1 0.4 0.3 1.3 0.5 0.4 1.3 0.4
+Note:
+1.$: includes Transgender
+Table (1RSE): RSE (in per cent) for Labour Force Participation Rate (LFPR) according to Current Weekly Status for different States
+age group: all                                     urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024 April-June 2024
+B-3 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 5.8 14.3 6.4 7.2 12.0 6.8 7.0 10.0 6.0 7.3 9.3 6.9 8.2 9.9 7.3
+Assam 7.6 19.9 7.4 5.5 13.9 5.7 8.7 19.8 6.4 13.7 10.6 12.3 12.7 18.0 11.6
+Bihar 7.1 23.9 6.2 8.5 18.5 8.2 7.3 13.7 6.0 6.3 15.9 5.9 4.5 20.7 6.6
+Chhattisgarh 8.1 18.8 10.3 7.3 14.8 9.1 6.8 12.3 3.9 8.7 12.0 3.3 6.9 23.0 3.6
+Delhi 6.6 38.0 10.5 4.7 46.8 9.7 6.9 38.9 6.5 9.2 8.3 6.3 10.6 17.1 6.8
+Gujarat 6.0 10.4 5.2 5.1 10.6 5.4 8.6 11.9 8.4 5.9 8.7 5.2 5.2 8.9 4.7
+Haryana 3.6 15.4 4.0 6.8 12.2 5.8 4.4 18.0 4.4 3.1 15.6 2.0 3.3 32.0 6.2
+Himachal Pradesh 8.3 39.1 11.0 13.7 38.9 9.5 10.6 41.3 8.5 18.4 18.5 14.3 19.2 21.7 19.8
+Jharkhand 7.6 18.2 8.9 4.2 23.0 4.7 6.8 34.0 8.4 8.5 21.9 6.1 6.2 16.9 5.9
+Karnataka 3.2 7.3 3.8 4.6 7.7 5.2 5.4 12.5 4.5 5.1 8.7 6.8 5.1 9.6 6.8
+Kerala 6.9 8.6 5.9 7.5 7.6 5.7 9.3 9.0 4.4 7.4 11.7 5.0 4.6 9.7 3.8
+Madhya Pradesh 3.3 16.5 3.7 3.1 10.9 3.4 4.5 13.7 5.1 3.4 12.4 4.6 4.3 18.3 5.5
+Maharashtra 2.4 6.0 2.3 3.6 6.4 2.8 2.6 10.4 3.1 3.1 8.1 3.6 2.9 8.8 3.4
+Odisha 7.8 16.7 7.4 6.1 14.5 7.4 7.4 10.3 7.5 7.0 11.4 7.2 12.2 11.9 10.2
+Punjab 4.8 10.7 4.1 3.3 18.3 3.2 5.4 10.2 3.3 3.9 6.7 3.3 3.1 7.7 3.4
+Rajasthan 5.8 16.7 4.9 10.2 16.8 9.9 6.7 22.1 7.9 7.5 21.6 8.2 5.4 16.5 6.9
+Tamil Nadu 3.0 5.4 2.9 4.7 5.5 4.1 4.5 8.0 3.7 4.0 9.0 4.0 2.5 8.2 3.2
+Telangana 9.7 9.4 6.9 7.0 8.1 5.4 2.9 7.0 2.7 3.5 7.2 3.5 11.9 12.6 7.5
+Uttarakhand 2.7 6.5 3.6 8.3 13.4 8.9 6.9 14.9 8.3 10.9 11.7 7.7 7.8 10.8 8.6
+Uttar Pradesh 2.5 12.4 3.2 2.6 11.3 2.9 3.6 7.7 3.5 3.1 13.0 3.6 3.2 14.1 3.1
+West Bengal 4.0 5.6 3.3 3.2 5.5 3.2 3.0 6.9 3.5 2.6 10.7 3.4 2.0 9.4 4.2
+Jammu & Kashmir 3.0 7.5 2.7 5.3 9.4 5.0 5.8 8.9 4.7 7.3 13.3 8.0 7.5 11.3 7.6
+all-India 1.1 2.6 1.1 1.4 2.8 1.3 1.4 3.3 1.4 1.3 3.0 1.3 1.3 3.2 1.3
+Table (2RSE): RSE (in per cent) for Worker Population Ratio (WPR)  according to Current Weekly Status for different States 
+age group: 15-29 years                                 urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024 April-June 2024
+Note:
+1.$: includes Transgender
+B-4 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 2.4 6.6 2.8 2.6 6.8 3.0 1.9 4.9 2.2 2.1 4.2 2.6 2.2 5.8 3.0
+Assam 1.4 7.1 1.8 1.1 6.9 1.7 1.6 8.6 2.0 2.3 6.2 3.2 2.7 6.8 3.3
+Bihar 2.6 12.1 2.7 2.4 9.3 2.6 2.3 11.3 2.6 3.5 8.1 2.9 2.1 11.7 2.9
+Chhattisgarh 2.5 9.6 3.8 2.1 10.1 4.2 1.2 5.1 2.0 2.5 3.1 1.3 2.8 6.3 1.4
+Delhi 4.9 18.1 7.0 2.3 14.7 3.8 1.6 16.0 2.6 3.1 5.0 1.3 4.3 5.8 2.2
+Gujarat 2.6 7.2 1.7 2.2 5.4 1.8 3.2 4.7 2.8 1.9 4.8 1.8 1.9 6.4 2.0
+Haryana 1.7 8.7 1.4 2.2 8.1 1.3 2.1 4.5 1.8 1.3 5.1 1.4 1.1 9.6 2.7
+Himachal Pradesh 2.8 15.5 5.8 2.3 8.9 4.4 1.8 10.0 1.8 3.3 4.5 2.8 4.7 4.8 4.0
+Jharkhand 2.8 6.9 3.5 2.5 15.7 3.7 2.3 17.7 4.0 4.6 13.0 2.4 3.1 12.2 2.4
+Karnataka 1.1 3.9 1.3 1.1 3.0 1.0 1.0 2.3 0.9 1.0 5.4 1.9 1.3 5.2 1.8
+Kerala 2.7 2.5 1.2 1.4 3.3 1.5 1.4 4.1 1.4 1.7 3.9 2.2 0.5 1.8 1.0
+Madhya Pradesh 1.6 6.3 1.8 1.2 5.6 1.5 1.2 5.2 1.7 1.0 4.2 1.3 1.4 4.9 1.6
+Maharashtra 1.1 2.9 1.0 1.5 4.2 1.5 1.1 3.5 0.9 1.0 3.8 1.3 0.8 4.1 1.2
+Odisha 2.2 8.9 3.1 2.0 6.0 2.2 3.0 6.3 2.3 2.6 6.2 2.7 3.7 8.0 3.0
+Punjab 2.5 4.7 2.0 1.5 6.6 1.2 1.6 8.1 2.0 1.4 4.9 1.4 0.6 4.7 0.6
+Rajasthan 1.2 6.7 1.9 3.1 8.1 3.7 2.2 8.9 3.2 2.3 9.2 3.6 2.1 9.1 3.3
+Tamil Nadu 0.7 3.6 1.2 0.9 3.1 0.8 1.4 2.9 1.2 1.4 3.4 1.6 1.3 2.6 1.3
+Telangana 2.1 4.7 2.9 1.4 3.1 2.1 1.6 4.5 2.2 0.9 5.6 2.2 1.6 4.4 1.6
+Uttarakhand 3.8 11.9 3.3 4.2 13.3 5.2 3.2 6.9 3.7 3.8 4.0 3.6 1.5 9.7 2.8
+Uttar Pradesh 1.2 5.5 1.1 1.2 5.9 1.3 0.9 5.4 1.2 1.1 4.8 1.3 1.1 4.3 1.0
+West Bengal 1.1 3.2 1.4 1.0 4.1 1.5 0.9 2.4 1.1 0.9 4.4 1.5 1.1 4.6 1.7
+Jammu & Kashmir 1.5 8.2 2.5 1.4 6.8 1.7 2.4 6.0 2.5 2.1 6.3 1.7 1.7 4.2 2.0
+all-India 0.4 1.3 0.5 0.4 1.3 0.5 0.4 1.2 0.4 0.4 1.3 0.5 0.4 1.3 0.5
+Note:
+1.$: includes Transgender
+Table (2RSE): RSE (in per cent) for Worker Population Ratio (WPR)  according to Current Weekly Status for different States 
+age group: 15 years and above                                     urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024 April-June 2024
+B-5 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 2.1 6.0 2.2 2.0 6.2 2.4 1.7 4.9 2.0 2.4 3.7 2.4 3.2 5.5 3.2
+Assam 2.2 7.3 2.5 1.9 7.1 2.1 2.1 8.5 2.2 2.3 7.0 3.4 1.9 7.3 3.2
+Bihar 2.1 12.3 1.8 2.7 9.0 1.8 2.4 11.5 3.0 2.9 7.8 2.4 1.0 11.3 2.1
+Chhattisgarh 2.7 11.3 4.9 2.6 10.3 4.6 1.5 3.7 1.6 3.0 1.8 2.3 3.1 5.2 2.0
+Delhi 2.8 14.6 4.1 3.0 12.2 2.5 1.0 14.4 1.3 1.7 3.4 1.7 3.4 6.6 3.2
+Gujarat 2.6 6.2 1.9 1.9 4.8 1.7 2.8 4.1 2.5 1.8 4.7 1.7 1.6 6.9 2.0
+Haryana 1.2 9.1 2.1 1.5 9.4 2.0 1.5 5.0 1.7 1.3 5.8 1.5 1.1 10.2 3.0
+Himachal Pradesh 2.8 12.7 4.9 2.4 6.7 3.5 1.7 11.1 2.5 2.8 5.7 2.2 5.1 6.2 4.6
+Jharkhand 1.7 5.7 2.5 2.2 15.8 3.7 2.3 18.5 4.0 4.9 13.9 2.4 3.7 13.2 2.7
+Karnataka 0.9 3.6 0.9 1.2 2.9 1.0 1.1 2.1 1.2 1.1 6.4 2.4 1.6 5.8 2.2
+Kerala 2.2 2.3 1.2 1.7 3.4 1.8 1.3 4.1 1.4 1.8 3.4 2.0 0.5 1.7 0.8
+Madhya Pradesh 1.4 6.5 1.7 1.6 5.4 1.5 1.7 5.6 1.6 1.9 4.3 1.3 1.7 5.5 1.6
+Maharashtra 1.1 3.4 1.4 1.5 4.5 1.4 1.0 3.8 0.9 1.2 4.0 1.4 1.0 4.1 1.3
+Odisha 2.7 8.8 3.1 3.2 5.5 2.4 3.7 6.6 2.2 3.3 5.8 2.3 4.0 7.9 2.9
+Punjab 1.7 4.7 1.4 1.3 6.6 0.9 1.2 8.4 1.8 1.4 4.9 0.9 1.3 4.8 0.9
+Rajasthan 1.9 6.2 1.8 2.6 7.7 3.2 1.7 9.0 2.8 1.7 8.9 2.9 1.4 9.1 2.9
+Tamil Nadu 0.9 3.5 1.1 1.0 3.2 1.0 1.3 2.9 1.2 1.3 3.2 1.4 1.2 2.5 1.0
+Telangana 3.3 4.4 3.1 2.6 2.9 2.7 2.4 4.3 2.7 2.2 5.6 2.4 2.1 4.4 2.3
+Uttarakhand 2.0 11.5 1.9 1.0 10.5 2.4 2.7 5.9 2.5 1.4 2.8 1.6 1.1 9.4 3.1
+Uttar Pradesh 0.8 5.2 1.1 1.0 5.7 1.1 1.3 5.5 1.5 1.1 5.0 1.3 1.3 4.4 1.1
+West Bengal 1.0 3.5 1.4 0.7 4.3 1.4 0.6 2.7 1.1 0.8 4.8 1.6 1.2 4.6 1.6
+Jammu & Kashmir 1.8 8.1 2.4 2.6 6.4 2.2 2.8 5.6 2.5 1.6 6.3 1.7 1.7 4.0 1.9
+all-India 0.4 1.3 0.4 0.4 1.3 0.4 0.4 1.2 0.4 0.4 1.3 0.5 0.4 1.4 0.5
+Note:
+1.$: includes Transgender
+Table (2RSE): RSE (in per cent) for Worker Population Ratio (WPR)  according to Current Weekly Status for different States 
+age group: all                                     urban                                                          
+State
+April-June 2023 July-September 2023 October-December 2023 January-March 2024 April-June 2024
+B-6 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 16.1 18.5 14.8 14.7 20.8 14.2 11.4 19.2 12.7 10.2 20.4 11.0 9.6 16.1 9.8
+Assam 14.5 16.7 11.7 10.7 17.4 7.7 26.1 24.6 11.2 32.8 18.8 16.8 25.9 16.2 16.9
+Bihar 18.4 27.3 14.0 11.5 37.2 16.4 5.9 37.0 11.6 11.5 36.9 10.6 10.9 20.0 10.9
+Chhattisgarh 10.6 14.0 10.7 16.0 22.4 17.0 16.2 16.7 12.0 18.2 12.7 14.7 7.4 28.8 12.4
+Delhi 27.7 29.2 20.0 30.4 45.3 25.9 25.7 71.4 16.6 49.0 46.7 20.4 14.9 53.5 4.4
+Gujarat 14.7 28.9 11.5 13.0 29.0 9.7 27.0 32.4 19.4 21.5 27.6 15.7 24.0 29.6 16.8
+Haryana 14.9 14.8 10.1 21.1 15.9 19.0 10.0 43.1 10.1 15.5 18.8 14.4 24.2 28.9 20.1
+Himachal Pradesh 2.7 33.0 20.4 13.1 26.3 6.6 14.8 29.9 10.7 31.0 36.5 32.0 44.3 25.9 33.8
+Jharkhand 14.3 42.7 15.6 14.6 24.6 14.0 15.6 18.0 12.6 20.5 20.7 19.9 11.0 29.9 13.0
+Karnataka 8.3 16.2 7.8 9.8 14.9 7.3 12.6 15.5 11.1 12.8 26.3 16.0 5.3 21.4 7.8
+Kerala 5.2 7.8 5.1 7.9 12.9 7.4 12.2 6.1 9.8 14.7 11.0 9.2 12.3 7.2 3.5
+Madhya Pradesh 18.0 17.5 14.9 11.0 12.8 9.6 16.6 18.2 15.6 16.5 26.2 14.7 16.3 41.5 17.6
+Maharashtra 6.7 13.6 6.7 10.8 15.9 9.4 9.7 17.2 8.2 9.8 13.1 7.2 12.0 13.9 8.4
+Odisha 16.9 26.0 12.6 12.2 14.4 10.0 17.9 11.0 14.6 26.0 19.9 21.5 22.2 20.8 19.0
+Punjab 11.6 22.0 11.0 12.0 18.7 11.7 17.7 17.3 16.4 15.6 14.9 13.1 9.7 15.3 8.9
+Rajasthan 8.7 15.9 7.6 9.1 15.6 8.3 11.3 14.7 8.4 7.9 17.6 5.7 7.0 12.1 5.1
+Tamil Nadu 9.1 11.0 6.2 10.7 11.3 8.3 12.8 15.2 9.2 10.5 8.9 7.1 11.6 10.6 8.6
+Telangana 14.5 22.4 6.9 11.3 13.1 4.9 11.0 6.8 7.8 9.2 15.2 9.0 18.0 35.5 9.0
+Uttarakhand 9.2 26.9 21.2 9.4 25.9 10.3 11.2 14.3 7.4 29.7 5.5 14.9 15.9 20.5 21.3
+Uttar Pradesh 11.2 17.7 10.7 12.9 17.8 12.1 14.1 17.9 13.9 14.3 17.5 13.2 11.6 15.8 9.4
+West Bengal 16.1 9.6 11.3 15.9 11.5 11.9 18.8 8.6 12.1 17.6 16.4 13.5 10.1 16.1 11.1
+Jammu & Kashmir 7.6 3.9 4.8 14.3 8.9 10.2 20.2 6.2 13.5 15.1 10.3 11.9 12.5 9.4 8.1
+all-India 3.1 3.9 2.5 3.4 4.5 2.9 3.9 4.5 3.2 3.8 4.5 3.1 3.4 4.6 2.6
+Table (3RSE): RSE (in per cent) for Unemployment Rate (UR) according to Current Weekly Status for different States 
+age group: 15-29 years                                 urban                                                          
+State
+January-March 2023 April-June 2023 July-September 2023 October-December 2023 January-March 2024
+Note:
+1.$: includes Transgender
+B-7 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 12.2 15.0 11.2 14.4 18.3 10.8 12.8 15.6 9.3 12.0 20.2 8.9 17.5 13.0 12.1
+Assam 12.3 22.9 18.8 11.2 18.4 13.6 23.1 24.8 15.9 24.7 22.7 16.3 20.0 22.9 16.0
+Bihar 11.2 35.3 9.8 12.5 44.6 17.7 8.6 42.2 10.8 12.1 36.7 12.5 15.2 25.4 15.0
+Chhattisgarh 11.2 7.3 8.5 13.8 22.0 15.4 16.2 18.2 14.5 18.9 17.1 16.5 11.5 19.2 8.7
+Delhi 19.9 29.8 15.5 40.3 36.0 39.2 32.5 10.4 27.3 31.0 63.0 18.2 28.5 70.2 20.4
+Gujarat 13.9 21.1 13.3 11.3 21.9 9.4 23.0 12.7 17.4 19.2 13.7 13.0 21.8 28.2 15.8
+Haryana 12.2 22.1 6.5 13.5 16.0 12.8 7.6 36.7 8.6 17.4 20.3 15.7 20.1 14.9 14.6
+Himachal Pradesh 12.3 33.6 18.9 6.0 23.9 16.0 18.8 16.1 15.6 30.0 27.3 22.9 16.7 12.1 8.2
+Jharkhand 14.5 46.3 14.1 17.3 34.3 15.9 14.3 35.2 15.3 20.4 27.1 21.5 11.9 33.7 13.8
+Karnataka 9.3 17.3 7.4 8.8 15.7 5.2 9.4 18.1 9.9 14.2 25.0 16.8 9.3 22.7 11.2
+Kerala 8.3 7.3 6.3 9.9 8.4 6.7 8.2 7.2 6.9 9.7 8.1 7.4 5.6 7.2 4.3
+Madhya Pradesh 17.3 14.9 14.2 7.4 23.6 8.1 11.4 16.6 9.5 16.4 29.1 16.1 14.8 25.8 14.9
+Maharashtra 7.1 13.4 7.8 7.8 11.3 7.0 8.9 12.4 7.2 7.4 11.2 5.6 8.1 9.8 5.3
+Odisha 19.2 27.3 17.2 8.8 18.9 9.6 17.6 20.9 16.5 24.9 20.7 20.5 18.7 17.8 14.9
+Punjab 9.0 18.1 8.0 7.8 19.3 9.3 12.1 19.4 11.8 13.8 18.7 12.6 4.1 15.4 5.1
+Rajasthan 8.6 16.9 8.4 13.1 16.5 11.8 13.9 14.5 10.7 8.4 12.9 6.0 7.9 8.9 6.0
+Tamil Nadu 7.1 6.4 5.6 8.4 7.0 6.4 8.1 12.7 6.3 5.6 11.6 5.6 9.1 9.8 7.3
+Telangana 11.0 13.3 7.4 7.4 10.1 4.6 18.1 11.0 13.2 11.8 17.0 13.5 9.6 31.1 14.3
+Uttarakhand 9.7 29.8 15.4 10.8 26.0 8.0 11.0 10.7 5.0 24.7 14.4 15.6 17.1 24.4 20.3
+Uttar Pradesh 10.2 14.2 9.0 12.7 19.0 12.2 13.6 16.8 12.4 15.0 12.3 12.8 11.7 9.9 8.5
+West Bengal 12.4 17.2 8.4 12.3 12.5 7.5 11.3 15.2 8.9 14.1 14.7 9.8 10.3 14.2 9.7
+Jammu & Kashmir 8.3 6.0 4.2 14.3 8.0 8.1 21.8 6.7 11.9 15.1 6.4 8.3 8.6 4.4 4.3
+all-India 2.7 3.8 2.4 3.0 3.8 2.5 3.4 3.7 2.6 3.4 3.7 2.7 2.9 3.6 2.2
+Note:
+1.$: includes Transgender
+Table (3RSE): RSE (in per cent) for Unemployment Rate (UR) according to Current Weekly Status for different States 
+age group: 15 years and above                                     urban                                                          
+State
+January-March 2023 April-June 2023 July-September 2023 October-December 2023 January-March 2024
+B-8 Quarterly Bulletin, PLFS, April - June 2024RSE Tables
+male$ female person$ male$ female person$ male$ female person$ male$ female person$ male$ female person$
+(1) (2) (3) (4) (5) (6) (7) (8) (9) (10) (11) (12) (13) (14) (15) (16)
+Andhra Pradesh 12.2 15.0 11.2 14.4 18.3 10.8 12.8 15.6 9.3 12.0 20.2 8.9 17.5 13.0 12.1
+Assam 12.3 22.9 18.8 11.2 18.4 13.6 23.1 24.8 15.9 24.7 22.7 16.3 20.0 22.9 16.0
+Bihar 11.0 35.9 9.7 12.7 44.6 17.8 8.6 42.2 10.8 12.0 36.7 12.3 15.1 25.5 14.9
+Chhattisgarh 11.2 7.3 8.5 13.5 22.0 15.2 16.4 18.2 14.6 18.8 17.1 16.3 11.3 19.2 8.6
+Delhi 19.9 29.8 15.5 40.3 36.0 39.2 32.5 10.4 27.3 31.0 63.0 18.2 28.5 70.2 20.4
+Gujarat 13.9 20.9 13.2 11.4 21.8 9.4 23.0 12.6 17.4 19.2 13.7 13.0 21.8 28.2 15.8
+Haryana 12.2 22.2 6.5 13.5 14.7 12.7 7.6 36.7 8.6 17.5 20.3 15.8 20.1 14.9 14.6
+Himachal Pradesh 8.0 33.6 21.6 14.0 23.9 18.5 18.8 16.1 15.6 30.0 27.3 22.9 18.0 12.1 9.5
+Jharkhand 14.5 46.3 14.1 17.3 34.3 15.9 14.3 35.2 15.3 20.4 27.1 21.5 11.9 33.5 13.8
+Karnataka 9.7 17.3 7.9 8.8 15.7 5.2 9.4 18.1 9.9 14.2 25.0 16.8 9.3 22.7 11.2
+Kerala 8.3 7.3 6.3 9.9 8.4 6.7 8.2 7.1 7.0 9.7 8.1 7.4 5.6 7.2 4.3
+Madhya Pradesh 17.3 14.9 14.2 7.4 23.5 8.1 11.5 16.7 9.7 16.4 29.2 16.2 14.8 26.2 15.0
+Maharashtra 7.1 13.5 7.8 7.8 11.3 7.0 8.9 11.7 7.2 7.4 11.2 5.5 8.1 9.8 5.3
+Odisha 19.2 27.3 17.2 8.8 19.0 9.7 17.6 20.9 16.5 24.9 20.7 20.5 18.7 17.8 14.8
+Punjab 8.9 18.1 8.1 7.8 19.3 9.5 12.0 19.4 11.9 13.7 18.7 12.7 5.1 15.4 5.4
+Rajasthan 8.6 16.9 8.4 13.1 16.1 11.8 14.0 14.5 10.7 8.4 12.8 6.0 7.9 8.9 6.0
+Tamil Nadu 7.1 5.9 5.3 8.4 7.0 6.4 8.1 12.7 6.3 5.6 11.6 5.6 9.1 9.8 7.3
+Telangana 11.0 13.3 7.4 7.4 10.1 4.6 18.1 11.0 13.2 11.8 17.0 13.5 9.6 31.1 14.4
+Uttarakhand 8.3 29.8 13.8 8.5 23.3 7.4 10.9 10.7 5.0 24.7 14.4 15.6 17.1 24.4 20.3
+Uttar Pradesh 10.2 14.2 8.9 12.4 19.0 11.8 13.4 16.8 12.1 15.1 12.3 12.9 11.7 9.9 8.5
+West Bengal 12.4 17.3 8.5 12.4 12.6 7.6 11.3 15.2 8.9 14.3 14.7 9.8 10.5 14.2 9.8
+Jammu & Kashmir 8.3 6.0 4.2 14.3 8.0 8.1 21.8 6.7 11.9 15.1 6.4 8.3 8.6 4.4 4.3
+all-India 2.7 3.8 2.4 3.0 3.8 2.5 3.3 3.7 2.6 3.4 3.7 2.7 2.9 3.6 2.2
+Note:
+1.$: includes Transgender
+Table (3RSE): RSE (in per cent) for Unemployment Rate (UR) according to Current Weekly Status for different States 
+age group: all                                     urban                                                          
+State
+January-March 2023 April-June 2023 July-September 2023 October-December 2023 January-March 2024
+B-9 Quarterly Bulletin, PLFS, April - June 2024 FEEDBACK FORM 
+ 
+1. Name (optional): 
+ 
+2. email id (optional) :  
+ 
+3. Your field of Work: (please tick () the relevant) 
+ 
+(a) Govt Sector                (b) Corporate Sector                (c) Research              (d) Civil Services 
+ 
+(e) NGO                           (f) Education                              (g) Art & Culture     (h) Media 
+ 
+(i) Business                      (j) Student 
+ 
+4. Please mention the report/publication you are commenting on: 
+ 
+ 
+ 
+CONTENT 
+ 
+5. How useful/relevant is the Quarterly Bulletin for your professional interests [please tick () the relevant] 
+(a) very useful                       (b) Moderately Useful                              (c) not at all useful 
+6. How useful/relevant is the Quarterly Bulletin for your personal interests [please tick () the relevant] 
+(a) very useful                       (b) Moderately Useful                              (c) not at all useful 
+PRESENTATION 
+7. How do you find style of presentation of information of the Quarterly Bulletin? [please tick () the relevant] 
+(a) Excellent                     (b) Very Good                     (c) fair                    (d) not good at all  
+ACCESSIBILITY 
+8. How easy was it to access the Quarterly Bulletin? 
+ 
+(a) Very easy                                  (b) Moderately easy                          (c) difficult 
+ 
+9. ADDITIONAL COMMENTS 
+ 
+Please note: These comments may be used for internal and external promotional purposes but will not be 
+attributed to the person making them, unless explicitly agreed to this in writing. (please add extra sheet if 
+required) 
+ 
+ 
+ 
+ 
+ 
+ 
+Thank you for completing our feedback form! 
+Please send your valuable feedback to 
+Additional Director General, NSSO, SDRD, 164, GLT Road, Kolkata-108 or email us at tc.sdrd-mospi@gov.in 

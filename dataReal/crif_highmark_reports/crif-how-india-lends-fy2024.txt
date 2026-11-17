@@ -1,0 +1,2791 @@
+`
+`
+`
+ How India Lends
+Credit Landscape in India FY 2024`
+`
+`
+2
+Foreword
+Welcome to the fourth edition of our report, How India Lends – Credit Landscape in India FY
+2024.
+In the past few years, the Indian economy has navigated through several challenges and
+opportunities. Despite the glaring challenges posed by COVID-19 pandemic, supply chain
+disruptions, and inflationary pressures among others, Indian economy has shown
+remarkable resilience.
+FY 2023-24 was a year marked by notable resurgence of the Indian economy, driven
+by a combination of factors such as domestic reforms, global recovery, and technological
+advancements. With the constant push from the government on infrastructure development,
+along with investment-friendly policies, the economy saw a growth of
+8.2% in FY 23-24 as against 7.0% in FY 22-23.
+Financial Institutions including non-banking sector have been a key facilitator of this economic
+growth over the years. However, while there has been a remarkable growth in credit uptake
+over the last few years, Y-o-Y growth in FY 23-24 originations has been muted for all
+consumption loans, MFI loans and Entity MSME loans. Individual MSME loans on the other
+hand displayed higher growth in originations compared to previous years.
+Our Report How India Lends - FY2024 highlights originations, portfolio and delinquency
+trends and provides key insights for major product categories with the help of our
+in-house expertise on lending ecosystem, advanced analytics and big data capabilities.
+We hope you find this report to be valuable and look forward to your feedback.
+SANJEET DAWAR
+Managing Director
+CRIF High Mark`
+`
+`
+3
+Definitions1 04
+Executive Summary 2
+• Indian Credit Landscape - Snapshot
+• Indian Credit Landscape – High level Summary
+05
+06
+07
+Consumption Lending3
+• Home Loans 
+• Personal Loans
+• Two-Wheeler Loans 
+• Auto Loans
+• Consumer Durable Loans 
+• Credit Cards 
+13
+16
+22
+28
+34
+40
+46
+MSME Lending4
+• Entity MSME Loans
+• Individual MSME Loans
+50
+52
+57
+Microfinance Lending5 64
+Section
+ Page No. 
+`
+`
+`
+4
+This version of How India Lends is based on data reported as of Mar’24
+Definitions
+Through out this report
+Portfolio Outstanding or value
+refers to the current outstanding 
+balance of the loan account
+Market share by value refers to the 
+share of different lender types/financiers 
+in the current outstanding balance
+Originations Value refers to 
+the total sanctioned amount, 
+unless otherwise mentioned
+Active loans or volume 
+refers to the number/
+count of active loans
+Originations Volume refers to 
+the number of loans sanctioned, 
+unless otherwise mentioned
+PAR or Portfolio at Risk refers to the 
+proportion of delinquent portfolio 
+Market share by volume refers to the 
+share of different lender types/financiers 
+in the number of active loans
+ATS or Average ticket Size refers 
+to the average sanctioned amount
+The following criteria and filters have been applied in this report
+Consumption Lending includes Home Loans, 
+Personal Loans, Two-Wheeler Loans, Auto Loans, 
+Consumer Durable Loans and Credit Cards
+Auto Loans: Only Auto 
+Loans (Personal) are 
+considered in this report
+Consumer Durable Loans: Only lender 
+types NBFCs and Private Banks are 
+considered in this report
+Entity MSME Loans: Entity MSME Loans are 
+defined on the basis of entity level aggregate 
+credit exposure of up to ₹50 Crore
+Business Loans: Business Loans include 13 account types namely Business Loan General, 
+Overdraft, Business Loan Priority Sector Small Business, Business Loan – Secured, Business 
+Loan Priority Sector Others, Mudra Loans, Business Loan Unsecured, Loan to Professional, 
+Microfinance Business Loan, GECL Loan secured, GECL Loan unsecured, Business Loan 
+Against Bank Deposits and  Prime Minister Jaan Dhan Yojana – Overdraft
+Rural and Urban 
+geographies is 
+defined at pin code 
+level on the basis 
+of Census data
+Top 8, Top 9-50, Top 51-100 
+and Beyond Top 100 
+(BT100) cities are identified 
+on the basis of size of 
+consumer loans portfolio`
+`
+`
+5
+Executive Summary`
+`
+`
+6
+Portfolio as of 
+Mar’24 (₹ Lakh Cr)
+Growth % 
+Mar’23 to Mar’ 24
+Originations Value 
+FY24 (₹ Lakh Cr)
+Growth % 
+FY23 to FY24
+Originations Volume 
+FY24 (Lakh)
+Growth % 
+FY23 to FY24
+Consumption Loans 90.3 15.2% 48.4 8.7% 3,825.2 14.2%
+MSME Loans (Individual & Entity) 64.1 17.8% 54.2 5.4% 274.5 19.3%
+Microfinance 4.4 26.8% 3.8 19.0% 835.0 6.0%
+Corporate Loans (Only Entity) 58.4 -2.3% 67.8 -3.6% 4.8 4.2%
+Consumption Loans refers to loans
+given to individuals for wide variety of
+consumption needs like Home, Vehicle,
+Personal, Education, Agri etc. These
+loans are reported to Consumer Bureau.
+1 MSME Loans refers to loans given to self employed individual (reported to
+Consumer Bureau) and entities with
+aggregate credit exposure up to ₹50
+Crore (reported to Commercial Bureau)
+2 Corporate Loans refers to loans given to Mid and Large size
+entities with aggregate credit
+exposure more than ₹50 Crore
+(reported to Commercial Bureau)
+3
+This report encapsulates detailed analysis on Consumptions Lending, MSME Lending (Individual and Entity), 
+Corporate Lending and Microfinance Lending and deep dive into major lending product categories in India.
+Indian Credit Landscape - Snapshot`
+`
+`
+7
+The Indian credit landscape has 
+undergone significant growth and 
+transformation over the past few years, 
+driven by various factors including
+Following section provides high level summary of trends observed in major
+Consumption loans, MSME loans and Microfinance over the last 2 financial years.
+have aimed to promote 
+financial inclusion and 
+empower individuals and 
+businesses to fulfill their 
+needs through access to 
+formal credit channels. 
+technological 
+advancements
+regulatory 
+changes
+evolving financial 
+ecosystem
+Rapid urbanization, easy access to 
+credit, emergence of e-commerce 
+coupled with Government support 
+through initiatives like
+ Pradhan Mantri 
+Awas Yojana (PMAY) 
+Pradhan Mantri 
+Jan Dhan Yojana (PMJDY), 
+Pradhan Mantri 
+Mudra Yojana (PMMY) 
+While there has been remarkable growth over the last 5 years, Y-o-Y growth in Originations value and 
+volume in FY24 has been muted for all consumption loans, MFI loans and Entity MSME loans. Individual 
+MSME loans on the other hand displayed higher growth in originations compared to previous years. 
+Indian Credit Landscape – High level Summary`
+`
+`
+8
+This report deep dives into 6 major consumption loan products –
+Home Loans, Personal Loans, Two-Wheeler Loans, Auto Loans, Consumer Durable Loans and Credit Cards. 
+Personal Loans
+The personal loans market in India has undergone significant 
+evolution and expansion over the last few years, driven by 
+technological advancements, changing consumer behaviors and 
+competitive forces. Increased financial literacy and a burgeoning 
+middle class has aided growth in personal loans in India. As of Mar’24, 
+portfolio outstanding of Personal Loans stood at ₹ 13.5 L Cr 
+witnessing Y-o-Y growth of 26%. However, recent regulatory reforms 
+introduced by RBI have impacted growth of originations in PL with Y-
+o-Y growth in Originations value declining from 38% in FY23 to 14% in 
+FY24 and Y-o-Y growth in Originations volume declining from 52% in 
+FY23 to 25% in FY24. Public Sec Banks and private Banks drive PL by 
+value while NBFCs are predominant players in driving volumes. 
+3.9X growth in Originations Value for ₹10L+ loans from FY20 to FY24. 
+Average Ticket Size in FY24 at ₹15.4L for these loans. Delinquencies 
+in PL book have increased from Mar’23 to Mar’24.
+Home loans growth in India has surged significantly over the last few 
+years, driven by low interest rates, increasing urbanization, and 
+favorable government policies. As of Mar’24, Portfolio outstanding 
+of Home Loans stood at ₹ 36.2 L Cr. Y-o-Y growth in Originations 
+value stood at 9.2% by value and 2.6% by volume in FY24. Home 
+Loans are dominated by Public Sec Banks and Private Banks. Shift in 
+Originations is seen from ticket size 
+₹ 5L - ₹ 35L to ₹ 35L+. There is 32% increase in Average Ticket Size 
+from ₹20.1L in FY20 to ₹26.5L in FY24, driven by factors such as 
+rising property prices, higher borrowing capacity of individuals and 
+inflation in general. Home Loans portfolio has witnessed higher 
+delinquency over Mar’23.
+Home Loans
+Consumption Loans – High Level Summary`
+`
+`
+9
+Auto Loans 
+Growing urbanization coupled with infrastructure development 
+has boosted demand for cars, accentuating demand for auto 
+loans. Portfolio outstanding of auto loans witnessed significant Y-
+o-Y growth of 20%, reaching ₹ 7.1L Cr as of Mar’24. Y-o-Y growth 
+in Originations value stood at 12.5% by value and 5.3% by volume 
+in FY24 with improvement in delinquency. Auto Loans are 
+dominated by Public Sec Banks & Pvt Banks by Value, and Public 
+Sec Banks & NBFCs by Volume. Average Ticket Size of Auto loans 
+too has continued to increase over the past few years for reasons 
+similar to two wheeler loans. 
+The demand for two-wheelers in India, especially in rural and 
+semi-urban areas, has been robust, driven by the need for 
+affordable and efficient personal transportation. Affordable 
+financing options has further aided in boosting demand. Two-
+Wheeler Loans registered a remarkable 34% Y-o-Y growth in 
+portfolio outstanding reaching ₹ 140.9 K Cr as of Mar’24. Y-o-Y 
+growth in Originations value stood at 23% by value and 13% by 
+volume in FY24. TW loans delinquency has improved over 
+Mar’23. NBFCs have played a pivotal role in the growth story 
+of TW loans and hold a hefty share of nearly 70% of the 
+market. Shift in Originations can be observed from < ₹75K to 
+₹75K+ ticket size bands, over the last few years driven by rising 
+TW prices and a shift in borrower preferences towards 
+premium models. There has been 4.6X growth in Originations 
+(by Value and Volume) for ₹75K+ from FY20 to FY24.  Growth 
+of TW loans into deeper markets beyond top 100 cities has 
+further aided expansion of TW portfolio, however, 
+delinquencies in Beyond Top 50 cities have been observed to 
+be higher than Top 8 cities as of Mar’24, meriting caution.
+Two-Wheeler Loans
+Consumption Loans – High Level Summary
+`
+`
+`
+10
+Credit CardsConsumer Durable Loans
+Credit cards provide convenience, rewards, and the ability to 
+manage cash flow effectively making them an attractive product 
+for borrowers. For lenders increase in CC usage boosts revenue 
+through interest charges, fees, and merchant commissions. It also 
+allows banks to expand their customer base and cross-sell other 
+financial products. In the last few years, Credit Card market has 
+grown exponentially. As of Mar’24 Credit Cards have total 
+balances of ₹ 3.0L Cr and 999.1 Lakh cards were in circulation.  
+There is also marginal improvement in delinquencies from Mar’23 
+to Mar’24. Pvt Banks continue to play a pivotal role in driving CC 
+growth by value and volume. Between FY22 and FY23 there has 
+been 51% growth in new cards originations, while Y-o-Y growth in 
+FY24 has been flat at 0.2%. As financial institutions continue to 
+innovate and consumers become more financially literate, the use 
+of credit cards is expected to rise further, playing a crucial role in 
+India's evolving financial landscape.
+Increased Consumer Spending, E-commerce boom, technological 
+advancements and easy financing options provided by lenders in 
+the last few years have accentuated demand for Consumer 
+durables loans in recent years. Portfolio outstanding of CD Loans 
+stood at ₹ 66.2 K Cr as of Mar’24 with 34% Y-o-Y growth. Y-o-Y 
+growth in Originations value stood at 21% by value and 8.5% by 
+volume in FY24. CD loans delinquency has improved over Mar’23. 
+NBFCs are instrumental in driving growth of CD loans in India. 
+Their ability to offer customized, flexible, and accessible financing 
+options makes them a popular choice among borrowers looking 
+to purchase high-cost items. Private banks offer competition with 
+increase in Originations share (Value and Volume) from FY20 to 
+FY23 where share of NBFCs declined. However, NBFCs regained 
+share in FY24, at the cost of Pvt Banks. Expansion in CD loans 
+portfolio can be seen into BT100 cities in the last few years.
+Consumption Loans – High Level Summary
+`
+`
+`
+11
+Originations include both fresh disbursements and renewals.
+Originations Value
+3.1%
+Originations Volume
+18.9%
+Entity MSMEs witnessed 3.1% Y-o-Y growth 
+in Originations value and 18.9% Y-o-Y 
+growth in Originations volume in FY24.
+For Individual MSMEs, Y-o-Y growth in 
+Originations value stood at 12.6% in FY24.
+At the same time, Y-o-Y growth in 
+Originations volume stood at 19.4% in FY24. Originations Value
+12.6%
+Originations Volume
+19.4%
+MSME loans, crucial for the growth and 
+sustainability of small businesses in India have 
+grown exponentially over the years .
+Total MSME lending comprises of Entity MSME 
+Loans (₹28.4 L Cr) and Individual MSME segment 
+(₹35.7 L Cr). Credit facilities availed by Enterprises 
+like Proprietorships, Partnerships, Pvt Ltd, Public 
+Ltd, HUFs etc and reported to Commercial 
+repository are referred to as Entity MSME loans. 
+Credit facilities availed by self-employed 
+individuals taking loans for business purposes and 
+reported to Consumer repository are referred to 
+as Individual MSME loans. Individual MSME 
+segment witnessed robust Y-o-Y growth of 29% in 
+portfolio outstanding while Entity MSMEs grew
+by a mere 6% as of Mar’24.
+Individual MSMEs witnessed substantial improvement in delinquency across all bands
+while Entity MSME segment saw increase in PAR 31-180% compared to Mar’23.
+The number of MSME registrations in India have crossed 2.8 crore as per Udyam
+Registration Portal*, indicating the potential of India’s entrepreneurial boom.
+With the support of government initiatives and proactive participation from financial
+institutions, the MSME sector is poised for significant growth in the years to come.
+*udyamregistration.gov.in/RealTimeUdyamDashboard.aspx
+MSME Loans – High Level Summary`
+`
+`
+12
+Portfolio outstanding 
+of Microfinance Loans 
+witnessed robust growth 
+of 27% to reach ₹ 442.7 K Cr 
+as of Mar’24.
+Microfinance Sector in India has grown
+rapidly in the last few years both in terms 
+of borrower outreach and loan portfolio. 
+However, Y-o-Y growth in Originations value declined from 28%
+in FY23 to 19% in FY24. At the same time, Y-o-Y growth in 
+Originations volume declined from 18% in FY23 to 6% in FY24.
+28%
+19%
+FY23 FY24
+Originations Value 
+Originations Value
+18%
+6%
+FY23 FY24
+Originations Volume 
+Originations Volume
+NBFC- MFIs and Banks are instrumental 
+in driving growth for MFI. In the last 
+few years there has been shift in loan 
+size towards higher ticket-size loans.
+Between FY23 and FY24, MFI 
+witnessed 11% increase in Average 
+Ticket Size from ₹40.9K to ₹45.4K.
+Overall the microfinance sector 
+demonstrated resilience and 
+adaptability in the last few 
+years, overcoming pandemic 
+challenges and embracing 
+regulatory changes.
+Following section presents 
+detailed analysis, historical 
+trends and patterns observed 
+in major Consumption loans,
+MSME loans and Microfinance.
+Microfinance Loans – High Level Summary`
+`
+`
+13
+Consumption Lending`
+`
+`
+14
+Home Loans, Personal Loans, 
+Gold Loans dominate the 
+market (by value)
+1 Personal Loans, Credit Cards, 
+Gold Loans, CD Loans dominate 
+the market (by volume) 
+2 Gold Loans witnessed highest 
+Y-o-Y growth by value and 
+Personal Loans by volume
+3
+* Cards in Circulation
+Top Consumption Lending Products
+Top Consumption Loans –
+By Portfolio Outstanding (Value)
+Top Consumption Loans –
+By Active Loans (Volume)
+Portfolio Outstanding as of Mar’24
+40.1%
+14.9%
+10.6%
+7.9%
+3.8%
+1.6%
+0.8%
+22.7%
+18.7%
+14.2%
+14.1%
+5.3%
+4.0%
+2.6%
+Home 
+Loan
+Personal 
+Loan
+Gold 
+Loan
+Auto 
+Loan
+Credit
+Card
+Two-
+Wheeler 
+Loan
+Consumer 
+Durable  
+Loan
+Personal 
+Loan
+Credit
+Card*
+Gold 
+Loan
+Home
+Loan
+Auto
+Loan
+Consumer 
+Durable  
+Loan
+Two-
+Wheeler 
+Loan
+Active Loans as of Mar’24`
+`
+`
+15
+Portfolio as of 
+Mar’24 (₹ Lakh Cr)
+Growth % 
+Mar’23 to Mar’ 24
+Originations Value 
+FY24 (₹ Cr)
+Growth % 
+FY23 to FY24
+Originations Volume 
+FY24 (Lakh)
+Growth % 
+FY23 to FY24
+Home Loans 36.2 7.9% 10.3L 9.2% 38.8 2.6%
+Personal Loans 13.5 25.6% 9.0L 14.2% 1,383.4 24.8%
+Two-Wheeler Loans 1.4 33.6% 97.4K 22.6% 108.7 13%
+Auto Loans 7.1 20.0% 3.3L 12.5% 41.5 5.2%
+Consumer Durable Loans 0.7 34.1% 1.4L 20.6% 609.4 8.5%
+Following major consumption Loan products are considered for deep dive analysis in this report
+Cards in Circulation 
+(Lakh) as of Mar’24
+Growth % 
+Mar’23 to Mar’ 24
+New Cards issued
+in FY24 (Lakh)
+Growth % 
+FY23 to FY24
+Credit Cards 999.1 16.5% 273.3 0.2%
+Consumption Loan Products`
+`
+`
+16
+Home Loans`
+`
+`
+17
+Home Loans
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ L Cr) 27.3 33.6 36.2
+Y-0-Y Growth % 23.0% 7.9%
+Active Loans (Lakh) 194.9 213.1 226.5
+Y-O-Y Growth % 9.3% 6.3%
+PAR 31-90% 2.2% 1.9% 2.3%
+PAR 91-180% 0.5% 0.4% 0.6%
+PAR 181-360% 0.3% 0.3% 0.2%
+PAR 360+% 1.8% 1.7% 1.6%
+Portfolio Snapshot
+Dominated by Public Sec Banks by Value 
+and Volume followed by Pvt Banks1 Deterioration in PAR 31-180% compared to Mar’23, while PAR 180+% improved2
+Market Share
+43.0%
+23.0%
+22.5%
+11.3%
+Active Loans
+40.0%
+34.5%
+19.4%
+0.6% 5.5%
+Portfolio Outstanding
+March 2024
+Public Sec Banks Private Banks HFCs Foreign Banks Others
+Data is inclusive of ₹ <5L Loans 
+Muted Portfolio Growth with increased PAR 31-90 & PAR 91-180
+0.2%`
+`
+`
+18
+9.2% Y-o-Y growth in Originations 
+value in FY24, declining from 
+18.2% Y-o-Y growth in FY23
+1 2.4% Y-o-Y growth in Originations 
+volume in FY24, declining from 
+13.1% Y-o-Y growth in FY23
+2 6.5% Growth in Average 
+Ticket Size from ₹ 24.9L 
+in FY23 to ₹ 26.5L in FY24
+3
+Home Loans
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+584,129 598,929
+798,016
+943,410
+1,030,160
+Originations Value ( ₹  Cr )
+18.2%
+9.2%
+Originations Value 
+Originations Volume ( Lakh)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+29.1 27.0
+33.5
+37.9 38.8
+Originations Volume ( Lakh )
+Originations Volume 
+13.1%
+2.4%
+Decline in Y-o-Y growth in Originations in FY24 compared to FY23
+Data is inclusive of ₹ <5L Loans`
+`
+`
+Home Loans
+19
+Decline in Originations Share for Pvt Banks, 
+Increase for PSU Banks and HFCs from FY23 to FY241 11% Y-o-Y increase in ATS for Public Sec Banks from ₹25L to ₹28L and 7% for Pvt Banks from ₹39L to ₹42L in FY242
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+Originations Value by Lender Type
+ Originations Volume by Lender Type
+3.6%
+19.7%
+36.0%
+40.8%
+3.2%
+18.4%
+39.7%
+38.8%
+3.1%
+18.1%
+42.2%
+36.6%
+3.9%
+19.0%
+37.9%
+39.3%
+3.6%
+19.9%
+36.0%
+40.4%
+Public Sec Banks Private Banks HFCs Others
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+9.2%
+23.6%
+24.7%
+42.5%
+8.8%
+22.0%
+26.6%
+42.5%
+10.2%
+23.4%
+27.9%
+38.6%
+12.8%
+24..7%
+23.8%
+38.7%
+13.0%
+26.0%
+22.6%
+38.4%
+Public Sec Banks Private Banks HFCs Others
+Decline in Originations Share for Pvt Banks |Increase for 
+PSU Banks and HFCs
+Data is inclusive of ₹ <5L Loans`
+`
+`
+20
+Shift in Originations (by value and 
+volume) from ₹ 5L - ₹ 35L to ₹ 35L+
+1 Public Sector Banks are dominant 
+players in  <₹75L, Pvt Banks Lead 
+₹75L+ ticket size loans
+2 HFCs have concentration 
+in <₹35L Loans
+3
+Home Loans
+Originations Value by Ticket Size
+ Originations Volume by Ticket Size
+<5L 5L-35L 35L-75L 75L+
+% of Originations Volume
+2.1% 1.7% 1.8% 1.8% 1.8%
+51.2% 48.1% 43.6% 39.4% 36.0%
+27.7% 29.6%
+30.6%
+31.4%
+30.8%
+19.0% 20.6% 24.0% 27.3% 31.4%
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+2.6% 3.2% 4.0% 4.8% 5.9%
+11.3% 13.3% 14.5% 15.5% 16.1%
+60.5% 60.7% 58.3% 55.1% 53.5%
+25.5% 22.8% 23.2% 24.5% 24.4%
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+<5L 5L-35L 35L-75L 75L+
+Data is inclusive of ₹ <5L Loans
+Shift in Originations from ticket size ₹ 5L - ₹ 35L to ₹ 35L+`
+`
+`
+21
+Home Loans
+Deterioration in PAR 31-90% for Public 
+Sec Banks and HFCs from Mar’23 to 
+Mar’24, after showing improvement 
+from Mar’22 to Mar’23
+1 Improvement in PAR 91-180% for all lender 
+types except HFCs
+2 PAR 31-90% and PAR 91-180% is better for >₹ 35L loans 
+compared to <₹35L loans
+3
+Delinquency– Lender Type
+Public Sec Banks Private Banks HFCs Foreign Banks
+Public Sec Banks Private Banks HFCs Foreign Banks
+2.5% 2.2%
+3.0%
+1.3% 1.3% 1.3%
+3.2%
+2.2% 2.5%
+0.3% 0.3%
+0.2%
+PAR 31-90%PAR 91-180%
+0.3% 0.3% 0.2% 0.2% 0.2% 0.2%
+0.8%
+0.6%
+1.7%
+0.9%
+0.2% 0.2%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Delinquency– Ticket Size
+<5L 5L-35L 35L-75L 75L+
+<5L 5L-35L 35L-75L 75L+
+PAR 31-90%PAR 91-180%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+5.6%
+1.5%
+1.8%
+1.1%
+3.9%
+1.7%
+2.6%
+0.6%
+2.4%
+0.5%
+3.0%
+0.8%
+1.6%
+0.3%
+1.4%
+0.3%
+1.6%
+0.3%
+1.5%
+0.4% 0.4% 0.2%
+1.3%1.3%
+Y-o-Y Deterioration in PAR 31-90% for Public Sec Banks 
+and HFCs in Mar’24
+Data is inclusive of ₹ <5L Loans`
+`
+`
+Personal Loans
+22
+`
+`
+`
+23
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ L Cr) 8.1 10.7 13.5
+Y-0-Y Growth % 31.9% 25.6%
+Active Loans (Lakh) 656.6 951.8 1277.8
+Y-O-Y Growth % 45.0% 34.3%
+PAR 31-90% 2.3% 1.9% 1.9%
+PAR 91-180% 0.8% 0.8% 0.9%
+PAR 181-360% 0.6% 0.5% 0.7%
+PAR 360+% 2.7% 2.6% 3.5%
+Personal Loans – Portfolio Snapshot Personal Loans – Market Share
+12.7%
+24.7%58.7%
+3.9%
+Active Loans
+38.3%
+34.0%
+21.9%
+5.9%
+Portfolio Outstanding
+March 2024
+Dominated by Public Sec Banks and Pvt Banks 
+by Value and NBFCs by Volume1 Stable PAR 31-90 % and PAR 91-180% compared to Mar’23, coupled with deterioration in PAR 180+%2
+Public Sec Banks Private Banks NBFCs Others
+Robust Growth with stable PAR 31-180%, while deterioration in 
+PAR 180+
+Personal 
+Loans
+`
+`
+`
+24
+2.4X Growth in 
+Originations (by value) 
+and 3.4X Growth in 
+Originations (by volume) 
+from FY20 to FY24
+1 37.8% Y-o-Y growth in Originations value in FY24, 
+declining from 14.2% 
+Y-o-Y growth in FY23
+2 24.8% Y-o-Y growth in Originations volume in 
+FY24, declining from 
+52.2% Y-o-Y growth in FY23
+3 2.2X growth in Originations volume for >₹ 50K ticket 
+size loans from FY23 to FY24
+4
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+384,517 367,326
+571,001
+786,572
+897,931
+Originations Value ( ₹  Cr )
+37.8%
+14.2%
+Originations Value 
+Originations Volume ( Lakh)
+z
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+406
+292
+728
+1,108
+1,383
+Originations Volume ( Lakh )
+Originations Volume 
+52.2%
+24.8%
+Slow down of growth in Personal Loans Originations in FY24 
+compared to FY23
+Personal 
+Loans
+`
+`
+`
+25
+Originations Value by Lender Type
+ Originations Volume by Lender Type
+Public Sec banks Private Banks NBFCs Others
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% Of Originations Value
+Growing dominance of NBFCs in Originations 
+(by value and volume)1 Decline in Originations Share (value and volume) of Private Banks from FY23 to FY242
+32.1% 47.9% 38.5% 34.6% 33.4%
+41.5% 31.9% 36.3% 34.3% 31.1%
+21.7% 15.7% 21.6% 26.9% 31.0%
+4.7% 4.5% 3.7% 4.2% 4.5%
+8.3% 17.5% 7.3% 5.5% 4.7%
+76.1% 67.8% 75.3% 78.9% 81.6%
+2,.6% 2.4% 1.4% 1.9% 2.9%
+13.0%
+12.3%
+15.9% 13.7% 10.9%
+Public Sec banks Private Banks NBFCs Others
+Decline in Originations Share of Private Banks
+ Personal 
+Loans
+`
+`
+`
+26
+2.1X growth in Originations Volume for <₹ 10K 
+and 4.6X growth for ₹ 10K-50K from FY20 to FY241 3.9X Growth in Originations Value for ₹10L+ loans from FY20 to FY24. ATS in FY24 at ₹15.4L for these loans2
+Originations Value by Ticket Size
+<1L 1L-2L 2L-5L 10L+
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+12.8% 10.1% 14.4% 15.7% 16.5%
+10.9% 9.3% 8.7% 9.5% 10.4%
+30.1% 26.4% 23.1% 22.6% 22.7%
+29.6% 32.8% 28.5% 24.7% 22.3%
+16.6% 21.4% 25.3% 27.4% 28.1%
+5L-10L
+Originations Volume by Ticket Size
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+80.2% 75.3% 86.0% 87.3% 88.2%
+6.7%
+7.7%
+4.5% 4.4% 4.4%8.2% 9.5% 5.2% 4.6% 4.3%3.9% 5.6% 3.0% 2.4% 2.0%
+<1L 1L-2L 2L-5L 10L+5L-10L
+Share of ₹10L+ Originations accelerates in Value; 
+Below <₹1L by volume
+Personal 
+Loans
+`
+`
+`
+27
+Performance of PL improves for higher ticket sizes1 Stress in ₹1L-₹2L segment observed in Mar’24 but improvement seen from Mar’22 to Mar’232
+Delinquency– Lender Type
+ Delinquency– Ticket Size
+Public Sec Banks Private Banks NBFCs Others <1L 1L-2L 2L-5L 5L-10L
+Public Sec Banks Private Banks HFCs Others
+PAR 31-90%PAR 391-180%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+<1L 1L-2L 2L-5L 5L-10L
+PAR 31-90%PAR 91-180%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+2.7%
+0.3%
+2.4%
+0.3%
+2.5%
+0.3%
+1.3%
+0.5%
+1.2% 1.2%
+2.7%
+2.0% 2.0%
+3.9%
+3.2%
+2.6%
+0.5% 0.6%
+1.7% 1.6% 1.6%
+4.3% 3.9% 4.2%
+10L+
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+3.8% 3.0% 2.7%
+2.6%
+1.9% 2.2% 2.4% 1.9% 1.9% 2.1% 1.9% 1.8% 1.7% 1.8% 1.8%
+3.3% 3.4% 3.4%
+1.6% 1.3% 1.5%
+0.9% 0.8% 0.9%
+0.4% 0.4% 0.5% 0.3% 0.3% 0.4%
+10L+
+Performance of Private Banks better than Other lender types
+ Personal 
+Loans
+`
+`
+`
+Two-Wheeler Loans
+28
+`
+`
+`
+29
+Two Wheeler 
+Loans
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ K Cr) 81.0 105.5 140.9
+Y-0-Y Growth % 30.3% 33.6%
+Active Loans (Lakh) 239.8 266.8 299.8
+Y-O-Y Growth % 11.2% 12.4%
+PAR 31-90% 5.2% 3.3% 3.1%
+PAR 91-180% 2.3% 1.9% 1.6%
+PAR 181-360% 2.5% 2.0% 1.9%
+PAR 360+% 6.9% 6.4% 6.2%
+Two-wheeler Loans – Portfolio Snapshot Two-wheeler Loans – Market Share
+0.7%
+25.7%
+71.9%
+1.6%
+Active Loans
+1.0%
+27.7%
+68.6%
+2.7%
+Portfolio Outstanding
+March 2024
+Dominated by NBFCs by Value and Volume followed 
+by Pvt Banks1 Improvement in PAR 31-90 %, PAR 91-180%, PAR 180+% compared to Mar’232
+Public Sec Banks Private Banks NBFCs Other
+Accelerated Growth with Improvement in Delinquency 
+Across all Bands`
+`
+`
+30
+Originations Value 
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+57,902
+46,708
+54,130
+79,437
+97,423
+Originations Value ( ₹  Cr )
+46.8%
+22.6%
+Originations Volume 
+Originations Volume ( Lakh)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+93.3
+67.8 73.1
+96.2
+108.7
+13%
+31.6%
+Originations Volume ( Lakh )
+22.6% Y-o-Y growth in Originations 
+value in FY24, declining from 
+46.8% Y-o-Y growth in FY23
+1 13% Y-o-Y growth in Originations 
+volume in FY24, declining from 
+31.6% Y-o-Y growth in FY23
+2 8.5% Increase in ATS 
+from ₹82K in FY23 
+to ₹90K in FY24
+3
+Y-o-Y Originations Growth Declines in FY24 Compared to FY23
+ Two Wheeler 
+Loans
+`
+`
+`
+31
+NBFCs dominate 
+Originations by 
+Value and Volume 
+1 Y-o-Y decline in Originations 
+Share of Private Banks, 
+Increase for NBFCs
+2 10% Y-o-Y increase in ATS for NBFCs 
+from ₹79K to ₹ 87K in FY24 and 
+8% for Pvt Banks from ₹88K to ₹95K
+3
+Originations Value by Lender Type
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+1.5%
+66.7%
+31.8%
+1.5%
+65.1%
+33.3%
+1.6%
+67.9%
+30.6%
+1.4%
+66.4%
+32.2%
+1.5%
+68.5%
+30.0%
+Private Banks NBFCs Others
+Originations Volume by Lender Type
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+0.9%
+69.3%
+29.8%
+0.9%
+68.2%
+30.9%
+1.0%
+71.0%
+28.0%
+0.8%
+69.1%
+30.1%
+1.0%
+70.7%
+28.2%
+Private Banks NBFCs Others
+Decline in Originations Share of Private Banks, 
+Increase for NBFCs
+Two Wheeler 
+Loans
+`
+`
+`
+32
+Originations Value by Ticket Size (₹)
+ Originations Volume by Ticket Size (₹)
+FY 2020
+% of Originations Value3.6%
+66.7%
+31.8%
+FY 2021 FY 2022 FY 2023 FY 2024
+<50K 50K-75K 75K-1L 1L-1.5L 1.5L+
+4.4%
+8.6%
+14.8%
+51.7%
+20.4%
+10.2% 6.1%
+54.2%
+20.2%
+9.1%
+6.3% 8.0%
+10.3%
+28.1%
+47.4%
+11.8%
+15.0%
+37.9%
+31.5%
+3.7% 2.8%
+20.8%
+40.8%
+21.6%
+14.0%
+FY 2020
+% of Originations Volume3.6%
+66.7%
+31.8%
+FY 2021 FY 2022 FY 2023 FY 2024
+<50K 50K-75K 75K-1L 1L-1.5L 1.5L+
+1.2%
+10.8%
+53.0%
+30.6%
+17.1% 11.3%
+59.1%
+16.5%
+2.0% 2.9% 6.5%
+24.7%
+54.6%
+4.8%
+10.5%
+36.9%
+39.7%
+28.4%
+42.5%
+16.4%
+6.2%
+Shift in Originations from lower ticket 
+sizes to ₹75K+ ticket sizes1 4.6X Growth in Originations (by Value and Volume) for ₹75K+ from FY20 to FY24, Y-o-Y increase of 45% by value and 41% by volume for these loans in FY24. 2
+Shift in Originations to Higher Ticket Size loans
+ Two Wheeler 
+Loans
+6.4%8.0%`
+`
+`
+33
+Delinquency– Lender Type
+Improvement in PAR 31-180% 
+for NBFCs, Stable for Private 
+Banks from Mar’23 to Mar’24
+1 PAR 31-90% improved for <₹75K 
+loans and deteriorated marginally 
+for ₹75K+ from Mar’23 to Mar’24
+2 Steep Improvement in PAR 91-180% 
+for <₹75K loans, stable for ₹75K+ 
+from Mar’23 to Mar’24
+3
+PAR 31-90%PAR 91-180%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-23
+Mar-24
+0.7%
+0.4% 0.5%
+1.8%
+1.1% 1.1%
+2.6%
+2.2%
+1.7%
+0.7% 0.3% 1.3%
+4.4%
+3.4% 3.3%
+5.8%
+3.3% 3.0%
+NBFCsPrivate BanksPublic Sec Banks
+Mar-22
+Public Sec Banks Private Banks NBFCs
+Delinquency– Ticket Size
+PAR 31-90%PAR 91-180%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+3.9%
+< 50K
+< 50K
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+3.3%
+2.3%
+2.6%
+2.4%
+1.9%
+1.9%
+1.8%
+1.8%
+1.7%
+1.2%
+1.0%
+1.3%
+0.8%
+0.8%
+4.5%
+2.8%
+2.2%
+5.7%
+3.8%
+3.0%
+5.9%
+3.7%
+3.9%
+4.9%
+2.7%
+2.9%
+2.4%
+1.7%
+2.0%
+50K-75K 75K-1L 1L-1.5L 1.5L+
+50K-75K 75K-1L 1L-1.5L 1.5L+
+Improvement in PAR 31-180% for NBFCs, 
+Stable for Private Banks
+Two Wheeler 
+Loans
+`
+`
+`
+34
+Auto Loans
+34
+`
+`
+`
+35
+Sustained Growth with Improvement in PAR 30+%
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ L Cr) 4.9 6.0 7.1
+Y-0-Y Growth % 22.2% 20.0%
+Active Loans (Lakh) 129.6 138.3 148.1
+Y-O-Y Growth % 6.7% 7.1%
+PAR 31-90% 3.3% 2.3% 1.9%
+PAR 91-180% 1.0% 0.7% 0.7%
+PAR 181-360% 0.5% 0.4% 0.3%
+PAR 360+% 2.7% 2.3% 2.6%
+Auto Loans – Portfolio Snapshot Auto Loans – Market Share
+32.1%
+26.2%37.2%
+4.4%
+Active Loans
+36.3%
+33.6%
+26.5% 3.6%
+Portfolio Outstanding
+March 2024
+Dominated by Public Sec Banks & Pvt Banks by 
+Value, and Public Sec Banks & NBFCs by Volume1 Improvement in PAR 30+% compared to Mar’232
+Public Sec Banks Private Banks NBFCs Others
+Auto Loans
+`
+`
+`
+36
+Decline in Y-o-Y growth in Originations in FY24 compared to FY23
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+178,119
+166,326
+215,821
+296,403
+333,548
+Originations Value ( ₹  Cr )
+37.3%
+12.5%
+Originations Value 
+Originations Volume ( Lakh)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+34.6
+27.8
+32.5
+39.4 41.5
+5.3%
+21.2%
+Originations Volume ( Lakh )
+Originations Volume 
+12.5% Y-o-Y growth in Originations 
+value in FY24, declining from 
+37.3% Y-o-Y growth in FY23
+1 5.3% Y-o-Y growth in Originations 
+volume in FY24, declining from 
+21.2% Y-o-Y growth in FY23
+2 7% growth in ATS from ₹7.5L 
+in FY23 to ₹8.0L in FY24
+3
+Auto Loans
+`
+`
+`
+Public Sec Banks gain, Pvt Banks and 
+NBFCs lose Market Share
+37
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+Originations Value by Lender Type
+ Originations Volume by Lender Type
+2.5% 3.1%
+% of Originations Volume 
+FY 2020 FY 2021 FY 2022 FY 2023
+3.3%
+47.8%
+24.4% 32.9%
+4.1%
+39.0%
+28.7%
+3.9% 3.5%
+Increase in Originations share (by Value and Volume) of Public Sec Banks, while Pvt Banks and NBFCs lose share1
+36.3%
+29.2% 35.9% 32.9%
+34.9%
+34.3%
+30.9%
+35.2%
+32.0%
+2.6%
+23.8%
+2.7%
+27.1% 27.8%
+3.1%
+30.8%
+37.2%37.7%
+Public Sec Banks NBFCs OthersPrivate Banks
+5.1%
+24.5%
+29.0%
+33.0%
+28.3%
+FY 2024
+Public Sec Banks NBFCs OthersPrivate Banks
+39.7%
+30.5%
+43.2%
+31.2%
+25.9% 22.0%
+Auto Loans
+`
+`
+`
+38
+Shift in Originations to ₹10L+ Ticket Size loans
+<5L <5L-10L 10L-15L 15L-10L 20L+
+Originations Volume by Ticket Size (₹)
+% of Originations Volume
+FY 2024
+FY 2020 FY 2021 FY 2022 FY 2023
+33.7%
+59.1% 50.7% 37.5%44.9%
+43.4%
+44.5%
+41.1%39.0%
+32.9%
+11.8% 13.1%
+4.9% 6.6% 8.5% 4.2%3.2% 4.8% 1.5% 2.1%
+% of Originations Value
+Originations Value by Ticket Size (₹)
+3.2%
+65.1%
+3.1%
+67.9%
+2.6%
+23.8%
+2.5%
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+11.5%
+27.4% 24.7%
+14.0%19.0%
+44.7%
+42.5% 41.3%44.6%
+46.1%
+11.5%
+19.4% 20.2%
+15.8%
+13.4% 9.8% 10.5%
+5.1% 6.1% 8.5%
+14.3%12.2% 16.6%11.2% 9.8%
+<5L <5L-10L 10L-15L 15L-20L 20L+
+Shift in Originations from lower ticket sizes to
+₹10L+ ticket sizes1 2.8X Growth in Originations (by Value) and 3.2X growth in Originations (by Volume) for ₹20L+ from FY20 to FY24, Y-o-Y increase of 30% by value 
+and 33% by volume for these loans in FY24
+2
+Auto Loans
+<5L <5L-10L 10L-15L 15L-20L 20L+`
+`
+`
+39
+Steep Improvement in Delinquency of NBFCs, 
+Private Banks, Higher ATS, better performance
+Auto Loans
+PAR 31-90% Improved for 
+NBFCs and private banks 
+from Mar’23 to Mar’24, 
+deteriorations for PSU banks
+1 PAR 91-180% Improved 
+for PSU and private banks 
+from Mar’23 to Mar’24, 
+deteriorations for NBFCs
+2 PAR 31-90% improved 
+for loans under ₹10L, 
+remained stable for 
+loans over ₹10L
+3 PAR 91-180% stable 
+across most loan sizes 
+except for loans under ₹5L
+4
+Delinquency– Lender Type
+ Delinquency– Ticket Size
+NBFCsPrivate Banks
+PAR 31-90%PAR 91-180%
+Public Sec Banks
+2.4%
+1.8% 2.3% 1.9% 1.7% 1.5%
+6.7%
+3.8%
+1.7%
+1.1%
+0.8%
+1.5%
+0.4%0.5%0.6% 0.2%0.4%0.4%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-23
+Mar-24
+Mar-22
+Public Sec Banks Private Banks NBFCs
+1.4%
+1.2%
+1.4%
+0.9%
+0.7%
+0.7%
+0.8%
+0.5%
+0.5%
+0.8%
+0.5%
+0.5%
+0.8%
+0.6%
+0.5% 1.3%
+1.3%
+2.0%
+1.6%
+1.5%
+2.0%
+1.7%
+1.7%
+2.4%
+2.1%
+2.6%
+3.4%
+2.4%
+3.4%
+4.8%
+PAR 31-90%PAR 91-180%
+<5L 5L-10L 10L-15L 15L-20L 20L+
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+<5L 5L-10L 10L-15L 15L-20L 20L+`
+`
+`
+Consumer 
+Durable Loans
+40
+`
+`
+`
+41
+Good growth in Portfolio with improvement 
+in delinquency up to PAR 180
+Consumer 
+Durable Loans
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ K Cr) 39.1 49.3 66.2
+Y-0-Y Growth % 26.0% 34.1%
+Active Loans (Lakh) 482.1 659.0 784.0
+Y-O-Y Growth % 36.7% 19.0%
+PAR 31-90% 1.0% 1.3% 1.2%
+PAR 91-180% 0.7% 1.0% 0.9%
+PAR 181+ % 2.9% 3.3% 1.9%
+Consumer Durable Loans – Portfolio Snapshot Consumer Durable Loans – Market Share
+25.7%
+74.3%
+Active Loans
+26.8%
+73.2%
+Portfolio Outstanding
+March 2024
+Dominated by NBFCs by Value and Volume1 Marginal improvement in PAR 31-90%, PAR 91-180% and PAR 180+% from Mar’23 to Mar’242
+Private Banks NBFCs`
+`
+`
+42
+20.6% Y-o-Y growth in Originations value in FY24, 
+declining from 36.4% Y-o-Y growth in FY231 8.5% Y-o-Y growth in Originations volume in FY24, declining from 38.2% Y-o-Y growth in FY232
+Decline in Y-o-Y growth in Originations in FY24 compared to FY23
+Originations Value ( ₹  Cr )
+36.4%
+20.6%
+Originations Value 
+72,005
+55,252
+87,340
+119,136
+143,718
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+Originations Volume ( Lakh)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+8.5%
+38.2%
+Originations Volume ( Lakh )
+Originations Volume 
+372.1
+289.0
+406.4
+561.5
+609.4
+Consumer 
+Durable Loans
+`
+`
+`
+43
+NBFCs gain Market Share in FY24 after losing to Pvt Banks in FY23
+Increase in Originations share (Value and Volume) for 
+Private Banks from FY20 to FY23, decline for NBFCs1 NBFCs gain share from FY23 to FY24, at the cost of Pvt Banks2
+Originations Volume by Lender Type
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+Private Banks NBFCs
+87.4%
+11.9%
+81.9%
+17.7%
+78.7%
+20.4%
+74.9%
+24.5%
+78.7%
+21. 1%
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations  Value
+Originations Value by Lender Type
+Private Banks NBFCs
+83.4%
+13.8%
+76.9%
+20.0%
+76.5%
+20.7%
+74.2%
+23.9%
+77.1%
+22.0%
+Consumer 
+Durable Loans
+`
+`
+`
+44
+% of Originations  Value
+Originations Value by Ticket Size
+ Originations Volume by Ticket Size
+Shift in Originations from lower ticket size 
+loans to >₹25K ticket size loans1 2.6X Growth in Originations (by Value) and 3.5X growth in Originations (by Volume) for ₹50K+ loans from FY20 to FY24, Y-o-Y increase of 31.9% by value and 35.5% by 
+volume for these loans in FY24
+2
+% of Originations Volume
+High Growth in ₹25K+ ticket size loans 
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+<10K 10K-25K 25K-50K 50K+
+27.4%
+47.9%
+7.6%
+27.4%
+7.2%
+47.1%
+30.6%
+5.1%
+42.6%
+5.4%
+39.4%
+32.4%
+4.0%
+37.8%
+33.0%
+25.2%22.9%17.1% 18.2% 21.7%
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+<10K 10K-25K 25K-50K 50K+
+16.0%
+59.3%
+21.4%
+15.6%
+23.3%
+57.0%
+19.5%
+18.2%
+56.8%
+22.3%
+51.4%
+20.3%
+15.9%
+53.7%
+22.8%
+7.6%6.0%3.3% 4.1% 5.5%
+Consumer 
+Durable Loans
+`
+`
+`
+45
+Delinquency – Lender Type Delinquency – Ticket Size
+Pvt Banks have higher PAR 31-180 compared to 
+NBFCs. Improvement in PAR 31-180% for Pvt Banks 
+for NBFCs from Mar’23 to Mar’24
+1 PAR 31-180% improves across all ticket sizes, performance of loans of ticket size ₹10K-₹50K 
+is better compared to ₹<10K and ₹50K+
+2
+NBFCs perform better in PAR 31-180 DPD compared to Pvt Banks
+1.7%
+2.5% 2.5%
+0.6%
+1.0% 0.8% 0.6% 1.1% 1.0%
+1.7% 1.4%
+1.2%
+1.8%
+2.4%
+2.0%
+0.9%
+1.4% 1.2%
+0.9%
+1.3% 1.3%
+2.5%
+1.9% 1.8%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+PAR 31-90 %PAR 91-180 %
+<10K 10K-25K 25K-50K 50K+
+<10K 10K-25K 25K-50K 50K+
+Mar-22
+PAR 31-90 %PAR 91-180 %
+Private Banks NBFCs
+Private Banks NBFCs
+1.3%
+1.9%
+0.8%
+1.5% 1.5%
+1.6%
+0.9%
+1.1%
+0.6%
+0.9%
+0.6%
+1.1%
+Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Consumer 
+Durable Loans
+`
+`
+`
+Credit Cards 
+46
+`
+`
+`
+47
+Significant Growth with stable Risk
+Mar-22 Mar-23 Mar-24
+Credit Card Balance 
+(₹ L Cr) 1.8 2.4 3.0
+Y-0-Y Growth % 32.9% 27.7%
+Cards in Circulation 
+(Lakh) 704.6 857.4 999.1
+Y-O-Y Growth % 21.7% 16.5%
+PAR 1-30% 3.3% 4.1% 3.9%
+PAR 31-90% 2.4% 2.2% 2.3%
+PAR 90+ % 12.8% 12.6% 12.5%
+Credit Cards – Portfolio Snapshot Credit Cards – Market Share
+70.8%
+29.2%
+Active Loans
+69.8%
+30.2%
+Portfolio Outstanding
+March 2024
+Dominated by Pvt Banks by Value and Volume1 Improvement in PAR 1-30% and stable PAR 30+% from Mar’23 to Mar’24 2
+Private Banks Others
+Issuer type Others includes Foreign Banks, Public Sector Banks, Credit Card Companies
+Credit Cards 
+`
+`
+`
+48
+0.2% Y-o-Y increase in New Card Originations in 
+FY24, growth from FY22 to FY23 stood at 51%
+1 Y-o-Y growth in share of New Card Originations for 
+Private Banks in FY24
+2
+Flat Y-o-Y growth for New Card Originations in FY24
+New Credit Cards Issued 
+ New Credit Cards Issued – by Issuer Type
+Originations Volume (Lakh) 
+51%
+0.2%
+166.9 111.9
+180.6
+272.6 273.3
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+Credit Cards 
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+65.1% 60.8% 67.6% 66.5% 74.4%
+34.9% 39.2% 32.4% 33.5% 25.6%
+% of Originations Volume
+Private Banks Others`
+`
+`
+Stable PAR 1-30% and PAR 31-90% for Private Banks, 
+improvement for Others
+49
+Stable PAR 1-30% and PAR 31-90% for Private Banks, improvement for Others from Mar’23 to Mar’241
+Delinquency PAR 1-30% – Lender Type
+PAR 1-30 %
+Private Banks Others
+2.3%
+3.2% 3.1%
+5.8% 6.0% 5.8%
+Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Delinquency PAR 31-90% – Lender Type
+PAR 31-90 %
+Private Banks Others
+2.4%
+2.1% 2.2%
+2.3%
+2.6%
+2.4%
+Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Credit Cards 
+`
+`
+`
+50
+MSME Lending`
+`
+`
+51
+MSME Credit Landscape in India – A Comprehensive View
+# Both Fresh Disbursements and Renewals are included 
+Commercial Repository - Entity MSME 
+Portfolio 
+Mar’24 (₹ L Cr)
+Growth 
+Mar’23 to Mar’24
+Originations Value #
+FY 24 (₹ L Cr)
+Growth %
+FY 23 to FY 24
+Originations Volume #
+FY 24 ( L )
+Growth %
+FY 23 to FY 24 
+28.4 6.6%
+39.9 3.1%
+64.7 18.9%
+Consumer Repository - Individual MSME*
+Portfolio 
+Mar’24 (₹ L Cr)
+Growth 
+Mar’23 to Mar’24
+Originations Value #
+FY 24 (₹ L Cr)
+Growth %
+FY 23 to FY 24
+Originations Volume #
+FY 24 ( L )
+Growth %
+FY 23 to FY 24 
+35.7 28.9%
+14.3 12.6%
+209.8 19.4%
+*Includes Business Loans (BL), Property Loans (LAP), Commercial 
+Vehicle Loans (CVL) and Construction Equipment Loans (CEL)`
+`
+`
+Entity MSME Loans
+Loans given to entities and reported 
+to Commercial bureau 
+Entities with Aggregate Credit Exposure 
+up to ₹50 Crore are considered
+Micro
+<₹ 1Cr
+Small
+₹ 1Cr – ₹ 10Cr
+Medium
+₹ 10Cr – ₹ 50Cr`
+`
+`
+53
+Muted Growth in Book Size along with increasing PAR 31-180%
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(L Cr) 22.7 26.7 28.4
+Y-0-Y Growth % 17.2% 6.6%
+Active Loans (Lakh) 137.2 154.8 157.6
+Y-O-Y Growth % 12.9% 1.8%
+PAR 31-90% 2.7% 2.1% 2.5%
+PAR 91-180% 1.3% 1.0% 1.1%
+PAR 181-360% 0.3% 0.3% 0.3%
+PAR 360+% 2.2% 1.9% 1.4%
+Market Share – Borrower Segment
+27.1%
+39.3%
+33.6%
+Portfolio Outstanding
+March 2024
+Micro holds ~80% of active loans and 1/3rd of the Portfolio Outstanding1
+Micro
+80.7%
+14.2%
+5.1%
+Active Loans
+Small Medium
+Entity MSME
+Entity MSME Loans – Portfolio Snapshot`
+`
+`
+54
+MSMEs witnessed higher Originations Growth 
+(Value & Volume) compared to last year
+3.1% Y-o-Y growth in Originations value and 18.9% 
+Y-o-Y growth in Originations volume in FY241 Micro Segment Continues to be the largest Contributor, Medium Segment displays milder growth2
+FY22
+Value: ₹39.0 L Cr
+Volume: 52.1 L
+1.7
+1.7
+2.8 4.7
+2.5
+2.3
+2.5
+3.1
+5.4 6.4
+3.4
+2.5
+6.2
+9.5
+11.0
+12.3
+Q1FY22 Q2FY22 Q3FY22 Q4FY22
+FY23
+Value: ₹38.7 L Cr
+Volume: 54.4 L
+Value growth
+-0.8%
+Value growth 
+3.1%
+2.2
+2.3
+7.2
+3.9
+2.3
+2.5 2.6
+2.5
+3.8 3.7
+2.8
+2.8
+8.8
+ 9.3
+8.9
+11.7
+Q1FY23 Q2FY23 Q3FY23 Q4FY23
+FY24
+Value: ₹39.9 L Cr
+Volume: 64.7 L
+2.4
+2.4
+5.4 3.1
+2.5
+2.7
+2.7
+3.1
+3.7
+6.0
+3.0
+2.8
+10.2
+8.4
+9.5
+11.8
+Q1FY24 Q2FY24 Q3FY24 Q4FY24
+MICRO SMALL MEDIUMBoth Fresh Disbursements and Renewals are included Originations Value in the chart is in ₹ Lakh Crore
+Entity MSME
+`
+`
+`
+55
+Micro Portfolio Grows Fastest By Value, Small Segment By Active 
+Loans Between Mar’23 And Mar’24. Increase in Portfolio Risk 
+Across All Segments
+Entity MSME
+Micro Segment grows by 14.9% (by value), 
+while small segment grows by 6.7% (by volume)1 PAR 31-180% increases across all Segments – Micro, Small and Medium from Mar’23 to Mar’242
+Portfolio Share – Borrower Segment
+ Delinquency - Borrower Segment
+Micro Small Medium
+Micro Small Medium
+Portfolio Outstanding 
+(₹ L Cr)
+Active Loans 
+(Lakh)
+Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Micro Small Medium
+PAR 31-180%PAR 181-360%
+5.4
+6.7 7.7 8.5
+10.3 11.2 8.8 9.6 9.5
+112.6
+126.2 127.2
+17.8 21.0 22.4
+6.7 7.6 8.0
+5.22%
+0.61%
+4.30% 4.76%
+0.63% 0.65%
+3.93%
+2.89% 3.27% 3.21% 2.49% 3.05%
+0.27% 0.32% 0.27%
+0.13% 0.16% 0.17%
+6.7%
+5.3%
+0.8%
+8.7%
+ -1%
+Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Micro Small Medium`
+`
+`
+Public Sector Banks and NBFCs gain market while Private Banks 
+lose. Increase in Delinquency for PSU Banks, Stable for Private 
+Banks, Decline for NBFCs 
+56
+Market Share - Lender Type
+% of Active 
+Loans
+13.1%
+48.5%
+25.6%
+13.3%
+49.3%
+25.0%
+15.2%
+45.2%
+27.5%
+13.5%
+25.5%
+51.9%
+14.1%
+27.6%
+47.1%
+15.6%
+26.6%
+47.8%
+% of Portfolio 
+Outstanding
+Mar-22 Mar-23 Mar-24
+Delinquency - Lender Type
+Public Sec Banks Private Banks NBFCs
+PAR 31-180 %PAR 181-360 %
+0.23% 0.26% 0.26%
+7.09%
+5.38%
+6.20%
+1.65%
+0.11% 0.16% 0.14%
+1.16% 1.19%
+1.12% 1.24% 1.12%
+5.09%
+4.5% 3.79%
+Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24 Mar-22 Mar-23 Mar-24
+Public Sec Banks and NBFCs gain while 
+Private Banks lose market share of 
+portfolio Outstanding
+1 NBFCs gain, Private Banks slip and Public Sec Banks hold steady 
+market share of active loans
+2 Deterioration in PAR 31-180% for PSU banks, Stable for Pvt Banks and improvement for 
+NBFCs from Mar’23 to Mar’24
+3
+Remaining Lender Types are not presented in this analysis
+Public Sec Banks Private Banks NBFCs
+Entity MSME
+`
+`
+`
+57
+Individual MSME Loans
+Loans given to self employed individuals in their 
+individual name and reported to Consumer bureau
+Loan Types Includes:
+Business 
+Loans (BL)
+Property 
+Loans (LAP)
+Commercial Vehicle 
+Loans (CVL)
+Construction Equipment 
+Loans (CEL)`
+`
+`
+58
+Strong Portfolio Growth and Improvement Across 
+All Delinquency Bands
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+(₹ L Cr) 24.1 27.7 35.7
+Y-O-Y Growth % 14.7% 29.0%
+Active Loans (Lakh) 547.1 564.7 672.3
+Y-O-Y Growth % 3.2% 19.1%
+PAR 31-90% 3.6% 3.0% 2.7%
+PAR 91-180% 1.9% 1.5% 1.1%
+PAR 181-360% 1.2% 0.9% 0.7%
+PAR 360+% 11.0% 10.4% 7.3%
+Market Share – By Product Type
+52.5%29.6%
+3.2%
+14.6%
+Portfolio Outstanding
+March 2024
+76.2%
+10.5%
+0.9% 12.4%
+Active Loans
+Portfolio Snapshot
+Improvement in PAR 31-90%, PAR 91-180% 
+& PAR 180+% from Mar’23 to Mar’241 Business Loans constitute 76% by volume, 52.5% by value as of Mar’242
+BL LAP CEL CVL
+Individual MSME
+`
+`
+`
+59
+1.5 3.6 3.7 3.3 2.8 3.1 3.1 3.7 2.9 3.8 3.6 3.9
+21.4
+43.5 44.6 47.0
+34.4 43.0 45.0
+53.3
+40.1
+60.3 53.8 55.6
+0.0
+10.0
+20.0
+30.0
+40.0
+50.0
+60.0
+70.0
+0
+1
+2
+3
+4
+5
+Q1FY22 Q2FY22 Q3FY22 Q4FY22 Q1FY23 Q2FY23 Q3FY23 Q4FY23 Q1FY24 Q2FY23 Q3FY24 Q4FY24
+Originations value (₹ L Cr) Originations volume ( Lakh )
+12.6% Y-o-Y growth in Originations value in 
+FY24, increasing from 5.5% Y-o-Y growth in FY231
+Value: ₹12 L Cr
+Volume: 156.5 L
+FY22
+Value: ₹12.7 L Cr
+Volume: 175.7 L
+FY23
+Value: ₹14.3 L Cr
+Volume: 209.8 L
+FY24
+19.4% Y-o-Y growth in Originations volume in 
+FY24, increasing from 12.8% Y-o-Y growth in FY232 ATS for Individual MSME declined from ₹7.2L in FY23 to ₹6.8L in FY243
+Continuous and Accelerated Growth in Originations Over Last 
+Two Years
+Value growth 
+12.3%
+Individual MSME
+Value growth 
+5.5%`
+`
+`
+PSU Banks lose Market Share to Pvt Banks and NBFCs
+60
+Decline in Originations share (Value) for Public Sec 
+Banks, increase in Volume share from FY23 to FY 241 Increase in Originations share (Value) for Pvt Banks, NBFCs and SFBs during the same period2
+Originations Value - Lender Type
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+19.3%
+28.9%
+33.8%
+3.0%
+15.1%
+19.7%
+22.2%
+45.0%
+1.9%
+11.2%
+19.1%
+27.4%
+38.1%
+2.5%
+12.9%
+19.4%
+34.7%
+25.4%
+3.5%
+16.9%
+16.1%
+37.2%
+28.3%
+3.8%
+14.6%
+Public Sec Banks Private Banks NBFCs Small Finance Banks Others
+Originations Volume - Lender Type
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+24.4%
+28.2%
+25.9%
+6.3%
+15.3%
+57.5%
+14.4%
+14.4%
+3.8%
+9.8%
+23.9%
+30.7%
+23.5%
+6.0%
+15.9%
+39.6%
+27.1%
+17.1%
+6.6%
+9.5%
+30.6%
+20.4%
+29.5%
+6.0%
+13.5%
+Public Sec Banks Private Banks NBFCs Small Finance Banks Others
+Individual MSME
+`
+`
+`
+Higher Supply For <₹10L Ticket Size Loans - Driving ~90% of 
+Originations (Volume) While Contributing ~25% to Originations (Value)
+61
+Increase in Originations share (by volume) 
+of <₹1L ticket size loans from FY23 to FY241 Stable Originations share (by value) across all ticket sizes from FY23 to FY242
+Originations Value by Ticket Size (₹)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% of Originations Value
+2.6%3.3%
+7.5%
+9.2%
+13.8%
+˂1L 1L – 2L 2L – 5L 5L – 10L 10L – 25L 25L+
+63.3%
+3.4%3.4%
+6.6%
+7.4%
+9.0%
+70.2%
+3.3%3.3%
+6.1%
+8.0%
+10.3%
+69.1%
+3.2%3.3%
+6.8%
+10.5%
+13.2%
+62.9%
+3.4%3.1%
+6.9%
+10.3%
+13.8%
+62.5%
+Originations Volume by Ticket Size (₹)
+% of Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+63.8%
+12.9%
+11.4%
+5.9%
+3.4%
+46.1%
+16.8%
+9.6%
+6.9%
+4.9%
+15.7%
+52.1%
+16.7%
+13.8%
+8.2%
+5.1%
+4.1%
+48.9%
+15.3%
+14.2%
+10.2%
+6.1%
+5.4%
+52.4%
+13.2%
+13.7%
+9.3%
+6.0%
+5.4%
+˂1L 1L – 2L 2L – 5L 5L – 10L 10L – 25L 25L+
+Individual MSME
+`
+`
+`
+Performance of Individual MSME loans 
+improved across all Lender Type & Ticket Sizes
+62
+PAR 31-180% and PAR 181-360% improved 
+across all lender types from Mar’23 to Mar’241 PAR 31-180% improved across all ticket sizes, PAR 181-360% improved for >₹2L ticket size loans from Mar’23 to Mar’242
+Delinquency – Ticket Size
+˂1L 1L – 2L 2L – 5L 5L – 10L ˃10L
+6.4% 5.8% 5.5%
+7.6%
+6.7% 6.2%
+7.4%
+6.5%
+5.6%
+6.4%
+5.5% 5.3% 5.0% 4.1% 3.4%
+1.7%
+1.4% 1.5%
+1.7% 1.7% 1.8% 1.7% 1.5%
+1.1%
+1.6%
+1.0%
+0.8%
+1.0%
+0.8% 0.6%
+PAR 91 – 180% PAR 31 – 90%
+Delinquency – Lender Type
+PAR 181 – 360%
+ PAR 31 – 180%4.6% 4.4% 3.8%
+1.0%
+0.8%
+0.4%
+0.7%
+0.4% 0.4%
+1.7%
+1.1%
+0.9% 1.0% 0.9% 0.9%
+3.5% 3.1% 2.8%
+5.9%
+3.7% 3.4%
+7.4%
+5.4%
+4.6%
+Public Sec Banks Private Banks NBFCs Small Finance Banks
+Individual MSME
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22`
+`
+`
+Improvement in Performance across Product Categories. 
+Commercial Vehicle loans show sharpest improvement
+63
+Delinquency improved across all Indv. MSME Loans except for PAR 181-360% for CEL from Mar’23 to Mar’24
+Individual MSME
+Delinquency (PAR 31-180 DPD) – Individual MSME Loan Category
+BL
+5.0% 4.5%
+3.8%
+4.6%
+3.9% 3.6%
+6.4%
+4.5%
+3.5%
+9.7%
+6.3%
+4.8%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+LAP
+ CEL
+ CVL
+PAR 31-180 %
+Delinquency (PAR 181-360 DPD) – Individual MSME Loan Category
+BL
+1.1%
+0.8%
+0.6%
+0.8%
+0.6% 0.5%
+1.1%
+0.8%
+1.1%
+2.4%
+2.0%
+1.4%
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+Mar-22
+Mar-23
+Mar-24
+LAP
+ CEL
+ CVL
+PAR 181-360 %`
+`
+`
+64
+Microfinance Lending 
+64
+`
+`
+`
+65
+Sustained Growth in MFI with Stable 
+PAR 31-90% and PAR 91-180%
+Microfinance
+Mar-22 Mar-23 Mar-24
+Portfolio Outstanding
+( ₹ K Cr) 287.5 349.1 442.7
+Y-o-Y Growth% 21.4% 26.8%
+Active Loans 12.4 14.2 16.1
+Y-o-Y Growth% 14.1% 14.0%
+Average Balance Per 
+Account (₹ K) 23.2 24.7 27.4
+Active Balance Per 
+Borrower (₹ K) 45.7 45.7 45.7
+PAR 31-90 % 3.3% 1.1% 1.2%
+PAR 91-180 % 2.7% 1.1% 0.9%
+PAR 180+% 8.4% 9.1% 9.6%
+Write Off (Amt %) 4.8% 7.7% 8.6%
+Microfinance – Portfolio Snapshot
+Dominated by NBFC-MFIs and 
+Banks by Value and Volume1 Stable PAR 31-90% and PAR 91-180% as of Mar’24 compared to Mar’232
+Microfinance – Market Share
+33.2%
+39.2%
+10.2%
+16.9%
+Portfolio Outstanding
+March 2024
+0.5%
+34.3%
+39.4%
+10.5%
+15.1%
+Active Loans
+0.7%
+Banks NBFCsNBFC-MFI SFBs Others
+`
+`
+`
+66
+19% Y-o-Y growth in Originations 
+value in FY24, declining from 
+28.1% Y-o-Y growth in FY23
+1 5.9% Y-o-Y growth in Originations 
+volume in FY24, declining from 
+17.6% Y-o-Y growth in FY23
+2 11% increase in Average 
+Ticket Size from ₹40.9K in 
+FY23 to ₹45.4K in FY24
+3
+Decline in Y-o-Y growth in Originations in FY24 compared to FY23
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+257,513
+195,287
+253,411
+324,741
+386,590
+Originations Value ( ₹  Cr )
+28.1%
+19%
+Originations Value 
+Originations Volume ( Lakh)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+745.5
+552.0
+670.5
+788.6
+835.0
+5.9%
+17.6%
+Originations Volume ( Lakh )
+Originations Volume 
+Microfinance
+`
+`
+`
+67
+Y-o-Y increase in Originations share (by value) for Banks, 
+while losing Originations share (by volume) in FY241 Y-o-Y decline in Originations share (by value) for NBFC-MFIs, while gaining Originations share (by volume2
+Banks gain market share by Value, NBFC MFIs lose share 
+in FY24. Banks share growth is backed by higher ATS
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% Originations Value
+Originations value by Lender Type
+15.4%
+7.4%
+30.6%
+46.0%
+13.0%
+5.5%
+30.8%
+50.1%
+17.4%
+6.5%
+33.0%
+42.6%
+16.3%
+8.8%
+37.8%
+36.6%
+15.2%
+9.4%
+37.6%
+37.4%
+Banks NBFC - MFI NBFCs SFBs
+Originations volume by Lender Type
+% Originations Volume
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+15.7%
+7.8%
+36.8%
+39.1%
+12.9%
+5.3%
+32.5%
+48.9%
+16.6%
+6.2%
+34.5%
+42.3%
+14.3%
+8.5%
+38.2%
+38.6%
+14.3%
+8.8%
+39.3%
+37.4%
+Banks NBFC - MFI NBFCs SFBs
+Microfinance
+`
+`
+`
+Steep Deceleration in <=₹30K Ticket Size. 
+MFI Originations move to Higher Ticket Sizes
+68
+ATS of Banks increased by 19% from ₹39.1K to ₹46.4K and by 9% from ₹40.7K to ₹44.3K for NBFC-MFIs from FY23 to FY241
+Microfinance
+Originations value by Ticket Size (₹)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% Originations Value
+40.3%
+36.6%
+40.7%
+27.9%
+41.6%
+26.4%
+49.2%
+16.0%
+48.5%
+8.8%
+<30K 30K-50K 50K-75K 75K-1L 1L+
+16.6% 19.2% 23.3%
+25.6%
+10.4%
+8.2% 8.4% 10.6% 12.4%6.3%
+6.5% 6.6% 4.3% 4.7%
+Originations volume by Ticket Size (₹)
+FY 2020 FY 2021 FY 2022 FY 2023 FY 2024
+% Originations Volume 
+34.6%
+55.1%
+34.6%
+50.7%
+37.2%
+46.1%
+48.7%
+30.7%
+52.6%
+20.3%
+11.9% 15.5%
+4.8%
+19.0%
+6.4%3.6%
+9.7%
+3.3%
+9.7%
+2.4%
+<30K 30K-50K 50K-75K 75K-1L 1L+`
+`
+`
+Performance of Banks Improves, NBFCs and SFBs witness Deterioration
+Steep Improvement in Performance of Higher Ticket size Loans >1L
+69
+Delinquency– Lender Type
+ Delinquency– Ticket Size
+PAR 91 – 180%
+ PAR 31 – 90%
+3.8%
+1.5% 1.3%
+3.1%
+1.1% 0.8%
+2.1%
+1.1% 1.0% 1.1%
+0.5% 0.6%
+3.6%
+1.0% 1.1%
+2.6%
+0.9% 1.0%
+2.5%
+0.5% 0.7%
+3.8%
+1.3%
+1.8%
+3.1%
+1.2% 1.3%
+3.5%
+1.0% 1.4%
+2.6%
+1.1% 1.1%
+2.8%
+1.2% 1.0%
+4.8% 5.4%
+0.8%
+3.0%
+1.6% 1.2%
+2.5% 1.0% 1.1% 2.2% 0.8%
+0.8%
+2.4%
+0.6%
+0.7%
+4.8%
+2.6%
+0.5%
+PAR 91 – 180% PAR 31 – 90%
+Banks NBFC-MFI NBFCs Small Finance Banks
+Improvement in PAR 31-90% for Banks 
+& PAR 91-180% for Banks and NBFC MFIs1 PAR 31-180% highest for <₹ 30K loans2 PAR 31-90 improved for all ticket sizes >₹50K from Mar’23 to Mar’243
+Microfinance
+˂30K 30K – 50K 50K – 75K 75K – 1L ˃1L
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22
+Mar-24
+Mar-23
+Mar-22`
+`
+`
+70
+Higher PAR 180+ and write-offs in MFI is a cascading effect 
+of the disbursements made in FY21 & FY22
+Significant reduction in Portfolio moving to PAR 180+ and write-off 
+for loans disbursed in FY23 and FY24 compared to previous 2 years1
+Stress observed in MFI Portfolio for the year ending Mar’20 to 
+Mar’22 can be attributed to the impact of the pandemic and 
+signs of recovery are evident from FY 22-23 onwards
+2
+Disbursal
+Period
+POS 180+
+(₹ Cr)
+Cumulative
+Write-Off
+Amt (₹ Cr)
+POS 180+ and 
+Cumulative
+Write-Off (₹ Cr)
+Pre-FY 20-21 18,474 25,490 43,964
+FY 20-21 9,875 6,212 16,087
+FY 21-22 7,614 4,913 12,527
+FY 22-23 5,459 1,048 6,507
+FY 23-24 397 40 437
+Reporting
+Period
+GLP
+(₹ Cr)
+PAR 31-
+180%
+PAR 91-
+180%
+PAR
+180+%
+Write-Off
+(Amount) %
+Mar 20 2.34 1.7% 0.8% 4.1% 1.6%
+Mar 21 2.60 9.4% 4.2% 4.4% 3.1%
+Mar 22 2.86 6.0% 2.7% 8.4% 4.8%
+Mar 23 3.49 2.2% 1.1% 9.1% 7.7%
+Mar 24 4.43 2.1% 0.9% 9.6% 8.6%
+Microfinance
+PROPRIETARY
+71
+About How India Lends                          About CRIF High Mark
+CRIF High Mark is an RBI licensed credit bureau in India that commenced its bureau
+operations in March 2011. CRIF High Mark offers Credit Bureau Information and
+Identification and anti-fraud services. It is India's first full service credit information bureau
+which provides comprehensive information solutions for all borrower segments – MSME and
+Commercial borrowers, Retail consumers, and Microfinance borrowers. With the databases
+of individuals and businesses from over 5,000 financial institutions CRIF High Mark provides
+credit information services and supports millions of lending decisions every month.
+CRIF High Mark is part of CRIF S.p.A. a global company headquartered in Bologna, Italy. CRIF
+is a global company specializing in credit & business information systems, analytics,
+outsourcing and processing services, as well as advanced digital solutions for business
+development and open banking. Globally, CRIF operates in 37 countries with more than
+10,500 financial institutions and over 600 insurance companies. CRIF's services are used by
+over 90,000 companies and more than 1,000,000+ consumers.
+Disclaimer: This report contains only aggregate level information. It does not contain any Credit Information and shall not be construed as Credit Information Report or part thereof. The analysis in 
+this report is based on Credit Information in CRIF High Mark’s database. The results are NOT to be construed or used as a "legal description". CRIF High Mark strives to keep its data accurate and up 
+to date but does not guarantee its accuracy. CRIF High Mark does not assume any liability for any errors, omissions, or inaccuracies in the data provided regardless of the cause of such or for any 
+decision made, action taken, or action not taken by the user in reliance upon any data provided herein. The contents of the report shall not be reproduced in part or whole without permission 
+from CRIF High Mark Credit Information Services Pvt. Ltd. The opinions expressed herein are those of the author. Its contents, therefore, do not represent any commitment between CRIF High 
+Mark and the recipient(s) and no liability or responsibility is accepted by CRIF High Mark for the content herein.
+Reach us at research@crifhighmark.com for any queries
+Srikanth Goli
+Vice President, Research & 
+Insights
+srikant.goli@crifhighmark.com
+Saumya Sah
+Sr Manager, Research & 
+Insights
+saumya.sah@crifhighmark.com
+How India Lends is an annual publication from CRIF High Mark on the
+lending landscape in India. The publication presents trends and analysis of
+key parameters such as portfolio growth, risk and originations across lender
+types and ticket sizes over the last 5 financial years
+Analytical Contacts
+Stay updated with Insights, follow us on:
+ www.crifhighmark.com

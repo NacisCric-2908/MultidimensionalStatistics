@@ -1,0 +1,1534 @@
+India Digital
+Payments Report
+1H 2025
+Payments to grow your worldForeword
+What began as a push for faster, easier transactions has now grown into a movement that 
+empowers every citizen, shopkeeper, and business to participate in India’s digital-first 
+future.
+Over the past year, we have witnessed digital rails become the backbone of commerce, 
+serving entities as varied as kirana stores, large corporates, and millions of ordinary 
+consumers. Nowhere else is the power of inclusion, trust, and innovation more evident 
+than in India, a nation that has arguably become the world’s payments laboratory, 
+continually setting new benchmarks in access, reliability, and security.
+The insights from this report reinforce a clear truth: payments growth in India is enabling 
+much more than just convenience. It is actively powering the formalisation of GDP, helping 
+merchants and consumers alike transition into the digital economy, and fostering an 
+environment where transparency, scale, and operational agility are within everyone’s 
+reach. 
+Small and micro-merchants, once limited by geography or legacy systems, now operate on 
+the same rails as major enterprises, thanks to the simplicity and universality of solutions 
+such as QR codes and app-based platforms. 
+Policy and innovation have become the dual forces driving India’s global edge, creating 
+population-scale trust and resilience.
+For Worldline, these shifts bring both immense responsibility and tremendous opportunity. 
+Our mission has always been to strengthen ecosystems with secure, reliable technology, 
+resilient operations, and privacy-for-all principles. 
+We take pride in our role supporting the growth of payment acceptance infrastructures 
+from millions of PoS terminals to the exponential rise in UPI QR codes. Each strategic 
+partnership, each certification, and every moment of uptime is a promise kept, enabling 
+our customers and partners to transact, innovate, and grow with confidence.
+Trust is not just a technical principle;
+it is a lived reality for every citizen,
+enterprise, and institution relying
+on our platforms.{ {
+India Digital Payments Report 1H 2025        02Looking forward over the next 12 to 18 months, the way we address sustainability, 
+compliance, and risk will define the future of India’s payments ecosystem. Disciplined 
+investments in infrastructure and close alignment with regulatory frameworks are not 
+optional; they are our duty as stewards of trust. 
+The next chapter will bring major advances: frictionless biometric authentication and 
+conversational “chat and pay” journeys, and the adoption of embedded finance use cases 
+that bring recurring payments and global corridors to mainstream audiences. Each of 
+these innovations must be guided by the values of inclusion, reliability, and security.
+I am deeply grateful to our customers, partners, regulators, and colleagues whose 
+commitment and vision shape everything we do. This report offers a rigorous and 
+actionable view of the sector, with insights that I hope will help decision-makers across 
+industries prepare for what comes next. 
+I invite you to reflect on these insights and join hands in shaping a payments ecosystem 
+that is sustainable, inclusive, and globally connected: the kind of ecosystem India truly 
+deserves.
+Next on India's rails:
+Pay by touch, pay by voice,
+pay without friction.
+Ramesh Narasimhan
+Chief Executive Officer
+Worldline India
+India Digital Payments Report 1H 2025        03Contents
+Foreword               02
+From One QR to 678 Million /uni2013.case How India Built the World's      06
+Largest Merchant Network
+Why Falling Ticket Sizes Are Actually a UPI Superpower     09
+The Kirana Effect /uni2013.case Millions of Tiny Taps Beat One Big Swipe    11
+Behind Every UPI Transaction /uni002D.case India's Robust Banking    13
+Infrastructure
+Plastic Goes Premium, Everyday Spends Go UPI     16
+The Great Split /uni2013.case Stores Swipe Less, the Internet Swipes More   19
+Mobile-First India /uni002D.case When Your Wallet Becomes an App    23
+The Invisible Giant /uni2013.case Net Banking in a UPI World     24
+Tolls Today, Parking Tomorrow /uni2013.case FASTag’s Second Act    25
+From Bill Day to ‘Set-and-Forget’ /uni2013.case Bharat Connect Makes   27
+Payments Disappear
+Worldline Insights /uni2013.case Where India Spends and How It's Changing   28
+Conclusion /uni002D.case India’s Payments Inflections and the Road Ahead   30
+Looking Forward /uni002D.case Sustainability, Frictionless Experience,    32
+and Global Growth
+*sources - rbi.org.in/ npci.org.in/
+https://www.npci.org.in/
+https://rbi.org.in/ India Digital Payments Report 1H 2025        04India’s Digital
+Revolution Has
+a Face /uni002D.case UPI.Micro-merchants were the catalyst. Government-backed programs enabled instant 
+onboarding at near-zero cost, while interoperable QR economics removed infrastructure 
+barriers. For shopkeepers, the choice was simple – free rails that offered speed, trust, and 
+reach. Consumers followed with preference, making QR the default over card terminals.
+Supporting data highlights the scale. RBI and NPCI recorded 18.4 billion UPI transactions in 
+June 2025 alone, underscoring how digital acceptance has become mainstream. 
+Traditional acceptance points expanded steadily, but the sheer velocity of UPI QR 
+adoption reshaped the entire market.
+From One QR to 678 Million –
+How India Built the World's
+Largest Merchant Network
+India’s payments acceptance story has 
+undergone a dramatic shift in the last 18 months. 
+PoS terminals grew 29% to 11.2 million from 8.6 
+million in Jan 2025, Bharat QR rose 12% to 6.72 
+million from 6 million in Jan 2025, and UPI QRs 
+more than doubled from 321.38 million, up 111% 
+to 678 million by June 2025. 
+What began with scattered QR codes has scaled 
+into the world’s largest merchant network.
+PoS terminals, BQR and UPI QR
+14.00
+12.00
+10.00
+8.00
+6.00
+4.00
+2.00
+0.00
+800
+700
+600
+500
+400
+300
+200
+100
+0
+PoS Terminals
+BQRs
+UPI QRs /uni0028.caseRHS/uni0029.case
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+India Digital Payments Report 1H 2025        06Micro-merchants were the catalyst. Government-backed 
+programs enabled instant onboarding at near-zero cost, 
+while interoperable QR economics removed infrastructure 
+barriers. For shopkeepers, the choice was simple – free 
+rails that offered speed, trust, and reach. Consumers 
+followed with preference, making QR the default over 
+card terminals.
+Supporting data highlights the scale. RBI and NPCI 
+recorded 18.4 billion UPI transactions in June 2025 alone, 
+underscoring how digital acceptance has become 
+mainstream. Traditional acceptance points expanded 
+steadily, but the sheer velocity of UPI QR adoption 
+reshaped the entire market.
+The implications are far-reaching. Biometric and PIN-less 
+UPI pilots promise to unlock frictionless adoption for 
+elderly users and feature-phone segments, signaling the 
+next inclusion frontier. As adoption broadens, the 
+challenge will be to balance ubiquity with sustainability 
+while continuing to innovate for inclusion.
+India has effectively redefined merchant acceptance - 
+low-cost, instant, and everywhere. The challenge now 
+lies in balancing ubiquity with economics, ensuring that 
+the rails built for mass inclusion remain sustainable while 
+continuing to innovate for the future.
+Bharat QR
+12%
+UPI QRs
+111%
+29%
+PoS
+terminals
+in June 2025 /uni002D.case proof that digital
+acceptance is now mainstream
+From chai stalls to kirana stores,
+QR has become India's universal
+acceptance rail.
+18.4 billion UPI transactions
+India Digital Payments Report 1H 2025        07PoS Market Share
+The PoS market continues to reflect the dominance of a few large acquirers. Scale, 
+merchant relationships, and stronger technology integration keep the space concentrated, 
+with private sector banks clearly leading. Public sector and foreign banks remain 
+secondary players, highlighting how acceptance growth is unevenly distributed.
+Top PoS deployers
+RBL Bank, Axis Bank, ICICI Bank, HDFC Bank, State Bank Of India, IndusInd Bank, 
+Yes Bank, Canara Bank, Kotak Mahindra Bank, and Bandhan Bank accounted for 97% of 
+terminals deployed as of December 2024.
+25%
+20%
+18%
+15%
+14%
+2%
+3%1%
+Private Sector banks dominated the space with 83.8% market share, while Public Sector 
+Banks accounted for 16%. Foreign banks have a 0.1% market share.
+83.8%
+16.1%
+0.1%0.0%
+Private Sector Banks
+Public Sector Banks
+Foreign Banks
+Payment Banks
+Small Finance Banks
+RBL Bank 
+Axis Bank
+ICICI Bank
+HDFC Bank
+State Bank Of India
+IndusInd Bank
+Yes Bank
+Canara Bank
+Kotak Mahindra Bank
+Bandhan Bank
+Others
+India Digital Payments Report 1H 2025        08Why Falling Ticket Sizes Are
+Actually a UPI Superpower
+While cards and PoS continue to expand steadily, the real story lies in UPI's shifting 
+transaction patterns, where falling values mask a profound transformation in consumer 
+behaviour.
+Over the last 18 months, UPI's trajectory has been transformative. Transaction volumes 
+climbed from 12.2 billion in January 2024 to 18.4 billion by June 2025. In 1H 2025 alone, 
+volumes surged 35% year-on-year to 106.36 billion, while values rose 23% to ₹143.34 
+trillion.
+The Power of Small
+The most striking shift is the decline in average ticket size from ₹1,478 in 1H 2024 to 
+₹1,348 in 1H 2025. This is not a weakness; it is UPI's superpower. Smaller spends at 
+kiranas, delivery platforms, mobility services, and utilities demonstrate how QR codes have 
+normalized as the default payment mode.
+UPI Transactions - volume & value
+0
+5000
+10000
+15000
+25000
+30000
+20000
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+UPI Volume (million)  UPI Value(INR billion)
+106.4 billion
+transactions in 1H 2025
+143.3 trillion 
+in value processed
+India Digital Payments Report 1H 2025        09What’s Next
+The next phase of growth is already visible – global corridors /uni0028.caseSingapore, UAE, etc.) extend 
+UPI beyond India; chat-based conversational journeys and UPI Autopay make payments 
+seamless inside apps. At the same time, biometric authentication pilots are set to redefine 
+user experience and expand adoption across demographics.
+India's strength lies in frequency,
+not size - every micro-payment
+fuels a macro shift.
+UPI as Everyday Infrastructure
+For merchants, onboarding is near frictionless, with zero-cost acceptance and instant 
+settlement. For consumers, speed and trust often outweigh the use of cards or cash. UPI 
+has become not just a payment option, but an infrastructure layer for everyday commerce.
+India Digital Payments Report 1H 2025        10UPI P2P & P2M Transactions /uni002D.case UPI Value /uni0028.caseINR billion)
+P2M Value /uni0028.caseINR billion) P2P Value /uni0028.caseINR billion)
+20000.00
+15000.00
+10000.00
+5000.00
+0.00
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+The Kirana Effect /uni2013.case Millions of
+Tiny Taps Beat One Big Swipe
+India’s UPI engine is powered by two primary flows /uni2013.case P2P transfers and P2M payments. In 
+1H 2025, P2P transactions grew 31% to 39.35 billion, while P2M transactions surged 37% 
+to 67.01 billion. This tilt toward merchant payments reflects how groceries, pharmacies, 
+food and beverage, and utilities have normalized QR pay. The shift compressed average 
+ticket sizes but expanded the system’s reach.
+The P2M surge is structural, not temporary. What once relied on cash or cards is now 
+digital by default at kirana stores and neighborhood merchants. This “kirana effect” proves 
+that ubiquity is built on countless small-value transactions rather than a few large swipes.
+The scale is undeniable. P2P transaction value climbed 22% to ₹103.86 trillion, while P2M 
+advanced 26% to ₹39.48 trillion. Hyper-local spends are driving frequency and stickiness. 
+For consumers, digital is now a habit; for merchants, it delivers low-cost acceptance that 
+builds trust and liquidity simultaneously.
+14000.00
+12000.00
+10000.00
+8000.00
+6000.00
+4000.00
+2000.00
+0.00
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+UPI P2P & P2M Transactions /uni002D.case Volume (Mn)
+P2M Volume (million) P2P Volume (million)
+India Digital Payments Report 1H 2025        11Looking forward, credit on UPI and small-ticket EMIs are set to add new layers. RBI and 
+NPCI are already steering innovation toward these rails, tilting higher-value baskets into 
+the P2M stream without disrupting the momentum of volume. This could rebalance value 
+while preserving transaction velocity.
+The challenge ahead lies in managing economics. As UPI scales deeper into both micro- 
+and credit-led flows, policymakers and acquirers must align incentives to ensure 
+sustainability. For now, the kirana remains UPI’s beating heart, millions of tiny taps creating 
+an unmatched digital scale.
+The lesson is clear – in India, this philosophy extends from digital rails to physical stores —  
+India’s payments strength lies in frequency, not transaction size.
+While kiranas define the front-end experience, the stability of UPI depends on the 
+backend pipes, the banks powering every transaction.
+India Digital Payments Report 1H 2025        12Behind Every UPI Transaction -
+India's Robust Banking
+Infrastructure 
+India’s UPI ecosystem looks app-driven, but true performance is decided deeper in the 
+stack. Consumers see familiar brands like PhonePe, Google Pay, or Paytm, yet the 
+reliability of every transaction depends on the banks that move money in the background. 
+This duality, apps for reach, banks for resilience, defines UPI’s success today.
+Falling Ticket Sizes, Rising Volumes
+The average ticket size of UPI transactions fell 9% in 1H 2025, from ₹1,478 to ₹1,348. P2P 
+ATS declined 7%, while P2M fell 8% to ₹589. This trend reflects UPI’s expanding role in 
+daily micro-spends, such as groceries, mobility, and utilities, where frequency and trust 
+matter more than value.
+Front-End Concentration
+By June 2025, PhonePe, Google Pay, and Paytm controlled more than 90% of both volume 
+and value. While this gives the impression of app-led dominance, the real bottlenecks—or 
+strengths—come from the banking partners that power these transactions.
+Avg Ticket Size /uni002D.case P2P, P2M, Total UPI
+Avg ticket size P2P Avg ticket size P2M Avg ticket size total UPI
+3000
+2500
+2000
+1500
+1000
+500
+0
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Top UPI apps, Remitter and Beneficiary banks
+3 UPI apps are dominant in terms of volume and value; PhonePe, Google Pay, and Paytm. 
+In terms of transaction volume, in June 2025, the 3 apps accounted for 90.4% of all 
+transactions. In terms of transaction value, the 3 accounted for 91% in June 2025.
+India Digital Payments Report 1H 2025        13The Pipes That Matter
+Remitter flows are 
+concentrated with among 
+State Bank of India, HDFC 
+Bank, Bank of Baroda, 
+Union Bank, and Punjab 
+National Bank. On the 
+beneficiary side, Yes Bank, 
+Axis Bank, State Bank of 
+India, HDFC Bank, and 
+ICICI Bank are the leaders. 
+These players ensure scale 
+but also create 
+dependency, making bank 
+uptime and capacity the 
+real measure of UPI 
+Top UPI Apps - percentage of volume and value contribution
+60.0%
+50.0%
+40.0%
+30.0%
+20.0%
+10.0%
+0.0%
+47.2%
+36.1%
+7.0 %
+50%
+35%
+6%
+49.3%
+37.4%
+8.1%
+51%
+35%
+6%
+State Bank of India
+HDFC Bank Ltd.
+Bank of Baroda
+Union Bank of India
+Punjab National Bank
+4,917.29
+1,472.04
+1,239.11
+1,144.76
+1,053.00
+UPI Remitter Banks Total Volume /uni0028.caseIn Million)
+UPI Beneficiary
+Banks
+      Yes Bank Ltd.
+      Axis Bank Ltd.
+      State Bank of India
+      HDFC Bank Ltd.
+      ICICI Bank Ltd.
+Total Volume
+/uni0028.caseIn Million)
+7,527.12
+1,842.48
+1,829.69
+925.31
+587.6
+Paytm Payment Bank
+PhonePe
+ Google Pay
+India Digital Payments Report 1H 2025        14Plastic Finds
+Its Premium
+Place.Plastic Goes Premium,
+Everyday Spends Go UPI
+India’s card base has continued to expand, but its usage profile has shifted. Debit cards 
+still account for more than 1 billion issued units, yet their PoS usage has stagnated, 
+declining nearly 8% year-on-year. The shift reflects UPI’s cannibalization of low-ticket 
+merchant payments, especially in everyday categories.
+Credit Cards Find Their Sweet Spot
+Credit cards, meanwhile, are thriving. The top five issuers of credit cards were HDFC Bank, 
+State Bank of India, ICICI Bank, Axis Bank, and RBL Bank, respectively, and the top five 
+issuers of debit cards were State Bank of India, Bank of Baroda, Canara Bank, HDFC Bank, 
+and Union Bank of India.
+600.00
+500.00
+400.00
+300.00
+200.00
+100.00
+0.00
+1010
+1000
+990
+980
+970
+960
+950
+940
+930
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Credit, Debit & Prepaid cards (millions)
+Number of outstanding
+debit cards(millions) RHS
+Number of outstanding
+credit cards(millions)
+Number of outstanding
+prepaid cards(millions)
+ 1/uni002B.case billion debit cards exist -
+but UPI has made them secondary at PoS.
+Debit is shrinking at merchants.
+Credit is thriving online.
+UPI owns the everyday spend.
+India Digital Payments Report 1H 2025        16Outstanding credit card base grew 23% between Jan 2024 and June 2025, while spends 
+crossed ₹2.2 trillion monthly. Yet the average ticket size per transaction dipped 6%, 
+showing credit is no longer confined to high-value travel or e-commerce—it is penetrating 
+F&B, utilities, and daily purchases. 
+Card Transaction Value (billion)
+500
+450
+400
+350
+300
+250
+200
+150
+100
+50
+0
+3000.00
+2500.00
+2000.00
+1500.00
+1000.00
+500.00
+0.00
+Total cards value Total credit cards value Total debit cards value Total prepaid cards value
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+500
+450
+400
+350
+300
+250
+200
+150
+100
+50
+0
+800.00
+700.00
+600.00
+500.00
+400.00
+300.00
+200.00
+100.00
+0.00
+Card Transactions Volume (million)
+Total cards volume Total credit cards volume Total debit cards volume Total prepaid cards volume
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+India’s payment landscape matures —
+volume grows, values stabilize,
+and digital confidence rises.
+India Digital Payments Report 1H 2025        17Prepaid Cards /uni2013.case The Niche Player
+Prepaid cards remain a small segment. 
+Transaction volumes have inched up 4%, but their 
+use is largely limited to corporate gifting and 
+closed-loop programs. For consumers, UPI offers 
+broader acceptance, and debit or credit provides 
+stronger economics, keeping prepaid in a niche 
+role.
+The New Payment Hierarchy
+This divergence highlights the new hierarchy – 
+UPI owns frequency, credit cards capture value, 
+and debit is relegated to cash withdrawals. For 
+issuers, the challenge is clear—protect relevance 
+in a market where UPI dominates the bottom of 
+the pyramid.
+What's Next /uni2013.case The Premium Push
+The next phase could intensify these dynamics. Credit on UPI and small-ticket BNPL will 
+likely divert some EMI flows from cards. Issuers are already responding with co-branded 
+partnerships, lifestyle-linked perks, and premium travel benefits, repositioning plastic as an 
+aspirational, higher-value instrument rather than an everyday utility.
+In India’s evolving payments mix, cards are not disappearing. They are moving 
+upmarket—plastic goes premium, while everyday spending goes UPI.
+Plastic isn’t disappearing.
+It’s moving upmarket.
+Plastic isn’t disappearing.
+It’s moving upmarket.
+The new payment hierarchy -
+UPI /uni003D.case Frequency | Credit /uni003D.case Value | Debit /uni003D.case Cash
+India Digital Payments Report 1H 2025        18The Great Split /uni2013.case Stores Swipe
+Less, the Internet Swipes More
+Card transactions in India show a striking divergence between physical PoS and online 
+channels. While overall PoS volumes rose just 4% YoY to 2.25 billion in 1H 2025, online 
+transactions surged 32% to 2.07 billion. This divide reflects how consumer behavior is 
+tilting away from in-store card swipes toward digital-first payments.
+At PoS, credit card volumes grew 25% to 1.35 billion, with transaction value rising 14% to 
+₹4.08 trillion. In contrast, debit card usage fell 24% to 516 million, with value dropping 15% 
+to ₹1.49 trillion. Prepaid card activity also weakened, down 6% in volume, though value 
+edged up 4% to ₹59 billion. The net effect /uni2013.case PoS growth is anchored almost entirely by 
+credit.
+Card Transactions Volume at PoS
+80
+70
+60
+50
+40
+30
+20
+10
+0
+250
+200
+150
+100
+50
+0
+pos volume Debit card
+volume at pos (million)
+pos volume Prepaid card
+volume at pos (million) RHS
+pos volume Credit card
+volume at pos (million)
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Card Transactions Value at PoS
+900
+800
+700
+600
+500
+400
+300
+200
+100
+0
+12
+10
+8
+6
+4
+2
+0
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+pos volume Debit card
+volume at pos (million)
+pos volume Prepaid card
+volume at pos (million) RHS
+pos volume Credit card
+volume at pos (million)
+India Digital Payments Report 1H 2025        19Online transactions, however, show the opposite trend. Credit card volumes rose 36% to 
+1.32 billion, while prepaid transactions grew 64% to 583 million, led by digital goods, 
+transit, and gifting. Debit, however, declined 28% to 174 million. In value terms, online 
+credit spending grew 17% to ₹7.02 trillion, while prepaid added 1% to ₹219 billion. Debit fell 
+13% to ₹0.74 trillion.
+Average ticket sizes reinforce this split. At PoS, the credit ATS was ₹3,031, and the debit 
+was ₹2,888. Online, credit ATS was far higher at ₹5,330, driven by premium categories 
+such as e-commerce, gaming, utilities, and financial services. Prepaid remained 
+small-value, with ATS of ₹153 offline and ₹376 online.
+250
+200
+150
+100
+50
+0
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Card Transactions Volume at Online (ecommerce)
+Online volume Credit card
+volume at E-commerce and
+others (million)
+Online volume Debit card
+volume at E-commerce and
+others (million)
+Online volume Prepaid card
+volume at E-commerce and
+others (million)
+1400
+1200
+1000
+800
+600
+400
+200
+0
+70
+60
+50
+40
+30
+20
+10
+0
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Card Transactions Value at Online (ecommerce)
+Online volume Credit card
+volume at E-commerce and
+others /uni0028.caseINR billion)
+Online volume Debit card
+volume at E-commerce and
+others /uni0028.caseINR billion)
+Online volume Prepaid card
+volume at E-commerce and
+others /uni0028.caseINR billion) RHS
+India Digital Payments Report 1H 2025        20This divergence is structural. Credit cards have become the engine of online growth, while 
+debit cards cede ground to UPI in everyday physical spends. Looking ahead, tokenisation 
+maturity, one-tap mandates, and RBI’s evolving risk rules will keep credit central to online, 
+while debit remains subdued.
+4%
+PoS up just
+YoY.
+32%
+Online up 
+YoY.
+Credit drives
+both channels,
+while debit
+falls sharply.
+Online credit spends hit ₹7.02 trillion,
+cementing premium categories as growth engines.
+India Digital Payments Report 1H 2025        21From
+Tap to Chat -
+Mobile Is the
+New WalletMobile-First India: When Your
+Wallet Becomes an App
+Mobile payments are no 
+longer an add-on—they are 
+the default rails of everyday 
+spending. In 1H 2025, 
+volumes reached 98.9 billion 
+transactions, up 30% YoY, 
+while values crossed ₹209.7 
+trillion, a 17% increase. The 
+momentum reflects a 
+decisive shift from physical 
+payment points to 
+mobile-first experiences.
+Super-App Behaviors
+The driver is super-app behavior. Consumers now use apps not just for transfers but for 
+bill payments, utilities, entertainment, and government services. This has expanded the 
+frequency of transactions while compressing size. The average ticket size fell 10% to 
+₹2,120, signaling a surge in smaller, everyday digital payments.
+Experience and Stickiness
+For users, the appeal is seamless journeys—browse, order, and pay without leaving the 
+app. For merchants, it means faster checkouts and better stickiness. This combination 
+explains why mobile has become the backbone of digital payment adoption, especially as 
+UPI accounts for most of this growth.
+Mobile payments have become the face of everyday digital commerce, with UPI defining 
+how India transacts at scale. Yet behind the headlines, Net Banking continues to anchor 
+the system, processing the country’s largest value flows. 
+If mobile is the new wallet, Net Banking remains the silent workhorse powering India’s big 
+money rails.
+The future of mobile payments lies in integration -
+biometric UPI and in-chat pay will mak payments
+invisible inside everyday apps.
+40000
+35000
+30000
+25000
+20000
+15000
+10000
+5000
+0
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Mobile App Payments
+Mobile payments volume (million) Mobile payments value /uni0028.caseINR billion)
+India Digital Payments Report 1H 2025        23The Invisible Giant –
+Net Banking in a UPI World
+Net Banking rarely makes headlines, but it continues to underpin India’s financial 
+backbone. In 1H 2025, volumes dipped slightly to 2.22 billion, down 1% YoY. Yet values 
+surged 30% to ₹717.4 trillion, underscoring how Net Banking remains the channel of choice 
+for high-value payments.
+The story lies in its users. Corporations, treasuries, and government agencies rely on Net 
+Banking for tax payments, GST remittances, and large-ticket treasury flows. This explains 
+why the average ticket size jumped to ₹313,954 in 1H 2025, up from ₹239,421 a year 
+earlier—by far the highest among all payment modes.
+This dual profile “flat volumes, explosive values” reflects Net Banking’s niche. For 
+consumers, UPI dominates; for enterprises, Net Banking moves the real money. The base 
+is now so large that growth will look modest in percentage terms, but the absolute value 
+gains will keep compounding.
+Looking ahead, Net Banking’s trajectory will remain stable. Its role as the rail for corporate 
+and regulatory settlements ensures longevity, even as retail adoption consolidates under 
+UPI and cards. In India’s digital payments mix, Net Banking is the invisible giant – less 
+visible, but indispensable.
+₹717
+trillion 
+moved in 1H 2025
+ATS of
+₹3,14,000
+per transaction
+Driven by
+corporates,
+taxes, and
+treasury
+flows
+430.00
+420.00
+410.00
+400.00
+390.00
+380.00
+370.00
+360.00
+350.00
+340.00
+330.00
+16000.0
+14000.0
+12000.0
+10000.0
+8000.0
+6000.0
+4000.0
+2000.0
+0.0
+Net Banking
+Internet Payments Volume
+/uni0028.caseNetbanking) (million)
+Internet Payments Value
+/uni0028.caseNetbanking) (INR billion) RHS
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+India Digital Payments Report 1H 2025        24Tolls Today, Parking Tomorrow –
+FASTag’s Second Act
+Once a highway-only innovation, Electronic Toll Collection /uni0028.caseETC/uni0029.case has become one of India’s 
+most successful digital adoption stories. What started with toll plazas is now expanding 
+into parking, campuses, and city mobility, showing how rails built for one use can scale 
+everywhere.
+Electronic Toll Collection /uni0028.caseETC/uni0029.case has 
+transformed how India pays on 
+highways—and is now extending into parking 
+plazas and campuses. By June 2025, 111.1 
+million FASTags were issued, a 34% rise from 
+January 2024. Transaction volumes grew 16% 
+YoY to 2.32 billion, while values increased 18% 
+to ₹405 billion.
+This growth is directly tied to India’s 
+expanding vehicle base and the ability to use 
+the same rails across multiple touchpoints. For 
+users, FASTag has removed friction; for 
+operators, it has improved compliance and 
+throughput.
+Why it grew
+Electronic Toll Collection 
+120.00
+100.00
+80.00
+60.00
+40.00
+20.00
+0.00
+450
+400
+350
+300
+250
+200
+150
+100
+50
+0
+Volume (million) Tag Issuance (in nos) Value /uni0028.caseINR billion)
+Jan
+24
+Feb
+24
+Mar
+24
+Apr
+24
+May
+24
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+India Digital Payments Report 1H 2025        25Where it’s headed
+The rails built for tolls are now being repurposed. Parking facilities, gated campuses, and 
+city mobility stacks are plugging into NETC, creating new merchant categories. With each 
+new use case, throughput rises, and FASTag becomes more than just a tolling tool—it 
+turns into an urban mobility enabler.
+Looking ahead, interoperability and integration with broader mobility systems could 
+position NETC as a key layer in India’s smart-city infrastructure. The foundation has been 
+laid; the second act will define its scale.
+And just as FASTag has changed how India moves, Bharat Connect is transforming how 
+India manages recurring household spends.
+111 million
+tags issued by June 2025
+2.32 billion
+transactions in 1H 2025
+₹405 billion
+transaction value
+18%YoY
+Grow by
+India Digital Payments Report 1H 2025       26From Bill Day to ‘Set-and-Forget’ –
+Bharat Connect Makes Payments
+Disappear
+Bharat Connect has moved from
+being a utility bill platform to becoming 
+India’s recurring payments backbone. 
+In 1H 2025, transactions surged 76% 
+YoY to 1.49 billion, while value jumped 
+an extraordinary 220% to ₹6.9 trillion. 
+This scale reflects the formalisation of 
+everyday “life-admin” spending.
+Beyond Bills /uni2013.case Category Expansion Fuels Growth
+The driver is a category expansion. Beyond electricity and water bills, Bharat Connect now 
+powers education fees, EMI repayments, subscription services, and even rural bill 
+payments. By digitising recurring obligations, it has created rails that are predictable, 
+sticky, and trusted by both consumers and service providers.
+Recurring and mandate-driven use cases are the differentiator. For millions, Bharat 
+Connect has reduced the friction of bill-day reminders and long queues, replacing them 
+with a ‘set-and-forget’ autopay experience. This model ensures both higher retention and 
+a consistent growth trajectory.
+Win-Win for All Stakeholders
+For service providers, Bharat Connect delivers guaranteed cash flows, reduced collection 
+risk, and visibility into customer repayment behavior. This predictability is creating a 
+two-sided advantage—stable revenue assurance for businesses and unmatched 
+convenience for consumers.
+Looking forward, insurance renewals, school fees, and new subscription categories will 
+add further volume. Autopay ubiquity positions Bharat Connect as a daily essential layer of 
+India’s payments stack—less visible than UPI, but deeply embedded in financial life.
+Every routine
+payment is now
+a click away -
+from power bills
+to school fees.
+₹1.49 billion
+transactions in 1H 2025,
+up 76% YoY.
+₹6.9 trillion
+transaction value,
+a 220% jump
+1400
+1200
+1000
+800
+600
+400
+200
+0
+Jun
+24
+Jul
+24
+Aug
+24
+Sep
+24
+Oct
+24
+Nov
+24
+Dec
+24
+Jan
+25
+Feb
+25
+Mar
+25
+Apr
+25
+May
+25
+Jun
+25
+Bharat BillPay Volume (million)
+Value /uni0028.case INR billion) Volume (million)
+India Digital Payments Report 1H 2025        27Worldline Insights /uni2013.case Where India
+Spends and How It's Changing
+As one of India's leading payment processors, Worldline sits at the intersection of millions 
+of transactions daily, offering a unique lens into the country's evolving spending patterns.
+Through its extensive merchant network spanning both physical and digital touchpoints, 
+Worldline helps power India's digital payment revolution while capturing valuable insights 
+about where, how, and why consumers spend.
+In-Store Reality –
+The Everyday Essentials
+Drive Volume
+The physical world tells a story of 
+necessity and routine. In 1H 2025, 
+grocery stores, restaurants, clothing 
+outlets, hospitals, hotels & resorts, 
+pharmacies, jewellery, and
+departmental stores made up 62% of 
+transaction volumes and 58% of value.
+This concentration shows how deeply 
+digital payments have penetrated
+daily life. These aren’t aspirational 
+purchases — they’re essentials now 
+flowing seamlessly through digital rails.
+Geographically, the top 10 states and 
+UTs driving physical transactions 
+/uni2014.caseMaharashtra, Kerala, Tamil Nadu, 
+Karnataka, Delhi, Telangana, Gujarat, 
+Uttar Pradesh, West Bengal, and 
+Punjab—mirror India’s economic hubs 
+and its digital adoption curve.
+01
+06
+09
+05
+10
+02
+04
+03
+07
+08
+62% 58%Transaction volume Transaction value
+The top 10
+states and UTs
+India Digital Payments Report 1H 2025        28Online Dynamics /uni2013.case Volume and Value Tell Different Stories
+The digital realm runs on a different logic. E-commerce dominates with 55% of volumes 
+but only 41% of value, reflecting its shift from premium buys to everyday needs.
+The divergence lies in category profiles –
+• Financial services /uni2013.case 6% of volumes but 28% of value, where big-ticket flows sit.
+• Government payments /uni2013.case 5% volume, 14% value, steady civic obligations.
+• Travel & hospitality /uni2013.case 12% volume, 6% value, frequent but budget-focused.
+These merchant patterns are not isolated—they mirror system-wide shifts such as the fall 
+in UPI P2M ticket sizes and the surge of high-value, card-led online categories. Worldline’s 
+vantage point thus connects micro-spends at kiranas with macro flows in finance and 
+government, reflecting the dual engine of India’s digital payments.
+What This Reveals /uni2013.case The New India Spending Map
+The future signals are already visible in the data. Education, utilities, and government 
+services will accelerate with Bharat Connect. Digital goods and gaming will keep driving 
+volume, while high-value categories expand depth.
+The merchant mix will keep evolving, but one truth stands firm /uni2013.case India’s digital payments 
+have shifted from novelty to necessity, from premium to pervasive.
+5%
+Government payments
+14%
+6%
+Financial services
+28%
+Travel & hospitality
+12%
+6%
+India Digital Payments Report 1H 2025        29Conclusion /uni002D.case India’s Payments
+Inflections and the Road Ahead
+Together, these shifts tell a clear story: UPI is turning micro-spends into macro adoption, 
+cards are redefining themselves for premium use, and platforms like FASTag and Bharat 
+Connect are building invisible rails for everyday life.
+Looking at these recent developments, several prominent patterns and emerging trends 
+can be seen that will continue to define digital payments in India for the foreseeable 
+future.
+The first half of 2025 marked a significant phase in the advancement of India’s digital 
+payments ecosystem, clearly demonstrating the nation’s position as a global frontrunner in 
+scale, innovation, and financial inclusion. 
+Shifts in consumer habits, widespread merchant adoption, and responsive policy actions 
+have shaped an arena that is more versatile, secure, and inclusive than ever before. 
+Micro-Spends and UPI /uni002D.case The New Default
+The growing prevalence of UPI has fundamentally 
+reshaped India’s payments sector, with transaction 
+volumes surging even as the average ticket size 
+continues to decrease. 
+This shift is driven by widespread QR code adoption 
+among kirana stores and small merchants, as well as 
+growing comfort among consumers in using UPI for 
+frequent, low-value transactions. 
+The result is an infrastructure that now reaches the last 
+mile, enabling millions of micro-payments across urban 
+and rural markets. However, with these declines in 
+ticket size, questions around sustainability and 
+merchant economics have come to the fore, as the 
+digital rails must balance high volume with low margin 
+for long-term viability.
+Trust Inclusion Scale
+India Digital Payments Report 1H 2025        30Card and Bill Payments /uni002D.case Evolving Usage
+Debit card volumes and values have consistently fallen 
+as more low-value transactions migrate to UPI, while 
+their usage is now focused on cash withdrawals and 
+occasional point-of-sale purchases. 
+Conversely, credit card transactions continue to grow 
+steadily, especially for online purchases supported by 
+rewards, EMIs, and expanding categories, although the 
+average spend per transaction is diluting as more 
+consumers participate. 
+Bharat Connect demonstrates strong momentum, with 
+both volume and value climbing sharply as recurring 
+payments expand beyond utilities into education, 
+subscriptions, and loans. 
+These evolving patterns help formalise everyday 
+financial activities and accelerate the mainstream 
+adoption of digital payment channels.
+NETC and Ecosystem Expansion
+The NETC FASTag system is seeing consistent growth, tied to a rising vehicle base and 
+the expansion of use cases like parking plazas and campus access. 
+Interoperable infrastructure is driving digital acceptance beyond urban centres, signalling 
+how digital payments are embedded across sectors and geographies. 
+Collectively, these trends show that digital payments power both convenience and 
+operational efficiency, fostering broader participation among consumers, businesses, and 
+government agencies.
+India Digital Payments Report 1H 2025        31Looking Forward /uni002D.case Sustainability,
+Frictionless Experience,
+and Global Growth
+India’s payment ecosystem now stands at a critical juncture. The next wave of growth will 
+be defined less by policy debates and more by technology-led innovation and new 
+acceptance models.
+Advances in frictionless user experiences – such as biometric, PIN-less UPI and 
+conversational “chat-and-pay” journeys are compressing checkout times and enabling 
+broader adoption across diverse user segments. 
+SoftPoS, in particular, is emerging as a low-cost acceptance layer that allows merchants to 
+transform smartphones into payment terminals, extending reach without additional 
+infrastructure.
+The launch of credit on UPI and small-ticket EMIs is gradually tilting credit flows from 
+plastic to QR and app-based rails. In parallel, UPI’s cross-border expansion with active 
+corridors into markets like Singapore and the UAE is positioning India’s payments model as 
+an exportable standard for international commerce.
+As one of the leading payment providers, Worldline continues to power this shift with a full 
+spectrum of payment offerings, from in-store to online, SoftPoS to cross-border solutions 
+– helping merchants, banks, and businesses adapt to this changing landscape.
+By working together to enhance resilience, trust, and inclusion at the population scale, 
+every stakeholder stands poised to thrive and contribute meaningfully to India’s ongoing 
+digital transformation journey.
+Every digital payment is a thread -
+together, we are weaving India’s
+future into the global tapestry.
+{ {
+India Digital Payments Report 1H 2025        32This report was prepared by
+Worldline India Marketing Team
+About Worldline India
+Worldline is a leading Omnichannel payments 
+technology player, building a robust payment 
+ecosystem for over 26 years. 
+Worldline is the preferred partner for over
+30 leading public and private sector banks, 
+leading sectors like NBFCs, insurance 
+companies, e-commerce businesses, startups, 
+retail brands, hotel chains, and many more. 
+Connect with us at 
+Worldline.com/india

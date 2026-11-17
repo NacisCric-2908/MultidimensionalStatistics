@@ -1,0 +1,3373 @@
+CREDIT LANDSCAPE IN INDIA
+Q3 FY26
+(Data as of December 2025)DEFINITIONS 01
+CONSUMPTION LENDING 02
+01
+02
+EXECUTIVE SUMMARY 06
+PRODUCT DEEP DIVE 08
+03
+04
+• Home Loans
+• Gold Loans
+• Personal Loans
+• Auto Loans
+• Credit Cards
+• Two-Wheeler Loans
+• Consumer Durable Loans
+08
+14
+20
+26
+32
+35
+41
+TABLE OF CONTENTSDEFINITIONS
+This version of How India Lends is based on data reported as of December’25
+The following criteria and ﬁlters have been applied in this report:
+Consumption Lending
+Includes Home Loans, Personal Loans, Gold Loans, Auto Loans, Credit 
+Cards, Education Loans, Two-Wheeler Loans, Tractor Loans, Used Car Loans 
+and Consumer Durable Loans
+Auto Loans
+Only Auto Loans (Personal) are considered in this report
+Gold Loans
+Both Gold Loans & Priority Sector Gold Loans are considered in 
+this report
+Through out this report:
+Portfolio Outstanding or POS or Value
+Refers to the current outstanding balance of the loan account
+Active Loans or Volume
+Refers to the number/count of active loans
+Market Share by Value
+Refers to the share of diﬀerent lender types/ﬁnanciers in the current 
+outstanding balance
+Market Share by Volume
+Refers to the share of diﬀerent lender types/ﬁnanciers in the number 
+of active loans
+Originations Value
+Refers to the total sanctioned amount, unless otherwise mentioned
+Originations Volume
+Refers to the number of loans sanctioned, unless otherwise mentioned
+PAR
+Or Portfolio at Risk refers to the proportion of delinquent portfolio
+ATS
+Or Average Ticket Size refers to the average sanctioned amount
+01How India Lends - December 2025CONSUMPTION
+LENDINGCONSUMPTION LENDING
+Portfolio
+(₹ Lakh Cr)
+As of Dec-25
+YoY
+Growth %
+QoQ
+Growth % Dec-24 Sep-25
+PAR 31-180
+Dec-25
+Product
+Category
+Active Loans
+(Lakh)
+As of Dec-25
+YoY
+Growth %
+QoQ
+Growth %
+Home Loan*
+Gold Loan*
+Personal Loan*
+Auto Loan*
+Credit Card*
+Two-Wheeler Loan*
+CD Loan*
+Others#
+Total Consumption Loans
+Sole-proprietor Loans: 
+CV, CEL, BL, LAP
+Total Retail Loans
+43.0
+16.2
+15.9
+9.0
+3.4
+1.8
+1.0
+23.2
+113.5
+49.2
+162.7
+10.5%
+44.1%
+11.6%
+14.6%
+1.6%
+12.3%
+14.3%
+11.8%
+14.8%
+26.2%
+18.1%
+2.2%
+11.5%
+3.5%
+5.1%
+-2.5%
+7.1%
+7.3%
+2.9%
+4.0%
+5.4%
+4.4%
+233.7
+907.5
+1,303.2
+168.1
+1,094.4
+365.9
+1,007.6
+1,169.1
+6249.5
+655.8
+6,905.4
+4.1%
+7.9%
+13.5%
+9.0%
+5.0%
+8.8%
+0.8%
+8.2%
+7.3%
+14.0%
+7.9%
+1.0%
+1.1%
+5.6%
+1.1%
+0.9%
+4.0%
+5.4%
+3.3%
+3.2%
+2.2%
+3.1%
+2.6%
+2.4%
+3.1%
+2.8%
+4.5%
+5.4%
+2.7%
+4.6%
+3.2%
+4.4%
+3.6%
+2.5%
+2.0%
+2.6%
+3.2%
+4.1%
+5.5%
+2.2%
+4.1%
+2.9%
+4.0%
+3.2%
+2.4% ↓
+1.8% ↓
+2.5% ↓
+3.0% ↓
+3.9% ↓
+4.7% ↓
+1.9% ↓
+4.1% ↔
+2.8% ↓
+3.9% ↓
+3.1% ↓
+DECEMBER’25 SNAPSHOT - RETAIL AND CONSUMPTION LOAN PRODUCTS
+02How India Lends - December 2025
+*Loan types presented in detail in this report. #Others includes Education Loan, Tractor Loan, Used Car Loan, PSL Agri+KCC,  Other Credit Cards, Loans Against Securities, and Miscellaneous. 
+MSMEx (Micro, Small, Medium Exposure Businesses)
+• As of Dec'25, retail loans grew 18.1% YoY and 4.4% QoQ, led by gold loans (44.1% YoY, 11.5% QoQ), which have overtaken personal loans in 
+portfolio outstanding. 
+• GST rate rationalizations and festive demand further supported growth in AL, TW, and CD loans. 
+• PL remained higher in volume (active loans), rising 13.5% YoY and 5.6% QoQ, reﬂecting demand for smaller-ticket exposures. 
+• Sole-proprietor loans increased 26.2% YoY and 5.4% QoQ to ₹49.2 lakh crore, underscoring strong business credit demand. 
+• Portfolio performance strengthened overall, with delinquencies improving, though TW and CC segments remain elevated but stable.
+↔ Refers to stable QoQ (PAR)↓ Refers to QoQ Improvement (PAR)CONSUMPTION LENDING
+Originations Value
+(₹ K Cr)
+Q3 FY26
+YoY
+Growth %
+QoQ
+Growth %
+Product
+Category
+Originations Volume
+(Lakh)
+Q3 FY26
+YoY
+Growth %
+QoQ
+Growth %
+Gold Loan*
+Personal Loan*
+Home Loan*
+Auto Loan*
+Consumer Durable Loan*
+Two-Wheeler Loan*
+Credit Card*
+Others#
+Total Consumption Loans
+Sole-proprietor Loans: CV, CEL, BL, LAP
+Total Retail Loans
+817.9
+310.8
+291.2
+118.3
+46.5
+38.1
+-
+411.9
+2,034.8
+499.3
+2,534.1
+90.3%
+35.7%
+12.9%
+11.0%
+11.7%
+6.0%
+-
+58.1%
+49.4%
+14.9%
+41.1%
+33.5%
+6.4%
+-0.9%
+22.1%
+14.7%
+46.7%
+-
+8.0%
+16.7%
+-1.1%
+12.7%
+441.0
+447.9
+8.8
+14.0
+240.2
+42.2
+42.3
+132.1
+1,368.6
+61.1
+1,429.7
+34.0%
+15.0%
+5.4%
+13.6%
+17.1%
+7.2%
+-22.6%
+61.4%
+22.2%
+5.7%
+21.4%
+18.1%
+3.7%
+-6.8%
+26.0%
+13.2%
+58.0%
+-18.6%
+6.0%
+10.2%
+12.2%
+10.3%
+Q3 FY26 ORIGINATIONS: RETAIL AND CONSUMPTION LOAN PRODUCTS
+*Loan types presented in detail in this report. #Others includes Education Loan, Tractor Loan, Used Car Loan, PSL Agri+KCC,  Other Credit Cards, Loans Against Securities, and Miscellaneous. 
+MSMEx (Micro, Small, Medium Exposure Businesses)
+• Originations value of total retail loans grew 41.1% YoY and 12.7% QoQ, driven by gold loans (90.3% YoY, 33.5% QoQ).
+ • Beyond gold loans, QoQ momentum was supported by two-wheeler loans (46.7% value, 58.0% volume), auto loans (22.1% value, 26.0%  
+  volume), and consumer durable loans (14.7% value, 13.2% volume).
+03How India Lends - December 2025HIGHLIGHTS
+• NTC share declined across all loan products except for CD loans in Q3 FY26 vs Q3 FY25.
+• Two-Wheeler Loans lead with 38.3% NTC share, down from 41.2% with the biggest drop in NTC share.
+• Consumer Durable (16.3%) remain strong among NTC customers.
+• Auto and Housing Loans show moderate NTC penetration (9%–10%).
+• Gold & Personal Loans NTC share has dropped to less than 5% in Q3 FY26.
+• Credit Card NTC share stable at 8.5%, no signiﬁcant change YoY.
+CONSUMPTION LOAN PRODUCTS - NTC SHARE
+CONSUMPTION LENDING
+*Note: Customers with insuﬃcient credit history at the time of Originations are considered as NTC Customers.
+FY 2026 Q3
+Personal Loan
+Gold Loan
+Two-Wheeler 
+Loan
+Consumer 
+Durable Loans
+FY 2025 Q3
+FY 2026 Q3
+FY 2025 Q3
+FY 2026 Q3
+FY 2025 Q3
+FY 2026 Q3
+FY 2025 Q3
+FY 2026 Q3
+FY 2025 Q3
+FY 2026 Q3
+FY 2025 Q3
+Auto Loan
+Housing Loan
+38.3%
+41.2%
+16.3%
+16.2%
+9.8%
+10.2%
+9.2%
+10.6%
+4.9%
+6.0%
+3.7%
+4.6%
+% NTC Share (Originations Value)
+HIGHLIGHTS
+4.6%
+8.5%
+8.7%Credit Card FY 2026 Q3 FY 2025 Q3
+% NTC Share (New Cards Issued)
+04How India Lends - December 2025Top 8 Top 9-50 Top 51-100 BT 100
+% of Originations Value
+% of Originations Volume
+HL PL TW AL CD GL CC
+Q3 FY26
+20.1%
+9.3%
+19.5%
+51.1%
+42.3%
+10.0%
+17.3%
+30.4%
+53.4%
+10.8%
+16.1%
+19.7%
+36.4%
+12.5%
+18.7%
+32.5%
+42.2%
+12.0%
+19.8%
+26.0%
+31.8%
+16.9%
+31.3%
+19.9%
+28.6%
+10.0%
+20.0%
+41.5%
+CONSUMPTION LENDING
+CONSUMPTION LOAN PRODUCTS - GEOGRAPHY WISE PENETRATION 
+% Originations Value Share Across City Classiﬁcation
+05How India Lends - December 2025
+Metro-centric:
+• HL: 51.1% of originations (value) from Top 8 cities; only 20.1% from BT100.
+• CC: 41.5% of originations (volume) from Top 8 cities.
+Balanced distribution:
+• GL: Nearly equal split between Top 9–50 cities and BT100 (~32% each).
+• AL: Balanced urban–rural mix; BT100 at 36.4% vs. 32.5% from Top 8.
+BT100 focus:
+• PL & CD: Largest share from BT100 (42.3% and 42.2%).
+• TW: Strongly driven by BT100, showing deep penetration in semi-urban and rural regions
+Urban stronghold for HL, CC; Rural domination for PL, CD, TW; AL across both.EXECUTIVE
+SUMMARYEXECUTIVE SUMMARY
+06How India Lends - December 2025
+MARKET SNAPSHOT
+India's retail lending market reached ₹162.7 lakh crore (18.1% YoY growth), with 690 million active 
+accounts. Portfolio quality improved signiﬁcantly - PAR 31-180 declined to 3.1% from 3.6% YoY. Q3 
+FY26 originations surged 41% YoY to ₹25.3 lakh crore, driven by festive demand, gold price rally, and 
+GST rationalization.
+OVERARCHING MARKET TRENDS
+1. Growth migration from unsecured to secured
+The market is continuing a structural shift with secured products (POS: Gold Loans 44.1% YoY, Auto Loans 
+14.6% YoY) signiﬁcantly outpacing unsecured products (credit cards 1.6% YoY, Personal Loans 11.6% YoY). 
+2. Premiumization across lending categories
+Higher ticket sizes are driving value growth across the board. Home Loans saw average ticket size jump 
+6.4% QoQ to ₹33 lakh, with ₹75L+ loans now 40% of originations (vs. 35% YoY). Gold Loans showed 
+similar premiumization - loans above ₹5L now constitute 36.5% of value (up from 24% in Q3 FY25). This 
+reﬂects borrowers leveraging improved aﬀordability, rising asset values, and favourable LTV regulations.
+3. Volume vs. Value divergence
+A clear decoupling between volume and value growth emerged. Home Loan volumes (active loans) grew 
+4.1% YoY while portfolio expanded 10.5% YoY - entirely ticket size-driven. Conversely, Personal Loans showed 
+13.5% volume growth but only 11.6% portfolio growth, indicating ﬁntech-led proliferation of smaller loans.
+4. NBFCs Capturing high-velocity segments
+NBFCs demonstrated aggressive market share gains  in high-frequency, smaller-ticket products. In 
+Gold Loans, their originations value share jumped from 22.8% (Q2 FY26) to 30.7% (Q3 FY26), capturing 
+~50% of volumes. In personal loans, they command 91.1% volume share despite 36.6% value share.EXECUTIVE SUMMARY
+07How India Lends - December 2025
+5. PSU Banks' resurgence
+PSU Banks lead in Home Loan originations value (50.3% vs. 23.3% private), marking a structural 
+competitive shift. They're particularly dominant in the ₹75L+ Home Loan segment (43% of their portfolio 
+value) and maintain strong positions in Gold Loans originations value (45.8%). This resurgence reﬂects 
+improved digital capabilities, competitive pricing, and regulatory support for priority sector lending.
+6. Asset quality improvement amid growth
+Delinquency metrics improved across many products, with overall retail PAR 31-180 declining to 3.1% 
+from 3.6% YoY. Gold Loans showed sharpest improvement (1.8% from 2.4%), while consumer durables 
+dropped to 1.9% from 2.7%.
+7. Ticket size-asset quality correlation strengthening
+Larger loans consistently outperform smaller loans on credit quality. In Personal Loans, ₹5L+ loans show 
+PAR 91-180 below 1%, while sub-₹ 1L loans (about 90% of volume) maintain elevated 91-180 PAR at 
+2.68%. Similar patterns emerged in Home Loans, where ₹75L+ loans demonstrate superior performance 
+versus sub-₹5L loans.
+8. Geographic expansion beyond metros
+Beyond Top 100 cities now drive growth in mass-market products. Personal Loans (42.3% from BT100), 
+Two-wheelers, and Consumer Durables show strong rural/semi-urban penetration, while Home Loans 
+(51% from Top 8 cities) and Credit Cards (41.5%) remain metro-centric. This geographic diversiﬁcation is 
+supported by digital lending infrastructure reaching tier 2/3 cities.
+10. External catalysts driving sectoral surges
+Policy and macro factors signiﬁcantly inﬂuenced Q3 FY26 performance. Gold Loan originations value 
+almost doubled (90.3% YoY) driven by gold price rally. GST rate rationalization triggered 46.7% QoQ surge 
+in two-wheeler originations value and 22.1% QoQ in Auto Loans originations value. Festive season 
+demand also boosted consumer durables (14.7% QoQ). Sole-proprietor loans grew 26.2% YoY, reﬂecting 
+strong MSME credit appetite amid economic recovery.HOME LOANSIndia’s housing ﬁnance market is deepening, driven by expanding formal credit and sustained internal 
+migration of nearly nine million people annually. Floating rates and seamless balance transfers improve 
+borrower ﬂexibility while reinforcing market discipline. The sizeable gap in micro and aﬀordable housing is 
+the next growth frontier - requiring responsible scale with unwavering focus on asset quality.
+SASIDHAR VAVILALA
+EVP Analytics - Suryoday Bank
+The past decade has witnessed tremendous improvement in the level of formal credit with the Credit 
+Information Bureaus playing an important role. The prevalence of formal credit scoring has helped Housing 
+Finance Companies expand the scope of their lending and explore newer segments and geographies.
+Credit Scoring and its linkage to formal credit and loan pricing has helped bring about greater discipline in 
+the repayments thereby helping improve the credit quality for lenders.
+The new products launched by the Credit Bureaus gives greater insights into the risks faced by lenders and 
+helps mitigate them. This gives conﬁdence to lenders to expand with greater agility to meet the 
+ever-increasing hunger for credit in a fast-growing economy like ours.
+SURESH S IYER
+MD & CEO - Can Fin Homes Ltd
+Home Loan market continued to grow steadily, driven substantially by higher average ticket sizes
+HOME LOANS
+Dec-24
+Portfolio Outstanding (₹ L Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Lakh)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 180+
+38.9
+224.6
+2.3%
+0.3%
+2.0%
+Sep-25 Dec-25
+43.0
+10.5%
+2.2%
+233.7
+4.1%
+1.0%
+2.1% ↓
+0.3% ↔
+1.9% ↔
+42.1
+11.1%
+2.1%
+231.5
+ 3.3%
+ 0.9%
+2.2%
+0.3%
+1.9%
+Home Loans - Portfolio Snapshot
+↔ Refers to stable QoQ (PAR) ↓ Refers to QoQ Improvement (PAR)
+Dec-25
+↓
+↔
+↔
+Dec-25 YoY%POS (₹ L Cr)
+MH
+KA
+TS
+TN
+GJ
+UP
+AP
+DL
+RJ
+KL
+Top 10
+Rest Of India
+Pan India
+9.5
+4.5
+3.5
+3.5
+3.5
+2.6
+2.1
+1.9
+1.8
+1.6
+34.6
+8.3
+43.0
+10.3%
+11.1%
+12.5%
+9.2%
+10.0%
+11.8%
+10.8%
+7.7%
+11.8%
+8.1%
+10.5%
+10.8%
+10.5%
+QoQ%
+Growth PAR 31-180
+2.0%
+1.9%
+2.6%
+1.8%
+2.3%
+2.7%
+2.3%
+1.6%
+2.7%
+1.6%
+2.1%
+2.3%
+2.2%
+Dec-24
+2.0%
+2.3%
+2.2%
+2.9%
+2.2%
+2.9%
+4.0%
+1.6%
+2.1%
+6.1%
+2.5%
+3.1%
+2.6%
+Sep-25
+1.9%
+2.1%
+2.2%
+2.6%
+2.1%
+2.7%
+4.0%
+1.4%
+2.1%
+5.5%
+2.4%
+2.9%
+2.5%
+Dec-25
+1.8% ↓
+2.1% ↔
+2.2% ↔
+2.4% ↓
+2.0% ↓
+2.6% ↓
+3.9% ↓
+1.4% ↔
+2.0% ↓
+5.1% ↓
+2.3% ↓
+2.9% ↔
+2.4% ↓
+Home Loans - Geographic Distribution
+• Portfolio Outstanding grew steadily at about 10.5% YoY 
+and 2% QoQ as of Dec’25. 
+• Active loan volumes were stable, suggesting growth 
+was driven by higher average ticket sizes and larger 
+loans, likely supported by rate cuts. 
+• Asset quality remained resilient, with delinquency levels 
+stable to improving across buckets.
+• Southern states (AP, TS), RJ, and UP posted YoY and QoQ growth above 
+the pan-India average, though AP, UP, apart from KL, showed higher 
+delinquency. 
+• DL recorded one of the lowest growth rates nationally. 
+• The rest of India grew 10.8% YoY, signaling expansion beyond top cities, 
+with slightly elevated PAR 31–180 versus the Top 10 and pan-India 
+averages.
+08How India Lends - December 2025HOME LOANS
+HL originations value and volume moderated in Q3 FY26, while average ticket size grew 6.4% QoQ
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+9.0 8.4
+9.7
+7.8
+9.5 -6.8%
+-0.9%
+-20.0%
+-19.7%
+22.1%
+22.2%
+15.8%
+16.1%
+Originations Value (₹ Cr) Originations Volume (Lakh)
+8.8
+259,775 258,030
+299,469
+240,428
+293,782
+291,200
+Q3 FY 24
+ Q3 FY 25
+ Q4 FY 25
+ Q1 FY 26
+ Q2 FY 26
+ Q3 FY 26
+Originations Value 
+(
+₹ 
+Cr)
+ Originations Volume (Lakh)
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ L)
+Q-o-Q Growth %
+28.8 30.8 30.9
+0.3%
+31.0
+0.3%
+31.0
+0.1%
+33.0
+6.4%
+Clear increase in ticket size:  
+• Average ticket size rose from ₹31 L in Q2 FY26 to ₹33 L in Q3 FY26—a strong 6.4% quarterly growth compared to the ﬂat trend in earlier 
+quarters, signalling a fresh uptrend.
+• Additionally, originations value remained stable at ₹2.91 L Cr, while volumes declined 6.8% QoQ. This reinforces the focus on ticket size 
+expansion during the quarter.
+• The originations value share of ₹75L+ loans gone up to around 40.0% in Q3 FY26 from 35.1% in Q3 FY25.
+Home Loans Originations Trends
+09How India Lends - December 2025Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+6.2%
+19.0%
+37.1%
+37.6%
+6.2%
+20.3%
+29.5%
+44.1%
+6.3%
+20.8%
+27.7%
+45.2%
+6.2%
+20.6%
+29.0%
+44.2%
+6.6%
+19.8%
+26.0%
+47.5%
+6.5%
+19.9%
+23.3%
+50.3%
+% of Originations Value
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+9.3%
+27.3%
+24.8%
+38.5%
+10.4%
+27.6%
+21.5%
+40.5%
+10.5%
+27.3%
+21.3%
+40.8%
+10.9%
+26.7%
+22.0%
+40.5%
+14.9%
+24.5%
+19.4%
+41.2%
+10.4%
+25.7%
+18.4%
+45.4%
+PSU Banks Pvt Banks HFCs Others
+Note: Others include NBFCs, SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs.
+HOME LOANS
+Lender Wise Originations Trends
+Sustained growth in PSU Banks originations, capturing over half of total originations value in Q3 FY26
+• PSU Banks dominance: PSU Banks are consistently expanding 
+market share, reaching 50.3% in originations value and 45.4% in 
+volume in Q3 FY26. Private bank’s share has structurally 
+declined, while HFCs have maintained a steady, range-bound 
+share.
+• Target ticket sizes: In Q3 FY26, PSU banks’ originations were led 
+by the ₹75L+ segment, contributing 43% of total value. Private 
+banks were similarly skewed, with ₹75L+ loans forming 48% of 
+originations value, while HFCs remained focused in the 
+₹5L–₹35L range, accounting for 47%.
+10How India Lends - December 2025Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+% of Originations Value
+35.4%
+1.5%
+30.8%
+32.3%
+33.7%
+1.2%
+30.0%
+35.1%
+32.7%
+1.3%
+29.5%
+36.6%
+32.0%
+1.3%
+29.5%
+37.2%
+29.9%
+1.1%
+29.3%
+39.7%
+30.8%
+1.3%
+29.3%
+38.5%
+Q3 FY 26
+ Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+% of Originations Volume
+57.3%
+18.5%
+17.6%
+6.6%
+57.8%
+16.2%
+18.4%
+7.6%
+56.0%
+18.1%
+18.0%
+7.9%
+55.0%
+18.9%
+18.1%
+8.1%
+52.3%
+21.4%
+18.0%
+8.2%
+53.6%
+18.4%
+19.1%
+9.0%
+HOME LOANS
+Ticket Size Wise Originations Trends
+The ₹75L+ ticket size segment continues to grow, accounting for 40% of the originations value 
+by Q3 FY26
+<5L 5L - 35L 35L - 75L 75L+
+• Value trends: The ₹75L+ ticket size now accounts for 39.7% of 
+originations value, reﬂecting steady growth over prior 
+quarters. In contrast, sub-₹75L originations have declined, 
+particularly in the sub-₹35L category.
+• Volume highlights: ₹75L+ loans represent only 9% of 
+originations volume, indicating value concentration in fewer, 
+higher-ticket loans. Meanwhile, the ₹5L–₹35L range constitutes 
+54% of volumes, underscoring the continued dominance of 
+smaller and mid-sized loans in disbursal counts.
+11How India Lends - December 2025HOME LOANS
+0.21% 0.19% 0.16% 0.20% 0.38% 0.35%
+1.66% 1.66% 1.50%
+0.37%0.18% 0.16%
+PSU Banks Pvt Banks HFCs Others
+PAR 91-180
+Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+PSU Banks
+ Pvt Banks
+ HFCs
+ Others
+PAR 91-180
+3.14%
+2.67% 2.57%
+0.96% 1.04% 1.02%
+2.99% 2.83% 2.78% 2.82% 2.94% 2.98%
+Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks HFCs Others
+PAR 31-90
+Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+• PAR 91-180: Levels remain low and are improving across all key 
+lender categories, indicating stronger collection eﬃciency. 
+Other delinquencies are mainly driven by cooperative banks 
+(across both buckets).
+Note: Others include NBFCs, SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs.
+Delinquency - Lender Type
+All key lenders continue to show improvement across early and later buckets, 
+supported by growing POS
+• PAR 31-90: PSU Banks and HFCs show continued improvement, 
+while Private Banks maintain one of the lowest and most stable 
+levels, reﬂecting strong asset quality - likely due to moderated 
+originations. Still, HFCs, despite forming only ~20% of originations, 
+record one of the highest PAR 31-90.
+12How India Lends - December 2025HOME LOANS
+1.19% 1.06% 1.01%
+4.98% 5.09% 4.59%
+3.19% 3.06% 3.06%
+1.61% 1.52% 1.50%
+Dec-24 Sep-25 Dec-25
+<5L 5L-35L 35L-75L 75L+
+PAR 31-90
+Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+Stress concentrated in this 
+ticket size, accounting for 30% 
+of originations value.
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+Dec-24
+Dec-24
+Dec-24
+Dec-24
+ Sep-25
+Sep-25
+Sep-25
+Sep-25
+Sep-25
+ Dec-25
+Dec-25
+Dec-25
+Dec-25
+Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+0.20% 0.20% 0.17%
+2.16% 1.85% 1.78%
+0.41% 0.40% 0.37% 0.19% 0.18% 0.16%
+Dec-24 Sep-25 Dec-25
+<5L 5L-35L 35L-75L 75L+
+PAR 91-180
+Dec-24 Sep-25 Dec-25
+ Dec-24 Sep-25 Dec-25
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24 Sep-25 Dec-25
+Better asset quality
+• Stress concentration: Credit stress in PAR 31–90 is concentrated 
+in the <₹5L and ₹5L–₹35L segments, with the latter showing 
+notable pressure compared to higher ticket sizes. The <₹5L 
+segment, however, contributes only ~1% of originations value.
+• Resilient category: Higher-ticket loans demonstrate stronger 
+performance and better asset quality, with improved PAR 
+levels-particularly in PAR 91–180 - relative to lower-ticket 
+segments.
+Delinquency - Ticket Size
+Credit stress remains concentrated in <₹5L and ₹5L- ₹35L loans
+13How India Lends - December 2025As of Dec'25, POS grew 
++10.5% YoY & 
++2.2% QoQ
+NTC steady @ ~9-10% penetration
+Ticket sizes at rise ₹31L → ₹33L
+Q2 FY26 --> Q3 FY26
+~50% share of originations value 
+by PSU Banks
+Top 8 cities contribute 51.1%
+of originations value
+HOME LOANS: Q3 FY26 SNAPSHOT08
+08
+GOLD LOANSIn FY26, gold loans have emerged as one of India’s most resilient and fast growing retail credit segments, 
+supported by strong collateral quality, rising gold prices, and disciplined borrower behaviour. The steady 
+improvement in PAR metrics across lenders underscores the product’s inherent strength. The recent RBI 
+regulations - especially the revised LTV framework and tighter norms on valuation and repayment 
+discipline - have further reinforced portfolio stability while enabling responsible expansion. As higher ticket 
+loans gain prominence and NBFCs deepen their presence, the gold loan ecosystem is structurally 
+strengthening, oﬀering customers greater liquidity with robust risk safeguards.
+SANJEEV SRIVASTAVA
+Director - Risk - Capri Global Capital Ltd
+GOLD LOANS
+Sustained expansion with improving asset quality
+Dec-24
+Portfolio Outstanding (₹ L Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Lakh)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 180+
+11.2
+841.1
+1.7%
+0.8%
+0.5%
+Sep-25 Dec-25
+16.2
+44.1%
+11.5%
+907.5
+7.9%
+1.1%
+1.2%  ↔
+0.6%  ↔
+0.3%  ↔
+14.5
+35.8%
+  8.6%
+897.4
+ 10.7%
+1.3% 
+1.3%
+0.7%
+0.3%
+Dec-25
+↔
+↔
+↔
+Dec-25 YoY%POS (₹ K Cr)
+TN
+AP
+KA
+TS
+KL
+MH
+GJ
+RJ
+UP
+OR
+Top 10
+Rest Of India
+Pan India
+535.3
+266.2
+158.3
+137.8
+128.5
+93.8
+48.8
+34.9
+33.9
+30.3
+1,467.8
+151.7
+1,619.5
+41.0%
+37.0%
+47.8%
+55.1%
+32.7%
+50.1%
+49.1%
+56.0%
+68.3%
+49.5%
+43.3%
+52.4%
+44.1%
+QoQ%
+Growth PAR 31-180
+10.0%
+10.1%
+10.9%
+16.6%
+9.0%
+13.8%
+12.4%
+15.5%
+16.1%
+17.1%
+11.4%
+13.0%
+11.5%
+Dec-24
+2.6%
+2.3%
+2.2%
+1.6%
+1.1%
+3.1%
+2.7%
+3.3%
+4.0%
+3.8%
+2.4%
+3.2%
+2.4%
+Sep-25
+2.2%
+1.9%
+1.7%
+1.4%
+0.8%
+2.5%
+2.0%
+2.1%
+3.2%
+2.4%
+1.9%
+2.5%
+2.0%
+Dec-25
+2.0%  ↓
+1.5%  ↓
+1.4%  ↓
+1.2%  ↓
+0.6%  ↓
+2.3%  ↓
+1.8%  ↓
+2.0% ↔
+3.1% ↔
+2.3% ↔
+1.7%  ↓
+2.4% ↔
+1.8%  ↓
+ Portfolio Snapshot (including Priority Sector Gold Loan)
+• POS: POS posted strong momentum, increasing 44.1% 
+YoY and 11.5% QoQ, led by healthy disbursement 
+activity and underpinned by favourable asset valuations.
+• Performance Metrics: Delinquencies across buckets are 
+broadly steady to improving, reﬂecting the strength of 
+collateral and prudent portfolio expansion.
+• Growth remained broad-based across states, with all major markets 
+delivering double-digit YoY expansion. UP led with 68% YoY growth, 
+followed by RJ and TS. On a QoQ basis, these states also continue to 
+maintain strong double-digit growth.
+• Portfolio quality improved across most states, with PAR trends largely 
+stable to declining. KL continued to outperform, maintaining one of the 
+lowest PAR levels and showing ongoing improvement in PAR 31–180.
+PSGL – Prioirty sector gold loans was ₹4.8 L Cr as of Dec-25, ₹4.5 L Cr as 
+of Sep-25 and ₹4.0 L Cr as of Dec-24  - about 30% across the years.
+Market Share (including Priority Sector Gold Loan)
+14How India Lends - December 2025
+↔ Refers to stable QoQ (PAR) ↑ Refers to QoQ Deteriorations (PAR)↓ Refers to QoQ Improvement (PAR)15How India Lends - December 2025
+GOLD LOANS
+Gold Loan originations scale new high on price-led value expansion
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ L)
+Q-o-Q Growth %
+1.1 1.3 1.4
+9.9%
+1.6
+9.4%
+1.6
+4.5%
+1.9
+13.1%
+Q3 FY24
+ Q3 FY25
+ Q4 FY25
+ Q1 FY26
+ Q2 FY26
+ Q3 FY26
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+278.9
+329.0 341.7
+382.9 373.4
+441.018.1%
+10.6%14.0%
+25.8%
+-2.5%
+2.6%
+3.9%
+12.0%
+10.5%
+15.6%
+1.6%
+41.4%
+207,978
+91,732
+ 121,288 134,040 152,744
+308,459
+356,485 448,537
+156,675
+455,850
+173,299
+644,579
+Originations Volume (Lakh) Originations Value (₹ Cr) - Gold Loans Originations Value (₹ Cr) - Priority Sector Gold Loan
+Highlights:
+• Gold Loans (excl PSGL) scaled sharply, more than doubling YoY to 
+₹644.6k Cr in Q3 FY26.
+• New loan volumes rose ~34% YoY to 441 lakh loans; however, 
+volume growth trailed value growth, indicating that the expansion 
+was largely driven by higher loan ticket sizes amid rising gold prices.
+Key Drivers:
+• Higher gold prices drove larger ticket sizes for the same 
+pledged quantity.
+• Favourable regulations (85% LTV up to ₹2.5 lakh) expanded 
+borrower eligibility.
+Gold Loans Originations Trends16How India Lends - December 2025
+In Q3 FY26, NBFCs originations value share increased from 22.8% as of Q2 FY26 to 
+30.7% as of Q3 FY26
+GOLD LOANS
+Lender Type Wise Originations Trends
+PSU Banks Pvt Banks NBFCs Others
+Lender Type Wise Originations Trends
+PSU Banks
+ Pvt Banks
+% of Originations Value
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+11.1%
+21.1%
+16.3%
+51.6%
+10.6%
+20.4%
+18.1%
+50.8%
+11.5%
+20.9%
+15.5%
+52.1%
+10.6%
+23.1%
+14.9%
+51.4%
+10.6%
+22.8%
+15.3%
+51.2%
+8.7%
+30.7%
+14.7%
+45.8%
+Note: Others include  SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs.
+Lender Type Wise Originations Trends
+NBFCs
+ Others
+Lender Type Wise Originations Trends
+Pvt Banks
+% of Originations Volume
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+12.5%
+39.0%
+11.4%
+37.1%
+12.1%
+39.1%
+11.9%
+36.8%
+13.0%
+39.6%
+9.9%
+37.4%
+11.9%
+42.7%
+9.5%
+35.9%
+11.9%
+42.0%
+9.3%
+36.8%
+9.3%
+49.5%
+8.5%
+32.7%
+NBFCs gaining share in Q3 FY26
+• PSU Banks remain the largest contributors to originations value, though their share moderated from 51.2% in Q2 FY26 to 45.8% in Q3 FY26. 
+A similar trend is visible in volumes, where their share declined from 36.8% to 32.7% over the same period.
+• The standout trend this quarter is the rise of NBFCs, whose originations value share increased by about 8 percentage points QoQ to 30.7% 
+as of Q3 FY26. 
+• NBFCs also captured nearly 50% of overall originations volumes, driven particularly by gold-loan focused players.17How India Lends - December 2025
+>₹2.5L loans continue to grow in originations value share
+Ticket Size Wise Originations Trends
+GOLD LOANS
+<1L 1L-2.5L 2.5L-5L 5L+
+Ticket Size Wise Originations Trends
+<1L
+ 1L-2.5L
+% of Originations Value
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+17.7%
+23.0%
+33.9%
+25.4%
+23.9%
+25.1%
+31.1%
+19.9%
+25.9%
+26.6%
+29.9%
+17.6%
+28.7%
+28.0%
+28.0%
+15.3%
+30.9%
+27.8%
+27.0%
+14.4%
+36.5%
+27.2%
+24.1%
+12.3%
+Ticket Size Wise Originations Trends
+2.5L-5L
+ 5L+
+Ticket Size Wise Originations Trends
+1L-2.5L
+% of Originations Volume
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+2.4%
+7.5%
+23.4%
+66.7%
+3.7%
+9.7%
+25.8%
+60.8%
+4.4%
+11.2%
+26.6%
+57.8%
+5.2%
+12.8%
+26.9%
+55.1%
+5.7%
+13.2%
+27.1%
+54.0%
+7.4%
+14.5%
+27.0%
+51.1%
+Increasing share of large ticket Gold Loans:
+• The share of gold loan originations in the ₹2.5L–₹5L band rose from 23.0% in Q3 FY24 to 27.2% in Q3 FY26. Loans above ₹5L now form the 
+largest segment at 36.5% of originations value.
+• Sub-₹1L loans fell sharply, dropping from 25.4% to 12.3% of originations value (between Q3 FY24 and Q3 FY26).
+• While sub- ₹1L loans remain the largest by volume, their share declined from 66.7% to 51.1% during the same period, reﬂecting deeper 
+penetration among wealthier borrowers and greater reliance on higher-ticket loans for business and investment.NBFCs recorded one of the sharpest improvements in PAR 31-90, improving from 2.11% in 
+Dec’24 to 0.82% in Dec’25
+Delinquency - Lender Type
+GOLD LOANS
+Delinquency - Lender Type
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 31-90
+1.44%
+1.22%
+1.02%
+1.75%
+1.17% 1.15%
+2.11%
+1.04%
+0.82%
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 91-180
+0.22% 0.09% 0.07% 0.22% 0.20% 0.14%
+0.50% 0.40% 0.25%
+Performance trends
+• PSU and private banks reported steady reductions in PAR 31–90, improving to 1.22% and 1.17% respectively by Sep’25. By Dec’25, PSU banks 
+eased further to 1.02% and private banks to 1.15%.
+• For NBFCs, delinquency declined sharply, with PAR 31–90 dropping from 2.11% in Dec’24 to 0.82% in Dec’25, and PAR 91–180 halving from 
+0.50% to 0.25% between the period.
+• These improvements reﬂect overall growth and the eﬀect of tighter risk norms, including disciplined LTVs, structured repayment rules, and more 
+rigorous asset valuations.
+18How India Lends - December 2025Delinquencies improve across ticket sizes and across buckets
+GOLD LOANS
+Ticket size delinquency trends
+• PAR 31–90 improved across all ticket sizes in Dec’25 vs. Sep’25, while PAR 91–180 remained largely stable-indicating stronger early repayment 
+behaviour without added mid-stage stress.
+• Delinquencies were lower in larger loan bands, reﬂecting disciplined repayment and stronger collateral coverage.
+• Reduced early-stage delinquency suggests limited roll-forward into stressed buckets, supported by strong portfolio performance.
+1.69%
+1.09% 0.97%
+Dec-24 Sep-25 Dec-25
+1.65% 1.45% 1.33% 1.63%1.72%1.92%
+Dec-24 Sept-25 Dec-25
+1.52%
+1.15% 1.04%
+Dec-24 Sep-25 Dec-25
+<1L 1L-2.5L 2.5L-5L 5L+
+PAR 31-90
+Dec-24 Sept-25 Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+Dec-24
+ Sept-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+Dec-24
+ Sept-25
+ Dec-25
+0.29% 0.25% 0.20%
+0.96% 0.96% 0.92%1.11%1.15%1.26%
+Dec-24 Sept-25 Dec-25
+0.48% 0.45% 0.39%
+<1L 1L-2.5L 2.5L-5L 5L+
+PAR 91-180
+Dec-24 Sept-25 Dec-25 Dec-24 Sept-25 Dec-25 Dec-24 Sept-25 Dec-25
+Delinquency - Ticket Size
+19How India Lends - December 2025NTC low 
+at <5%
+Even spread 
+between Top 9-50
+& BT100 cities
+Originations value up from ₹612.5K Cr → ₹817.9K Cr Q2 FY26 --> Q3 FY26
+NBFCs accounted for almost 50% of total 
+origination volumes
+ALL EYES ON GOLD: Q3 FY26
+Retail Gold Loan driving momentum with 
+POS growth of 44.1% YoY & 11.5%
+QoQ, as of Dec'25PERSONAL
+LOANSUSHA DUTTA
+Chief Credit Oﬃcer - L&T Finance
+Retail demand grew 17% YoY in Dec’25, led by Personal Loans, which contributed 39% of total demand and 
+recorded 34% growth in demand, followed by Consumer Loans which recorded 18% growth. Banks focus 
+on risk-managed portfolios, larger loans and bundled services (like salary, credit card ecosystems). Steady 
+growth was recorded for FinTech’s and NBFCs. The government’s simpliﬁcation and reduction of GST slabs 
+(implementation from September 2025) helped reduce prices and raise disposable income, spurring 
+consumer conﬁdence and spending.
+A large share of borrowers prefer online comparisons and applications for fast access. Younger borrowers 
+(<35 years) and those in semi-urban/rural areas make up growing portions of new credit demand. 
+Innovations like agentic AI systems and conversational AI agents are improving customer support, decision 
+accuracy, and engagement and speed.PERSONAL LOANS
+Dec-24
+Portfolio Outstanding (₹ L Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Lakh)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 180+
+14.3
+  
+1,147.9
+1.9%
+1.2%
+4.9%
+15.4
+12.0% 
+2.9%
+1,234.2
+ 8.3%
+ 2.9%
+1.6%
+1.1%
+5.6%
+15.9
+11.6%
+3.5%
+1,303.2
+13.5%
+5.6%
+1.5%↔
+1.0%↔
+5.4%↓
+Sep-25 Dec-25
+ Dec-25 YoY%POS (₹ K Cr)
+MH
+TN
+KA
+UP
+TS
+AP
+RJ
+BR
+WB
+MP
+Top 10
+Rest Of India
+Pan India
+191.9
+146.8
+144.6
+141.1
+113.6
+98.7
+83.3
+73.0
+66.7
+58.0
+1,117.7
+474.4
+1,592.1
+11.6%
+11.0%
+13.6%
+14.4%
+8.0%
+10.4%
+12.2%
+15.9%
+13.5%
+13.1%
+12.2%
+10.4%
+11.6%
+QoQ%
+Growth PAR 31-180
+3.3%
+3.6%
+3.7%
+4.0%
+1.9%
+3.0%
+4.7%
+4.3%
+3.9%
+3.8%
+3.6%
+3.4%
+3.5%
+Dec-24
+3.2%
+3.0%
+2.5%
+2.8%
+3.2%
+3.2%
+2.7%
+3.3%
+3.0%
+3.2%
+3.0%
+3.2%
+3.1%
+Sep-25
+2.9%
+2.7%
+2.3%
+2.4%
+2.8%
+2.8%
+2.3%
+2.9%
+2.7%
+2.7%
+2.7%
+2.6%
+2.7%
+Dec-25
+2.6% ↓
+2.6% ↔
+2.1% ↓
+2.2% ↓
+2.6% ↓
+2.5% ↓
+2.1%↓
+3.0% ↔
+2.7% ↔
+2.5% ↓
+2.5% ↓
+2.5% ↔
+2.5% ↓
+Personal Loans - Geographic DistributionPersonal Loans - Portfolio Snapshot
+POS rose 11.6% YoY, slower than the expansion in active loans. 
+20How India Lends - December 2025
+↔ Refers to stable QoQ (PAR)↓ Refers to QoQ Improvement (PAR)
+• Portfolio: POS grew 11.6% YoY and 3.5% QoQ, reaching 
+₹15.9L Cr by Dec-25. Active loans expanded faster, up 
+13.5% YoY and 5.6% QoQ to 1,303 Lakh, reﬂecting a 
+lower average ticket size.
+• Performance: Early delinquency buckets remained 
+broadly stable: PAR 31–90 steady at 1.5% and PAR 
+91–180 unchanged at 1.0%. PAR 180+ improved to 5.4%, 
+though the long-overdue segment continues to signal 
+elevated risk
+• The top 10 states account for ~70% of PL POS and are expanding faster than 
+the national average (12.2% YoY vs. 11.6% YoY).
+• Within these, BR, UP, KA, and WB  show stronger YoY and QoQ growth 
+relative to Pan-India.
+• PAR 31-180 has improved across most states; however, BR remains above 
+the national average, warranting close monitoring given its higher growth 
+trajectory.Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+339.2 389.5
+359.2 381.6
+432.0 3.7%
+6.4%
+6.2%
+-7.0%
+13.2%
+32.0%
+-7.8%
+4.0%
+Originations Value (₹ Cr) Originations Volume (Lakh)
+447.9
+241,114 229,007
+238,091
+221,363
+292,136
+310,826
+PERSONAL LOANS
+Originations value expanded 6.4% in Q3 FY26, marking moderate yet steady growth
+Q3 FY 24
+ Q3 FY 25
+ Q4 FY 25
+ Q1 FY 26
+ Q2 FY 26
+ Q3 FY 26
+Originations Value 
+(
+₹ 
+Cr)
+ Originations Volume (Lakh)
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ K)
+Q-o-Q Growth %
+71.1 58.8 66.3
+12.7%
+58.0
+-12.5%
+67.6
+16.6%
+69.4
+2.6%
+Momentum slowed in Q3 FY26 following strong growth in Q2.
+• Originations grew 6.4% QoQ to ₹3.11L Cr, supported by a 3.7% increase in volumes to 447.9 Lakh.
+• After a sharp 16.6% QoQ rise in average ticket size in Q2, the metric remained broadly stable at ~₹70k in Q3 FY26.
+Personal Loans Originations Trends
+21How India Lends - December 202522How India Lends - December 2025
+PERSONAL LOANS
+PSU Banks Pvt Banks NBFCs Others
+Lender Type Wise Originations Trends
+NBFCs dominate Personal Loan originations in Q3 FY26, leading both value
+(36.6%) and volume (91.1%)
+Market Share Shifts:
+• PSU Banks sustained their elevated share at 35.2%, reﬂecting stability after the sharp rise in Q2.
+• NBFCs accounted for 36.6% of originations value, slightly below earlier peaks but still a major player.
+• NBFCs continue to dominate originations volumes at 91.1% as of Q3 FY26. Public Sector and Private Banks together contribute ~8% of 
+volumes but nearly 60% of originations value.
+Note: Others include SFBs, Foreign Banks, HFCs, Cooperative Banks, RRBs, ARCs etc.
+PSU Banks
+ Pvt Banks
+Lender Type Wise Originations Trends
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+35.5%
+28.7%
+31.6%
+4.2%
+33.2%
+27.8%
+34.4%
+4.6%
+32.5%
+28.7%
+34.5%
+4.4%
+27.0%
+28.4%
+40.5%
+4.1%
+34.5%
+25.7%
+36.4%
+3.4%
+35.2%
+24.9%
+36.6%
+3.3%
+NBFCs
+ Others
+Lender Type Wise Originations Trends
+Pvt Banks
+Lender Type Wise Originations Trends
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+5.4%
+7.3%
+85.2%
+2.0%
+3.1%
+4.2%
+91.2%
+1.5%
+3.5%
+4.7%
+90.5%
+1.4%
+2.7%
+4.3%
+91.8%
+1.3%
+3.2%
+4.3%
+91.3%
+1.1%
+3.4%
+4.3%
+91.1%
+1.1%PERSONAL LOANS
+<1L 1L-2L 2L-5L 5L-10L 10L+
+Loans above ₹10L account for 36.1% of originations value, despite representing only 
+~2% of originations volume
+Trends in Q3 FY26:
+• High-ticket loans (₹10L+) accounted for 36.1% of originations value in Q3 FY26, marginally lower than 37.6% in Q2, yet still representing the 
+largest share of total originations by value. This reﬂects continued strength in the segment, with PSU Banks playing a pivotal role.
+• The distribution across sub-₹10L segments remained largely unchanged.
+• Small-ticket loans (<₹1L) contributed only 17% of originations value, but comprised nearly 89% of originations volume-underscoring the 
+dominance of NBFCs in this space and the rising inﬂuence of ﬁntechs in small-ticket personal lending.
+<1L
+ 1L-2L
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+15.4%
+10.3%
+22.5%
+22.3%
+29.5%
+16.9%
+9.1%
+20.3%
+21.2%
+32.5%
+16.5%
+9.3%
+19.6%
+21.8%
+32.8%
+19.2%
+10.6%
+19.1%
+20.7%
+30.4%
+17.4%
+9.3%
+16.3%
+19.4%
+37.6%
+17.4%
+9.3%
+16.3%
+20.9%
+36.1%
+5L-10L
+ 10L+
+2L-5L
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+86.9%
+4.8%
+4.7%
+90.0%
+3.6%
+3.5%
+88.7%
+4.2%
+3.8%
+89.9%
+4.2%
+3.3%
+89.2%
+4.2%
+3.2%
+88.9%
+4.3%
+3.3%
+23How India Lends - December 2025
+Ticket Size Wise Originations TrendsPERSONAL LOANS
+As of Dec-25, PSU Banks’ PAR 31–90 rose to 1.85%, surpassing NBFCs
+Delinquency Trends:
+• In the PAR 31–90 bucket, most lenders reported improvement, except PSU Banks, which saw stress levels rise to 1.85% as of Dec’25 from 
+1.78% as of Sep’25
+• NBFCs continue to record one of the highest delinquency rates in PAR 91–180, compared to PSU and Private Banks, despite showing 
+improvement on both QoQ and YoY basis.
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 31-90
+2.26%
+1.78% 1.85%
+1.11% 0.95% 0.79%
+2.20%
+1.81% 1.69%
+Delinquency Trends:
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 91-180
+0.43% 0.40% 0.36%
+0.72% 0.75% 0.65%
+2.12%
+1.78% 1.63%
+Delinquency - Lender Type
+24How India Lends - December 202525How India Lends - December 2025
+Stress Segments by Ticket Size:
+• PAR 31–90 showed gradual improvement across ticket sizes.
+• PAR 91–180 declined sharply for loans above ₹2L, reﬂecting stronger borrower quality in higher-ticket segments.
+ •  The <₹1L segment, accounting for ~90% of originations volume but only 17% of value, improved from 3.63% (Dec’24) to 2.68% (Dec’25),  
+  though stress remains elevated relative to larger loans.
+PAR 31-90 rates remain higher than PAR 91-180, with slight QoQ improvements
+PERSONAL LOANS
+<1L 1L-2L 5L-10L2L-5L
+PAR 31-90
+10L+
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+2.76%
+2.20% 2.09% 2.35% 1.91% 1.79% 1.93% 1.74% 1.68%
+Dec-24 Sep-25 Dec-25
+1.74% 1.44% 1.44%
+Dec-24 Sep-25 Dec-25
+1.64%
+1.29% 1.22%
+Stress Segments by Ticket Size:
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+<1L 1L-2L 5L-10L2L-5L
+PAR 91-180
+10L+
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+3.63%
+2.77% 2.68%
+2.24% 1.98% 1.78%
+1.32% 1.34% 1.25%
+Dec-24 Sep-25 Dec-25
+0.67% 0.66% 0.59%
+Dec-24 Sep-25 Dec-25
+0.51% 0.51% 0.45%
+Improving sharply for 
+₹2L+ ticket sizes
+Delinquency - Ticket SizePERSONAL LOANS: Q3 FY26 SNAPSHOT
+As of Dec'25, POS growth at +11.6% YoY & +3.5% QoQ
+NTC Penetration 
+Low at <5%
+High-Value Loans 
+Originating from ₹10L+
+segments: 36% of value, 
+just ~2% of volume
+BT100 Leads with 
+42.3% of 
+originations value
+~91% share 
+of originations 
+volumes by 
+NBFC
+42.3%AUTO LOANSAuto ﬁnance growth in India reﬂects a more aspirational and upwardly mobile consumer, particularly within 
+the expanding mass aﬄuent and aﬄuent segments. Demand is broad-based - spanning premium vehicles, 
+EVs, and a rapidly formalising pre-owned market that is becoming a structural growth pillar. The opportunity 
+now lies in scaling with precision, balancing deeper credit penetration with stable asset quality.
+SASIDHAR VAVILALA
+EVP Analytics - Suryoday Bank
+Dec-25 YoY%POS (₹ K Cr)
+MH
+UP
+GJ
+KA
+TN
+RJ
+KL
+DL
+TS
+HR
+Top 10
+Rest Of India
+Pan India
+116.1
+86.2
+73.4
+69.3
+59.2
+51.1
+48.5
+46.8
+46.0
+45.3
+641.8
+261.3
+903.1
+17.0%
+18.1%
+11.4%
+13.2%
+13.0%
+17.8%
+12.4%
+13.9%
+7.8%
+18.7%
+14.6%
+14.5%
+14.6%
+QoQ%
+Growth PAR 31-180
+5.7%
+6.2%
+4.9%
+4.5%
+5.5%
+7.0%
+3.6%
+4.2%
+3.3%
+6.0%
+5.2%
+5.0%
+5.1%
+Dec-24
+2.3%
+3.3%
+2.2%
+2.8%
+2.7%
+2.5%
+2.9%
+1.7%
+2.6%
+2.0%
+2.5%
+3.5%
+2.8%
+Sep-25
+2.4%
+3.8%
+2.4%
+3.1%
+3.0%
+2.9%
+2.9%
+2.0%
+3.0%
+2.3%
+2.8%
+4.0%
+3.1%
+Dec-25
+2.3%  ↔
+3.6%   ↓
+2.2%   ↓
+2.9%   ↓
+2.8%   ↓
+2.6%   ↓
+2.5%   ↓
+2.0%  ↔
+2.8%   ↓
+2.2% ↔
+2.6%   ↓
+3.9% ↔
+3.0%  ↔
+Geographic DistributionPortfolio Snapshot
+Auto Loan growth remains strong on both YoY and QoQ bases, supported by festive demand and
+GST rate changes
+Portfolio Snapshot
+Dec-24
+Portfolio Outstanding (₹ L Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Lakh)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 180+
+7.9
+  
+154.2
+2.0%
+0.8%
+3.2%
+8.6
+16.3%
+2.9%
+166.3
+12.2% 
+ 2.3%
+2.4%
+0.7%
+2.0%
+9.0
+14.6%
+5.1%
+168.1
+9.0%
+1.1%
+2.3% ↔
+0.7% ↔
+1.9% ↓
+Sep-25 Dec-25
+AUTO LOANS
+* SIAM: https://www.siam.in/news-&-updates/press-releases/auto-industry-
+performance-of-december-2025-and-q3-october---december-2025/595
+26How India Lends - December 2025
+↔ Refers to stable QoQ (PAR)↓ Refers to QoQ Improvement (PAR)
+• POS: Auto Loans POS witnessed healthy growth of nearly 
+15% YoY and 5.1% QoQ backed by strong growth in auto 
+sales in the festive quarter Q3 FY26 and GST rate 
+reduction*
+• Performance: PAR 31–180 remained stable over the 
+previous year, while PAR 180+ improved.
+• Contribution: Top 10 states account for ~71% of pan-India POS, with 14.6% YoY 
+and 5.2% QoQ growth. MH leads with ₹116.1K Cr POS, while UP, MH, HR and RJ 
+are among the fastest-growing states, outpacing national YoY and QoQ trends.
+• PAR Trends: Most leading states saw a decline in PAR 31–180 between Sep’25 
+and Dec’25. However, UP and the rest of India continue to report higher PAR 
+31–180 compared to other states.Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+11.9 12.3
+10.4
+9.4
+11.1
+26.0%
+22.1%
+-9.6%
+-8.2%
+18.9%
+16.8%
+-16.1%
+-15.2%
+Originations Value (₹ Cr) Originations Volume (Lakh)
+14.0
+98,271 106,572 90,329 82,897 96,855
+118,294
+Strong festive demand lifted originations in Q3 FY26, even as GST rate cuts pushed ATS lower
+Q3 FY 24
+ Q3 FY 25
+ Q4 FY 25
+ Q1 FY 26
+ Q2 FY 26
+ Q3 FY 26
+Originations Value 
+(
+₹ 
+Cr)
+ Originations Volume (Lakh)
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ L)
+Q-o-Q Growth %
+8.2 8.6 8.7
+1.1%
+8.9
+1.5%
+8.7
+-1.8%
+8.4
+-3.0%
+Demand-led growth
+• Auto Loan originations accelerated their upward trajectory in Q3 FY26, reaching ₹118.3K crore—a 22% QoQ increase. Loan volumes also 
+remained strong at 14 lakh accounts, marking a 26% QoQ rise.
+• According to SIAM, this momentum reﬂects improved aﬀordability following GST rate cuts, favourable interest rate changes, and renewed 
+buyer conﬁdence. 
+• The average ticket size declined by 3% QoQ to ₹ 8.4 lakh, indicating that lower GST rates enabled borrowers to reduce borrowing amounts 
+while sustaining demand.
+Auto Loans Originations Trends
+AUTO LOANS
+SIAM: Society of Automobile Manufacturers
+27How India Lends - December 2025PSU Banks Pvt Banks NBFCs Others
+Lender Type Wise Originations Trends
+PSU Banks now account for 43% of originations by value and about 40% by volume
+Note: Others include  SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs
+AUTO LOANS
+NBFCs
+ Others
+Lender Type Wise Originations Trends
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+34.1%
+22.4%
+38.2%
+5.3%
+35.9%
+20.9%
+36.5%
+6.7%
+32.3%
+21.0%
+40.0%
+6.8%
+31.5%
+20.8%
+41.7%
+6.0%
+35.0%
+19.1%
+39.4%
+6.5%
+39.7%
+19.5%
+34.3%
+6.5%
+PSU Banks
+ Pvt Banks
+Lender Type Wise Originations Trends
+Pvt Banks
+Lender Type Wise Originations Trends
+% of Originations Volume
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+37.1%
+30.5%
+27.7%
+4.7%
+38.3%
+27.2%
+28.3%
+6.2%
+35.4%
+28.4%
+29.8%
+6.4%
+35.4%
+28.4%
+30.7%
+5.6%
+39.5%
+25.9%
+28.4%
+6.1%
+42.8%
+25.0%
+26.3%
+5.9%
+Growing Dominance of PSU Banks:
+• PSU Banks have steadily expanded their market share in 
+originations.
+• Value share rose from 38.3% in Q3 FY25 to 42.8% in Q3 FY26, 
+potentially driven by competitive interest rates.
+• Volume share increased from 35.9% in Q3 FY25 to 39.7% in Q3 
+FY26, followed closely by NBFCs at 34.3%.
+Impact on Private Banks and NBFCs:
+• Private Banks and NBFCs witnessed a slight decline in 
+originations value and volume share in Q3 FY26 compared to Q3 
+FY25, also reﬂecting the market share gains of PSU Banks.
+28How India Lends - December 202529How India Lends - December 2025
+<5L 5L-10L 10L-15L 15L-20L 20L+
+<5L
+ 5L-10L
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+11.0%
+42.5%
+19.7%
+9.9%
+16.9%
+9.5%
+41.7%
+21.0%
+10.9%
+16.9%
+9.4%
+40.7%
+20.5%
+10.8%
+18.6%
+8.9%
+39.7%
+20.4%
+11.2%
+19.9%
+9.6%
+40.3%
+19.5%
+11.1%
+19.5%
+10.4%
+43.9%
+19.3%
+10.3%
+16.1%
+15L-20L
+ 20L+
+10L-15L
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+31.4%
+46.9%
+13.2%
+4.6%
+3.9%
+28.3%
+47.6%
+14.7%
+5.4%
+3.9%
+28.8%
+46.8%
+14.6%
+5.4%
+4.4%
+28.3%
+46.4%
+14.7%
+5.7%
+4.9%
+29.2%
+46.8%
+13.8%
+5.5%
+4.7%
+28.0%
+50.0%
+13.3%
+5.0%
+3.8%
+AUTO LOANS
+Ticket Size Wise Originations Trends
+₹5L-₹10L ticket size loans saw close to 4% share jump in both originations value and volume
+Increase in share of small-ticket loans:
+• There has been a noticeable rise in originations value’s share for loans below ₹10L between Q2 FY26 and Q3 FY26.
+ • Share of value for loans in the ₹5L-₹10L segment grew from 40.3% to 43.9% over the same period. In terms of volumes, their share  
+  increased from 46.8% to 50.0%.
+• This trend was potentially driven by festive discounts and rate cuts, which encouraged borrowers to opt for smaller loan sizesAUTO LOANS
+NBFCs continue to face higher stress than other lender types, though all lenders
+showed improvement over the previous quarter
+Delinquency trends:
+• PAR 31–90 remains signiﬁcantly higher than PAR 91–180, indicating early risk stress across lender types.
+ •  PSU Banks showed improvement in both early-stage (PAR 31–90) and later-stage (PAR 91–180) delinquency buckets in Dec’25 compared to  
+  Sep’25, supported by a growing POS. They also continue to maintain one of the lowest later-stage delinquency levels (PAR 91–180 at   
+  0.25%), reﬂecting stronger collection eﬀorts.
+ •  Private banks reported one of the lowest PAR 31–90 levels among lender types.
+ • Although improving, NBFCs continue to carry higher risk than other lenders in both PAR 31–90 and PAR 91–180.
+Delinquency trends:
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 91-180
+0.26% 0.27% 0.25% 0.43% 0.64% 0.58%
+1.51%
+0.93% 0.87%
+PSU Banks
+ Pvt Banks
+ NBFCs
+PAR 91-180
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+PSU Banks Pvt Banks NBFCs
+PAR 31-90
+2.32% 2.18% 2.08%
+1.49% 1.31% 1.34% 1.76%
+3.74% 3.43%
+Delinquency - Lender Type
+30How India Lends - December 2025AUTO LOANS
+PAR 91-180 improved across all ticket sizes over the previous quarter and YoY
+PAR 31-90 (Early-stage delinquency):
+• All ticket sizes, except the ₹20L+ segment (which rose by 30 bps), 
+showed improvement in Dec’25 compared to Dec’24. However, 
+loans below ₹10L continue to exhibit higher stress—particularly 
+important since the ₹5L–₹10L band alone accounts for ~44% of 
+originations value.
+PAR 91-180 (Mid-stage delinquency):
+• Improvement was seen across all ticket sizes, suggesting eﬀective 
+lender interventions such as intensiﬁed collections or early 
+restructuring. Still, loans below ₹10L - which represent about
+10% of originations value - carry comparatively higher stress.
+Delinquency - Ticket Size
+Delinquency - Ticket Size
+<5L 5L-10L 15L-20L10L-15L
+PAR 31-90
+20L+
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+2.45%
+3.47%
+3.07%
+2.19%
+2.86% 2.69%
+1.81%
+2.18% 2.14%
+Dec-24 Sep-25 Dec-25
+1.76% 1.99% 1.97%
+Dec-24 Sep-25 Dec-25
+1.32% 1.26% 1.29%
+PAR 31-90 (Early-stage delinquency):
+ PAR 91-180 (Mid-stage delinquency):
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+<5L 5L-10L 15L-20L10L-15L
+PAR 91-180
+20L+
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+1.76% 1.57% 1.54%
+0.87% 0.71% 0.64% 0.59% 0.62% 0.57%
+Dec-24 Sep-25 Dec-25
+0.57% 0.62% 0.61%
+Dec-24 Sep-25 Dec-25
+0.45% 0.55% 0.51%
+Higher Stress
+31How India Lends - December 2025AUTO LOANS: Q3 FY26 SNAPSHOT
+As of Dec'25, POS on the Rise with +14.6% YoY & +5.1% QoQ
+Even City Spread of 
+originations value in
+Top 8 cities = 32.5%
+BT100 = 36.4%
+~43% share of originations value by PSU Banks
+₹5L–₹10L Dominates 
+originations 44% of 
+value 50% of volume
+Moderate NTC Penetration at 
+~9-10%
+44% 50%CREDIT CARDSThe Indian credit card segment is undergoing a strategic recalibration, as issuers are prioritizing healthier 
+credit and resilient proﬁles. This shift is evident in moderating revolver book growth and a clear shift in 
+customer preference towards EMI based products. The banks are also leveraging co-branded partnerships 
+to expand credit access, particularly for new to credit customers. Overall, the industry remains well 
+positioned for steady and sustainable growth.
+ANIL SINGH
+Country Head, Credit Cards & Merchant Acquiring - YES BANK
+Dec-25 YoY%Current Balance (₹ K Cr)
+MH
+TS
+KA
+TN
+UP
+DL
+GJ
+AP
+WB
+HR
+Top 10
+Rest Of India
+Pan India
+51.0
+35.3
+30.7
+27.8
+26.0
+26.0
+24.2
+19.6
+14.5
+14.4
+269.4
+72.8
+342.1
+2.0%
+-1.4%
+3.0%
+-1.5%
+5.4%
+-1.1%
+-0.1%
+1.2%
+5.1%
+1.2%
+1.2%
+3.3%
+1.6%
+QoQ%
+Growth PAR 31-90
+-0.6%
+-2.5%
+-2.2%
+-2.6%
+-2.3%
+-2.9%
+-2.5%
+-3.0%
+-3.5%
+-4.3%
+-2.4%
+-2.9%
+-2.5%
+Dec-24
+2.2%
+2.5%
+1.9%
+2.0%
+2.7%
+2.6%
+2.8%
+2.8%
+2.6%
+2.5%
+2.4%
+2.8%
+2.5%
+Sep-25
+2.1%
+2.4%
+1.6%
+1.9%
+2.5%
+2.5%
+2.6%
+2.6%
+2.4%
+2.2%
+2.2%
+2.4%
+2.3%
+Dec-25
+1.9% ↓
+2.2% ↓
+1.5% ↓
+1.6% ↓
+2.4% ↓
+2.4% ↓
+2.5% ↓
+2.3% ↓
+2.4% ↔
+2.1% ↓
+2.1%  ↓
+2.3% ↓
+2.1%  ↓
+Credit Card outstandings moderated during the quarter, reﬂecting a slowdown in spending
+Dec-24
+Current Balance (₹ L Cr)
+YoY growth %
+QoQ growth %
+Cards In Circulations (Lakh)
+YoY growth %
+QoQ growth %
+PAR 1-30
+PAR 31-90
+PAR 91-180
+PAR 180+
+3.4
+1,042.1
+3.6%
+2.5%
+2.0%
+6.5%
+3.5
+9.0%
+3.6%
+1,085.1
+ 5.8%
+ 0.6%
+2.3%
+2.3%
+1.8%
+7.1%
+3.4
+1.6%
+-2.5%
+1,094.4
+5.0%
+0.9%
+2.2% ↓
+2.1% ↓
+1.7% ↔
+7.6%  ↑
+Sep-25 Dec-25
+CREDIT CARDS
+• Portfolio: Credit card balances stood at ₹ 3.4 lakh crore, 
+with growth moderating to 1.6% YoY and declining 2.5% 
+QoQ. The slowdown reﬂects softer spending levels, 
+likely a cool-oﬀ following festive season outlays.
+• Performance: PAR 1–180 buckets remained stable or 
+showed improvement compared with the previous 
+quarter.
+• The top 10 states account for ~79% of market share by value, with UP and 
+WB recording relatively stronger YoY growth. 
+• However, alongside these high-growth states, DL, GJ, and WB have reported 
+delinquency levels above the pan-India average.
+• The rest of India also reﬂects higher delinquency compared with Pan India, 
+underscoring risks emerging beyond the top 10 states.
+Geographic DiversiﬁcationCredit Cards - Portfolio Snapshot
+All of the above metrics are without ARCs.
+32How India Lends - December 2025
+↔ Refers to stable QoQ (PAR) ↑ Refers to QoQ Deteriorations (PAR)↓ Refers to QoQ Improvement (PAR)Credit Card acquisition drops; Market share remains stable
+CREDIT CARDS
+Note: Others include  PSU Banks, NBFCs, SFBs, Foreign Banks, Cooperative Banks, RRBs.
+New Cards Issued (Lakh)
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+76.4
+54.7 52.8
+45.7
+52.0
+42.3
+-3.5% -13.4% 13.8% -18.6%
+Q3 FY 26
+% of New Cards Issued
+Q3 FY 25Q3 FY 24 Q4 FY 25 Q1 FY 26 Q3 FY 26Q2 FY 26
+72.2%
+27.8%
+67.2%
+32.8%
+67.0%
+33.0%
+74.2%
+25.8%
+74.2%
+25.8%
+74.3%
+25.7%
+Credit Cards Originations Trends
+Originations Volume declined: 
+• New credit card originations declined 18.6% QoQ, reversing the modest recovery seen in the previous period. Overall issuance has trended 
+downward over recent quarters.
+• Despite the overall slowdown, Private Banks have continued to expand their presence, leveraging marketing and co-branded partnerships 
+with e-commerce and ﬁntech platforms. PSBs and other players, meanwhile, have largely sustained stable market positions.
+Pvt Banks Others
+33How India Lends - December 2025
+Share of Others is without ARC'sIndustry-wide delinquencies improved, supported by calibrated issuances
+CREDIT CARDS
+Delinquency - Lender Type
+Note: Others include  PSU Banks, NBFCs, SFBs, Foreign Banks, Cooperative Banks, RRBs.
+Delinquency - Lender Type
+3.22%
+2.39% 2.27%
+2.98%
+2.54% 2.48%
+2.07%
+2.25%2.24%
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+1.64% 1.57% 1.48%
+Pvt Banks Others Pvt Banks Others
+PAR 31-90 PAR 91-180
+Delinquency trends
+• PAR 31–90 improved across all lender categories over the previous quarter, with Private Banks in particular registering a notable decline - 
+reﬂecting stronger borrower quality supported by calibrated issuances. 
+• The industry also recorded a slight improvement in PAR 91–180 between Sep’25 and Dec’25, alongside a more pronounced YoY decline from 
+Dec’24 to Dec’25.
+34How India Lends - December 2025
+Delinquencies for Others are without ARC'sCREDIT CARDS: Q3 FY26 SNAPSHOT
+Balances 
+rising 
+moderately at 
++1.6% YoY, 
+As of Dec'25
+74% of new 
+cards issued are 
+from Private 
+Banks
+41.5%
+originations 
+volume share 
+from Top 8 cities; 
+drive issuance 
+NTC steady 
+with
+vs 
+last year
+8.5%TWO-WHEELER
+LOANSVAMSIKUMAR
+Chief Operating Oﬃcer - Hinduja Leyland Finance
+The two-wheeler ﬁnancing segment has witnessed steady demand during the recent quarter, strongly 
+supported by festive purchases and improving rural sentiment. The GST policy change, coinciding with the 
+festive period, has led to the largest price reduction in recent times, bringing greater transparency and 
+operational clarity across the value chain. Lenders, while maintaining a selective underwriting stance, have 
+increasingly focused on building secured books. Risk-calibrated expansion continues to dominate industry 
+strategy, balancing growth with portfolio quality considerations.
+The momentum of Q3 is expected to sustain in Q4 as well. Rural markets continue to spur demand. 
+However, portfolio performance trends and borrower leverage levels will remain an important risk 
+imperative that has to be continuously monitored. 
+Competitive intensity remains strong as always, with NBFCs and banks focusing on speed, distribution reach 
+and customer experience as key diﬀerentiators. Digital onboarding, data-led underwriting and automation 
+in credit decisioning are increasingly shaping the landscape. Dealer ecosystem partnerships and embedded 
+ﬁnancing models are also gaining importance. Going forward, technology-enabled risk assessment and 
+operational eﬃciency will play a deﬁning role in sustaining growth and proﬁtability in the segment.AALESH AVLANI
+Co-founder and Executive Director - Creditwise Capital
+Q3 FY26 marked a strong rebound in two-wheeler ﬁnancing, with POS expanding steadily and originations 
+accelerating on the back of GST relaxation, improved aﬀordability, and festive demand. NBFCs continued 
+to reinforce their leadership, while the shift toward mid-ticket loans reﬂects evolving borrower 
+preferences alongside broad-based regional growth. Delinquency trends improved sequentially, although 
+continued vigilance remains important in select states and core loan segments.
+Importantly, wider adoption of advanced analytics, AI-led underwriting and collection tools is enabling 
+lenders to scale responsibly and plan with greater conﬁdence for the coming quarters. Overall, the 
+quarter reﬂects resilient demand, strengthening portfolio quality, and the sector’s ability to sustain 
+growth with discipline.• POS: Two-wheeler POS expanded 7.1% QoQ to ₹184.4K 
+Cr, marking a steady 12.3% YoY increase. Active loans rose 
+4.0% QoQ to 365.9 lakh, supported by strong originations 
+during the quarter.
+• Performance: Except for a marginal uptick in PAR 181-360, 
+delinquency levels improved across all buckets as of 
+Dec’25, aided by the expanding POS.
+• 
+POS:
+ Two-wheeler POS expanded 7.1% QoQ to 
+₹
+184.4K 
+Dec-24
+Portfolio Outstanding (₹ K Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Lakh)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 181-360
+PAR 360+
+164.2
+336.4
+3.6%
+1.8%
+1.7%
+5.6%
+172.2
+14.9%
+2.2%
+351.8
+ 12.3%
+ 1.6%
+3.6%
+1.9%
+1.8%
+5.9%
+184.4
+12.3%
+7.1%
+365.9
+8.8%
+4.0%
+3.1%↓
+1.6%↓
+2.0%↑
+5.5%↓
+Sep-25 Dec-25
+184.4K 
+184.4K 
+Dec-25 YoY%POS (₹ K Cr)
+UP
+MH
+TN
+BR
+MP
+KA
+WB
+GJ
+RJ
+KL
+Top 10
+Rest Of India
+Pan India
+21.9
+21.0
+15.5
+12.0
+11.5
+11.1
+10.6
+10.5
+9.5
+7.3
+130.9
+53.5
+184.4
+15.4%
+13.7%
+21.3%
+15.7%
+9.4%
+6.9%
+10.3%
+11.1%
+8.0%
+11.2%
+12.9%
+10.9%
+12.3%
+QoQ%
+Growth PAR 31-180
+11.7%
+8.4%
+3.0%
+9.9%
+10.1%
+2.9%
+3.4%
+8.5%
+11.5%
+1.0%
+7.4%
+6.3%
+7.1%
+Dec-24
+4.8%
+4.8%
+4.8%
+7.1%
+7.0%
+5.2%
+3.5%
+5.0%
+7.6%
+5.1%
+5.4%
+5.4%
+5.4%
+Sep-25
+4.9%
+4.9%
+4.4%
+6.5%
+7.7%
+6.2%
+3.6%
+5.0%
+7.8%
+5.0%
+5.4%
+5.6%
+5.5%
+Dec-25
+4.2%↓
+4.5%↓
+3.7%↓
+5.3%↓
+6.1%↓
+5.4%↓
+3.3%↓
+4.2%↓
+6.2%↓
+4.3%↓
+4.6%↓
+4.8%↓
+4.7%↓
+Geographic DiversiﬁcationPortfolio Snapshot
+GST rationalization, coupled with festive demand, helped boost the two-wheeler credit market
+TWO-WHEELER LOANS
+Regional trends:
+• TN led with 21.3% YoY growth with comparatively lower PAR 31–180.
+• UP and RJ posted double-digit QoQ growth; however, RJ showed higher 
+PAR 31–180 versus the pan-India average, warranting closer monitoring 
+of portfolio vintages.
+• BR and MP recorded ~10% QoQ growth, but PAR 31–180 exceeds national 
+average, highlighting the need for tighter risk oversight.
+35How India Lends - December 2025
+↑ Refers to QoQ Deteriorations (PAR)↓ Refers to QoQ Improvement (PAR)Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+35.8 39.4
+26.7 28.9 26.7
+58.0%
+46.7%
+8.3%
+7.5%
+-7.5%
+-4.1%
+-32.3%
+-30.0%
+Originations Value (₹ Cr) Originations Volume (Lakh)
+42.2
+31,872 35,978 25,198 27,097
+25,983
+38,130
+Originations value rose 47% QoQ in Q3 FY26, while volumes increased 58% QoQ to 42 L
+Two-Wheeler Loans Originations Trends
+Originations Value 
+(
+₹ 
+Cr)
+ Originations Volume (Lakh)
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ K)
+Q-o-Q Growth %
+89.1 91.3 94.5
+3.4%
+93.8
+-0.7%
+97.2
+3.7%
+90.3
+-7.1%
+36How India Lends - December 2025
+TWO-WHEELER LOANS
+Q3 FY26 Performance Overview:
+• Originations Value surged to ₹38,130 Cr, up 46.7% QoQ, marking one of the strongest quarterly rebounds. Originations Volume rose sharply to 
+42.2 Lakh loans, up 58.0% QoQ, reﬂecting broad-based demand recovery across regions.
+• The rebound was driven by strong sales momentum from GST relaxation, improving vehicle aﬀordability, rising household disposable income, 
+and one of the strongest festive seasons in recent years. 
+• Average Ticket Size of Two-wheeler loans declined to ₹90.3K (−7.1% QoQ), supported by rate rationalization that enabled borrowers to 
+reduce ticket sizes.NBFCs continue Dominance: 
+• NBFCs continued to dominate two-wheeler originations in Q3 FY26, accounting for 70.4% of originations value and 72.0% of originations volume. 
+• Their faster growth in share being driven by captive ﬁnancing models, quicker underwriting processes, and deeper reach into underbanked 
+customer segments, among other factors.
+In Q3 FY26, NBFCs’ originations value share rose by nearly 5%, reaching 70.4%.
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+68.0%
+2.9%
+29.0%
+68.6%
+3.4%
+28.0%
+65.9%
+3.8%
+30.3%
+67.2%
+3.7%
+29.1%
+65.7%
+4.7%
+29.6%
+70.4%
+4.3%
+25.3%
+Pvt Banks NBFCs Other
+Q3 FY 26
+NBFCs
+ Other
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+70.9%
+2.3%
+26.7%
+71.1%
+2.9%
+25.9%
+68.4%
+3.4%
+28.2%
+69.5%
+3.4%
+27.1%
+67.7%
+4.3%
+28.0%
+72.0%
+4.1%
+23.8%
+Lender Type Wise Originations Trends
+Note: Others include  PSU Banks, SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs
+37How India Lends - December 2025
+TWO-WHEELER LOANSDominant Category:
+• ₹75K–₹1L segment loans continued to dominate the two-wheeler loan market, accounting for 42.3% of originations value and 44.2% of 
+originations volume as of Q3 FY26.
+• In Q3 FY26, the earlier shift toward higher-ticket loans reversed, with the ₹75K–₹1L band increasing its share from 37.7% in Q2 FY26 to 42.3% in Q3 
+FY26. The ₹50K–₹75K band also expanded its share from 13.8% to 19.6% over the same period, accompanied by a concurrent rise in volumes, 
+reﬂecting the decline in average ticket size in Q3 FY26.
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+20.4%
+42.4%
+21.3%
+13.2%
+2.7%
+17.4%
+43.9%
+22.4%
+14.0%
+2.3%
+15.5%
+39.2%
+28.3%
+14.7%
+2.3%
+13.8%
+37.7%
+28.8%
+17.6%
+2.0%
+19.6%
+42.3%
+22.6%
+13.2%
+2.3%
+15.4%
+39.1%
+26.5%
+16.5%
+2.4%
+Q3 FY 26
+19.6%
+42.3%
+22.6%
+13.2%
+2.3%
+2.3%
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+27.7%
+43.9%
+16.1%
+5.7%
+6.6%
+24.2%
+46.3%
+17.6%
+6.1%
+5.7%
+22.2%
+42.1%
+23.0%
+6.7%
+6.0%
+20.5%
+41.8%
+24.3%
+8.1%
+5.3%
+26.9%
+44.2%
+17.6%
+6.1%
+5.1%
+22.3%
+42.4%
+21.7%
+7.4%
+6.2%
+<50K 50K-75K 75K-1L 1L-1.5L 1.5L+
+38How India Lends - December 2025
+TWO-WHEELER LOANS
+In Q3 FY26, loans <₹1L ticket size increased their originations value share by about 11%
+Ticket Size Wise Originations TrendsDelinquency trends: 
+• Private banks and NBFCs continue to show higher PAR 31–90 compared to PAR 91–180.
+• Both buckets, however, recorded improvements in Dec’ 25 relative to Sep’25 supported by the growing POS as of Dec’25.
+• NBFCs, despite higher originations, reported PAR 31–90 and PAR 91–180 levels only marginally above private banks.
+Private Banks record sharper improvement in PAR 31–180 compared to NBFCs as of Dec-25
+PAR 31-90 PAR 91-180
+Pvt Bank NBFCs Pvt Bank NBFCs
+1.94% 1.95%
+1.66%
+Dec-24 Sep-25 Dec-25
+3.17%
+3.71%
+3.59%
+Dec-24 Sep-25 Dec-25
+3.60% 3.58%
+3.11%
+Dec-24 Sep-25 Dec-25
+1.43%
+1.84%
+1.40%
+Dec-24 Sep-25 Dec-25
+39How India Lends - December 2025
+Delinquency - Lender Type
+TWO-WHEELER LOANS40How India Lends - December 2025
+Delinquency trends: 
+ • The ₹75K–₹1L band, which represented 42.3% of originations in Q3 FY26, continues to record among the highest delinquency levels,   
+  underscoring stress in this core segment across both PAR 31–90 and PAR 91–180 buckets.
+ • While all ticket-size bands showed improvement, the ₹50K–₹75K segment registered substantial gains as of Dec’25, with delinquency levels  
+  lower than even higher-ticket segments (₹ 1L–₹1.5L), driven by elevated originations during this period.
+PAR 31-90
+<50K 50K-75K 75K-1L 1L-1.5L 1.5L+
+3.51% 3.58% 3.26%
+2.40% 2.54% 2.32%
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+1.45%1.69%1.96%
+Dec-24 Sep-25 Dec-25
+2.99% 2.90% 2.32%
+Dec-24 Sep-25 Dec-25
+4.54% 4.59%
+3.93%
+Dec-24 Sep-25 Dec-25
+Delinquency trends: 
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+PAR 91-180
+<50K 50K-75K 75K-1L 1L-1.5L 1.5L+
+1.53% 1.71% 1.46% 1.25% 1.56% 1.22%
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+1.00%0.92%0.96%
+Dec-24 Sep-25 Dec-25
+1.75% 1.63% 1.37%
+Dec-24 Sep-25 Dec-25
+2.28% 2.43% 1.97%
+Dec-24 Sep-25 Dec-25
+TWO-WHEELER LOANS
+₹75K–₹1L Band shows among the highest delinquency levels
+Delinquency - Ticket SizeTWO-WHEELER LOANS: Q3 FY26 SNAPSHOT
+~70% share of originations 
+value from NBFC’s
+As of Dec'25, POS accelerating at +12.3% YoY & 
++7.1% QoQ
+Contributing to 38.3%+ NTC, 
+despite gradual slide
+Strong in smaller 
+markets; share of
+Originations value jump from 
+₹25,983 Cr → ₹38,130 Cr 
+(+46.7% QoQ)
+of originations value
+BT100 
+= 53.4% 
+~70%
+NBFC’sCONSUMER 
+DURABLE LOANSKARTHIK SRINIVASAN
+Chief Business Oﬃcer - HDB Financial Services
+The demand in consumer durable lending is now broad-based and structural. Driven by favourable GST 
+adjustments and a dominant NBFC footprint, the industry is successfully capturing the enduring 
+demand for aﬀordable, small-ticket ﬁnancing. To see strengthening portfolio quality alongside this 
+growth conﬁrms our thesis: the industry can grow aggressively while simultaneously hardening its 
+asset quality. We are building a high-growth landscape anchored in better risk management and 
+superior customer convenience.Dec-25 YoY%POS (₹ K Cr)
+MH
+UP
+TN
+KA
+KL
+WB
+GJ
+AP
+TS
+BR
+Top 10
+Rest Of India
+Pan India
+14.2
+8.8
+7.2
+6.9
+6.8
+6.0
+5.7
+4.9
+4.9
+4.3
+69.7
+26.6
+96.3
+11.1%
+33.9%
+10.9%
+7.2%
+20.2%
+11.8%
+3.0%
+11.7%
+2.7%
+30.8%
+13.7%
+15.8%
+14.3
+QoQ%
+Growth PAR 31-180
+9.9%
+15.1%
+6.5%
+8.8%
+1.7%
+-2.4%
+6.0%
+6.6%
+6.8%
+12.2%
+7.4%
+7.1%
+7.3%
+Dec-24
+2.8%
+3.6%
+1.8%
+2.1%
+4.1%
+1.6%
+3.5%
+2.4%
+2.7%
+2.5%
+2.7%
+2.8%
+2.7%
+Sep-25
+2.7%
+2.6%
+1.6%
+2.4%
+2.6%
+1.2%
+2.7%
+2.0%
+2.4%
+1.6%
+2.3%
+2.0%
+2.2%
+Dec-25
+2.3% ↓
+2.2% ↓
+1.2% ↓
+1.9% ↓
+2.3% ↓
+1.2% ↔
+2.1% ↓
+1.7% ↓
+1.8% ↓
+1.5% ↔
+1.9% ↓
+1.9% ↔
+1.9% ↓
+Consumer Durable Loans - Geographic Distribution
+Strong rebound in Consumer Durable Loan growth, driven by the festival season
+Dec-24
+Portfolio Outstanding (₹ K Cr)
+YoY growth %
+QoQ growth %
+Active Loans (Cr)
+YoY growth %
+QoQ growth %
+PAR 31-90
+PAR 91-180
+PAR 180-360
+PAR 360+
+84.3
+  
+10.0
+1.4%
+1.3%
+0.6%
+5.4%
+89.8
+10.2%
+  0.6%
+9.6
+-5.0%
+ -7.6%
+1.1%
+1.1%
+0.5%
+5.5%
+96.3
+14.3%
+7.3%
+10.1
+0.8%
+5.4%
+1.0% ↓
+0.9% ↓
+0.4% ↔
+5.3% ↓
+Sep-25 Dec-25
+CONSUMER DURABLE LOANS
+Consumer Durable Loans - Portfolio Snapshot
+41How India Lends - December 2025
+• Portfolio: CD portfolio outstanding grew 14.3% YoY to ₹96.3K 
+Cr, with a 7.3% QoQ rise. Loan volumes were ﬂat YoY (+0.8%) 
+but improved 5.4% QoQ to 10.1 Cr, signaling recovery in 
+originations supported by the festival season and GST cuts.
+• Performance: PAR 31–180 showed slight improvement from 
+2.2% to 1.9% between Sep-25 and Dec-25, while PAR 360+ 
+eased to 5.3%, reﬂecting strengthening portfolio quality.
+• UP (15.1%) and BR (12.2%) drove recent QoQ expansion, while KL grew 
+strongly from a smaller base; WB contracted.
+• PAR 31–180 improved across most states QoQ. However, MH (large scale), 
+UP and KL (considering the higher YoY growth rates), and GJ continue to 
+report rates above the national average.
+↔ Refers to stable QoQ (PAR)↓ Refers to QoQ Improvement (PAR)Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+210.4 205.1
+178.8
+224.1 212.3 13.2%
+14.7%
+25.3%
+21.2%
+-5.3%
+-5.5%
+-2.5%
+-14.9%
+Originations Value (₹ Cr) Originations Volume (Lakh)
+240.2
+43,656 41,656
+35,431
+42,935 40,580 46,539
+Originations rebounded in Q3 FY26, driven by festive-season demand
+Q3 FY 24
+ Q3 FY 25
+ Q4 FY 25
+ Q1 FY 26
+ Q2 FY 26
+ Q3 FY 26
+Originations Value 
+(
+₹ 
+Cr)
+ Originations Volume (Lakh)
+Q3 FY24 Q3 FY25 Q4 FY25 Q1 FY26 Q2 FY26 Q3 FY26
+Average Ticket Size (₹ K)
+Q-o-Q Growth %
+20.7 20.3 19.8
+-2.4%
+19.2
+-3.3%
+19.1
+-0.2%
+19.4
+1.3%
+Recovery
+• Originations value rose 14.7% QoQ to ₹46.5K Cr, marking a strong rebound following GST rate cuts (also referred as GST 2.0) which saw the 
+prices of consumer durables reduce sharply.
+• Originations volume climbed 13.2% QoQ to 240.2 lakh loans, underscoring broad-based recovery driven by year-end demand, promotional 
+oﬀers, and improved sentiment post-GST cuts.
+• Average ticket size rose 1.3% as borrowers leveraged lower interest rates to upgrade purchases.
+CONSUMER DURABLE LOANS
+Consumer Durable Loans Originations Trends
+42How India Lends - December 2025Dominance of NBFCs
+• NBFCs continue to lead Consumer Durable Loan originations, commanding 82.8% of value and 86.6% of volume in Q3 FY26. Their dominance 
+is supported by speed, convenience, extensive networks, BNPL options and POS ﬁnancing oﬀerings.
+• Private Banks’ share has steadily declined, slipping to 14.4% of value and 12.2% of volume in Q3 FY26 - signaling a notable shift in the lending 
+landscape.
+NBFCs maintain their lead in consumer durables lending market
+Note: Others include  PSU Banks, SFBs, Foreign Banks, Cooperative Banks, RRBs, ARCs.
+CONSUMER DURABLE LOANS
+Pvt Banks NBFCs Others
+Pvt Banks
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+28.8%
+70.1%
+1.1%
+19.5%
+79.1%
+1.4%
+19.1%
+78.8%
+2.1%
+16.3%
+82.0%
+1.7%
+17.1%
+80.5%
+2.4%
+14.4%
+82.8%
+2.8%
+Others
+NBFCs
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+26.2%
+73.6%
+0.2%
+15.6%
+84.3%
+0.1%
+14.7%
+85.1%
+0.2%
+12.1%
+87.7%
+0.2%
+13.5%
+86.2%
+0.3%
+12.2%
+86.6%
+1.2%
+Lender Type Wise Originations Trends
+43How India Lends - December 2025₹10K-₹25K now accounts for 41.1% of the originations value and 48% of the volume
+CONSUMER DURABLE LOANS
+Ticket Size Wise Originations Trends
+<10K 10K-25K 25K-50K 50K+
+Ticket Size Wise Originations Trends
+<10K
+ 10K-25K
+% of Originations Value
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+5.5%
+37.3%
+31.0%
+26.3%
+4.8%
+40.7%
+31.2%
+23.3%
+5.5%
+39.6%
+31.6%
+23.3%
+6.0%
+39.8%
+34.6%
+19.6%
+6.1%
+40.5%
+30.1%
+23.3%
+5.6%
+41.1%
+28.7%
+24.5%
+Ticket Size Wise Originations Trends
+25K-50K
+ 50K+
+Ticket Size Wise Originations Trends
+10K-25K
+Q3 FY 26
+% of Originations Volume
+Q3 FY 24 Q3 FY 25 Q4 FY 25 Q1 FY 26 Q2 FY 26 Q3 FY 26
+27.6%
+46.5%
+18.9%
+7.0%
+26.1%
+49.4%
+18.7%
+5.8%
+28.6%
+47.4%
+18.4%
+5.6%
+29.4%
+46.4%
+19.6%
+4.5%
+30.7%
+46.9%
+17.0%
+5.4%
+29.9%
+47.7%
+16.5%
+5.8%
+Growing Share <₹25K loans
+• The ₹10K–₹25K segment has expanded its share in both value and volume:
+ • Originations value rose from 37.3% to 41.1% over the past two years (between Q3 FY24 and Q3 FY26). Originations volume increased  
+  from 46.5% to 47.7% in the same period.
+• Overall, loans below ₹25K continue to dominate volume share, comprising 77.6% of total originations volume, underscoring the sustained 
+strength of small-ticket loans and consumer preference for aﬀordable ﬁnancing options.
+44How India Lends - December 2025Improving Asset Quality in NBFCs:
+• NBFCs, the market leaders in consumer durable lending, continue to perform well, contributing signiﬁcantly to the overall improvement in 
+asset quality.
+• Private Banks have also shown improvement in asset quality; however, their delinquency levels remain higher than those of NBFCs, despite 
+having a comparatively smaller loan book.
+NBFCs continue to outperform in PAR 31–180 overall
+Pvt Banks NBFCs Pvt Banks NBFCs
+PAR 31-90 PAR 91-180
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+1.79%
+1.53% 1.39%
+1.02%
+0.70% 0.66%
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+2.00% 1.92%
+1.37%
+0.87% 0.72% 0.65%
+CONSUMER DURABLE LOANS
+Delinquency - Lender Type
+45How India Lends - December 2025Delinquency - Ticket Size
+Delinquency - Ticket Size
+<10K 10K-25K 50K+25K-50K
+PAR 31-90
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+2.41%
+1.17% 1.12% 1.16%
+0.75% 0.67%
+1.13%
+0.79% 0.75%
+Dec-24 Sep-25 Dec-25
+1.20% 1.03% 0.92%
+CONSUMER DURABLE LOANS
+Delinquency improved across all ticket-size segments in Dec’25 versus the prior quarter
+Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+ Dec-24
+ Sep-25
+ Dec-25
+<10K 10K-25K 50K+25K-50K
+PAR 91-180
+Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25 Dec-24 Sep-25 Dec-25
+2.13%
+0.83% 0.65% 0.99% 0.76% 0.65% 1.17% 0.92% 0.79%
+Dec-24 Sep-25 Dec-25
+1.15% 1.22% 0.95%
+Ticket size wise delinquency trends:
+• ₹10K–₹25K and ₹25K–₹50K segments, together accounting for nearly 70% of originations value, continue to show stable and improving 
+delinquency across both PAR 31–90 and PAR 91–180 buckets.
+• <₹10K loans have seen sharp improvement since Dec’24, particularly in PAR 91–180. However, delinquency remains slightly higher than 
+mid-ticket ranges (especially in PAR 31-90), indicating residual stress among lower ticket size borrowers.
+46How India Lends - December 2025CD LOANS: Q3 FY26 SNAPSHOT
+As of Dec'25, POS up with +14.3% YoY & 
++7.3% QoQ
+NTC steady 
+at
+BT100 leads 
+demand:
+~87% of 
+originations
+volume
+NBFCs lead:
+~83% of 
+originations value
+₹10K-₹25K 
+Dominates 
+originations with
+48%
+of volumeof originations value unchanged vs last year
+16.3%,
+42.2% 41% of valueABOUT HOW INDIA LENDS
+‘How India Lends’ is CRIF High Mark’s ﬂagship publication that oﬀers a data-driven, comprehensive view of India’s lending ecosystem. The report 
+presents in-depth insights into key credit trends. Given its strong industry reception and growing relevance, the report has evolved from an 
+annual publication into a quarterly edition. This shift enables more timely tracking of emerging trends and sharper visibility into the evolving 
+credit landscape—especially during dynamic periods such as quarter-ends.
+www.crifhighmark.com
+Disclaimer: This report contains only aggregate level information. It does not contain any Credit Information and shall not be construed as Credit Information Report or part thereof. The analysis in this report is 
+based on Credit Information in CRIF High mark’s database. The results are NOT to be construed or used as a "legal description". CRIF High mark strives to keep its data accurate and up to date but does not 
+guarantee its accuracy. CRIF High mark does not assume any liability for any errors, omissions, or inaccuracies in the data provided regardless of the cause of such or for any decision made, action taken, or action 
+not taken by the user in reliance upon any data provided herein. The contents of the report shall not be reproduced in part or whole without permission from CRIF High mark Credit Information Services Pvt. Ltd. 
+The opinions expressed herein are those of the author. Its contents, therefore, do not represent any commitment between CRIF High mark and the recipient(s) and no liability or responsibility is accepted by CRIF 
+High mark for the content herein.
+ABOUT CRIF HIGH MARK
+CRIF High Mark is an RBI licensed credit bureau in India that commenced its bureau operations in March 2011. CRIF High Mark oﬀers Credit Bureau 
+Information services. It is India's ﬁrst full-service credit information company which provides comprehensive credit information for all borrower segments, 
+namely Commercial, Consumer, and Microﬁnance borrowers. With the databases of individuals and businesses from over 5,000 ﬁnancial institutions CRIF 
+High Mark provides credit information services and supports millions of lending decisions every month.
+© 2025 CRIF High Mark. All Rights Reserved.STAY UPDATED WITH INSIGHTS, FOLLOW US ON:
+Analytical Contacts
+Reach us at research@crifhighmark.com for any queriesCRIF India, 402-A, Fulcrum, Hiranadani Business Park, Next to Hyatt Regency, 
+Sahar Road, Andheri East, Mumbai - 400 099.
