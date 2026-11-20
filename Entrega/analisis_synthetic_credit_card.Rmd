@@ -60,10 +60,12 @@ coma <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = "
 # Tabla de decisiones (sustentación del corte 2) {-}
 
 **Cliente:** la Gerencia de Riesgo de Crédito del banco emisor de las
-50.000 tarjetas. **Su decisión:** qué clientes entran cada mes al
-programa de seguimiento preventivo (llamada del gestor, congelar aumentos
-de cupo, refinanciar antes de la mora), sin tener que revisar una ficha
-de 21 columnas por cliente.
+50.000 tarjetas. **Su decisión:** a quién subir el cupo, a quién ascender
+de tarjeta y qué clientes entran cada mes al programa de seguimiento
+preventivo (llamada del gestor, congelar aumentos de cupo, refinanciar
+antes de la mora). **La pregunta:** ¿más rico, más seguro? Es decir, ¿el
+cliente que más gana y el de la tarjeta más alta es de verdad el de
+menor riesgo? (ver «Pregunta y alcance», justo después de la tabla).
 
 Cada fila es una decisión que tomamos con los datos. Las cifras salen
 del propio informe (el módulo está entre paréntesis) y el anexo final
@@ -75,11 +77,56 @@ las vuelve a calcular y comprueba que coincidan.
 | 2 | ¿Qué hacemos con faltantes y atípicos? | **Sale 0 casos.** No hay faltantes ni duplicados (Módulo 2). Los **1.641** clientes que Mahalanobis marca como raros (corte $\chi^2$ del 99 %, con `log`) se **estudian y se marcan**; **0** se corrigen porque ninguno es un error de captura (Módulo 13) | Borrar los atípicos, o revisar solo variable por variable (Tukey) | El 64 % de los 1.641 (1.055) no tiene ninguna variable extrema: Tukey no los ve. Quitarlos mueve las correlaciones como mucho 0,02. Su puntaje mediano es **573**, contra **639** del resto (Módulo 13) | No se pierde a un grupo con más riesgo que el promedio. Queda una lista de 1.641 casos raros para revisar |
 | 3 | ¿Estandarizamos? | **Sí**, con `log(x+1)` en las variables asimétricas y luego `scale()`: PCA sobre la matriz de correlaciones (Módulo 16) | PCA sin estandarizar (en rupias), o estandarizar sin `log` | Las desviaciones van de 1,67 (`EMI_Count`) y 12,2 años (`Age`) a ₹1.410.000 (`Annual_Income`): seis órdenes de magnitud. El ingreso solo aporta 56 de cada 100 partes de la varianza total. Sin estandarizar, la C1 guarda **95,5 de cada 100** y es `Annual_Income` con otro nombre (peso 0,76). Estandarizando, guarda 48,0 sin `log` y **50,1** con `log` | El resumen pesa todas las variables, no solo las que se miden en números grandes |
 | 4 | ¿Tiene sentido resumir? | **Sí**: el dinero se repite. El puntaje va solo (Módulo 16) | No resumir y mirar las 21 columnas | 16 de las 21 variables tienen una compañera con $\lvert r\rvert > 0{,}6$ (ingreso y cupo: 0,98). `Credit_Score`, `Age`, `Card_Age_Months` y `Cash_Advance_Amount` no pasan de 0,17 con ninguna | El tamaño del cliente se resume bien en un número. El riesgo no se puede leer en ese número |
-| 5 | ¿Cuántas componentes? | **Dos**: C1 y C2 (Módulo 16) | Una sola; o 3, porque tienen $\lambda>1$; u 8, para pasar del 80 % | C1 guarda 50,1 de cada 100 y C2 solo 5,3, pero C2 es la que encuentra el riesgo: el 20 % más alto en C2 tiene **6.580** de los **10.046** clientes con peor puntaje (66 %). La C1 encuentra 1.832 (18 %, lo mismo que el azar) | Una ficha de dos números: exposición y riesgo |
+| 5 | ¿Cuántas componentes? | **Dos**: C1 y C2 (Módulo 16) | Una sola; o 3, porque cada una guarda más información que una sola columna (regla de Kaiser, $\lambda>1$); u 8, para pasar del 80 % | C1 guarda 50,1 de cada 100 y C2 solo 5,3, pero C2 es la que encuentra el riesgo: el 20 % más alto en C2 tiene **6.580** de los **10.046** clientes con peor puntaje (66 %). La C1 encuentra 1.832 (18 %, lo mismo que el azar) | Una ficha de dos números: exposición y riesgo |
 | 6 | ¿Qué mide cada una? | **C1 = tamaño del cliente. C2 = riesgo. C3 = edad** (Módulo 16) | Ponerles nombre sin mirar los pesos | C1: ingreso y cupo pesan 0,30, y las 16 variables de dinero y actividad pesan entre 0,20 y 0,30; el puntaje pesa 0,01. C2: puntaje −0,78, avances en efectivo +0,49, antigüedad de la tarjeta −0,34; `Payment_Ratio` se correlaciona −0,59 con C2. C3: edad 0,93 | El eje vertical del mapa se lee como "más arriba, peor puntaje y más avances en efectivo" |
 | 7 | ¿Qué pierde el cliente con un solo número? | **Un número no basta** (Módulo 16) | Ordenar la cartera solo por C1 | De los 10.046 clientes con peor puntaje, la C1 deja escapar a **8.214** (82 %) | Si usara solo la C1, ordenaría a la cartera por tamaño y no vería el riesgo |
 | 8 | ¿Qué muestra el mapa? | **Un continuo**, sin grupos de riesgo. El corte lo define la Gerencia: puntaje una desviación por debajo del promedio (**560 puntos o menos**) y la mediana del tamaño (C1) (Módulos 17 y 19) | Buscar grupos hechos (por tipo de tarjeta u ocupación), o cortar en la C2 | En el eje de riesgo hay un solo pico y no hay valle. Los tipos de tarjeta se separan en tamaño (centros de −2,97 a 4,44 desviaciones) y no en riesgo (menos de 0,2); en cada tipo de tarjeta, ocupación o quintil de ingreso hay entre 17 y 21 de cada 100 en el peor 20 %. Zonas: **A = 3.998**, **B = 4.303**, **C = 41.699**. La C2 se correlaciona −0,82 con el puntaje: cortando en ella con el mismo criterio, 2.384 de sus 8.195 cupos irían a clientes fuera del peor 20 % | El seguimiento no se asigna por tipo de tarjeta ni por ocupación. Quién entra lo decide el puntaje, y la prioridad, el tamaño |
-| 9 | ¿Qué decide el cliente? | **Seguir a los 8.301 clientes con 560 puntos o menos (16,6 %)**, en orden de tamaño: primero la **zona A** (**3.998** clientes grandes, con llamada del gestor) y después la **B** (**4.303** pequeños, con mensajes). Los casos raros del Módulo 13 que quedan fuera de la lista van a revisión de la cuenta (Módulo 17) | Usar la lista de la C2, o escoger por tipo de tarjeta, por ocupación o por C1 | La lista debe ₹3.278 millones, el **21,6 %** del saldo de toda la cartera. La zona A tiene el 48 % de los clientes de la lista y concentra el **85,6 %** de ese saldo. Puntaje medio: A 515, B 516, el resto 652 | Una lista priorizada por el dinero en juego. **Lo que no se sabe todavía:** no hay una variable de mora real y el puntaje es la aproximación que usamos; la C2 suma avances en efectivo y antigüedad, que podrían anticipar la mora, pero sin datos de mora no se puede comprobar; el tamaño de la lista depende de cuántos gestores haya; el mapa muestra con qué va el riesgo, no qué lo causa; y la cartera simulada gasta unas 4 veces y debe unas 11 veces lo que una tarjeta real de India (Módulo 20), así que los conteos se recalculan con la cartera propia |
+| 9 | ¿Qué decide el cliente? | **Seguir a los 8.301 clientes con 560 puntos o menos (16,6 %)**, en orden de tamaño: primero la **zona A** (**3.998** clientes grandes, con llamada del gestor) y después la **B** (**4.303** pequeños, con mensajes). Los casos raros del Módulo 13 que quedan fuera de la lista van a revisión de la cuenta (Módulo 17) | Usar la lista de la C2, o escoger por tipo de tarjeta, por ocupación o por C1 | La lista debe ₹3.278 millones, el **21,6 %** del saldo de toda la cartera. La zona A tiene el 48 % de los clientes de la lista y concentra el **85,6 %** de ese saldo. Puntaje medio: A 515, B 516, el resto 652 | Deja de usar el ingreso y la categoría de tarjeta como filtro de riesgo: no subir el cupo ni ascender de tarjeta sin mirar el puntaje, y vigilar por puntaje. Recibe una lista priorizada por el dinero en juego, cuyos clientes más caros (zona A) son justo los grandes que la creencia daba por seguros. **Lo que no se sabe todavía:** no hay una variable de mora real y el puntaje es la aproximación que usamos; la C2 suma avances en efectivo y antigüedad, que podrían anticipar la mora, pero sin datos de mora no se puede comprobar; el tamaño de la lista depende de cuántos gestores haya; el mapa muestra con qué va el riesgo, no qué lo causa; y la cartera simulada gasta unas 4 veces y debe unas 11 veces lo que una tarjeta real de India (Módulo 20), así que los conteos se recalculan con la cartera propia |
+
+------------------------------------------------------------------------
+
+# Pregunta y alcance {-}
+
+**La creencia que ponemos a prueba: «más rico, más seguro».** Es común que
+un banco suba el cupo y ascienda de tarjeta (de Basic hasta Signature)
+según el ingreso del cliente, y que concentre la vigilancia en los
+clientes pequeños. Detrás está una creencia: el cliente que más gana es el
+que menos riesgo tiene. La cartera de este banco, además, usa el doble del
+cupo y paga su saldo completo con menos frecuencia que el mercado de
+tarjetas de India (Módulo 20), así que importa saber dónde está el riesgo.
+
+**La pregunta de negocio:** ¿el ingreso y la categoría de la tarjeta sirven
+para saber qué clientes son riesgosos, o solo dicen cuánto dinero hay en
+juego? Y, con lo que se encuentre, ¿a quién debe vigilar la Gerencia, y en
+qué orden?
+
+**Qué hacemos con los datos.** El análisis de componentes principales
+(Módulos 16 y 17) resume la ficha de 21 columnas en pocos ejes y muestra si
+el tamaño del cliente y su riesgo van en la misma dirección o en
+direcciones distintas. Mahalanobis (Módulo 13) busca los clientes con
+combinaciones raras antes de resumir.
+
+**Qué no hacemos.**
+
+- **No predecimos.** El PCA no tiene una variable respuesta: describe y
+  resume la cartera. Las conclusiones son de asociación, no de causa.
+- **No hay datos de mora.** El riesgo se mide con el `Credit_Score`
+  (puntaje de crédito), que es la mejor aproximación disponible. Como el
+  puntaje entra al PCA, es esperable que el eje de riesgo (C2) encuentre a
+  los de peor puntaje; por eso la lista final usa el puntaje directamente,
+  y lo que aporta el PCA es mostrar que el riesgo no está en el tamaño y
+  dar el eje de tamaño (C1) para ordenar la lista.
+- **Dos cortes de riesgo, para dos usos.** Para comparar componentes se
+  usa el 20 % de peor puntaje (10.046 clientes, 571 puntos o menos), como
+  en clase. Para la lista operativa se usa un corte de la Gerencia: 560
+  puntos o menos, una desviación por debajo del promedio (8.301 clientes).
+- **La cartera es simulada.** Los conteos y los montos se recalculan con
+  la cartera real; las relaciones entre variables son lo que se lleva a la
+  decisión.
+
+**La respuesta, en una frase:** el ingreso dice cuánto está en juego, no
+quién va a pagar. El puntaje decide quién entra al seguimiento, y el
+tamaño decide en qué orden.
 
 ------------------------------------------------------------------------
 

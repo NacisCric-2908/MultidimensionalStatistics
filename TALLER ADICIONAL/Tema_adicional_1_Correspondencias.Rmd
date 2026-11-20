@@ -1,0 +1,499 @@
+---
+title: "Tema adicional 1. Análisis de correspondencias: ¿qué categorías van juntas?"
+subtitle: "Estadística Multidimensional"
+author:
+  - "Steven Navarro Parrales, código 20221020048"
+  - "Juan David Pulido Rodríguez, código 20202020063"
+  - "Jefferson David Ortiz Buitrago, código 20221020110"
+  - "Johan Sebastián Gutiérrez Pérez, código 20211020098"
+date: "14 de noviembre de 2026"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: hide
+    self_contained: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE,
+                      fig.width = 8, fig.height = 6, fig.align = "center")
+library(FactoMineR)
+library(factoextra)
+library(dplyr)
+library(knitr)
+library(ggplot2)
+
+# Cifras con coma decimal en el texto
+coma <- function(x, d = 1) formatC(x, format = "f", digits = d, big.mark = ".", decimal.mark = ",")
+```
+
+# 1. El encargo
+
+**Cliente:** una fundación de becas que apoya a estudiantes universitarios en Colombia.
+
+**Decisión:** a qué perfiles de estudiantes dirigir la convocatoria del próximo año y con qué mensaje. La fundación quiere saber si el **estrato de la vivienda** y el **nivel educativo de la madre** "van juntos", es decir, si puede usar uno como señal del otro cuando no tiene los dos datos.
+
+**Variables:**
+
+- `FAMI_ESTRATOVIVIENDA` (estrato): resume las condiciones económicas del hogar.
+- `FAMI_EDUCACIONMADRE` (educación de la madre): resume el capital educativo de la familia.
+- Para la sección 6 se suman `INST_ORIGEN` (origen de la institución) y `ESTU_METODO_PRGM` (metodología del programa), porque dicen **dónde** y **cómo** estudian, que es lo que la fundación puede usar para llegar a ellos.
+
+Las cuatro variables tienen al menos tres categorías en la base limpia.
+
+# 2. Datos y limpieza
+
+```{r datos}
+# El archivo PruebaSaber1.csv debe estar en la misma carpeta que este .Rmd
+# El archivo viene separado por ";" y codificado en CP850 (por eso se ven "¢" en lugar de "ó")
+datos <- read.csv("PruebaSaber1.csv", sep = ";", stringsAsFactors = FALSE,
+                  fileEncoding = "CP850", check.names = FALSE)
+
+v1 <- "FAMI_ESTRATOVIVIENDA"
+v2 <- "FAMI_EDUCACIONMADRE"
+v3 <- "INST_ORIGEN"
+v4 <- "ESTU_METODO_PRGM"
+vars <- c(v1, v2, v3, v4)
+
+faltan <- setdiff(vars, names(datos))
+if (length(faltan) > 0) stop("Faltan columnas en el CSV: ", paste(faltan, collapse = ", "))
+
+n_inicial <- nrow(datos)
+```
+
+El archivo original tiene **`r format(n_inicial, big.mark = ".", decimal.mark = ",")`** filas. Primero miramos las categorías que trae cada variable, para decidir qué es basura:
+
+```{r niveles}
+for (v in vars) {
+  cat("\n==", v, "==\n")
+  print(table(datos[[v]], useNA = "ifany"))
+}
+```
+
+```{r limpieza}
+# Quitar espacios alrededor de las etiquetas
+datos[vars] <- lapply(datos[vars], function(x) trimws(as.character(x)))
+
+es_invalido <- function(x) {
+  is.na(x) | tolower(x) %in% c(
+    "", "no aplica", "no sabe", "no responde", "n/a", "na", "nan"
+  )
+}
+
+# Unificar el formato de los estratos válidos
+estrato_original <- datos[[v1]]
+numero_estrato <- sub(
+  "^estrato[[:space:]]*", "", estrato_original, ignore.case = TRUE
+)
+estrato_valido <- numero_estrato %in% as.character(1:6)
+datos[[v1]][estrato_valido] <- paste("Estrato", numero_estrato[estrato_valido])
+
+# Corregir la etiqueta de modalidad en los 114 registros
+etiqueta_virtual <- datos[[v4]] %in% "DISTANCIA VITUAL"
+datos[[v4]][etiqueta_virtual] <- "DISTANCIA VIRTUAL"
+
+# Conservar la trazabilidad de los casos excluidos
+madre_invalida <- es_invalido(datos[[v2]])
+fuera <- !estrato_valido | madre_invalida
+
+bitacora <- data.frame(
+  Motivo = c(
+    "Zona rural sin estratificación",
+    "Estrato vacío o sin respuesta válida",
+    "Valor de ocupación en la columna de estrato",
+    "Otro estrato fuera de la escala 1 a 6",
+    "Educación de la madre vacía o sin respuesta válida"
+  ),
+  Casos = c(
+    sum(grepl("^Vive en una zona rural", estrato_original)),
+    sum(es_invalido(estrato_original)),
+    sum(estrato_original %in% "Empleado obrero u operario"),
+    sum(
+      !estrato_valido &
+        !grepl("^Vive en una zona rural", estrato_original) &
+        !es_invalido(estrato_original) &
+        !(estrato_original %in% "Empleado obrero u operario")
+    ),
+    sum(madre_invalida)
+  )
+)
+
+# d se usa en la tabla cruzada y en el CA
+d <- datos[!fuera, vars, drop = FALSE]
+d[] <- lapply(d, factor)
+
+# Revisar las variables adicionales antes del MCA
+madre_o_estrato_validos <- nrow(d)
+validos_mca <- !es_invalido(d[[v3]]) & !es_invalido(d[[v4]])
+d_mca <- droplevels(d[validos_mca, , drop = FALSE])
+
+knitr::kable(bitacora, caption = "Registros con problemas por motivo")
+
+cat("Registros originales:", n_inicial, "\n")
+cat("Registros con problemas en ambas variables:",
+    sum(!estrato_valido & madre_invalida), "\n")
+cat("Registros únicos excluidos:", sum(fuera), "\n")
+cat("Registros para el CA:", madre_o_estrato_validos, "\n")
+cat("Exclusiones adicionales para el MCA:", sum(!validos_mca), "\n")
+cat("Registros para el MCA:", nrow(d_mca), "\n")
+cat("Etiquetas de modalidad corregidas:", sum(etiqueta_virtual), "\n")
+```
+
+La base original contiene 10.000 registros. Se identificaron 19 registros con problemas en la variable de estrato: 17 correspondían a viviendas rurales sin estratificación, uno tenía el campo vacío y uno contenía una respuesta de ocupación debido al desplazamiento de los datos en esa fila. Además, 82 registros tenían vacío el nivel educativo de la madre. Como un registro presentaba problemas en ambas variables, se excluyeron 100 casos únicos, equivalentes al 1 % de la base.
+
+En la variable de modalidad del programa la etiqueta «DISTANCIA VITUAL» es un error de digitación: no es una categoría nueva sino la modalidad a distancia virtual escrita sin la «r». Se corrigió a «DISTANCIA VIRTUAL» en los 114 registros y se mantuvo como categoría propia, porque es distinta de la distancia tradicional. Después de la limpieza quedaron 9.900 casos para ambos análisis, con seis categorías de estrato, diez de educación de la madre, seis de origen institucional y tres de modalidad del programa.
+
+**Umbral de 10 casos.** Antes de analizar revisamos cuántos casos tiene la categoría más pequeña de cada variable. Usamos 10 casos como mínimo de referencia: con menos de 10 personas un solo estudiante mueve el porcentaje de su fila en más de 10 puntos, y la categoría puede quedar lejos en el mapa solo por azar.
+
+```{r umbral}
+minimos <- data.frame(
+  Variable = vars,
+  `Categoría más pequeña` = sapply(d_mca, function(x) names(which.min(table(x)))),
+  Casos = sapply(d_mca, function(x) min(table(x))),
+  check.names = FALSE
+)
+rownames(minimos) <- NULL
+kable(minimos, caption = "Categoría con menos casos en cada variable (base limpia)")
+```
+
+Ninguna categoría queda por debajo de 10 casos (la más pequeña es el estrato 6, con 14), así que no eliminamos ni agrupamos categorías antes del análisis. El único caso con una categoría de un solo registro («INSTITUCIÓN TECNOLÓGICA» en origen y «TECNOLOGÍA» en modalidad) era la fila corrida, que ya salió por el estrato. Como el estrato 6 está cerca del umbral, en la sección 5 repetimos el mapa agrupando los estratos 5 y 6 para ver si cambia.
+
+# 3. La tabla cruzada
+
+```{r tabla}
+tabla <- table(d[[v1]], d[[v2]])
+names(dimnames(tabla)) <- c("Estrato", "Educación madre")
+
+kable(addmargins(tabla), caption = "Conteos: estrato × educación de la madre")
+kable(round(prop.table(tabla, 1) * 100, 1),
+      caption = "Porcentaje por fila (de cada estrato, qué % tiene cada nivel educativo de la madre)")
+```
+
+```{r calor, fig.height=4.5}
+as.data.frame(round(prop.table(tabla, 1) * 100, 1)) |>
+  ggplot(aes(Educación.madre, Estrato, fill = Freq)) +
+  geom_tile(color = "white") +
+  geom_text(aes(label = Freq), size = 3) +
+  scale_fill_gradient(low = "white", high = "steelblue", name = "% fila") +
+  labs(x = "Educación de la madre", y = "Estrato",
+       title = "Porcentaje por fila") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1))
+```
+
+> **Lectura:** el color más oscuro de la fila del estrato 1 está en primaria incompleta, bachillerato completo y primaria completa; a medida que se baja hacia los estratos 4, 5 y 6, el color se corre hacia la derecha, a profesional completa y posgrado. Las filas no se parecen entre sí, que es la primera señal de que las dos variables tienen que ver.
+
+## Qué se ve a simple vista
+
+```{r residuos}
+chi <- chisq.test(tabla)
+V <- sqrt(unname(chi$statistic) / (sum(tabla) * (min(dim(tabla)) - 1)))
+
+res <- as.data.frame(as.table(chi$stdres))
+names(res) <- c("Estrato", "Educación madre", "Residuo")
+res <- res[order(-res$Residuo), ]
+
+kable(head(res, 5), digits = 1, row.names = FALSE,
+      caption = "Combinaciones que aparecen MÁS de lo esperado por azar")
+kable(tail(res, 5)[5:1, ], digits = 1, row.names = FALSE,
+      caption = "Combinaciones que aparecen MENOS de lo esperado por azar")
+```
+
+> **Lectura:** en el estrato 1, la mitad de las madres tiene primaria o menos: 50,5 % sumando «Ninguno» (3,3 %), primaria incompleta (27,0 %) y primaria completa (20,2 %). Es mayoría, pero por muy poco y solo 1,9 % tiene profesional completa o posgrado. A medida que sube el estrato aumenta el peso de la educación superior: 16,2 % de las madres del estrato 4 y cerca de 35 % en los estratos 5 y 6 tienen profesional completa o posgrado. La combinación que más se aleja del azar es **estrato 1 con primaria incompleta** (residuo 11,4), seguida de **estrato 4 con posgrado** (7,8) y **estrato 3 con profesional completa** (7,6). Cuidado con los estratos 5 y 6: tienen 43 y 14 casos, así que sus porcentajes se mueven mucho con pocas madres. Además, ni siquiera en los estratos altos la educación superior es la mayoría: el patrón es una tendencia, no una regla.
+
+## Prueba de independencia
+
+```{r chisq}
+chi
+cat("\nV de Cramér:", round(V, 3), "\n")
+cat("Celdas con esperado < 5:", sum(chi$expected < 5), "de", length(chi$expected), "\n")
+
+# Misma prueba, pero el valor p se calcula con 10.000 tablas simuladas al azar
+set.seed(2026)
+chi_mc <- chisq.test(tabla, simulate.p.value = TRUE, B = 10000)
+chi_mc
+```
+
+**Lectura en palabras:** la hipótesis nula dice que estrato y educación de la madre **no tienen nada que ver**. El valor p es menor a 0,0000000000000002; con `r coma(nrow(d), 0)` casos, casi cualquier diferencia sale "significativa", así que lo importante es el **tamaño**: la V de Cramér es `r coma(V, 2)` (0 = ninguna relación, 1 = relación total). `r if (chi$p.value < 0.05) "Se rechaza la independencia: las dos variables sí tienen que ver entre sí" else "No se rechaza la independencia: no hay evidencia de que las variables estén relacionadas"`, y esa relación es **débil** (V menor a 0,2): el estrato y la educación de la madre se acompañan, pero conocer uno deja mucha incertidumbre sobre el otro. Aviso técnico: 18 de las 60 celdas tienen conteo esperado menor a 5 (casi todas en los estratos 5 y 6), así que la aproximación de la prueba es floja en esas celdas. Por eso repetimos la prueba con simulación Monte Carlo: R arma 10.000 tablas al azar con los mismos totales por fila y por columna, como si las variables fueran independientes, y cuenta cuántas veces sale un chi-cuadrado tan grande como el nuestro. Ninguna de las 10.000 lo alcanzó (valor p = `r coma(chi_mc$p.value, 4)`, el mínimo posible con 10.000 simulaciones), así que la conclusión no depende de la aproximación: la relación existe, aunque es débil.
+
+# 4. El mapa
+
+```{r ca}
+ca <- FactoMineR::CA(tabla, graph = FALSE)
+knitr::kable(round(ca$eig, 4),
+             caption = "Inercia explicada por cada dimensión")
+factoextra::fviz_screeplot(ca, addlabels = TRUE)
+```
+
+```{r mapa, fig.width=9, fig.height=6.5, out.width="100%", dpi=160}
+abreviar_educacion <- function(x) {
+  x <- sub(" \\(Bachillerato\\)", "", x)
+  x <- sub("^Educación profesional", "Profesional", x)
+  x <- sub("^Técnica o tecnológica", "Téc./tecnol.", x)
+  x <- sub(" incompleta$", " incomp.", x)
+  sub(" completa$", " comp.", x)
+}
+
+estilo_mapa <- theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(size = 22, face = "bold", colour = "#172B3A",
+                              margin = margin(b = 6)),
+    plot.subtitle = element_text(size = 12, colour = "#425466",
+                                 margin = margin(b = 14)),
+    plot.title.position = "plot",
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_line(colour = "#E6EBF0", linewidth = 0.35),
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    plot.margin = margin(12, 16, 8, 12)
+  )
+
+puntos_ca <- rbind(
+  data.frame(
+    x = ca$row$coord[, 1], y = ca$row$coord[, 2],
+    etiqueta = rownames(ca$row$coord), grupo = "Estrato"
+  ),
+  data.frame(
+    x = ca$col$coord[, 1], y = ca$col$coord[, 2],
+    etiqueta = abreviar_educacion(rownames(ca$col$coord)),
+    grupo = "Educación de la madre"
+  )
+)
+
+ggplot(puntos_ca, aes(x, y, colour = grupo)) +
+  geom_hline(yintercept = 0, colour = "#B8C3CE", linewidth = 0.45) +
+  geom_vline(xintercept = 0, colour = "#B8C3CE", linewidth = 0.45) +
+  geom_point(aes(shape = grupo), size = 2.8) +
+ggrepel::geom_text_repel(
+  aes(label = ifelse(
+    grupo == "Estrato" |
+      etiqueta %in% c(
+        "Primaria incomp.", "Secundaria comp.",
+        "Profesional comp.", "Postgrado"
+      ),
+    etiqueta, ""
+  )),
+  size = 4, seed = 42,
+  box.padding = 0.6, point.padding = 0.3,
+  min.segment.length = 0,
+  segment.colour = "#A0AEBB",
+  max.overlaps = Inf, show.legend = FALSE
+) +
+  scale_colour_manual(values = c(
+    "Estrato" = "#963D36", "Educación de la madre" = "#235C88"
+  )) +
+  scale_x_continuous(expand = expansion(mult = 0.12)) +
+  scale_y_continuous(expand = expansion(mult = c(0.18, 0.10))) +
+  labs(
+    title = "Estrato y educación de la madre",
+    subtitle = "Análisis de correspondencias simple",
+    x = sprintf("Dimensión 1 (%.1f %%)", ca$eig[1, 2]),
+    y = sprintf("Dimensión 2 (%.1f %%)", ca$eig[2, 2])
+  ) +
+  estilo_mapa
+```
+
+**Información que guarda el mapa:** las dos primeras dimensiones juntas guardan **`r coma(sum(ca$eig[1:2, 2]))` %** de la información (dimensión 1: `r coma(ca$eig[1, 2])` %; dimensión 2: `r coma(ca$eig[2, 2])` %). El resto se pierde al aplanar la tabla a dos dimensiones.
+
+## Nombre de cada dirección
+
+```{r coords}
+coords <- rbind(
+  data.frame(Variable = "Estrato", Categoría = rownames(ca$row$coord), round(ca$row$coord[, 1:2], 2)),
+  data.frame(Variable = "Educación madre", Categoría = rownames(ca$col$coord), round(ca$col$coord[, 1:2], 2))
+)
+names(coords)[3:4] <- c("Dim1", "Dim2")
+kable(coords[order(coords$Dim1), ], row.names = FALSE,
+      caption = "Coordenadas ordenadas por Dim 1 (de izquierda a derecha)")
+kable(coords[order(coords$Dim2), ], row.names = FALSE,
+      caption = "Coordenadas ordenadas por Dim 2 (de abajo hacia arriba)")
+```
+
+> **Dirección 1 (derecha/izquierda):** ir a la derecha significa pasar de hogares con **menos recursos económicos y educativos** (madre sin educación o con primaria incompleta, estrato 1) a hogares con **más recursos** (madre con profesional completa o posgrado, estratos 4, 5 y 6). Es el eje "nivel socioeconómico y educativo del hogar", y las categorías quedan en orden: estrato 1, 2, 3, 4, 5 y 6 de izquierda a derecha, y en la educación de la madre se va de «Ninguno» a «Postgrado» casi en orden (la única excepción es que técnica incompleta, 0,37, queda un poco a la derecha de técnica completa, 0,24). Guarda 85,9 % de la información: el mapa es casi una línea.
+>
+> **Dirección 2 (arriba/abajo):** ir hacia arriba separa los **extremos** (estratos 5 y 6, posgrado, y en menor medida «Ninguno») de los niveles medios (estratos 2 y 3, bachillerato, técnica), que quedan abajo. Eso es el efecto de curva típico del análisis de correspondencias, no una dimensión nueva con significado propio; además guarda solo 10,4 % y está empujada por categorías con muy pocos casos (ver la sección 5).
+
+## Qué categorías van cerca de cuáles
+
+> **Lectura:** el **estrato 1** queda junto a «Primaria incompleta», «Ninguno» y «Primaria completa»; el **estrato 2** queda en el centro, cerca del bachillerato completo e incompleto; el **estrato 3** queda junto a técnica o tecnológica completa; el **estrato 4** queda junto a profesional completa; y los **estratos 5 y 6** quedan junto a posgrado. Esto coincide con los residuos de la sección 3. Recuerde que la cercanía que se lee como "van juntas" es la de categorías de **variables distintas** (estrato con educación de la madre); la distancia entre dos estratos solo dice que sus perfiles se parecen.
+
+# 5. Lo que el mapa no dice
+
+## La cercanía es asociación, no causa
+
+Que "estrato alto" quede cerca de "madre con posgrado" **no significa** que el estrato cause la educación de la madre (ni al revés). Hay una variable que viaja con la asociación; probamos con una variable de recursos del hogar, si existe en el archivo:
+
+```{r viaja}
+candidatas <- c("FAMI_TIENECOMPUTADOR", "FAMI_TIENEINTERNET", "FAMI_TIENELAVADORA")
+var_viaja <- candidatas[candidatas %in% names(datos)][1]
+
+if (is.na(var_viaja)) {
+  cat("Ninguna de las variables candidatas está en el CSV. Elija otra de names(datos) y póngala en var_viaja.")
+} else {
+  dv <- datos[!fuera, c(v1, var_viaja)]
+  dv <- dv[trimws(dv[[var_viaja]]) %in% c("Si", "No"), ]   # quita vacíos y valores corridos
+  tv <- table(Estrato = dv[[v1]], dv[[var_viaja]])
+  cat("Variable que viaja:", var_viaja, "\n")
+  kable(round(prop.table(tv, 1) * 100, 1),
+        caption = paste("Porcentaje por estrato de", var_viaja))
+}
+```
+
+Ahora la misma variable según la educación de la madre:
+
+```{r viaja_madre}
+dm <- datos[!fuera, c(v2, var_viaja)]
+tm <- table(`Educación madre` = dm[[v2]], dm[[var_viaja]])
+kable(round(prop.table(tm, 1) * 100, 1),
+      caption = "Porcentaje de hogares con computador según educación de la madre")
+```
+
+Las dos tablas usan los mismos `r coma(nrow(dm), 0)` casos de la base limpia; todos tienen respuesta «Si» o «No», así que aquí no se pierde ninguno.
+
+> **Cómo podría explicarla:** el computador viaja con las dos variables a la vez. Según el estrato, lo tiene 55,2 % de los hogares del estrato 1 frente a 95 % o más en los estratos 4 a 6. Según la educación de la madre, pasa de 62,1 % cuando la madre no tiene educación y 65,7 % con primaria incompleta, a 89,4 % con profesional completa y 97,9 % con posgrado. Es decir, el computador sube junto con el estrato y junto con la educación de la madre. Lo más probable es que detrás de las dos variables esté el **ingreso del hogar** (que además abre el acceso a computador, internet y colegios de mejor calidad): los hogares con más ingreso estarían en estratos más altos, tendrían más educación en la madre y tendrían computador, sin que el estrato "cause" la educación de la madre ni al revés. El archivo trae `FAMI_INGRESO_FMILIAR_MENSUAL`, que sería la primera candidata para comprobarlo.
+
+## Categorías con pocos casos que mueven el mapa
+
+```{r contrib}
+n_fila <- rowSums(tabla); n_col <- colSums(tabla)
+pct_fila <- round(100 * n_fila / sum(tabla), 1)
+pct_col <- round(100 * n_col / sum(tabla), 1)
+
+cr <- data.frame(Variable = "Estrato", Categoría = rownames(tabla), Casos = as.vector(n_fila),
+                 `% de casos` = as.vector(pct_fila),
+                 `Contrib. Dim1` = round(ca$row$contrib[, 1], 1),
+                 `Contrib. Dim2` = round(ca$row$contrib[, 2], 1), check.names = FALSE)
+cc <- data.frame(Variable = "Educación madre", Categoría = colnames(tabla), Casos = as.vector(n_col),
+                 `% de casos` = as.vector(pct_col),
+                 `Contrib. Dim1` = round(ca$col$contrib[, 1], 1),
+                 `Contrib. Dim2` = round(ca$col$contrib[, 2], 1), check.names = FALSE)
+contrib <- rbind(cr, cc)
+# Contribución promedio: cada variable reparte su propio 100 % entre sus categorías
+prom_estrato <- 100 / nrow(tabla)    # 6 estratos: 16,7 %
+prom_madre   <- 100 / ncol(tabla)    # 10 niveles: 10 %
+contrib$Promedio <- ifelse(contrib$Variable == "Estrato", prom_estrato, prom_madre)
+contrib$Alerta <- ifelse(contrib$`% de casos` < 3 &
+                           pmax(contrib$`Contrib. Dim1`, contrib$`Contrib. Dim2`) >
+                             contrib$Promedio,
+                         "POCOS CASOS, MUCHA CONTRIBUCIÓN", "")
+contrib$Promedio <- round(contrib$Promedio, 1)
+rownames(contrib) <- NULL
+kable(contrib, caption = "Casos y contribución (%) de cada categoría a cada dimensión")
+```
+
+> **Lectura:** en el análisis de correspondencias las filas y las columnas reparten cada una su propio 100 % de contribución, así que el promedio se calcula por separado: `r coma(prom_estrato)` % para cada estrato (100 entre 6) y `r coma(prom_madre)` % para cada nivel educativo (100 entre 10). Una categoría que pasa su promedio está pesando más de lo que le tocaría. Sí hay categorías pequeñas moviendo el mapa: el **estrato 5** (0,4 % de los casos) aporta 31,0 % a la dimensión 2, casi el doble de su promedio; **posgrado** (1,0 % de los casos) aporta 26,5 % a la dimensión 1 y 36,7 % a la 2, entre dos y cuatro veces su promedio; y «Ninguno» (2,1 %) aporta 10,5 % a la dimensión 2, apenas por encima del suyo. El **estrato 6** (14 casos) aporta 14,2 % a la dimensión 2: es mucho para tan pocos hogares, pero queda por debajo del promedio de los estratos. El estrato 4 sale marcado porque tiene 2,7 % de los casos y aporta 20,6 % a la dimensión 1, pero con 271 hogares su posición es confiable y es justo la que esperamos en el eje de recursos. La dimensión 2 depende, entonces, de muy pocas madres y hogares. Para comprobar si el mapa es estable, repetimos el análisis agrupando los estratos 5 y 6:
+
+```{r sensibilidad}
+e56 <- as.character(d[[v1]])
+e56[e56 %in% c("Estrato 5", "Estrato 6")] <- "Estrato 5-6"
+tabla56 <- table(Estrato = e56, `Educación madre` = d[[v2]])
+ca56 <- CA(tabla56, graph = FALSE)
+kable(round(ca56$eig[1:2, ], 4), caption = "Información guardada, estratos 5 y 6 agrupados")
+kable(round(rbind(ca56$row$coord[, 1:2], ca56$col$coord[, 1:2]), 2),
+      caption = "Coordenadas con estratos 5 y 6 agrupados")
+```
+
+> Con los estratos 5 y 6 agrupados, la dimensión 1 pasa a guardar 87,4 % y las posiciones sobre ella casi no cambian (estrato 1 en −0,26, estrato 4 en 0,68, y el grupo 5-6 en 1,40). Así que **la lectura principal, de menos a más recursos, es estable**; lo que depende de pocos casos es la dimensión 2 (los extremos arriba), que no se debe interpretar como un hallazgo.
+
+# 6. Más de dos variables: MCA
+
+El análisis de correspondencias múltiple se realizó con los mismos 9.900 registros del análisis de dos variables. Las variables de origen institucional y modalidad del programa no requirieron exclusiones adicionales.
+
+```{r mca}
+mca <- MCA(d_mca, graph = FALSE)
+kable(round(head(mca$eig, 6), 2), caption = "Valores propios del MCA (primeras 6 dimensiones)")
+fviz_screeplot(mca, addlabels = TRUE, ncp = 8)
+```
+
+```{r mcamapa, fig.width=9.5, fig.height=7.5, out.width="100%", dpi=160}
+nombres_mca <- rownames(mca$var$coord)
+grupos_mca <- c(
+  "Estrato", "Educación de la madre", "Origen institucional", "Modalidad"
+)
+
+grupo_mca <- rep(NA_character_, length(nombres_mca))
+for (i in seq_along(grupos_mca)) {
+  grupo_mca[nombres_mca %in% levels(d_mca[[vars[i]]])] <- grupos_mca[i]
+}
+
+etiquetas_mca <- abreviar_educacion(nombres_mca)
+etiquetas_mca <- sub("^NO OFICIAL - ", "No oficial · ", etiquetas_mca)
+etiquetas_mca <- sub("^OFICIAL DEPARTAMENTAL$", "Oficial depart.", etiquetas_mca)
+etiquetas_mca <- sub("^OFICIAL NACIONAL$", "Oficial nacional", etiquetas_mca)
+etiquetas_mca <- sub("^OFICIAL MUNICIPAL$", "Oficial municipal", etiquetas_mca)
+etiquetas_mca <- sub("^REGIMEN ESPECIAL$", "Régimen especial", etiquetas_mca)
+etiquetas_mca <- sub("^DISTANCIA VIRTUAL$", "Distancia virtual", etiquetas_mca)
+etiquetas_mca <- sub("^DISTANCIA$", "Distancia", etiquetas_mca)
+etiquetas_mca <- sub("^PRESENCIAL$", "Presencial", etiquetas_mca)
+etiquetas_mca <- sub("FUNDACIÓN$", "fundación", etiquetas_mca)
+etiquetas_mca <- sub("CORPORACIÓN$", "corporación", etiquetas_mca)
+
+puntos_mca <- data.frame(
+  x = mca$var$coord[, 1],
+  y = mca$var$coord[, 2],
+  etiqueta = etiquetas_mca,
+  grupo = factor(grupo_mca, levels = grupos_mca)
+)
+
+ggplot(puntos_mca, aes(x, y, colour = grupo)) +
+  geom_hline(yintercept = 0, colour = "#B8C3CE", linewidth = 0.45) +
+  geom_vline(xintercept = 0, colour = "#B8C3CE", linewidth = 0.45) +
+  geom_point(aes(shape = grupo), size = 2.8) +
+ 
+  ggrepel::geom_text_repel(
+  aes(label = ifelse(
+    etiqueta %in% c(
+      "Estrato 1", "Estrato 4", "Estrato 6",
+      "Primaria incomp.", "Profesional comp.", "Postgrado",
+      "Oficial nacional", "No oficial · fundación",
+      "Distancia", "Presencial", "Distancia virtual"
+    ),
+    etiqueta, ""
+  )),
+  size = 3.9, seed = 42,
+  box.padding = 0.65, point.padding = 0.3,
+  min.segment.length = 0,
+  segment.colour = "#A0AEBB",
+  max.overlaps = Inf, show.legend = FALSE
+) +
+  scale_colour_manual(values = c(
+    "Estrato" = "#963D36",
+    "Educación de la madre" = "#235C88",
+    "Origen institucional" = "#136858",
+    "Modalidad" = "#714385"
+  )) +
+  scale_x_continuous(expand = expansion(mult = 0.12)) +
+  scale_y_continuous(expand = expansion(mult = 0.10)) +
+  labs(
+    title = "Mapa de correspondencias múltiples",
+    subtitle = "Categorías de las cuatro variables del estudio",
+    x = sprintf("Dimensión 1 (%.1f %%)", mca$eig[1, 2]),
+    y = sprintf("Dimensión 2 (%.1f %%)", mca$eig[2, 2])
+  ) +
+  estilo_mapa
+```
+
+Cada punto representa una categoría. Se etiquetan las categorías destacadas en la interpretación.
+
+```{r mcacontrib}
+fviz_contrib(mca, choice = "var", axes = 1, top = 15)
+```
+
+> **Lectura:** la línea roja punteada es la contribución promedio (100 entre 25 categorías, 4 %). La dimensión 1 del MCA la arman sobre todo la modalidad y el origen de la institución: presencial (19,1 %), no oficial fundación (17,6 %), distancia (15,1 %) y oficial nacional (10,5 %). Sumando por variable, origen aporta 37,1 %, modalidad 35,4 %, estrato 16,6 % y educación de la madre 10,8 %. Es decir, el eje principal del MCA es el de «dónde y cómo estudian», y el estrato y la educación de la madre se ordenan a lo largo de él en el mismo sentido que en el CA. Por eso decimos que el patrón se mantiene, aunque ahora el eje lo dominan las variables nuevas.
+
+**Información:** en MCA el porcentaje de inercia de cada dimensión es siempre bajo (por cómo se construye la tabla), así que no se compara directamente con el del CA: las dos primeras dimensiones guardan `r coma(sum(mca$eig[1:2, 2]))` %.
+
+> **Comparación con el análisis de dos variables:**
+>
+> - **Se mantiene lo principal.** Sobre la dimensión 1, los estratos siguen en orden (1: −0,57; 2: −0,07; 3: 0,60; 4: 1,62; 5: 2,24; 6: 2,83) y la educación de la madre va de «Ninguno» (−0,92) a «Postgrado» (1,83), con dos pequeños desórdenes entre niveles incompletos y completos. La asociación de la sección 4 **no era un accidente de haber mirado solo dos variables**.
+> - **Las nuevas variables se alinean con el mismo eje.** A la derecha quedan el programa **presencial** y las instituciones **no oficiales (fundación)**; a la izquierda, la modalidad **a distancia** y las instituciones **oficiales nacionales**, junto al estrato 1. Es coherente con la tabla: 77 % de los estudiantes del estrato 1 está en instituciones oficiales nacionales (frente a 40 % en el estrato 4), y la modalidad presencial pasa de 31 % en el estrato 1 a 65 % en el estrato 4.
+> - **La dimensión 2 cambia de sentido y no se debe leer como en el CA.** La categoría «DISTANCIA VIRTUAL» (114 casos, 1,2 % del total) aporta por sí sola 22,2 % a esa dimensión, y la dimensión 2 guarda solo 5,4 %. Es una dimensión armada alrededor de un grupo pequeño, así que sería un error nombrarla como un hallazgo.
+> - **La información por dimensión es baja (`r coma(mca$eig[1, 2])` % y `r coma(mca$eig[2, 2])` %)**, pero eso es normal en MCA por cómo se arma la tabla; lo que cuenta es que la dimensión 1 sigue siendo la que separa a los hogares con menos recursos de los que tienen más.
+
+# 7. Recomendación para el cliente
+
+1. **Qué va con qué:** los estudiantes de estrato 1 tienden a tener madres con primaria incompleta o sin educación, los de estrato 3 con técnica o tecnológica, los de estrato 4 con profesional y los de estratos 5 y 6 con posgrado; además, los de estrato 1 estudian sobre todo en instituciones oficiales nacionales y a distancia.
+2. **Qué tan fuerte es:** la tendencia es clara pero **débil**: la V de Cramér es `r coma(V, 2)`, la prueba de independencia rechaza que sean independientes (también con simulación Monte Carlo), y el mapa de dos dimensiones guarda `r coma(sum(ca$eig[1:2, 2]), 0)` % de la información, casi toda en un solo eje de menos a más recursos del hogar.
+3. **Qué decide con eso:** la fundación puede usar el estrato como una señal aproximada del nivel educativo de la familia para dirigir la convocatoria a los estratos 1 y 2, que son 73 % de los estudiantes. Para difundirla, el canal principal son las instituciones oficiales nacionales (ahí está el 77 % del estrato 1) y los programas a distancia (68 % del estrato 1 estudia a distancia y solo 31 % presencial), por ejemplo con las oficinas de bienestar y las plataformas virtuales de esos programas, más que con anuncios en sedes presenciales; no debería usar el estrato para decidir caso por caso, porque la relación es débil y hay muchas madres con educación baja en los estratos 3 y 4 y a la inversa.
+4. **Qué no sabemos todavía:** no sabemos si el estrato causa el nivel educativo (o al revés) ni cuánto de la asociación se debe al ingreso del hogar, que no incluimos; los estratos 5 y 6 tienen 57 casos entre los dos, así que no hay base para recomendar nada sobre ellos; y los datos son solo de quienes presentaron la prueba, no de todos los jóvenes del país.
