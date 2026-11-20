@@ -1,278 +1,300 @@
-"""Construye presentacion.html (10 láminas 16:9). Las cifras salen del informe
-analisis_synthetic_credit_card.html (tabla de decisiones y anexo de comprobación)."""
+"""Construye presentacion.html (10 láminas 16:9) en formato de informe de consultoría.
+
+Las cifras salen del informe analisis_synthetic_credit_card.html (tabla de decisiones, Módulos 13-17 y
+Módulo 20) y de perfiles calculados sobre data/bronze. "La competencia" son las cifras reales del
+mercado indio de tarjetas (RBI, SBI Card y Banco Mundial) del Módulo 20.
+"""
 from pathlib import Path
 
 AQUI = Path(__file__).resolve().parent
 TOTAL = 10
+FUENTE_COMP = "Competencia: mercado de tarjetas de India · RBI (abr-2025 a mar-2026; BSR 2023), SBI Card (mar-2026), Banco Mundial Findex 2024"
 
 
-def tarjeta4(decidimos, otra, cifra, gerencia):
-    filas = [("Decidimos", decidimos), ("La otra opción", otra),
-             ("La cifra", cifra), ("Para la Gerencia", gerencia)]
-    return '<aside class="c4">' + "".join(
-        f'<div class="c4f"><span class="c4l">{l}</span><p>{t}</p></div>' for l, t in filas) + "</aside>"
+def franja(decidimos, otra, dato, negocio):
+    filas = [("Lo que decidimos", decidimos), ("La otra opción", otra),
+             ("El dato que lo sostiene", dato), ("Qué significa para ustedes", negocio)]
+    return '<div class="franja">' + "".join(
+        f'<div class="ff"><span class="fl">{l}</span><p>{t}</p></div>' for l, t in filas) + "</div>"
 
 
-def lamina(n, kicker, titulo, cuerpo, clase=""):
+def lamina(n, tema, titulo, cuerpo, pie_fuente=""):
+    fuente = f'<span class="fuente">{pie_fuente}</span>' if pie_fuente else "<span></span>"
     return f"""
-<section class="slide {clase}">
-  <div class="kicker"><span class="num">{n - 1:02d}</span><span>{kicker}</span></div>
+<section class="slide">
+  <div class="kicker"><span class="num">Decisión {n - 1} de 9</span><span>{tema}</span></div>
   <h1>{titulo}</h1>
   <div class="cuerpo">{cuerpo}</div>
-  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>{n} / {TOTAL}</span></footer>
+  <footer>{fuente}<span>{n} / {TOTAL}</span></footer>
 </section>"""
 
 
-def waffle(encontrados, color, total=100):
-    celdas = "".join(f'<i style="background:{color if k < encontrados else "#E3E6EB"}"></i>'
-                     for k in range(total))
-    return f'<div class="waffle">{celdas}</div>'
+def persona(color, relleno=True):
+    fill = color if relleno else "none"
+    return (f'<svg viewBox="0 0 40 80" class="persona"><circle cx="20" cy="13" r="11" fill="{fill}" stroke="{color}" stroke-width="3"/>'
+            f'<path d="M4 76 V44 Q4 29 20 29 Q36 29 36 44 V76 Z" fill="{fill}" stroke="{color}" stroke-width="3"/></svg>')
 
 
-def barras_h(datos, maximo, color_pos="#2B6CB0", color_neg="#D7263D", ancho=430):
-    filas = []
-    for nombre, v, *extra in datos:
-        col = extra[0] if extra else (color_pos if v >= 0 else color_neg)
-        w = abs(v) / maximo * ancho
-        txt = f"{v:+.2f}".replace(".", ",").replace("+", "")
-        filas.append(f'<div class="bh"><span class="bhn">{nombre}</span>'
-                     f'<span class="bhb" style="width:{w:.0f}px;background:{col}"></span>'
-                     f'<span class="bhv">{txt}</span></div>')
-    return "".join(filas)
+def barras(datos, maximo, fmt, ancho=520, color="#1F4E79"):
+    out = []
+    for etq, v, *c in datos:
+        col = c[0] if c else color
+        out.append(f'<div class="br"><span class="brn">{etq}</span><span class="brt">'
+                   f'<span class="brb" style="width:{v / maximo * ancho:.0f}px;background:{col}"></span>'
+                   f'<span class="brv">{fmt(v)}</span></span></div>')
+    return "".join(out)
 
 
-# ---------------------------------------------------------------- 1. Cliente
+def es(x, d=1):
+    return f"{x:,.{d}f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+
+# ------------------------------------------------------------------ 1. El cliente
+def bench(titulo, nos, comp, nota):
+    return (f'<div class="bench"><div class="bt">{titulo}</div>'
+            f'<div class="bv"><div><b class="rojo">{nos}</b><small>su cartera</small></div>'
+            f'<div><b>{comp}</b><small>competencia</small></div></div><div class="bn">{nota}</div></div>')
+
+
 s1 = f"""
 <section class="slide portada">
-  <div class="portada-izq">
-    <div class="marca">Gerencia de Riesgo de Crédito · 50.000 tarjetas</div>
-    <h1 class="gigante">Cada mes hay que escoger a quién llamar <em>antes</em> de que deje de pagar.</h1>
-    <p class="lead">Hoy la Gerencia lo decide revisando una ficha de <b>21 columnas por cliente</b>.
-       El programa de seguimiento tiene cupos limitados: llamada del gestor, congelar aumentos de cupo,
-       refinanciar antes de la mora.</p>
-    <p class="pregunta">«¿Puedo ordenar la cartera con un número? ¿Y a quién me pierdo si lo hago?»</p>
-    <div class="equipo">Oscar Contreras · Juan Pablo Sarmiento · Steven Navarro · Juan Diego Grajales<br>
-      <span>Estadística Multidimensional · Sustentación del corte 2 · Equipo 02</span></div>
+  <div class="marca">Informe para la Gerencia de Riesgo de Crédito · Cartera de 50.000 tarjetas</div>
+  <h1 class="gigante">Sus clientes deben más y pagan peor que los de la competencia. ¿A quién llamar primero?</h1>
+  <div class="encargo">
+    <div><span class="et">Su decisión de cada mes</span>Qué clientes entran al programa de seguimiento preventivo:
+      llamada del gestor, congelar aumentos de cupo, refinanciar antes de la mora. Los cupos son limitados.</div>
+    <div><span class="et">Cómo lo hacen hoy</span>Revisan una ficha de <b>26 columnas por cliente</b>, y se preguntan si basta
+      con mirar el ingreso, la categoría de la tarjeta o la ocupación.</div>
+    <div><span class="et">Lo que les entregamos</span>Una <b>lista mensual de 8.301 clientes</b>, ordenada por el dinero en juego,
+      y tres fallas de procedimiento que conviene corregir.</div>
   </div>
-  <div class="portada-der">
-    <div class="producto">
-      <div class="prod-tag">Lo que le traemos</div>
-      <div class="prod-nombre">El Radar de seguimiento</div>
-      <div class="prod-kpi"><b>8.195</b><span>clientes al mes, en vez de 50.000 fichas</span></div>
-      <div class="prod-kpi"><b>2</b><span>números por cliente, en vez de 21 columnas</span></div>
-      <div class="prod-kpi"><b>85,5 %</b><span>del saldo de la lista, en los primeros 3.939 clientes a llamar</span></div>
-      <div class="prod-pie">Así llegamos: nueve decisiones con los datos →</div>
-    </div>
+  <div class="benchs">
+    {bench("Saldo pendiente por tarjeta", "₹303 mil", "₹28 mil", "11 veces lo de la competencia")}
+    {bench("Uso del cupo", "43 %", "21 %", "el doble")}
+    {bench("Pagan su saldo completo", "35 %", "87 %", "menos de la mitad")}
+    {bench("Usan avances en efectivo", "30 %", "0,6 %", "50 veces más")}
   </div>
-  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>1 / {TOTAL}</span></footer>
+  <div class="equipo">Equipo 02 · Oscar Contreras · Juan Pablo Sarmiento · Steven Navarro · Juan Diego Grajales
+    <span>Estadística Multidimensional · Sustentación del corte 2</span></div>
+  <footer><span class="fuente">{FUENTE_COMP}. «Pagan completo»: en su cartera, pagan el 95 % o más.</span><span>1 / {TOTAL}</span></footer>
 </section>"""
 
-# ---------------------------------------------------------------- 2. Variables
-chips = []
-fuera = {
-    "Monthly_Spending": "= suma exacta de las 7 categorías de gasto",
-    "Outstanding_Balance": "r = 0,997 con el saldo facturado",
-    "Reward_Points_Earned": "r = 0,98 con el gasto",
-    "Payment_Ratio": "cociente de pago ÷ saldo",
-    "Credit_Utilization": "cociente de saldo ÷ cupo",
-}
-dentro = ["Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount", "Grocery_Spending",
-          "Utility_Bill_Spending", "Online_Shopping_Spending", "Fuel_Spending", "Dining_Spending",
-          "Travel_Spending", "Entertainment_Spending", "Monthly_Transactions", "Avg_Transaction_Value",
-          "Mobile_App_Login", "EMI_Count", "International_Transactions", "Reward_Points_Redeemed",
-          "Cash_Advance_Amount", "Card_Age_Months", "Age", "Credit_Score"]
-chips_in = "".join(f'<span class="chip">{v}</span>' for v in dentro)
-chips_out = "".join(f'<div class="fuera"><span class="chip tachado">{v}</span><span class="por">{r}</span></div>'
-                    for v, r in fuera.items())
+# ------------------------------------------------------------------ 2. Variables
+sobran = [("Gasto mensual total", "Es la suma exacta de las 7 categorías de gasto que ya están en la ficha."),
+          ("Saldo pendiente", "Repite el saldo facturado: van juntos en 99,7 de cada 100 casos."),
+          ("Puntos ganados", "Se calculan del gasto: van juntos en 98 de cada 100."),
+          ("Proporción pagada", "Es pago ÷ saldo, dos columnas que ya están."),
+          ("Uso del cupo", "Es saldo ÷ cupo, otras dos columnas que ya están.")]
+filas = "".join(f'<div class="sob"><span class="sobn">{a}</span><span class="sobr">{b}</span></div>' for a, b in sobran)
 s2 = lamina(2, "¿Qué variables entran?",
-            "26 columnas, pero cinco repetían lo que ya decían otras.",
-            f"""<div class="visual">
-      <div class="etq">Entran · 21 numéricas</div><div class="chips">{chips_in}</div>
-      <div class="etq rojo">Salen · 5 repetidas o derivadas</div><div class="fueras">{chips_out}</div>
-      <div class="nota">Sexo, ocupación y tipo de tarjeta no construyen el resumen: se usan para colorear el mapa.
-      Los dos cocientes explican el <b>95 %</b> del puntaje: no se botan, se usan como lupa para leer el riesgo.</div>
-    </div>""" + tarjeta4(
-                "Una ficha de 21 columnas sin repetidas.",
-                "Meter las 26 numéricas y las categóricas codificadas.",
-                "Con las 26, una columna se repite exacta (hay una dirección con varianza cero). El eje de tamaño sale idéntico en las dos versiones: correlación 1,00.",
-                "Nada de lo que se quitó era información nueva. Lo que el resumen gana es no contar dos veces lo mismo."))
+            "Hallazgo 1: su ficha de cliente cuenta dos veces lo mismo.",
+            f"""<div class="fila">
+      <div class="col-g">
+        <div class="etq">5 de sus 26 columnas no traen información nueva</div>{filas}
+      </div>
+      <div class="col-p">
+        <div class="grande"><b>21</b><span>columnas bastan para describir a cada cliente</span></div>
+        <div class="aviso"><b>Ojo:</b> la proporción pagada y el uso del cupo explican el <b>95 %</b> del puntaje de crédito.
+          No se botan: quedan como <b>alertas</b> para leer el riesgo (lámina 7).</div>
+        <div class="mini">Sexo, ocupación y categoría de tarjeta se usan para describir a los grupos, no para construir los indicadores.</div>
+      </div>
+    </div>""" + franja(
+                "Trabajar con 21 columnas: 5 repetidas salen de los indicadores.",
+                "Usar las 26 columnas y además las categorías de cliente.",
+                "Con las 26, una columna se repite exacta. El indicador de tamaño sale idéntico en las dos versiones (coinciden en 1,00).",
+                "Sus reportes mensuales pueden ser más cortos sin perder nada, y dejar de sumar dos veces el mismo gasto."))
 
-# ---------------------------------------------------------------- 3. Atípicos
+# ------------------------------------------------------------------ 3. Atípicos
 s3 = lamina(3, "¿Qué hacemos con faltantes y atípicos?",
-            "Ningún dato malo. 1.641 clientes raros que no había que borrar, sino mirar.",
-            f"""<div class="visual">
-      <div class="kpis3">
-        <div class="kpi"><b>0</b><span>faltantes y duplicados: no sale ningún cliente</span></div>
-        <div class="kpi rojo"><b>1.641</b><span>raros en la combinación de sus variables (Mahalanobis, corte del 99 %)</span></div>
-        <div class="kpi"><b>64 %</b><span>de ellos no tiene <i>ninguna</i> variable extrema: columna por columna no se ven</span></div>
+            "Hallazgo 2: sus datos están sanos, pero hay 1.641 clientes con un perfil que nadie estaba mirando.",
+            f"""<div class="fila">
+      <div class="col-p">
+        <div class="sano"><b>0</b> datos faltantes &nbsp;·&nbsp; <b>0</b> clientes duplicados &nbsp;·&nbsp; <b>0</b> valores imposibles</div>
+        <div class="grande rojo"><b>1.641</b><span>clientes «raros»: cada dato por separado es normal, pero la combinación no lo es (3,3 % de la cartera)</span></div>
+        <div class="mini"><b>64 de cada 100</b> de ellos no tienen ningún dato extremo: una revisión columna por columna no los encuentra.</div>
       </div>
-      <div class="etq">¿Quiénes son? Gastan en todo… menos en una cosa (combustible, viajes, entretenimiento)</div>
-      <div class="comparar">
-        <div class="cmp"><span class="cmpn">Puntaje mediano</span>
-          <div class="cmpb"><span style="width:{573/700*560:.0f}px;background:#D7263D">573 · raros</span></div>
-          <div class="cmpb"><span style="width:{639/700*560:.0f}px;background:#9AA5B8">639 · resto</span></div></div>
-        <div class="cmp"><span class="cmpn">Proporción del saldo que pagan</span>
-          <div class="cmpb"><span style="width:{0.57/1*560:.0f}px;background:#D7263D">0,57 · raros</span></div>
-          <div class="cmpb"><span style="width:{0.85/1*560:.0f}px;background:#9AA5B8">0,85 · resto</span></div></div>
+      <div class="col-g perfil">
+        <div class="ptag">Perfil de riesgo · «El cliente disparejo»</div>
+        <div class="pdesc">Gasta en todo, menos en una cosa: combustible, viajes, entretenimiento o compras en línea casi en cero.</div>
+        <div class="comp"><span>Puntaje de crédito mediano</span><b class="rojo">573</b><em>frente a 639 del resto</em></div>
+        <div class="comp"><span>Parte del saldo que paga cada mes</span><b class="rojo">57 %</b><em>frente a 85 % del resto</em></div>
+        <div class="comp"><span>Con tarjeta Platinum o Signature</span><b class="rojo">38 %</b><em>frente a 21 % del resto</em></div>
       </div>
-    </div>""" + tarjeta4(
-                "Sale 0 casos. Los 1.641 se marcan y se estudian; 0 se corrigen, porque ninguno es un error de captura.",
-                "Borrar los atípicos, o revisar solo variable por variable (Tukey).",
-                "Quitarlos mueve las correlaciones como mucho 0,02: no están rompiendo nada.",
-                "Borrarlos habría escondido a un grupo con más riesgo que el promedio. Ahora es una lista para revisar."))
+    </div>""" + franja(
+                "No sale ningún cliente. Los 1.641 se marcan y se estudian; no hubo errores que corregir.",
+                "Borrarlos como «datos raros», o revisar solo dato por dato.",
+                "Quitarlos no cambia la estructura de la cartera (las relaciones se mueven como mucho 0,02).",
+                "Borrarlos habría escondido a un grupo con más riesgo que el promedio. Ahora tienen nombre, y en la lámina 10 les decimos qué hacer con ellos."))
 
-# ---------------------------------------------------------------- 4. Estandarizar
-def barra_c1(etq, v, nota, col):
-    return (f'<div class="c1f"><div class="c1e">{etq}</div><div class="c1t">'
-            f'<span class="c1b" style="width:{v/100*900:.0f}px;background:{col}"></span>'
-            f'<span class="c1v">{str(v).replace(".", ",")}</span></div><div class="c1n">{nota}</div></div>')
-
-
+# ------------------------------------------------------------------ 4. Estandarizar
 s4 = lamina(4, "¿Estandarizamos?",
-            "Sin estandarizar, el «resumen» era solo el ingreso con otro nombre.",
-            f"""<div class="visual">
-      <div class="escala">
-        <div><b>1,67</b><span>desviación de las cuotas (EMI)</span></div>
-        <div class="flecha">seis órdenes de magnitud →</div>
-        <div><b>₹1.410.000</b><span>desviación del ingreso anual</span></div>
+            "Medidos en rupias, los clientes ricos tapan todo lo demás.",
+            f"""<div class="fila">
+      <div class="col-g">
+        <div class="etq">Si los clientes se comparan en rupias…</div>
+        <div class="pila"><span style="width:56%;background:#1F4E79">el ingreso: 56 %</span><span style="width:44%;background:#C9CED6;color:#14213D">las otras 20 columnas: 44 %</span></div>
+        <div class="mini">…el ingreso explica 56 de cada 100 diferencias entre clientes, solo porque se mide en millones. Un resumen hecho así es <b>el ingreso con otro nombre</b>: «guarda» 95,5 de cada 100 partes, pero no ve nada más.</div>
+        <div class="etq" style="margin-top:34px">…y si se miden con la misma regla</div>
+        <div class="pila"><span style="width:100%;background:linear-gradient(90deg,#1F4E79,#2E86AB,#5DA9E9,#1F4E79,#2E86AB,#5DA9E9)">las 21 columnas aportan · ninguna pesa más de 0,30</span></div>
+        <div class="mini">El primer indicador guarda 50,1 de cada 100 partes de la información de la ficha, y lo construyen todas.</div>
       </div>
-      <div class="etq">De cada 100 partes de la información, cuántas guarda la primera componente</div>
-      {barra_c1("En rupias, sin estandarizar", 95.5, "Una sola variable manda: el ingreso, con peso 0,76. Aporta 56 de cada 100 partes de la varianza total.", "#9AA5B8")}
-      {barra_c1("Estandarizado", 48.0, "Ninguna variable manda sola.", "#5DA9E9")}
-      {barra_c1("log(x+1) + estandarizado", 50.1, "Además, unos pocos clientes enormes ya no deciden la dirección.", "#2B6CB0")}
-    </div>""" + tarjeta4(
-                "Sí: logaritmo en las variables con cola larga y después todas a la misma escala.",
-                "Trabajar en rupias, o estandarizar sin logaritmo.",
-                "En rupias, la primera componente «guarda» 95,5 de cada 100, pero es el ingreso disfrazado. Estandarizada guarda 50,1 y la construyen todas.",
-                "El resumen pesa a todas las variables, no solo a las que se miden en números grandes."))
+      <div class="col-p">
+        <div class="cita">«Si su modelo de seguimiento usa montos en rupias, termina vigilando a los clientes más ricos, no a los más riesgosos.»</div>
+        <div class="mini">De la columna más chica (cuotas, 1,67) a la más grande (ingreso, ₹1.410.000) hay seis órdenes de magnitud.</div>
+      </div>
+    </div>""" + franja(
+                "Sí: pasar todo a la misma escala, con logaritmo en los montos con colas largas.",
+                "Trabajar en rupias, o igualar escalas sin logaritmo (guarda 48,0).",
+                "En rupias, el resumen «guarda» 95,5 de cada 100, pero es el ingreso disfrazado (peso 0,76). En la misma escala, 50,1, y aportan todas.",
+                "Los indicadores pesan a todos los clientes por lo que hacen, no por cuánto ganan."))
 
-# ---------------------------------------------------------------- 5. Resumir
-rep = ["ingreso", "cupo", "saldo", "pagos", "mercado", "servicios", "en línea", "combustible", "restaurantes",
-       "viajes", "entretenimiento", "transacciones", "valor por compra", "app", "cuotas", "internacionales"]
-solas = [("puntaje", "0,17"), ("edad", "0,01"), ("antigüedad", "0,05"), ("avances", "0,07")]
+# ------------------------------------------------------------------ 5. Resumir
+quint = [("20 % de menor ingreso", 20.4), ("Siguiente 20 %", 21.0), ("20 % del medio", 20.6),
+         ("Siguiente 20 %", 20.1), ("20 % de mayor ingreso", 18.4)]
 s5 = lamina(5, "¿Tiene sentido resumir?",
-            "El dinero se repite. El puntaje va solo.",
-            f"""<div class="visual dos-col">
-      <div class="nube">
-        <div class="etq">Se repiten · 16 de 21 tienen una compañera con correlación &gt; 0,6</div>
-        <div class="racimo">{"".join(f'<span class="bola azul">{v}</span>' for v in rep)}</div>
-        <div class="dato">ingreso ↔ cupo: <b>r = 0,98</b></div>
+            "Hallazgo 3: ingreso, cupo y gasto cuentan la misma historia, y no dicen nada del riesgo.",
+            f"""<div class="fila">
+      <div class="col-p">
+        <div class="grande"><b>16 de 21</b><span>columnas se mueven juntas: ingreso, cupo, saldo, pagos, las 7 categorías de gasto, transacciones y uso de la app. Cuentan <b>cuánto pesa el cliente</b>.</span></div>
+        <div class="mini">Ingreso y cupo van juntos casi siempre (0,98). El puntaje de crédito no pasa de 0,17 con ninguna otra columna: <b>va solo</b>.</div>
       </div>
-      <div class="nube">
-        <div class="etq rojo">Van solas · con ninguna pasan de 0,17</div>
-        <div class="solas">{"".join(f'<div class="sola"><span class="bola roja">{v}</span><small>máx. |r| = {r}</small></div>' for v, r in solas)}</div>
+      <div class="col-g">
+        <div class="etq">De cada 100 clientes de cada nivel de ingreso, ¿cuántos están en el 20 % de peor puntaje?</div>
+        {barras(quint, 25, lambda v: es(v), ancho=560)}
+        <div class="aviso">Ganen lo que ganen, son unos 20 de cada 100. <b>El ingreso no sirve como filtro de riesgo.</b></div>
       </div>
-    </div>""" + tarjeta4(
+    </div>""" + franja(
                 "Sí se puede resumir: hay mucha información repetida.",
-                "No resumir, y seguir mirando las 21 columnas una por una.",
-                "16 de 21 variables se repiten con alguna otra (|r| &gt; 0,6). El puntaje, la variable que más le importa a la Gerencia, no pasa de 0,17 con ninguna.",
-                "Primera alerta: el tamaño del cliente cabe en un número; el riesgo, no cabe en ese número."))
+                "Seguir mirando las columnas una por una.",
+                "16 de 21 columnas tienen una compañera con relación mayor que 0,6. El puntaje no pasa de 0,17 con ninguna.",
+                "El tamaño del cliente cabe en un indicador. El riesgo no cabe en ese indicador: necesita el suyo."))
 
-# ---------------------------------------------------------------- 6. Cuántas
-pct = [50.1, 5.3, 4.8, 4.7, 4.5, 4.5, 4.1, 2.9, 2.8, 2.5]
-cols = "".join(
-    f'<div class="col"><span class="colv">{str(v).replace(".", ",")}</span>'
-    f'<span class="colb" style="height:{v/52*330:.0f}px;background:{"#2B6CB0" if k == 0 else "#D7263D" if k == 1 else "#C9CED6"}"></span>'
-    f'<span class="colx">C{k+1}</span></div>' for k, v in enumerate(pct))
+# ------------------------------------------------------------------ 6. Cuántas
 s6 = lamina(6, "¿Cuántas componentes?",
-            "Dos números. No uno, y tampoco ocho.",
-            f"""<div class="visual">
-      <div class="etq">De cada 100 partes de la información de la ficha, cuántas guarda cada componente</div>
-      <div class="cols">{cols}
-        <div class="anot a1"><b>C1 · 50,1</b><br>la mitad de la ficha en un número</div>
-        <div class="anot a2"><b>C2 · solo 5,3</b><br>…pero es la que ve el riesgo</div>
+            "Dos indicadores reemplazan la ficha de 21 columnas.",
+            f"""<div class="fila">
+      <div class="col-g">
+        <div class="ficha">
+          <div class="fhead"><span>Ficha mensual del cliente</span><small>antes: 21 columnas</small></div>
+          <div class="find"><div><b>Índice de Tamaño</b><small>Resume 16 columnas de dinero y uso. Guarda la mitad de la información de la ficha: 50,1 de cada 100 partes.</small></div>
+            <div class="medidor"><i style="width:72%;background:#1F4E79"></i></div></div>
+          <div class="find"><div><b>Índice de Riesgo</b><small>Guarda solo 5,3 de cada 100 partes, pero es el que encuentra a los clientes en riesgo. Y resultó ser, en esencia, <b>su propio puntaje de crédito</b> (se parecen 0,82).</small></div>
+            <div class="medidor"><i style="width:38%;background:#C8102E"></i></div></div>
+        </div>
       </div>
-      <div class="vs">
-        <div><span class="vsn azul">18 %</span>de los clientes con peor puntaje caen en el 20 % más alto de C1 <small>(al azar sería 20 %)</small></div>
-        <div><span class="vsn rojo">66 %</span>caen en el 20 % más alto de C2</div>
+      <div class="col-p">
+        <div class="etq">¿Por qué no uno, tres u ocho?</div>
+        <div class="opt"><b>1</b> El de tamaño solo no ve el riesgo (lámina 8).</div>
+        <div class="opt"><b>3</b> La regla de «guardar más que una columna» agrega la edad, que no cambia la decisión.</div>
+        <div class="opt"><b>8</b> Hacen falta para guardar 80 de cada 100 partes, pero nadie lee 8 números por cliente.</div>
       </div>
-    </div>""" + tarjeta4(
-                "Dos: C1 y C2.",
-                "Una (la que más guarda); tres (la regla de «más que una variable»); ocho (para pasar del 80 %).",
-                "C2 guarda poco, pero encuentra a 6.580 de los 10.046 clientes con peor puntaje; C1 solo a 1.832.",
-                "Nos quedamos con las componentes según lo que necesita la Gerencia, no según una regla: le basta una ficha de dos números."))
+    </div>""" + franja(
+                "Dos indicadores: Tamaño y Riesgo.",
+                "Uno, tres (la regla) u ocho (para guardar el 80 %).",
+                "El Índice de Riesgo encuentra a 6.580 de los 10.046 clientes de peor puntaje (66 %). El de Tamaño, solo a 1.832.",
+                "Buena noticia: su puntaje ya medía bien el riesgo. Lo que le faltaba a la ficha es el tamaño, y eso es lo nuevo que les entregamos."))
 
-# ---------------------------------------------------------------- 7. Qué mide
-c1 = [("cupo", .30), ("ingreso", .30), ("saldo", .29), ("pagos", .27), ("mercado", .27), ("app", .25),
-      ("… 10 más de dinero y uso", .22), ("puntaje", .01, "#D7263D")]
-c2 = [("puntaje", -.78, "#D7263D"), ("avances en efectivo", .49, "#D7263D"),
-      ("antigüedad tarjeta", -.34, "#D7263D"), ("cupo", -.01, "#9AA5B8"), ("ingreso", .00, "#9AA5B8")]
+# ------------------------------------------------------------------ 7. Qué mide
+def semaforo(titulo, filas, nota):
+    f = "".join(f'<div class="sf"><span>{a}</span><span class="sfb"><i style="width:{v}%;background:{c}"></i></span><b>{v:.0f}</b></div>'
+                for a, v, c in filas)
+    return f'<div class="sem"><div class="st">{titulo}</div>{f}<div class="sn">{nota}</div></div>'
+
+
+rojo, nar, amar, verde = "#C8102E", "#E8833A", "#E9B44C", "#3A9D5D"
 s7 = lamina(7, "¿Qué mide cada una?",
-            "Un eje mide el tamaño del cliente. El otro, su riesgo.",
-            f"""<div class="visual dos-col">
-      <div class="pesos"><div class="pt azul">C1 · Tamaño del cliente</div>
-        <div class="ps">Todo lo que se mide en rupias o en frecuencia pesa parecido y en la misma dirección.</div>
-        {barras_h(c1, 0.8)}</div>
-      <div class="pesos"><div class="pt rojo">C2 · Riesgo</div>
-        <div class="ps">Hacia arriba: peor puntaje, más avances en efectivo, tarjeta más nueva.</div>
-        {barras_h(c2, 0.8)}
-        <div class="lupa"><b>Con la lupa</b> (variables que no la construyen): proporción pagada <b>−0,59</b> · uso del cupo <b>+0,47</b>. Confirma el nombre.</div></div>
-    </div>""" + tarjeta4(
-                "C1 = tamaño; C2 = riesgo (C3 = edad, casi sola).",
-                "Ponerles nombre a ojo, sin mirar los pesos.",
-                "En C1, 16 variables de dinero y uso pesan entre 0,20 y 0,30; el puntaje, 0,01. En C2 manda el puntaje (−0,78), con los avances en efectivo (+0,49).",
-                "El mapa se lee en el idioma del negocio: a la derecha, cuánto pesa el cliente; hacia arriba, cuánto preocupa. Que vayan juntas no quiere decir que una cause a la otra."))
+            "Hallazgo 4: el riesgo de sus clientes está en cómo pagan y cuánto cupo usan, no en cuánto ganan.",
+            f"""<div class="fila">
+      <div class="col-g"><div class="etq">De cada 100 clientes de cada franja, cuántos están en el 20 % de peor puntaje</div><div class="dos">
+        {semaforo("Parte del saldo que pagan cada mes", [("30 % o menos", 94.1, rojo), ("30 a 60 %", 51.4, nar), ("60 a 90 %", 11.8, amar), ("más de 90 %", 1.6, verde)],
+                  "Ustedes: solo 35 de cada 100 pagan casi todo. Competencia: 87.")}
+        {semaforo("Parte del cupo que usan", [("menos de 30 %", 7.0, verde), ("30 a 50 %", 16.0, amar), ("50 a 70 %", 29.7, nar), ("más de 70 %", 53.0, rojo)],
+                  "Ustedes: 43 % de uso promedio. Competencia: 21 %.")}
+      </div></div>
+      <div class="col-p">
+        <div class="etq">Qué mide cada indicador (según sus pesos)</div>
+        <div class="nombre"><b class="azul">Índice de Tamaño</b> = cupo (0,30) + ingreso (0,30) + saldo (0,29) + pagos y gasto (0,22 a 0,27). El puntaje pesa 0,01.</div>
+        <div class="nombre"><b class="rojo">Índice de Riesgo</b> = peor puntaje (0,78) + más avances en efectivo (0,49) + tarjeta más nueva (0,34). Es su puntaje con dos señales más: por eso, para escoger clientes, basta con el puntaje.</div>
+        <div class="mini">Que vayan juntos no prueba que uno cause el otro: son señales para mirar, no explicaciones.</div>
+      </div>
+    </div>""" + franja(
+                "Llamar a los indicadores por lo que miden, según sus pesos: Tamaño y Riesgo.",
+                "Ponerles nombre a ojo.",
+                "En el de Tamaño, 16 columnas de dinero y uso pesan entre 0,20 y 0,30. El de Riesgo lo manda el puntaje (0,78). Proporción pagada: −0,59; uso del cupo: +0,47.",
+                "Sus clientes viven más en las franjas rojas que los de la competencia. Ahí está el trabajo de cobranza preventiva."),
+            FUENTE_COMP)
 
-# ---------------------------------------------------------------- 8. Un solo número
+# ------------------------------------------------------------------ 8. Un solo número
+gente = "".join(persona("#1F4E79") if k < 2 else persona("#C8102E", relleno=False) for k in range(10))
 s8 = lamina(8, "¿Qué pierde el cliente con un solo número?",
-            "Con un solo número se nos escapan 8 de cada 10 clientes en riesgo.",
-            f"""<div class="visual dos-col">
-      <div class="wbloque"><div class="pt azul">Ordenando solo por C1</div>{waffle(18, "#2B6CB0")}
-        <div class="wpie"><b class="rojo">8.214</b> de 10.046 se escapan</div></div>
-      <div class="wbloque"><div class="pt rojo">Ordenando por C2</div>{waffle(66, "#D7263D")}
-        <div class="wpie"><b>6.580</b> de 10.046 los encuentra</div></div>
-      <div class="wley">Cada cuadro = 1 de cada 100 clientes del 20 % con peor puntaje · color = los encuentra el número</div>
-    </div>""" + tarjeta4(
-                "Un número no basta.",
-                "Ordenar toda la cartera solo por C1, el mejor resumen de un número.",
-                "De los 10.046 clientes con peor puntaje, C1 deja escapar a 8.214: el 82 %, lo mismo que escoger al azar.",
-                "Con un solo número, la Gerencia ordenaría la cartera por tamaño y el riesgo le quedaría fuera."))
+            "Si ordenan a sus clientes solo por tamaño, 8 de cada 10 clientes en riesgo pasan desapercibidos.",
+            f"""<div class="fila centro">
+      <div class="col-g">
+        <div class="gente">{gente}</div>
+        <div class="gpie"><span><i class="cuad azul-f"></i>los encuentra</span><span><i class="cuad rojo-o"></i>se escapan</span></div>
+      </div>
+      <div class="col-p">
+        <div class="grande rojo"><b>8.214</b><span>de los 10.046 clientes de peor puntaje se escapan si se escoge al 20 % más «grande»</span></div>
+        <div class="mini">Es lo mismo que escoger al azar. Con el Índice de Riesgo, en cambio, se encuentran 6.580.</div>
+      </div>
+    </div>""" + franja(
+                "Un solo indicador no basta.",
+                "Ordenar la cartera solo por tamaño, el mejor resumen en un número.",
+                "Escogiendo por tamaño se escapan 8.214 de 10.046 clientes en riesgo (82 %).",
+                "Un seguimiento basado en «los clientes más grandes» deja fuera a casi todos los que van a necesitarlo."))
 
-# ---------------------------------------------------------------- 9. Mapa
+# ------------------------------------------------------------------ 9. Grupos
+tarj = [("Basic", 66000), ("Silver", 227000), ("Gold", 519000), ("Platinum", 1053500), ("Signature", 4094500)]
+peor_t = [("Basic", 20.3), ("Silver", 21.1), ("Gold", 20.7), ("Platinum", 18.0), ("Signature", 17.5)]
+peor_o = [("Estudiante", 20.2), ("Jubilado", 20.6), ("Empleado privado", 20.5), ("Empleado público", 20.3),
+          ("Independiente", 19.3), ("Empresario", 19.2)]
 s9 = lamina(9, "¿Qué muestra el mapa?",
-            "No hay tribus de riesgo: la cartera es un continuo.",
-            f"""<div class="visual dos-col mapa">
-      <img src="mapa_tarjetas.png" alt="Mapa de clientes por tipo de tarjeta">
-      <div class="lect">
-        <div class="lf"><b>En tamaño, la tarjeta ordena</b>De Basic a Signature, los centros van de −2,97 a +4,44 desviaciones.</div>
-        <div class="lf"><b>En riesgo, todas se montan</b>Los cinco centros quedan a menos de 0,2 desviaciones. Con la ocupación pasa lo mismo.</div>
-        <div class="lf"><b>Un solo pico, sin valle</b>No hay un grupo aparte: el riesgo sube poco a poco.</div>
-        <div class="lf corte"><b>El corte lo pone la Gerencia</b>Riesgo &gt; 1 desviación y mitad de tamaño:<br>
-          <span class="z za">A · 4.226</span><span class="z zb">B · 3.969</span><span class="z zc">sin seguimiento · 41.805</span></div>
-      </div>
-    </div>""" + tarjeta4(
-                "Es un continuo: el corte se define, no se descubre.",
-                "Buscar grupos hechos: escoger por tipo de tarjeta o por ocupación.",
-                "La tarjeta explica el tamaño (centros de −2,97 a 4,44) y nada del riesgo (&lt; 0,2). Ojo: C2 se parece −0,82 al puntaje.",
-                "Escoger a quién seguir por tipo de tarjeta no sirve. Y como C2 es casi el puntaje, falta una última pregunta…"))
+            "Hallazgo 5: la categoría de la tarjeta y la ocupación no sirven para escoger a quién vigilar.",
+            f"""<div class="fila tres">
+      <div><div class="etq">Cupo mediano por categoría</div>{barras(tarj, 4094500, lambda v: "₹" + es(v / 1000, 0) + " mil", ancho=270)}
+        <div class="mini">La categoría ordena perfecto el tamaño…</div></div>
+      <div><div class="etq rojo">De cada 100, en el 20 % de peor puntaje</div>{barras(peor_t, 25, lambda v: es(v), ancho=270, color="#C8102E")}
+        <div class="mini">…pero el riesgo es el mismo en todas.</div></div>
+      <div><div class="etq rojo">Lo mismo por ocupación</div>{barras(peor_o, 25, lambda v: es(v), ancho=200, color="#C8102E")}
+        <div class="mini">Entre 19 y 21 de cada 100 en todas.</div></div>
+    </div>
+    <div class="continuo"><b>No hay «tipos» de cliente riesgoso:</b> el riesgo sube poco a poco, sin un punto natural de corte, así que el corte lo pone la Gerencia.
+      Proponemos: <b>puntaje de 560 o menos</b> (una desviación por debajo del promedio de 629) y, dentro de ellos, la mitad más grande primero:
+      <span class="z za">A · 3.998</span><span class="z zb">B · 4.303</span><span class="z zc">sin seguimiento · 41.699</span></div>""" + franja(
+                "Un continuo: el corte se define, no se descubre.",
+                "Escoger a quién seguir por categoría de tarjeta u ocupación.",
+                "Las categorías se separan en tamaño (de −2,97 a 4,44 desviaciones) y no en riesgo (menos de 0,2). Cortar en el Índice de Riesgo, en vez del puntaje, gastaría 2.384 de 8.195 cupos en clientes que no están en riesgo.",
+                "Si hoy asignan seguimiento por categoría de tarjeta, es una falla de procedimiento: cuesta lo mismo y no apunta al riesgo."))
 
-# ---------------------------------------------------------------- 10. Decisión
+# ------------------------------------------------------------------ 10. Plan
 s10 = f"""
-<section class="slide final">
-  <div class="kicker"><span class="num">09</span><span>¿Qué decide el cliente?</span></div>
-  <h1>El puntaje dice quién entra. El tamaño dice por quién empezar.</h1>
-  <div class="cuerpo">
-    <div class="visual mapa-final">
-      <img src="mapa_clientes.png" alt="Mapa con la lista final">
-      <div class="leyenda"><span class="z za">A · 3.939 grandes → llamada del gestor</span>
-        <span class="z zb">B · 4.256 pequeños → mensajes</span></div>
-    </div>
-    <div class="der">
-      <div class="kpis-final">
-        <div class="kf"><b>8.195</b><span>clientes de peor puntaje al mes (16,4 % de la cartera)</span></div>
-        <div class="kf rojo"><b>85,5 %</b><span>del saldo de la lista está en la zona A, que tiene el 48 % de los clientes</span></div>
-      </div>
-      <div class="duelo"><div class="pt">Con los mismos 8.195 cupos</div>
-        <div class="dl"><span>Lista por C2</span><span class="dlb"><i style="width:57.8%"></i></span><b>57,8 %</b></div>
-        <div class="dl"><span>Lista por puntaje</span><span class="dlb"><i style="width:81.6%;background:#D7263D"></i></span><b>81,6 %</b></div>
-        <small>de los clientes con peor puntaje encontrados · C2 es el puntaje con ruido; lo nuevo que aporta el resumen es C1</small></div>
-      <div class="nosabe"><div class="pt">Lo que no sabemos todavía</div>
-        <ul><li>No hay datos de mora real: el puntaje es nuestra mejor aproximación.</li>
-        <li>Frente al RBI, la cartera simulada gasta ~4 veces y debe ~11 veces lo de una tarjeta real en India: los conteos se recalculan con la cartera propia. Los cortes son relativos y sí se pueden llevar.</li>
-        <li>El mapa muestra con qué va el riesgo, no qué lo causa.</li></ul></div>
-    </div>
+<section class="slide plan">
+  <div class="kicker"><span class="num">Decisión 9 de 9</span><span>¿Qué decide el cliente?</span></div>
+  <h1>Nuestra recomendación: 8.301 clientes al mes, empezando por los 3.998 que concentran el 85,6 % del dinero en juego.</h1>
+  <div class="embudo">
+    <div class="paso p0"><b>50.000</b><span>clientes en la cartera</span></div>
+    <div class="flechita">→</div>
+    <div class="paso p1"><b>8.301</b><span>con puntaje de 560 o menos (16,6 %)<br>deben ₹3.278 millones: el 21,6 % de todo el saldo</span></div>
+    <div class="flechita">→</div>
+    <div class="paso p2"><b>A · 3.998</b><span>los más grandes<br><strong>Llamada del gestor y congelar aumentos de cupo</strong><br>85,6 % del saldo de la lista</span></div>
+    <div class="paso p3"><b>B · 4.303</b><span>los más pequeños<br><strong>Mensajes y oferta de refinanciación</strong><br>14,4 % del saldo de la lista</span></div>
   </div>
-  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>10 / {TOTAL}</span></footer>
+  <div class="fila abajo cuatro">
+    <div class="caja"><div class="ct">Cómo se arma la lista</div>
+      <p><b>Quién entra:</b> todo cliente con <b>560 puntos o menos</b>, una desviación por debajo del promedio de su cartera (629). Si tienen menos gestores, bajan el corte.</p>
+      <p><b>En qué orden:</b> el Índice de Tamaño, lo nuevo del estudio. El riesgo ya estaba en su puntaje: usar el Índice de Riesgo gastaría 29 de cada 100 cupos en clientes que no están en riesgo.</p></div>
+    <div class="caja"><div class="ct">Los 1.641 «disparejos»</div>
+      <p><b>760</b> ya están en la lista (404 en la zona A): se atienden con ella.</p>
+      <p>Los <b>881</b> restantes todavía no tienen mal puntaje: van a <b>revisión de la cuenta</b>, no a cobranza. Su patrón de gasto es raro y como grupo pagan menos.</p></div>
+    <div class="caja"><div class="ct">Frente a la competencia</div>
+      <p>Seguir cada mes el <b>uso del cupo</b> (43 % frente a 21 %) y la <b>proporción pagada</b> (35 % paga casi todo, frente a 87 %): son las dos señales que acompañan al puntaje.</p>
+      <p>Revisar la política de <b>avances en efectivo</b>: los usa el 30 % de sus clientes; en el mercado, el 0,6 %.</p></div>
+    <div class="caja oscura"><div class="ct">Lo que todavía no sabemos</div>
+      <ul><li>No hay datos de mora real: el puntaje es nuestra mejor aproximación. Proponemos un piloto de 3 meses que mida la mora.</li>
+      <li>Los conteos son de esta cartera; los cortes son relativos y se recalculan cada mes.</li>
+      <li>Mostramos con qué va el riesgo, no qué lo causa.</li></ul></div>
+  </div>
+  <footer><span class="fuente">{FUENTE_COMP}</span><span>10 / {TOTAL}</span></footer>
 </section>"""
 
 css = (AQUI / "estilo.css").read_text(encoding="utf-8")

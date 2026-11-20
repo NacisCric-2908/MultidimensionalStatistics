@@ -53,6 +53,8 @@ knitr::opts_chunk$set(
   warning = FALSE,
   message = FALSE
 )
+# Formato español para las cifras dentro del texto (coma decimal, punto de miles)
+coma <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = ".")
 ```
 
 # Tabla de decisiones (sustentación del corte 2) {-}
@@ -76,8 +78,8 @@ las vuelve a calcular y comprueba que coincidan.
 | 5 | ¿Cuántas componentes? | **Dos**: C1 y C2 (Módulo 16) | Una sola; o 3, porque tienen $\lambda>1$; u 8, para pasar del 80 % | C1 guarda 50,1 de cada 100 y C2 solo 5,3, pero C2 es la que encuentra el riesgo: el 20 % más alto en C2 tiene **6.580** de los **10.046** clientes con peor puntaje (66 %). La C1 encuentra 1.832 (18 %, lo mismo que el azar) | Una ficha de dos números: exposición y riesgo |
 | 6 | ¿Qué mide cada una? | **C1 = tamaño del cliente. C2 = riesgo. C3 = edad** (Módulo 16) | Ponerles nombre sin mirar los pesos | C1: ingreso y cupo pesan 0,30, y las 16 variables de dinero y actividad pesan entre 0,20 y 0,30; el puntaje pesa 0,01. C2: puntaje −0,78, avances en efectivo +0,49, antigüedad de la tarjeta −0,34; `Payment_Ratio` se correlaciona −0,59 con C2. C3: edad 0,93 | El eje vertical del mapa se lee como "más arriba, peor puntaje y más avances en efectivo" |
 | 7 | ¿Qué pierde el cliente con un solo número? | **Un número no basta** (Módulo 16) | Ordenar la cartera solo por C1 | De los 10.046 clientes con peor puntaje, la C1 deja escapar a **8.214** (82 %) | Si usara solo la C1, ordenaría a la cartera por tamaño y no vería el riesgo |
-| 8 | ¿Qué muestra el mapa? | **Un continuo**, sin grupos de riesgo. Proponemos dos cortes: C2 más de una desviación por encima de la media, y la mediana de C1 (Módulos 17 y 19) | Buscar grupos hechos (por tipo de tarjeta u ocupación) | En el eje de riesgo hay un solo pico y no hay valle. Los tipos de tarjeta difieren menos de 0,2 desviaciones en riesgo, aunque en tamaño se separan (de −2,97 a 4,44). Con los cortes en C2: A = 4.226, B = 3.969, C = 41.805. Pero la C2 se correlaciona −0,82 con el puntaje y, con los mismos cupos, su lista comparte solo 63 de cada 100 clientes con la del puntaje | El seguimiento no se puede asignar por tipo de tarjeta ni por ocupación. Quién entra lo decide el puntaje y la prioridad la decide la C1 |
-| 9 | ¿Qué decide el cliente? | **Seguir a los 8.195 clientes de peor puntaje (16,4 %)**, en orden de tamaño: primero la **zona A** (**3.939** clientes grandes, con llamada del gestor) y después la **B** (**4.256** pequeños, con mensajes) (Módulo 17) | Usar la lista de las zonas de la C2, o escoger por tipo de tarjeta, por ocupación o por C1 | Con los mismos 8.195 cupos, la lista de la C2 encuentra a 5.811 de los 10.046 clientes de peor puntaje (57,8 %), y la del puntaje a **8.195** (81,6 %). La zona A tiene el 48 % de los clientes de la lista y concentra el **85,5 %** de su saldo pendiente | Una lista priorizada por la plata en juego. **Lo que no se sabe todavía:** no hay una variable de mora real y el puntaje es la aproximación que usamos; la C2 suma avances en efectivo y antigüedad, que podrían anticipar la mora, pero sin datos de mora no se puede comprobar; el tamaño de la lista depende de cuántos gestores haya; el mapa muestra con qué va el riesgo, no qué lo causa; y la cartera simulada gasta unas 4 veces y debe unas 11 veces lo que una tarjeta real de India (Módulo 20), así que los conteos se recalculan con la cartera propia |
+| 8 | ¿Qué muestra el mapa? | **Un continuo**, sin grupos de riesgo. El corte lo define la Gerencia: puntaje una desviación por debajo del promedio (**560 puntos o menos**) y la mediana del tamaño (C1) (Módulos 17 y 19) | Buscar grupos hechos (por tipo de tarjeta u ocupación), o cortar en la C2 | En el eje de riesgo hay un solo pico y no hay valle. Los tipos de tarjeta se separan en tamaño (centros de −2,97 a 4,44 desviaciones) y no en riesgo (menos de 0,2); en cada tipo de tarjeta, ocupación o quintil de ingreso hay entre 17 y 21 de cada 100 en el peor 20 %. Zonas: **A = 3.998**, **B = 4.303**, **C = 41.699**. La C2 se correlaciona −0,82 con el puntaje: cortando en ella con el mismo criterio, 2.384 de sus 8.195 cupos irían a clientes fuera del peor 20 % | El seguimiento no se asigna por tipo de tarjeta ni por ocupación. Quién entra lo decide el puntaje, y la prioridad, el tamaño |
+| 9 | ¿Qué decide el cliente? | **Seguir a los 8.301 clientes con 560 puntos o menos (16,6 %)**, en orden de tamaño: primero la **zona A** (**3.998** clientes grandes, con llamada del gestor) y después la **B** (**4.303** pequeños, con mensajes). Los casos raros del Módulo 13 que quedan fuera de la lista van a revisión de la cuenta (Módulo 17) | Usar la lista de la C2, o escoger por tipo de tarjeta, por ocupación o por C1 | La lista debe ₹3.278 millones, el **21,6 %** del saldo de toda la cartera. La zona A tiene el 48 % de los clientes de la lista y concentra el **85,6 %** de ese saldo. Puntaje medio: A 515, B 516, el resto 652 | Una lista priorizada por el dinero en juego. **Lo que no se sabe todavía:** no hay una variable de mora real y el puntaje es la aproximación que usamos; la C2 suma avances en efectivo y antigüedad, que podrían anticipar la mora, pero sin datos de mora no se puede comprobar; el tamaño de la lista depende de cuántos gestores haya; el mapa muestra con qué va el riesgo, no qué lo causa; y la cartera simulada gasta unas 4 veces y debe unas 11 veces lo que una tarjeta real de India (Módulo 20), así que los conteos se recalculan con la cartera propia |
 
 ------------------------------------------------------------------------
 
@@ -6441,19 +6443,46 @@ La C2 se correlaciona
 `r round(cor(credit$Credit_Score, scores_pca[, "C2"]), 2)` con
 `Credit_Score`: es, en lo esencial, el puntaje, mezclado con los avances
 en efectivo y la antigüedad de la tarjeta. La Gerencia ya tiene el
-puntaje, así que hay que comparar las dos listas: con los mismos cupos
-del programa, ¿cuál encuentra más clientes con peor puntaje?
+puntaje, así que conviene comparar la lista de la C2 con una lista hecha
+directamente con el puntaje y con **el mismo criterio**: una desviación
+típica hacia el lado del riesgo. En la C2 eso era estar más de una
+desviación por encima; en el puntaje es estar más de una desviación por
+debajo del promedio.
 
 ```{r, mapa_vs_puntaje}
-n_cupos <- sum(zona != "C · sin seguimiento")
-lista_puntaje <- rank(credit$Credit_Score, ties.method = "first") <= n_cupos
+corte_puntaje <- mean(credit$Credit_Score) - sd(credit$Credit_Score)
+lista_puntaje <- credit$Credit_Score <= corte_puntaje
 lista_c2 <- zona != "C · sin seguimiento"
 
-c(cupos = n_cupos,
-  encuentra_lista_C2 = sum(en_riesgo & lista_c2),
-  encuentra_lista_puntaje = sum(en_riesgo & lista_puntaje),
-  clientes_en_las_dos_listas = sum(lista_c2 & lista_puntaje))
+data.frame(
+  lista = c("Índice de riesgo (C2) > 1 desviación", "Puntaje < promedio − 1 desviación"),
+  clientes = c(sum(lista_c2), sum(lista_puntaje)),
+  estan_en_el_20_pct_de_peor_puntaje = c(sum(lista_c2 & en_riesgo), sum(lista_puntaje & en_riesgo)),
+  cupos_para_clientes_fuera_de_ese_20_pct = c(sum(lista_c2 & !en_riesgo), sum(lista_puntaje & !en_riesgo)))
+c(corte_puntaje = round(corte_puntaje, 1), clientes_en_las_dos_listas = sum(lista_c2 & lista_puntaje))
+```
 
+**Lectura:** el corte del puntaje cae en
+`r floor(corte_puntaje)` puntos o menos (promedio
+`r round(mean(credit$Credit_Score))` menos una desviación de
+`r round(sd(credit$Credit_Score))`), y deja una lista de
+`r format(sum(lista_puntaje), big.mark = ".")` clientes, casi del mismo
+tamaño que la de la C2 (`r format(sum(lista_c2), big.mark = ".")`). La
+diferencia está en a quién meten: la lista de la C2 gasta
+`r format(sum(lista_c2 & !en_riesgo), big.mark = ".")` cupos
+(`r round(100 * mean(!en_riesgo[lista_c2]))` de cada 100) en clientes que
+**no** están entre el 20 % de peor puntaje, y la del puntaje, ninguno.
+Las dos listas comparten solo
+`r format(sum(lista_c2 & lista_puntaje), big.mark = ".")` clientes.
+**Si el riesgo se mide con el puntaje, la C2 no es mejor que el puntaje:
+es una copia con ruido.** El análisis sirvió para comprobar que el riesgo
+de la cartera ya está en el puntaje, y en la forma de pagar y de usar el
+cupo que lo acompaña (sección siguiente). Lo que el PCA sí agrega es el
+otro eje: la C1 resume en un número las 16 columnas de dinero y actividad
+y no tiene nada que ver con el puntaje (correlación
+`r coma(cor(credit$Credit_Score, scores_pca[, "C1"]), 3)`).
+
+```{r, lista_final}
 # La lista final: el puntaje decide quién entra; C1 (tamaño) decide la prioridad
 grande <- scores_pca[, "C1"] > corte_tamano
 prioridad <- ifelse(!lista_puntaje, "C · sin seguimiento",
@@ -6464,41 +6493,117 @@ tabla_final <- data.frame(
   zona = sort(unique(prioridad)),
   clientes = as.vector(table(prioridad)),
   puntaje_medio = round(tapply(credit$Credit_Score, prioridad, mean)),
+  cupo_mediano = round(tapply(credit$Credit_Limit, prioridad, median)),
   saldo_mediano = round(tapply(saldo, prioridad, median)),
   row.names = NULL)
 tabla_final$de_cada_100_del_saldo_de_la_lista <- ifelse(
   tabla_final$zona == "C · sin seguimiento", NA,
   round(100 * tapply(saldo, prioridad, sum) / sum(saldo[lista_puntaje]), 1))
 tabla_final
+c(saldo_de_la_lista_millones = round(sum(saldo[lista_puntaje]) / 1e6),
+  de_cada_100_del_saldo_de_la_cartera = round(100 * sum(saldo[lista_puntaje]) / sum(saldo), 1))
 ```
 
-**Lectura:** con los mismos
-`r format(n_cupos, big.mark = ".")` cupos, la lista de la C2 encuentra a
-`r format(sum(en_riesgo & lista_c2), big.mark = ".")` de los
-`r format(sum(en_riesgo), big.mark = ".")` clientes con peor puntaje
-(`r round(100 * mean(lista_c2[en_riesgo]), 1)` %), y ordenar por el
-puntaje mismo encuentra a
-`r format(sum(en_riesgo & lista_puntaje), big.mark = ".")`
-(`r round(100 * mean(lista_puntaje[en_riesgo]), 1)` %). Las dos listas
-comparten solo `r round(100 * sum(lista_c2 & lista_puntaje) / n_cupos)`
-de cada 100 clientes. **Si el riesgo se mide con el puntaje, la C2 no es
-mejor que el puntaje: es una copia con ruido.** Lo que el PCA sí le da a
-la Gerencia está en el otro eje: la C1 resume en un número las 16
-columnas de dinero y actividad, y no tiene nada que ver con el puntaje
-(correlación `r round(cor(credit$Credit_Score, scores_pca[, "C1"]), 3)`).
-Dentro de la lista, la mitad grande (zona A) concentra
-`r tabla_final$de_cada_100_del_saldo_de_la_lista[1]` de cada 100 rupias
-del saldo pendiente de toda la lista, con
-`r round(100 * tabla_final$clientes[1] / n_cupos)` de cada 100 clientes.
+**Lectura:** la lista final tiene
+`r format(sum(lista_puntaje), big.mark = ".")` clientes
+(`r coma(100 * mean(lista_puntaje), 1)` % de la cartera), que deben
+₹`r format(round(sum(saldo[lista_puntaje]) / 1e6), big.mark = ".")`
+millones, el `r coma(100 * sum(saldo[lista_puntaje]) / sum(saldo), 1)` % de
+todo el saldo de la cartera. La mitad grande (zona A) concentra
+`r coma(tabla_final$de_cada_100_del_saldo_de_la_lista[1], 1)` de cada 100 rupias
+del saldo de la lista, con
+`r round(100 * tabla_final$clientes[1] / sum(lista_puntaje))` de cada 100
+clientes.
+
+## Perfiles de riesgo: qué tienen en común los clientes de peor puntaje
+
+Para la Gerencia, la pregunta práctica es qué rasgos acompañan al riesgo
+y cuáles no. Para cada rasgo se mide, de cada 100 clientes de cada
+grupo, cuántos están en el 20 % de peor puntaje. Si el rasgo no tuviera
+nada que ver con el riesgo, todos los grupos darían alrededor de 20.
+
+```{r, perfiles_riesgo}
+pct_riesgo <- function(g) round(100 * tapply(en_riesgo, g, mean), 1)
+franja_pago <- cut(credit$Payment_Ratio, c(-Inf, 0.3, 0.6, 0.9, Inf),
+                   labels = c("30 % o menos", "30 a 60 %", "60 a 90 %", "más de 90 %"))
+franja_cupo <- cut(credit$Credit_Utilization, c(-Inf, 0.3, 0.5, 0.7, Inf),
+                   labels = c("menos de 30 %", "30 a 50 %", "50 a 70 %", "más de 70 %"))
+quintil_ingreso <- cut(credit$Annual_Income, quantile(credit$Annual_Income, 0:5 / 5),
+                       include.lowest = TRUE, labels = paste0("Q", 1:5))
+perfiles <- list(
+  `Parte del saldo que paga`  = franja_pago,
+  `Parte del cupo que usa`    = franja_cupo,
+  `Usa avances en efectivo`   = ifelse(credit$Cash_Advance_Amount > 0, "sí", "no"),
+  `Quintil de ingreso`        = quintil_ingreso,
+  `Tipo de tarjeta`           = factor(credit$Card_Type, orden_tarjeta),
+  `Ocupación`                 = credit$Occupation)
+tabla_perfiles <- do.call(rbind, lapply(names(perfiles), function(k) {
+  g <- perfiles[[k]]
+  data.frame(rasgo = k, grupo = names(pct_riesgo(g)), clientes = as.vector(table(g)),
+             de_cada_100_en_el_peor_20 = as.vector(pct_riesgo(g)), row.names = NULL)
+}))
+tabla_perfiles
+rango_perfil <- sapply(perfiles, function(g) diff(range(pct_riesgo(g))))
+round(rango_perfil, 1)
+```
+
+**Lectura:** hay dos tipos de rasgo.
+
+- **Los que van con el riesgo son de conducta:** de quienes pagan el
+  30 % o menos de su saldo,
+  `r round(pct_riesgo(franja_pago)[1])` de cada 100 están en el peor
+  20 %; de quienes pagan más del 90 %, solo `r round(pct_riesgo(franja_pago)[4])`.
+  Con el uso del cupo pasa lo mismo: de
+  `r round(pct_riesgo(franja_cupo)[1])` entre quienes usan menos del 30 %
+  a `r round(pct_riesgo(franja_cupo)[4])` entre quienes usan más del 70 %.
+  Los avances en efectivo van con el riesgo, pero mucho menos
+  (`r coma(pct_riesgo(credit$Cash_Advance_Amount > 0)[["TRUE"]], 1)`
+  frente a `r coma(pct_riesgo(credit$Cash_Advance_Amount > 0)[["FALSE"]], 1)`).
+- **Los que no dicen nada son de perfil:** entre el quintil de ingreso
+  más bajo y el más alto, entre los tipos de tarjeta y entre las
+  ocupaciones, la diferencia no pasa de
+  `r coma(max(rango_perfil[c("Quintil de ingreso", "Tipo de tarjeta", "Ocupación")]), 1)`
+  de cada 100. Ganen lo que ganen y tengan la tarjeta que tengan, unos 20
+  de cada 100 están en el grupo de peor puntaje.
+
+Como el Módulo 19 mostró que la proporción pagada y el uso del cupo
+explican el 95 % del puntaje, la primera viñeta no es un descubrimiento
+independiente: describe **de qué está hecho** el riesgo. Su valor para
+la Gerencia es práctico: son dos señales que puede vigilar mes a mes
+antes de que el puntaje baje. Como siempre, que vayan juntas no dice que
+una cause la otra.
+
+## Los casos raros del Módulo 13 y la lista de seguimiento
+
+```{r, raros_en_la_lista}
+table(caso_raro = ifelse(raros, "raro", "resto"), prioridad = prioridad)
+c(raros_en_A_o_B = sum(raros & lista_puntaje),
+  raros_fuera_de_la_lista = sum(raros & !lista_puntaje),
+  raros_fuera_con_puntaje_bajo_la_mediana = sum(raros & !lista_puntaje &
+                                                credit$Credit_Score < median(credit$Credit_Score)))
+```
+
+**Lectura:** de los `r format(sum(raros), big.mark = ".")` clientes de
+perfil disparejo, `r format(sum(raros & lista_puntaje), big.mark = ".")`
+ya están en la lista de seguimiento
+(`r format(sum(raros & prioridad == "A · peor puntaje, cliente grande"), big.mark = ".")`
+en la zona A), y
+`r format(sum(raros & !lista_puntaje), big.mark = ".")` quedan fuera.
+Para esos, la recomendación es una **revisión de la cuenta, no una
+llamada de cobranza**: su puntaje todavía no está entre los peores, pero
+su patrón de gasto es raro y el grupo, en conjunto, paga menos y tiene
+peor puntaje que el resto (Módulo 13).
 
 **Decisión final para la Gerencia:** el puntaje decide **quién** entra
-al seguimiento y la C1 (tamaño) decide **en qué orden**. Primero la zona
-A (`r format(tabla_final$clientes[1], big.mark = ".")` clientes, con
+al seguimiento (`r floor(corte_puntaje)` puntos o menos) y la C1 (tamaño)
+decide **en qué orden**. Primero la zona A
+(`r format(tabla_final$clientes[1], big.mark = ".")` clientes, con
 llamada del gestor) y después la B
 (`r format(tabla_final$clientes[2], big.mark = ".")` clientes, con
-mensajes). El mapa de C1 y C2 se queda como la herramienta que mostró
-que el riesgo es una dirección distinta del tamaño, y que ni la tarjeta
-ni la ocupación sirven para escoger a quién seguir.
+mensajes). Los casos raros que quedan fuera van a revisión de la cuenta.
+El mapa de C1 y C2 se queda como la herramienta que mostró que el riesgo
+es una dirección distinta del tamaño, y que ni la tarjeta ni la ocupación
+sirven para escoger a quién seguir.
 
 ## Con y sin *one-hot*: ¿cambia el mapa si entra el tipo de tarjeta?
 
@@ -8722,8 +8827,10 @@ perpendiculares en el mapa.
 ## Qué cambia para la Gerencia de Riesgo
 
 - **Las cifras absolutas no se trasladan.** La zona A de la decisión
-  final tiene un cupo mediano de ₹718.000, unas
-  `r round(718000 / real_bsr[["cupo"]])` veces el cupo promedio real.
+  final tiene un cupo mediano de
+  ₹`r miles(tabla_final$cupo_mediano[1])`, unas
+  `r round(tabla_final$cupo_mediano[1] / real_bsr[["cupo"]])` veces el
+  cupo promedio real.
   Un banco real que aplique el método tendrá otros cortes y otros
   conteos.
 - **El método sí se traslada**, porque los cortes del informe son
@@ -8852,13 +8959,19 @@ cifras <- c(
   `9 · zona A final (puntaje + C1)`           = tabla_final$clientes[1],
   `9 · zona B final (puntaje + C1)`           = tabla_final$clientes[2],
   `9 · % del saldo en la zona A final`        = tabla_final$de_cada_100_del_saldo_de_la_lista[1],
-  `9 · lista del puntaje encuentra`           = sum(en_riesgo & lista_puntaje),
-  `8 · % de clientes en las dos listas`       = round(100 * sum(lista_c2 & lista_puntaje) / n_cupos),
+  `9 · clientes en la lista final`            = sum(lista_puntaje),
+  `9 · saldo de la lista (millones)`          = round(sum(saldo[lista_puntaje]) / 1e6),
+  `9 · % del saldo total en la lista`         = round(100 * sum(saldo[lista_puntaje]) / sum(saldo), 1),
+  `8 · zona C final`                          = tabla_final$clientes[3],
+  `8 · cupos de la C2 fuera del peor 20 %`    = sum(lista_c2 & !en_riesgo),
+  `9 · puntaje medio zona A`                  = tabla_final$puntaje_medio[1],
+  `9 · puntaje medio zona B`                  = tabla_final$puntaje_medio[2],
+  `9 · puntaje medio resto`                   = tabla_final$puntaje_medio[3],
   `1 · R2 del puntaje con los dos cocientes`  = round(100 * r2_ratios))
 
 en_la_tabla <- c(1, 0.018, 0, 1641, 1055, 0.02, 573, 639, 56, 95.5, 48.0, 50.1,
                  16, 5.3, 10046, 6580, 8214, 4226, 3969, 41805, 5811,
-                 3939, 4256, 85.5, 8195, 63, 95)
+                 3998, 4303, 85.6, 8301, 3278, 21.6, 41699, 2384, 515, 516, 652, 95)
 
 coincide <- abs(unname(cifras) - en_la_tabla) <= 0.005 * abs(en_la_tabla) + 1e-9
 data.frame(cifra = names(cifras), calculada = unname(cifras), en_la_tabla, coincide)
