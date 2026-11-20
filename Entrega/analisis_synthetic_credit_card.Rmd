@@ -50,6 +50,8 @@ knitr::opts_chunk$set(
   fig.width = 9,
   fig.height = 6,
   fig.align = "center",
+  fig.retina = 1,   # gráficas a resolución normal: el .html debe pesar menos de 20 MB para Moodle
+  dpi = 96,
   warning = FALSE,
   message = FALSE
 )
