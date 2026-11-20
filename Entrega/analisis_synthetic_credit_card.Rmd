@@ -55,6 +55,32 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Tabla de decisiones (sustentación del corte 2) {-}
+
+**Cliente:** la Gerencia de Riesgo de Crédito del banco emisor de las
+50.000 tarjetas. **Su decisión:** qué clientes entran cada mes al
+programa de seguimiento preventivo (llamada del gestor, congelar aumentos
+de cupo, refinanciar antes de la mora), sin tener que revisar una ficha
+de 21 columnas por cliente.
+
+Cada fila es una decisión que tomamos con los datos. Las cifras salen
+del propio informe (el módulo está entre paréntesis) y el anexo final
+las vuelve a calcular y comprueba que coincidan.
+
+| # | Decisión | Qué decidimos | Qué otra opción había | Qué cifra lo sostiene | Qué le cambia al cliente |
+|:-:|----|----|----|----|----|
+| 1 | ¿Qué variables entran? | Entran **21 numéricas**. Salen 5 repetidas o derivadas: `Monthly_Spending` (suma exacta de las 7 categorías de gasto), `Outstanding_Balance` ($r = 0{,}997$ con `Statement_Balance`), `Reward_Points_Earned` ($r = 0{,}98$ con el gasto), `Payment_Ratio` y `Credit_Utilization` (cocientes de otras columnas). Las 3 categóricas solo colorean el mapa (Módulos 15 y 17) | Usar las 26 numéricas y las categóricas codificadas (Módulo 19) | Con las 26, la matriz de correlaciones tiene una dirección con varianza $6{,}5\times10^{-15}$, es decir, cero: una columna se repite exacta. Con las 21 sube a 0,018 (Módulo 10). El eje de tamaño sale igual en las dos versiones (correlación 1,00, Módulo 19) | Una ficha de 21 columnas sin repetidos. Con las 26, el eje de riesgo encuentra más clientes de peor puntaje (92 % frente a 66 %), pero la ganancia es circular: `Payment_Ratio` y `Credit_Utilization` explican el **95 %** del puntaje ($R^2 = 0{,}95$), son sus ingredientes (Módulo 19). Se usan como suplementarias para leer el eje de riesgo |
+| 2 | ¿Qué hacemos con faltantes y atípicos? | **Sale 0 casos.** No hay faltantes ni duplicados (Módulo 2). Los **1.641** clientes que Mahalanobis marca como raros (corte $\chi^2$ del 99 %, con `log`) se **estudian y se marcan**; **0** se corrigen porque ninguno es un error de captura (Módulo 13) | Borrar los atípicos, o revisar solo variable por variable (Tukey) | El 64 % de los 1.641 (1.055) no tiene ninguna variable extrema: Tukey no los ve. Quitarlos mueve las correlaciones como mucho 0,02. Su puntaje mediano es **573**, contra **639** del resto (Módulo 13) | No se pierde a un grupo con más riesgo que el promedio. Queda una lista de 1.641 casos raros para revisar |
+| 3 | ¿Estandarizamos? | **Sí**, con `log(x+1)` en las variables asimétricas y luego `scale()`: PCA sobre la matriz de correlaciones (Módulo 16) | PCA sin estandarizar (en rupias), o estandarizar sin `log` | Las desviaciones van de 1,67 (`EMI_Count`) y 12,2 años (`Age`) a ₹1.410.000 (`Annual_Income`): seis órdenes de magnitud. El ingreso solo aporta 56 de cada 100 partes de la varianza total. Sin estandarizar, la C1 guarda **95,5 de cada 100** y es `Annual_Income` con otro nombre (peso 0,76). Estandarizando, guarda 48,0 sin `log` y **50,1** con `log` | El resumen pesa todas las variables, no solo las que se miden en números grandes |
+| 4 | ¿Tiene sentido resumir? | **Sí**: el dinero se repite. El puntaje va solo (Módulo 16) | No resumir y mirar las 21 columnas | 16 de las 21 variables tienen una compañera con $\lvert r\rvert > 0{,}6$ (ingreso y cupo: 0,98). `Credit_Score`, `Age`, `Card_Age_Months` y `Cash_Advance_Amount` no pasan de 0,17 con ninguna | El tamaño del cliente se resume bien en un número. El riesgo no se puede leer en ese número |
+| 5 | ¿Cuántas componentes? | **Dos**: C1 y C2 (Módulo 16) | Una sola; o 3, porque tienen $\lambda>1$; u 8, para pasar del 80 % | C1 guarda 50,1 de cada 100 y C2 solo 5,3, pero C2 es la que encuentra el riesgo: el 20 % más alto en C2 tiene **6.580** de los **10.046** clientes con peor puntaje (66 %). La C1 encuentra 1.832 (18 %, lo mismo que el azar) | Una ficha de dos números: exposición y riesgo |
+| 6 | ¿Qué mide cada una? | **C1 = tamaño del cliente. C2 = riesgo. C3 = edad** (Módulo 16) | Ponerles nombre sin mirar los pesos | C1: ingreso y cupo pesan 0,30, y las 16 variables de dinero y actividad pesan entre 0,20 y 0,30; el puntaje pesa 0,01. C2: puntaje −0,78, avances en efectivo +0,49, antigüedad de la tarjeta −0,34; `Payment_Ratio` se correlaciona −0,59 con C2. C3: edad 0,93 | El eje vertical del mapa se lee como "más arriba, peor puntaje y más avances en efectivo" |
+| 7 | ¿Qué pierde el cliente con un solo número? | **Un número no basta** (Módulo 16) | Ordenar la cartera solo por C1 | De los 10.046 clientes con peor puntaje, la C1 deja escapar a **8.214** (82 %) | Si usara solo la C1, ordenaría a la cartera por tamaño y no vería el riesgo |
+| 8 | ¿Qué muestra el mapa? | **Un continuo**, sin grupos de riesgo. Proponemos dos cortes: C2 más de una desviación por encima de la media, y la mediana de C1 (Módulos 17 y 19) | Buscar grupos hechos (por tipo de tarjeta u ocupación) | En el eje de riesgo hay un solo pico y no hay valle. Los tipos de tarjeta difieren menos de 0,2 desviaciones en riesgo, aunque en tamaño se separan (de −2,97 a 4,44). Con los cortes en C2: A = 4.226, B = 3.969, C = 41.805. Pero la C2 se correlaciona −0,82 con el puntaje y, con los mismos cupos, su lista comparte solo 63 de cada 100 clientes con la del puntaje | El seguimiento no se puede asignar por tipo de tarjeta ni por ocupación. Quién entra lo decide el puntaje y la prioridad la decide la C1 |
+| 9 | ¿Qué decide el cliente? | **Seguir a los 8.195 clientes de peor puntaje (16,4 %)**, en orden de tamaño: primero la **zona A** (**3.939** clientes grandes, con llamada del gestor) y después la **B** (**4.256** pequeños, con mensajes) (Módulo 17) | Usar la lista de las zonas de la C2, o escoger por tipo de tarjeta, por ocupación o por C1 | Con los mismos 8.195 cupos, la lista de la C2 encuentra a 5.811 de los 10.046 clientes de peor puntaje (57,8 %), y la del puntaje a **8.195** (81,6 %). La zona A tiene el 48 % de los clientes de la lista y concentra el **85,5 %** de su saldo pendiente | Una lista priorizada por la plata en juego. **Lo que no se sabe todavía:** no hay una variable de mora real y el puntaje es la aproximación que usamos; la C2 suma avances en efectivo y antigüedad, que podrían anticipar la mora, pero sin datos de mora no se puede comprobar; el tamaño de la lista depende de cuántos gestores haya; el mapa muestra con qué va el riesgo, no qué lo causa; y la cartera simulada gasta unas 4 veces y debe unas 11 veces lo que una tarjeta real de India (Módulo 20), así que los conteos se recalculan con la cartera propia |
+
+------------------------------------------------------------------------
+
 # Contexto y Objetivos del Análisis
 
 Este documento desarrolla la exploración multidimensional del conjunto
@@ -65,7 +91,7 @@ comportamiento de gasto y su historial de pago. Integra de manera
 secuencial los métodos, herramientas conceptuales y requerimientos
 desarrollados en las sesiones S01 a S10 de la asignatura, en la sesión
 de normal multivariante y distancia de Mahalanobis, y en las dos
-sesiones de componentes principales, organizados en diecisiete módulos
+sesiones de componentes principales, organizados en veinte módulos
 que se apoyan unos en otros — cada módulo cierra con sus propias
 conclusiones, y retoma explícitamente lo que dejó listo el módulo
 anterior:
@@ -114,6 +140,16 @@ anterior:
 - **Módulo 17 (PCA II):** el mapa de los clientes, el biplot, si los
   grupos conocidos se separan y el efecto de meter el tipo de tarjeta
   con *one-hot*.
+- **Módulo 18 (Análisis factorial):** qué rasgos comunes hay detrás de
+  las variables. No entra en la sustentación del corte 2; va en la
+  entrega final.
+- **Módulo 19 (PCA con todo el dataset):** la otra opción de la decisión
+  1 — componentes principales con las 26 numéricas y con las
+  categóricas codificadas — para comprobar que excluir variables no
+  cambió las conclusiones.
+- **Módulo 20 (Datos reales):** contraste de la cartera sintética con
+  cifras reales de India (RBI, Banco Mundial y SBI Card), para saber
+  qué conclusiones se pueden llevar a un banco real.
 
 ## Contexto Económico del Análisis sobre el Dataset
 
@@ -5952,7 +5988,27 @@ El Módulo 10 ya lo decidió: en esta cartera conviven rupias, conteos,
 meses, años, proporciones y un puntaje, así que se trabaja con
 $\mathbf{R}$ (PCA **normado**), no con $\mathbf{S}$. Lo mostramos
 corriendo el PCA de tres maneras y mirando cuánto guarda la primera
-componente y qué variable manda en ella:
+componente y qué variable manda en ella. Primero, la desviación típica
+de cada variable en sus propias unidades:
+
+```{r, pca_desviaciones}
+desv <- sort(sapply(credit[, retenidas], sd), decreasing = TRUE)
+data.frame(variable = names(desv),
+           desviacion = format(signif(desv, 3), big.mark = ".", decimal.mark = ",",
+                               scientific = FALSE),
+           de_cada_100_de_la_varianza_total = round(100 * desv^2 / sum(desv^2), 2),
+           row.names = NULL)
+```
+
+**Lectura:** la desviación de `r names(desv)[1]` es
+`r format(signif(desv[1], 3), big.mark = ".", decimal.mark = ",", scientific = FALSE)`
+rupias y la de `r names(desv)[length(desv)]` es
+`r format(signif(desv[length(desv)], 3), decimal.mark = ",")`: hay
+`r round(log10(desv[1] / desv[length(desv)]))` órdenes de magnitud entre
+la variable más dispersa y la menos dispersa. Sin estandarizar, solo
+`r names(desv)[1]` aporta
+`r round(100 * desv[1]^2 / sum(desv^2), 1)` de cada 100 partes de la
+varianza total.
 
 ```{r, pca_estandarizar}
 pca_sin_escala <- prcomp(credit[, retenidas], scale. = FALSE)   # sobre S, en rupias
@@ -6379,6 +6435,71 @@ seguimiento más barato (mensajes, no llamadas). **El corte de "una
 desviación" es una decisión de la Gerencia, no de la técnica**: si tiene
 menos gestores, lo sube.
 
+## ¿Y si se ordena por el puntaje mismo?
+
+La C2 se correlaciona
+`r round(cor(credit$Credit_Score, scores_pca[, "C2"]), 2)` con
+`Credit_Score`: es, en lo esencial, el puntaje, mezclado con los avances
+en efectivo y la antigüedad de la tarjeta. La Gerencia ya tiene el
+puntaje, así que hay que comparar las dos listas: con los mismos cupos
+del programa, ¿cuál encuentra más clientes con peor puntaje?
+
+```{r, mapa_vs_puntaje}
+n_cupos <- sum(zona != "C · sin seguimiento")
+lista_puntaje <- rank(credit$Credit_Score, ties.method = "first") <= n_cupos
+lista_c2 <- zona != "C · sin seguimiento"
+
+c(cupos = n_cupos,
+  encuentra_lista_C2 = sum(en_riesgo & lista_c2),
+  encuentra_lista_puntaje = sum(en_riesgo & lista_puntaje),
+  clientes_en_las_dos_listas = sum(lista_c2 & lista_puntaje))
+
+# La lista final: el puntaje decide quién entra; C1 (tamaño) decide la prioridad
+grande <- scores_pca[, "C1"] > corte_tamano
+prioridad <- ifelse(!lista_puntaje, "C · sin seguimiento",
+                    ifelse(grande, "A · peor puntaje, cliente grande",
+                                   "B · peor puntaje, cliente pequeño"))
+saldo <- credit$Outstanding_Balance
+tabla_final <- data.frame(
+  zona = sort(unique(prioridad)),
+  clientes = as.vector(table(prioridad)),
+  puntaje_medio = round(tapply(credit$Credit_Score, prioridad, mean)),
+  saldo_mediano = round(tapply(saldo, prioridad, median)),
+  row.names = NULL)
+tabla_final$de_cada_100_del_saldo_de_la_lista <- ifelse(
+  tabla_final$zona == "C · sin seguimiento", NA,
+  round(100 * tapply(saldo, prioridad, sum) / sum(saldo[lista_puntaje]), 1))
+tabla_final
+```
+
+**Lectura:** con los mismos
+`r format(n_cupos, big.mark = ".")` cupos, la lista de la C2 encuentra a
+`r format(sum(en_riesgo & lista_c2), big.mark = ".")` de los
+`r format(sum(en_riesgo), big.mark = ".")` clientes con peor puntaje
+(`r round(100 * mean(lista_c2[en_riesgo]), 1)` %), y ordenar por el
+puntaje mismo encuentra a
+`r format(sum(en_riesgo & lista_puntaje), big.mark = ".")`
+(`r round(100 * mean(lista_puntaje[en_riesgo]), 1)` %). Las dos listas
+comparten solo `r round(100 * sum(lista_c2 & lista_puntaje) / n_cupos)`
+de cada 100 clientes. **Si el riesgo se mide con el puntaje, la C2 no es
+mejor que el puntaje: es una copia con ruido.** Lo que el PCA sí le da a
+la Gerencia está en el otro eje: la C1 resume en un número las 16
+columnas de dinero y actividad, y no tiene nada que ver con el puntaje
+(correlación `r round(cor(credit$Credit_Score, scores_pca[, "C1"]), 3)`).
+Dentro de la lista, la mitad grande (zona A) concentra
+`r tabla_final$de_cada_100_del_saldo_de_la_lista[1]` de cada 100 rupias
+del saldo pendiente de toda la lista, con
+`r round(100 * tabla_final$clientes[1] / n_cupos)` de cada 100 clientes.
+
+**Decisión final para la Gerencia:** el puntaje decide **quién** entra
+al seguimiento y la C1 (tamaño) decide **en qué orden**. Primero la zona
+A (`r format(tabla_final$clientes[1], big.mark = ".")` clientes, con
+llamada del gestor) y después la B
+(`r format(tabla_final$clientes[2], big.mark = ".")` clientes, con
+mensajes). El mapa de C1 y C2 se queda como la herramienta que mostró
+que el riesgo es una dirección distinta del tamaño, y que ni la tarjeta
+ni la ocupación sirven para escoger a quién seguir.
+
 ## Con y sin *one-hot*: ¿cambia el mapa si entra el tipo de tarjeta?
 
 El Módulo 15 dejó el tipo de tarjeta codificado en *one-hot*. La
@@ -6453,8 +6574,11 @@ aporta.
     en riesgo; la ocupación, igual. Ninguno sirve para escoger a quién
     seguir.
 3.  Dos cortes en el mapa producen una lista de seguimiento con
-    prioridad (zona A: riesgo alto y cliente grande), que la Gerencia
-    puede ajustar moviendo el corte según sus cupos.
+    prioridad. Pero la C2 es, en lo esencial, el puntaje: con los mismos
+    cupos, ordenar por el puntaje mismo encuentra más clientes de peor
+    puntaje. La lista final usa el puntaje para decidir quién entra y la
+    C1 (tamaño) para decidir el orden: la zona A, la de clientes
+    grandes, concentra la mayor parte del saldo pendiente de la lista.
 4.  Meter el tipo de tarjeta con *one-hot* ponderado no cambia el mapa:
     su información ya estaba en C1. Sin ponderar, las cinco *dummies*
     desplazan al riesgo de la segunda componente — la razón de la regla
@@ -6897,44 +7021,6 @@ proporción pagada y el uso del cupo.
 
 ------------------------------------------------------------------------
 
-# Conclusiones Generales
-
-El informe recorrió la cartera de `r format(nrow(credit), big.mark=".")`
-clientes de lo univariado a lo multivariado, y cada etapa dejó una
-conclusión que la siguiente usó:
-
-1.  **La matriz es confiable** (Módulos 1–2): no tiene faltantes,
-    duplicados ni valores imposibles; las 26 numéricas están bien
-    tipadas y las 4 categóricas tienen los niveles que deben.
-2.  **Las variables de dinero son asimétricas y redundantes** (Módulos
-    3–6, 8 y 10): casi todas tienen colas largas a la derecha —por eso
-    `log(x+1)`— y cinco columnas son derivadas o duplicadas de otras,
-    hasta volver singular la matriz de covarianzas.
-3.  **El riesgo no depende del dinero, sino de la conducta de pago**
-    (Módulos 7, 11 y 12): `Credit_Score` casi no se correlaciona con el
-    ingreso, y queda casi determinado por el uso del cupo y la
-    proporción pagada.
-4.  **Mirar de a una variable engaña** (Módulos 7, 11, 12 y 13): la
-    relación ingreso–cupo son cinco rectas y no una; transacciones y
-    valor medio invierten su relación según se condicione o no en la
-    tarjeta (Simpson); un monto pagado con $r \approx 0$ cambia la cola
-    de riesgo; y la mayoría de los casos raros no tiene ninguna variable
-    extrema.
-5.  **Para la Gerencia de Riesgo, la cartera se resume en dos números**
-    (Módulos 16–17): tamaño (C1, la mitad de la información) y riesgo
-    (C2). El primero solo no ve el riesgo; los dos juntos dan un mapa
-    con una lista de seguimiento priorizada.
-6.  **El tamaño tiene dos rasgos detrás; el riesgo, ninguno** (Módulo
-    18): el análisis factorial separa la C1 en capacidad (cuánto gasta
-    el cliente por vez) y frecuencia (cuántas veces usa la tarjeta), y
-    muestra que el riesgo no es un factor común: `Credit_Score` depende
-    de un contraste entre pago y saldo, y la C2 del mapa es, en lo
-    esencial, el propio puntaje. <!--
-      MÓDULO 19 — pegar al final de analisis_synthetic_credit_card.Rmd
-      Solo necesita el objeto `credit` (Módulo 1). No modifica ningún objeto de los módulos
-      anteriores: todo lo nuevo termina en _num, _mix, _19 o tiene un nombre que no se usa antes.
-    -->
-
 # Módulo 19: Componentes Principales con Todas las Variables del Dataset
 
 Los Módulos 16 y 17 aplicaron componentes principales a las 21 variables
@@ -6967,9 +7053,10 @@ El orden es el de las sesiones de componentes principales (PCA I y PCA
 II): ¿las variables se repiten?, ¿hay que estandarizar?, cuánta
 información guarda cada componente, qué mide cada una, el mapa, el
 biplot, ¿hay grupos o un continuo?, ¿los grupos conocidos se separan? y,
-al final, qué cambia al meter las categóricas. Aquí no hay un caso de
-negocio de por medio: no se toma ninguna decisión para un cliente, solo
-se describe lo que la técnica encuentra.
+al final, qué cambia al meter las categóricas. Este módulo no toma
+decisiones nuevas para la Gerencia: es la **otra opción** de la decisión
+1 de la tabla de decisiones (meter todas las variables en lugar de las
+21), y sirve para ver qué cambia en el mapa si se hubiera escogido.
 
 ------------------------------------------------------------------------
 
@@ -7830,6 +7917,28 @@ ahora ayudan a construir el eje del puntaje (pesos de
 otras tres que vuelven (`Monthly_Spending`, `Reward_Points_Earned` y
 `Outstanding_Balance`) se suman al bloque de dinero y gasto.
 
+#### ¿Entonces conviene meter las 26? La ganancia es circular
+
+**Qué se hace.** Se mide cuánto de `Credit_Score` explican, juntas, las
+dos variables que vuelven a entrar al eje del puntaje.
+
+```{r, p19_circular}
+r2_ratios <- summary(lm(Credit_Score ~ Payment_Ratio + Credit_Utilization, data = credit))$r.squared
+round(c(R2_puntaje_con_los_dos_cocientes = r2_ratios), 3)
+```
+
+**Qué veo.** `Payment_Ratio` y `Credit_Utilization` explican
+`r coma(100 * r2_ratios, 0)` de cada 100 partes de la variación de
+`Credit_Score`: son, casi, los ingredientes del puntaje. Por eso el eje
+de riesgo de 26 variables "encuentra" más clientes de peor puntaje: está
+hecho con las piezas con que se calcula ese puntaje. No encuentra un
+riesgo nuevo, encuentra el mismo puntaje por otro camino. **Decisión:**
+se mantienen las 21 variables de los Módulos 16 y 17, y los dos cocientes
+se siguen usando como variables suplementarias para leer el eje. El eje
+de tamaño es el mismo en las dos versiones (correlación
+`r coma(comp_21$cor_eje_cupo[1], 2)`), así que la conclusión principal
+no depende de esta elección.
+
 ------------------------------------------------------------------------
 
 ## Parte II: Componentes principales con las numéricas y las categóricas codificadas
@@ -8286,3 +8395,472 @@ hecho al codificarla de 1 a 5,
     *one-hot* ponderado y `r coma(var_res$cor_eje_puntaje[2], 2)` con la
     versión mixta; en las dos versiones ponderadas, cada categórica pesa
     como una variable, que es el criterio del Módulo 15.
+
+------------------------------------------------------------------------
+
+# Módulo 20: Contraste con Datos Reales de India
+
+Todo el informe trabajó sobre un dataset **sintético**. Este módulo
+responde la pregunta que queda pendiente: **¿la cartera simulada se
+parece a la de un banco real de India?** Si no se parece, las cifras
+absolutas del informe (cupos, saldos, número de clientes por zona) no se
+pueden llevar a un banco real, y hay que decir cuáles conclusiones sí
+sobreviven.
+
+No existe una base pública real de India **a nivel de cliente** con
+estas variables. Por eso se compara contra cifras **agregadas**:
+promedios nacionales, proporciones y distribuciones publicadas por
+fuentes oficiales o por emisores. Las fuentes están en `../dataReal/` y
+su inventario completo, con las URL y los problemas de calidad, está en
+`../dataReal/README.md`.
+
+| Fuente | Qué trae | Nivel | Formato |
+|----|----|----|----|
+| **RBI** — Bank-wise ATM/POS/Card Statistics | Tarjetas, gasto, transacciones, canal online, retiros en ATM | Banco × mes, 2022-03 a 2026-03 | CSV |
+| **RBI** — Basic Statistical Returns (BSR-1), *Personal Credit Cards* | Número de cuentas, cupo y saldo | Distrito × grupo poblacional × tipo de banco, 2010-2023 | CSV |
+| **RBI** — Mobile Banking Statistics | Transacciones de banca móvil y clientes activos | Banco × mes | CSV |
+| **Banco Mundial** — Global Findex 2025 | % de adultos con tarjeta y % que paga el saldo completo | País, 2011-2024 | CSV |
+| **SBI Card** (2.º emisor, ~19 % del mercado) — presentaciones a inversionistas | Edad y ocupación de los clientes, mezcla del saldo, morosidad | Cartera del emisor | PDF |
+
+## Lectura y limpieza de las fuentes reales
+
+```{r, real_lectura}
+dir_real <- "../dataReal"
+
+# --- RBI: tarjetas, mes a mes (2022 en adelante; montos en ₹ miles) ---
+rbi <- read.csv(file.path(dir_real, "rbi_card_stats/bankwise_atm_pos_card_statistics_2022_onwards.csv"))
+rbi$date <- as.Date(rbi$date)
+c(filas = nrow(rbi),
+  duplicadas_mes_banco = sum(duplicated(rbi[c("date", "bank_name")])),
+  fechas_que_no_son_dia_1 = sum(format(rbi$date, "%d") != "01"))
+rbi <- rbi[format(rbi$date, "%d") == "01", ]                   # '2026-01-03' es una copia mal fechada
+rbi <- rbi[!duplicated(rbi[c("date", "bank_name")]), ]         # mayo de 2025 viene dos veces
+# En el espejo, las columnas de retiro en ATM tienen el nombre invertido: '_val' es el número y '_vol' el valor
+names(rbi)[match(c("cc_cash_withdraw_atm_val", "cc_cash_withdraw_atm_vol"), names(rbi))] <- c("cc_atm_n", "cc_atm_val")
+
+cols_rbi <- c("credit_cards", "cc_pay_trns_at_pos_vol", "cc_pay_trns_at_pos_val", "cc_pay_trns_online_vol",
+              "cc_pay_trns_online_val", "cc_pay_trns_other_vol", "cc_pay_trns_other_val", "cc_atm_n", "cc_atm_val")
+mes <- aggregate(rbi[cols_rbi], list(date = rbi$date), sum, na.rm = TRUE)
+mes <- tail(mes[order(mes$date), ], 12)                         # últimos 12 meses
+vol <- with(mes, cc_pay_trns_at_pos_vol + cc_pay_trns_online_vol + cc_pay_trns_other_vol)
+val <- 1000 * with(mes, cc_pay_trns_at_pos_val + cc_pay_trns_online_val + cc_pay_trns_other_val)
+real_rbi <- c(
+  tarjetas_millones     = mean(mes$credit_cards) / 1e6,
+  gasto_mensual         = mean(val / mes$credit_cards),
+  transacciones_mes     = mean(vol / mes$credit_cards),
+  ticket                = mean(val / vol),
+  pct_gasto_online      = mean(100 * 1000 * mes$cc_pay_trns_online_val / val),
+  pct_tarjetas_con_avance = mean(100 * mes$cc_atm_n / mes$credit_cards),
+  avance_por_tarjeta    = mean(1000 * mes$cc_atm_val / mes$credit_cards))
+periodo_rbi <- format(range(mes$date), "%Y-%m")
+
+# --- RBI BSR: cupo y saldo por cuenta (montos en ₹ crore = 10 millones) ---
+bsr <- read.csv(file.path(dir_real, "rbi_credit_scb/rbi_bsr_tarjetas_credito_personales.csv"))
+anio_bsr <- max(bsr$year)
+b <- bsr[bsr$year == anio_bsr, ]
+real_bsr <- c(cuentas_millones = sum(b$no_of_accounts) / 1e6,
+              cupo   = 1e7 * sum(b$credit_limit) / sum(b$no_of_accounts),
+              saldo  = 1e7 * sum(b$amount_outstanding) / sum(b$no_of_accounts),
+              utilizacion = sum(b$amount_outstanding) / sum(b$credit_limit))
+
+# --- RBI banca móvil: transacciones por cliente activo (solo número: el monto cambia de unidad) ---
+mb <- read.csv(file.path(dir_real, "rbi_mobile_banking/mobile-banking-statistics.csv"))
+mb <- mb[!duplicated(mb[c("month", "bank_name")], fromLast = TRUE) & !is.na(mb$no_of_active_costumers), ]
+mbm <- aggregate(cbind(no_of_transactions, no_of_active_costumers) ~ month, mb, sum)
+real_movil <- mean(tail(mbm$no_of_transactions[order(mbm$month)] / mbm$no_of_active_costumers[order(mbm$month)], 12))
+
+# --- Global Findex 2024 ---
+fx <- read.csv(file.path(dir_real, "worldbank_findex_india/findex_india.csv"))
+fx24 <- fx[fx$group == "all" & fx$year == 2024, ]
+real_findex <- c(pct_adultos_con_tarjeta = 100 * fx24$fin10,
+                 pct_usuarios_que_pagan_todo = 100 * fx24$fin22h / fx24$fin22g)
+
+# --- SBI Card: cifras leídas de los PDF (página indicada) ---
+sbi_edad <- c(`Hasta 30` = 19, `31 a 45` = 55, `Más de 45` = 26)      # tarjetas vigentes, mar-2026, p. 15
+sbi_ocup <- c(Asalariados = 61, Independientes = 39)                   # cuentas nuevas, Q4 FY25, p. 15
+sbi_saldo_por_tarjeta <- 25564                                         # ₹ por tarjeta, Q4 FY26, p. 8
+sbi_mezcla <- c(transactor = 46, revolver = 22, EMI = 32)              # % del saldo, Q4 FY26, p. 8
+sbi_gnpa <- 2.41                                                       # % del saldo en mora, Q4 FY26, p. 4
+
+round(c(real_rbi, real_bsr, banca_movil = real_movil, real_findex), 2)
+```
+
+**Lectura:** la limpieza repite la del `README` de `dataReal`: en el
+archivo del RBI había `r sum(duplicated(read.csv(file.path(dir_real, "rbi_card_stats/bankwise_atm_pos_card_statistics_2022_onwards.csv"))[c("date", "bank_name")]))`
+filas repetidas por mes y banco, y las columnas de retiro en ATM tienen
+el nombre cambiado (si no se corrige, el retiro promedio daría unas
+pocas rupias). Las cifras del RBI son el promedio de los 12 meses entre
+`r periodo_rbi[1]` y `r periodo_rbi[2]`, sobre unos
+`r round(real_rbi["tarjetas_millones"])` millones de tarjetas. Las del
+BSR son de `r anio_bsr`, sobre
+`r round(real_bsr["cuentas_millones"])` millones de cuentas.
+
+## Variable por variable: sintético frente a real
+
+Para que la comparación sea justa, el sintético se resume **igual que la
+fuente real**. El RBI publica totales (gasto total entre número de
+tarjetas, saldo total entre cupo total), así que en el sintético también
+se usan cocientes de totales y no promedios de cocientes. La última
+columna dice en qué percentil de la cartera sintética caería el valor
+real: si el cliente real promedio queda en el percentil 5, la cartera
+simulada está casi entera por encima de él.
+
+```{r, real_tabla}
+s <- credit
+pct_en_sint <- function(x, v) round(100 * mean(x <= v))
+comp_real <- data.frame(
+  variable = c("Monthly_Spending", "Monthly_Transactions", "Avg_Transaction_Value",
+               "Credit_Limit", "Outstanding_Balance", "Outstanding_Balance",
+               "Credit_Utilization", "Online_Shopping_Spending", "Cash_Advance_Amount",
+               "Cash_Advance_Amount", "Payment_Ratio", "Mobile_App_Login"),
+  indicador = c("gasto mensual por tarjeta (INR)", "transacciones al mes por tarjeta",
+                "ticket promedio (INR)", "cupo por cuenta (INR)", "saldo por cuenta (INR)",
+                "saldo por tarjeta, SBI Card (INR)", "utilización (saldo / cupo)",
+                "% del gasto que es online", "% de tarjetas con avance en el mes",
+                "avance en efectivo por tarjeta al mes (INR)",
+                "% que paga el saldo completo", "interacciones al mes con la app / banca móvil"),
+  sintetico = c(mean(s$Monthly_Spending), mean(s$Monthly_Transactions),
+                sum(s$Monthly_Spending) / sum(s$Monthly_Transactions),
+                mean(s$Credit_Limit), mean(s$Outstanding_Balance), mean(s$Outstanding_Balance),
+                sum(s$Outstanding_Balance) / sum(s$Credit_Limit),
+                100 * sum(s$Online_Shopping_Spending) / sum(s$Monthly_Spending),
+                100 * mean(s$Cash_Advance_Amount > 0), mean(s$Cash_Advance_Amount),
+                100 * mean(s$Payment_Ratio >= 0.95), mean(s$Mobile_App_Login)),
+  real = c(real_rbi[["gasto_mensual"]], real_rbi[["transacciones_mes"]], real_rbi[["ticket"]],
+           real_bsr[["cupo"]], real_bsr[["saldo"]], sbi_saldo_por_tarjeta, real_bsr[["utilizacion"]],
+           real_rbi[["pct_gasto_online"]], real_rbi[["pct_tarjetas_con_avance"]],
+           real_rbi[["avance_por_tarjeta"]], real_findex[["pct_usuarios_que_pagan_todo"]], real_movil),
+  fuente = c("RBI", "RBI", "RBI", paste("RBI BSR", anio_bsr), paste("RBI BSR", anio_bsr), "SBI Card",
+             paste("RBI BSR", anio_bsr), "RBI (canal)", "RBI (retiros ATM)", "RBI (retiros ATM)",
+             "Findex 2024", "RBI banca móvil"),
+  comparable = c("Sí", "Sí", "Sí", "Sí", "Sí", "Sí", "Sí",
+                 "Parcial: en el RBI 'online' es un canal; aquí, una categoría",
+                 "Parcial: el RBI solo cuenta retiros en ATM",
+                 "Parcial: el RBI solo cuenta retiros en ATM",
+                 "Parcial: Findex pregunta si pagó todo a tiempo; aquí, Payment_Ratio ≥ 0,95",
+                 "Débil: el RBI cuenta transacciones de todos los clientes bancarios, no ingresos a la app"))
+comp_real$veces_sintetico_sobre_real <- comp_real$sintetico / comp_real$real
+var_por_fila <- c("Monthly_Spending", "Monthly_Transactions", NA, "Credit_Limit", "Outstanding_Balance",
+                  "Outstanding_Balance", NA, NA, NA, "Cash_Advance_Amount", NA, "Mobile_App_Login")
+comp_real$percentil_del_real_en_el_sintetico <- sapply(seq_along(var_por_fila), function(i)
+  if (is.na(var_por_fila[i])) NA else pct_en_sint(s[[var_por_fila[i]]], comp_real$real[i]))
+comp_real$percentil_del_real_en_el_sintetico[3] <- pct_en_sint(s$Avg_Transaction_Value, comp_real$real[3])
+
+transform(comp_real, sintetico = signif(sintetico, 3), real = signif(real, 3),
+          veces_sintetico_sobre_real = round(veces_sintetico_sobre_real, 2))
+```
+
+```{r, real_razones_plot, fig.width=9, fig.height=5.5}
+rz <- comp_real[comp_real$comparable == "Sí" | grepl("^Parcial", comp_real$comparable), ]
+rz$etiqueta <- paste0(rz$indicador, " · ", rz$fuente)
+rz$etiqueta <- factor(rz$etiqueta, levels = rz$etiqueta[order(rz$veces_sintetico_sobre_real)])
+ggplot(rz, aes(veces_sintetico_sobre_real, etiqueta)) +
+  geom_vline(xintercept = 1, linetype = 2, color = "grey40") +
+  geom_segment(aes(x = 1, xend = veces_sintetico_sobre_real, yend = etiqueta), color = "grey70") +
+  geom_point(aes(color = veces_sintetico_sobre_real > 1), size = 3) +
+  scale_x_log10(breaks = c(0.1, 0.25, 0.5, 1, 2, 4, 10, 20, 50, 100, 500)) +
+  scale_color_manual(values = c(`TRUE` = "#C05621", `FALSE` = "#2B6CB0"), guide = "none") +
+  labs(title = "¿Cuántas veces el valor real es el del sintético?",
+       subtitle = "Escala logarítmica · 1 = iguales · a la derecha, el sintético es mayor",
+       x = "sintético / real", y = NULL)
+```
+
+**Lectura:** la cartera sintética **no es la cartera típica de India**:
+
+- **Gasta y debe mucho más.** El gasto mensual por tarjeta es
+  `r coma(comp_real$veces_sintetico_sobre_real[1], 1)` veces el real
+  (₹`r miles(comp_real$sintetico[1])` frente a
+  ₹`r miles(comp_real$real[1])`), el cupo
+  `r coma(comp_real$veces_sintetico_sobre_real[4], 1)` veces y el saldo
+  `r coma(comp_real$veces_sintetico_sobre_real[5], 1)` veces. El
+  cliente real promedio quedaría en el percentil
+  `r comp_real$percentil_del_real_en_el_sintetico[1]` del gasto y en el
+  `r comp_real$percentil_del_real_en_el_sintetico[4]` del cupo de la
+  cartera simulada: entre
+  `r 100 - comp_real$percentil_del_real_en_el_sintetico[4]` y
+  `r 100 - comp_real$percentil_del_real_en_el_sintetico[1]` de cada 100
+  clientes simulados están por encima de él.
+- **Usa la tarjeta de otra forma.** Hace
+  `r round(comp_real$veces_sintetico_sobre_real[2])` veces más
+  transacciones al mes, pero de un ticket
+  `r coma(1 / comp_real$veces_sintetico_sobre_real[3], 1)` veces menor.
+  En el sintético la tarjeta se usa como el UPI (muchos pagos chicos);
+  en el país real, para compras más grandes y espaciadas.
+- **Usa más su cupo.** La utilización agregada es
+  `r coma(comp_real$sintetico[7], 2)` contra
+  `r coma(comp_real$real[7], 2)` real: el doble.
+- **Pide muchos más avances en efectivo.** El
+  `r coma(comp_real$sintetico[9], 1)` % de los clientes simulados tiene
+  un avance, contra el `r coma(comp_real$real[9], 1)` % de las tarjetas
+  reales con un retiro en ATM en el mes: unas
+  `r round(comp_real$veces_sintetico_sobre_real[9])` veces más. El RBI
+  solo cuenta los retiros en ATM, pero una diferencia de ese tamaño no
+  se explica por la definición.
+- **Paga peor.** En el sintético, solo el
+  `r coma(comp_real$sintetico[11], 1)` % paga el 95 % o más de su saldo;
+  según el Findex, el `r coma(comp_real$real[11], 0)` % de los
+  usuarios reales de tarjeta paga todo a tiempo. SBI Card lo confirma
+  por otro lado: el `r sbi_mezcla[["transactor"]]` % de su saldo es de
+  clientes que pagan el total (*transactors*).
+- **Compra menos en línea**: la categoría de compras en línea es el
+  `r round(comp_real$sintetico[8])` % del gasto simulado, y el canal
+  online es el `r round(comp_real$real[8])` % del gasto real con
+  tarjeta. Parte de la diferencia es de definición (en el RBI, un
+  pasaje de avión pagado en la web cuenta como online; en el sintético,
+  como viaje), pero no toda.
+- Lo único que queda en el mismo orden de magnitud es la frecuencia de
+  uso de la app frente a la de banca móvil
+  (`r round(comp_real$sintetico[12])` frente a
+  `r round(comp_real$real[12])` al mes), y ese es un proxy débil.
+
+## Edad y ocupación: las distribuciones
+
+Aquí sí hay distribuciones, no solo promedios, y se pueden comparar las
+proporciones. La referencia es la cartera de SBI Card, un solo emisor
+con cerca de la quinta parte del mercado.
+
+```{r, real_edad_ocupacion, fig.width=11, fig.height=4.5}
+edad_sint <- 100 * prop.table(table(cut(s$Age, c(-Inf, 30, 45, Inf),
+                                        labels = names(sbi_edad))))
+ocup_sint <- with(s[!s$Occupation %in% c("Retired", "Student"), ],
+                  100 * prop.table(table(ifelse(Occupation %in% c("Private Employee", "Government Employee"),
+                                                "Asalariados", "Independientes"))))
+dist_real <- rbind(
+  data.frame(variable = "Edad", grupo = names(sbi_edad),
+             fuente = rep(c("Sintético", "SBI Card"), each = 3),
+             pct = c(as.vector(edad_sint), sbi_edad))[c(1:3, 4:6), ],
+  data.frame(variable = "Ocupación (sin jubilados ni estudiantes)", grupo = names(sbi_ocup),
+             fuente = rep(c("Sintético", "SBI Card"), each = 2),
+             pct = c(as.vector(ocup_sint[names(sbi_ocup)]), sbi_ocup)))
+dist_real$grupo <- factor(dist_real$grupo, levels = c(names(sbi_edad), names(sbi_ocup)))
+ggplot(dist_real, aes(grupo, pct, fill = fuente)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_text(aes(label = round(pct)), position = position_dodge(0.7), vjust = -0.3, size = 3.5) +
+  facet_wrap(~ variable, scales = "free_x") +
+  scale_fill_manual(values = c(Sintético = "#C05621", `SBI Card` = "#2B6CB0"), name = NULL) +
+  labs(title = "Edad y ocupación de los clientes: sintético frente a SBI Card",
+       x = NULL, y = "% de los clientes") +
+  theme(legend.position = "top")
+
+# Distancia entre las dos distribuciones: la mitad de la suma de las diferencias absolutas
+# (de cada 100 clientes, cuántos habría que cambiar de grupo para igualarlas)
+c(edad = round(sum(abs(as.vector(edad_sint) - sbi_edad)) / 2, 1),
+  ocupacion = round(sum(abs(as.vector(ocup_sint[names(sbi_ocup)]) - sbi_ocup)) / 2, 1))
+```
+
+**Lectura:** la cartera sintética es **más joven**: el
+`r round(edad_sint[1])` % tiene 30 años o menos, contra el
+`r sbi_edad[1]` % de las tarjetas vigentes de SBI Card, y el grupo de 31
+a 45 años, que en SBI Card es más de la mitad, aquí es el
+`r round(edad_sint[2])` %. Para igualar las dos distribuciones habría
+que cambiar de grupo de edad a
+`r round(sum(abs(as.vector(edad_sint) - sbi_edad)) / 2)` de cada 100
+clientes. En ocupación las dos carteras se parecen más (asalariados
+`r round(ocup_sint["Asalariados"])` % frente a `r sbi_ocup[1]` %;
+habría que mover a
+`r round(sum(abs(as.vector(ocup_sint[names(sbi_ocup)]) - sbi_ocup)) / 2)`
+de cada 100). Con 50.000 clientes cualquier prueba $\chi^2$ rechazaría
+la igualdad; lo que importa es el tamaño de la diferencia.
+
+## Una relación entre variables: cupo y utilización
+
+El informe es multivariante, así que también conviene comparar una
+**relación**, no solo niveles. La fuente real que lo permite es el BSR:
+para cada distrito y grupo poblacional da el cupo promedio y la
+utilización. En el sintético, la utilización no tiene nada que ver con
+el tamaño del cliente: es justamente lo que hizo que el riesgo y el
+tamaño salieran perpendiculares en el mapa (Módulo 17).
+
+```{r, real_cupo_utilizacion, fig.width=11, fig.height=4.8}
+celdas <- b[b$no_of_accounts >= 100, ]
+celdas$cupo <- 1e7 * celdas$credit_limit / celdas$no_of_accounts
+celdas$util <- celdas$amount_outstanding / celdas$credit_limit
+rho_real <- cor(celdas$cupo, celdas$util, method = "spearman")
+rho_sint <- cor(s$Credit_Limit, s$Credit_Utilization, method = "spearman")
+
+# El sintético, agrupado como el BSR: 200 grupos de 250 clientes ordenados por cupo
+grupo_sint <- cut(rank(s$Credit_Limit, ties.method = "first"), 200, labels = FALSE)
+sint_grupos <- data.frame(cupo = tapply(s$Credit_Limit, grupo_sint, sum) / tapply(s$Credit_Limit, grupo_sint, length),
+                          util = tapply(s$Outstanding_Balance, grupo_sint, sum) / tapply(s$Credit_Limit, grupo_sint, sum))
+rho_sint_grupos <- cor(sint_grupos$cupo, sint_grupos$util, method = "spearman")
+
+par(mfrow = c(1, 2), mar = c(4.5, 4.5, 3, 1))
+plot(celdas$cupo / 1000, celdas$util, log = "x", pch = 16, cex = 0.5, col = rgb(0.17, 0.42, 0.69, 0.35),
+     xlab = "cupo promedio de la celda (INR miles, escala log)", ylab = "utilización",
+     main = sprintf("Real: %s celdas distrito-grupo (%d)\nSpearman = %.2f", format(nrow(celdas), big.mark = "."),
+                    anio_bsr, rho_real), ylim = c(0, 1))
+plot(sint_grupos$cupo / 1000, sint_grupos$util, log = "x", pch = 16, cex = 0.7, col = "#C05621",
+     xlab = "cupo promedio del grupo (INR miles, escala log)", ylab = "utilización",
+     main = sprintf("Sintético: 200 grupos de 250 clientes\nSpearman = %.2f (por cliente: %.2f)",
+                    rho_sint_grupos, rho_sint), ylim = c(0, 1))
+par(mfrow = c(1, 1))
+```
+
+**Lectura:** en los datos reales, los distritos donde el cupo promedio
+es más alto usan **menos** proporción de su cupo (Spearman
+`r coma(rho_real, 2)`). En el sintético, agrupando a los clientes de la
+misma forma, la relación no existe (`r coma(rho_sint_grupos, 2)`; por
+cliente, `r coma(rho_sint, 2)`). Hay que leerlo con cuidado: la cifra
+real es entre **distritos**, no entre personas, y una relación entre
+promedios de grupos no tiene por qué repetirse dentro de cada grupo (es
+el mismo tipo de trampa que Simpson, Módulo 12). Pero es una señal de
+que, en un banco real, el tamaño del cliente y su uso del cupo podrían
+**no** ser independientes, y entonces el tamaño y el riesgo no saldrían
+perpendiculares en el mapa.
+
+## Lo que no se pudo comparar
+
+| Variable | Por qué |
+|----|----|
+| `Gender` | India no publica cifras de tarjeta de crédito por sexo en la base agregada del Findex |
+| `Annual_Income` | Las encuestas de empleo dan el ingreso de toda la población, no el de los tarjetahabientes (solo el 4,6 % de los adultos tiene tarjeta) |
+| `Card_Type` | No hay estadística pública por variante de tarjeta |
+| `Credit_Score` | Las distribuciones del CIBIL no se pudieron descargar. Como referencia de riesgo: SBI Card tiene el 2,41 % de su saldo en mora (GNPA, Q4 FY26) |
+| `Card_Age_Months`, `International_Transactions`, `Reward_Points_*`, `Statement_Balance`, `Payment_Amount` | No se encontraron en fuentes abiertas |
+| `EMI_Count` | SBI Card reporta qué parte del **saldo** está en cuotas (`r sbi_mezcla[["EMI"]]` %), no cuántos clientes tienen cuotas; el sintético da lo segundo (`r round(100 * mean(s$EMI_Count > 0))` %). No es la misma medida |
+
+## Qué cambia para la Gerencia de Riesgo
+
+- **Las cifras absolutas no se trasladan.** La zona A de la decisión
+  final tiene un cupo mediano de ₹718.000, unas
+  `r round(718000 / real_bsr[["cupo"]])` veces el cupo promedio real.
+  Un banco real que aplique el método tendrá otros cortes y otros
+  conteos.
+- **El método sí se traslada**, porque los cortes del informe son
+  relativos: el 20 % con peor puntaje, la mediana del tamaño, una
+  desviación típica. Se recalculan sobre la cartera propia.
+- **Lo que hay que volver a comprobar** con datos reales es la
+  estructura: si el uso del cupo depende del tamaño del cliente (como
+  sugieren los distritos), el mapa podría no separar tan limpio el
+  tamaño del riesgo.
+- **El riesgo de la cartera simulada está exagerado**: paga peor, usa
+  más el cupo y pide muchos más avances que la cartera real. Una lista
+  de seguimiento del 16 % de la cartera es razonable en el sintético; en
+  un banco con 2 a 3 % de mora, probablemente sería más corta.
+
+## Conclusión del módulo
+
+1.  La cartera sintética representa a un cliente **mucho más intensivo**
+    que el tarjetahabiente real de India: unas
+    `r round(comp_real$veces_sintetico_sobre_real[1])` veces más gasto,
+    `r round(comp_real$veces_sintetico_sobre_real[5])` veces más saldo,
+    `r round(comp_real$veces_sintetico_sobre_real[2])` veces más
+    transacciones con un ticket mucho menor, el doble de utilización y
+    muchos más avances en efectivo.
+2.  En ocupación las dos carteras se parecen; en edad, la simulada es
+    más joven, y compra menos en línea.
+3.  En los datos reales, a más cupo menos utilización entre distritos;
+    en el sintético no hay relación. Es la estructura que más conviene
+    comprobar antes de usar el mapa en un banco real.
+4.  Las conclusiones del informe valen como **método** (cortes
+    relativos, dos números en vez de uno, la tarjeta y la ocupación no
+    sirven para escoger), no como **cifras**.
+
+------------------------------------------------------------------------
+
+# Conclusiones Generales
+
+El informe recorrió la cartera de `r format(nrow(credit), big.mark=".")`
+clientes de lo univariado a lo multivariado, y cada etapa dejó una
+conclusión que la siguiente usó:
+
+1.  **La matriz es confiable** (Módulos 1–2): no tiene faltantes,
+    duplicados ni valores imposibles; las 26 numéricas están bien
+    tipadas y las 4 categóricas tienen los niveles que deben.
+2.  **Las variables de dinero son asimétricas y redundantes** (Módulos
+    3–6, 8 y 10): casi todas tienen colas largas a la derecha —por eso
+    `log(x+1)`— y cinco columnas son derivadas o duplicadas de otras,
+    hasta volver singular la matriz de covarianzas.
+3.  **El riesgo no depende del dinero, sino de la conducta de pago**
+    (Módulos 7, 11 y 12): `Credit_Score` casi no se correlaciona con el
+    ingreso, y queda casi determinado por el uso del cupo y la
+    proporción pagada.
+4.  **Mirar de a una variable engaña** (Módulos 7, 11, 12 y 13): la
+    relación ingreso–cupo son cinco rectas y no una; transacciones y
+    valor medio invierten su relación según se condicione o no en la
+    tarjeta (Simpson); un monto pagado con $r \approx 0$ cambia la cola
+    de riesgo; y la mayoría de los casos raros no tiene ninguna variable
+    extrema.
+5.  **Para la Gerencia de Riesgo, la cartera se resume en dos números**
+    (Módulos 16–17): tamaño (C1, la mitad de la información) y riesgo
+    (C2). El primero solo no ve el riesgo. Como la C2 es casi el propio
+    puntaje, la lista de seguimiento usa el puntaje para decidir quién
+    entra y la C1 para decidir el orden.
+6.  **El tamaño tiene dos rasgos detrás; el riesgo, ninguno** (Módulo
+    18): el análisis factorial separa la C1 en capacidad (cuánto gasta
+    el cliente por vez) y frecuencia (cuántas veces usa la tarjeta), y
+    muestra que el riesgo no es un factor común: `Credit_Score` depende
+    de un contraste entre pago y saldo, y la C2 del mapa es, en lo
+    esencial, el propio puntaje.
+7.  **Excluir variables no cambia el eje de tamaño; sí cambia el de
+    riesgo** (Módulo 19): con las 26 numéricas, el eje de tamaño es el
+    mismo (correlación 1,00 con el de 21 variables), y meter las
+    categóricas bien ponderadas no mueve el mapa. El eje de riesgo, en
+    cambio, se parece al de 21 variables con una correlación de
+    `r round(comp_21$cor_eje_puntaje[1], 2)`, porque con las 26 entran
+    `Payment_Ratio` y `Credit_Utilization`, que explican el 95 % del
+    puntaje. La ganancia del eje de riesgo con 26 variables es circular,
+    y por eso se mantienen las 21.
+8.  **La cartera simulada no es la cartera típica de India** (Módulo
+    20): frente a las cifras del RBI, gasta unas 4 veces más, debe unas
+    11 veces más, hace unas 19 veces más transacciones con un ticket
+    4 veces menor, usa el doble de su cupo y paga peor; además es más
+    joven. Las conclusiones del informe valen como método, con cortes
+    relativos que se recalculan sobre la cartera propia, no como cifras.
+
+------------------------------------------------------------------------
+
+# Anexo: comprobación de la tabla de decisiones {-}
+
+La tabla de decisiones del principio se escribió con cifras fijas, porque
+va antes de los cálculos. Este bloque las vuelve a calcular con los
+objetos del informe y detiene el tejido (`stopifnot`) si alguna no
+coincide. Se recalculan aquí los objetos que el Módulo 19 reutiliza con
+otro contenido (`lambda`, `pca_sin_escala`, `pca_sin_log`, `mayor_r`).
+
+```{r, anexo_comprobacion_tabla}
+lam_16   <- prcomp(Z_pca)$sdev^2
+pct_16   <- 100 * lam_16 / sum(lam_16)
+pc_s     <- prcomp(credit[, retenidas], scale. = FALSE)
+pc_r     <- prcomp(credit[, retenidas], scale. = TRUE)
+pct1     <- function(pc) 100 * pc$sdev[1]^2 / sum(pc$sdev^2)
+R16      <- cor(Z_pca); diag(R16) <- 0
+desv_ret <- sapply(credit[, retenidas], sd)
+
+cifras <- c(
+  `1 · con 26, varianza mínima < 1e-10 (1 = sí)` = as.numeric(min(eigen(R_26)$values) < 1e-10),
+  `1 · varianza mínima con 21`                = round(min(eigen(R_21)$values), 3),
+  `2 · faltantes`                             = sum(is.na(credit)),
+  `2 · casos raros (Mahalanobis)`             = sum(raros),
+  `2 · raros sin variable extrema`            = sum(raros & !extremo_univariado),
+  `2 · cambio máximo en R`                    = round(max(abs(R_con - R_sin)), 2),
+  `2 · puntaje mediano raros`                 = median(credit$Credit_Score[raros]),
+  `2 · puntaje mediano resto`                 = median(credit$Credit_Score[!raros]),
+  `3 · % de la varianza total del ingreso`    = round(100 * unname(desv_ret["Annual_Income"])^2 / sum(desv_ret^2)),
+  `3 · C1 sin estandarizar`                   = round(pct1(pc_s), 1),
+  `3 · C1 estandarizado sin log`              = round(pct1(pc_r), 1),
+  `3 · C1 con log`                            = round(pct_16[1], 1),
+  `4 · variables con |r| > 0,6`               = sum(apply(abs(R16), 1, max) > 0.6),
+  `5 · C2 guarda`                             = round(pct_16[2], 1),
+  `5 · clientes con peor puntaje`             = sum(en_riesgo),
+  `5 · los encuentra C2`                      = costo$los_encuentra[2],
+  `7 · se le escapan a C1`                    = costo$se_le_escapan[1],
+  `8 · zona A`                                = sum(zona == "A · riesgo alto, cliente grande"),
+  `8 · zona B`                                = sum(zona == "B · riesgo alto, cliente pequeño"),
+  `8 · zona C`                                = sum(zona == "C · sin seguimiento"),
+  `9 · peor puntaje dentro de A o B`          = sum(en_riesgo & zona != "C · sin seguimiento"),
+  `9 · zona A final (puntaje + C1)`           = tabla_final$clientes[1],
+  `9 · zona B final (puntaje + C1)`           = tabla_final$clientes[2],
+  `9 · % del saldo en la zona A final`        = tabla_final$de_cada_100_del_saldo_de_la_lista[1],
+  `9 · lista del puntaje encuentra`           = sum(en_riesgo & lista_puntaje),
+  `8 · % de clientes en las dos listas`       = round(100 * sum(lista_c2 & lista_puntaje) / n_cupos),
+  `1 · R2 del puntaje con los dos cocientes`  = round(100 * r2_ratios))
+
+en_la_tabla <- c(1, 0.018, 0, 1641, 1055, 0.02, 573, 639, 56, 95.5, 48.0, 50.1,
+                 16, 5.3, 10046, 6580, 8214, 4226, 3969, 41805, 5811,
+                 3939, 4256, 85.5, 8195, 63, 95)
+
+coincide <- abs(unname(cifras) - en_la_tabla) <= 0.005 * abs(en_la_tabla) + 1e-9
+data.frame(cifra = names(cifras), calculada = unname(cifras), en_la_tabla, coincide)
+stopifnot(all(coincide))
+```

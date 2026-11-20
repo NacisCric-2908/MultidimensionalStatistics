@@ -1,0 +1,348 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Radar de seguimiento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>@page { size: 1920px 1080px; margin: 0; }
+:root {
+  --ink: #14213D; --muted: #5B6475; --line: #E3E6EB; --bg: #FBFAF7;
+  --azul: #2B6CB0; --rojo: #D7263D; --naranja: #F4A259; --gris: #9AA5B8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { background: var(--bg); }
+body { font-family: "Inter", "Noto Sans", "Liberation Sans", sans-serif; color: var(--ink);
+       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.slide { width: 1920px; height: 1080px; position: relative; overflow: hidden; background: var(--bg);
+         padding: 70px 96px 0 96px; page-break-after: always; break-after: page; display: flex; flex-direction: column; }
+.slide::before { content: ""; position: absolute; left: 0; top: 0; width: 14px; height: 100%; background: var(--ink); }
+b { font-weight: 700; }
+.azul { color: var(--azul); } .rojo { color: var(--rojo); }
+
+/* Encabezado de cada decisión */
+.kicker { display: flex; align-items: center; gap: 18px; font-size: 24px; font-weight: 600; color: var(--muted);
+          text-transform: uppercase; letter-spacing: .06em; }
+.kicker .num { background: var(--ink); color: #fff; font-size: 22px; padding: 6px 14px; border-radius: 6px; letter-spacing: 0; }
+h1 { font-family: "Fraunces", Georgia, serif; font-weight: 700; font-size: 60px; line-height: 1.08;
+     margin: 22px 0 34px; max-width: 1650px; letter-spacing: -.01em; }
+.cuerpo { display: flex; gap: 56px; flex: 1; min-height: 0; }
+.visual { flex: 1; min-width: 0; }
+footer { position: absolute; left: 96px; right: 96px; bottom: 26px; display: flex; justify-content: space-between;
+         font-size: 18px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+
+/* Tarjeta de cuatro filas */
+.c4 { width: 560px; flex: none; align-self: flex-start; background: #fff; border: 1px solid var(--line);
+      border-radius: 18px; padding: 10px 30px; box-shadow: 0 8px 24px rgba(20,33,61,.06); }
+.c4f { padding: 18px 0; border-bottom: 1px solid var(--line); }
+.c4f:last-child { border-bottom: 0; }
+.c4l { display: block; font-size: 17px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+.c4f p { font-size: 22px; line-height: 1.35; }
+.c4f:last-child p { font-weight: 600; }
+.c4f:last-child .c4l { color: var(--rojo); }
+
+/* Portada */
+.portada { flex-direction: row; gap: 80px; padding-top: 90px; }
+.portada-izq { flex: 1.25; display: flex; flex-direction: column; }
+.marca { font-size: 24px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--rojo); }
+.gigante { font-size: 82px; margin: 28px 0 34px; }
+.gigante em { font-style: italic; color: var(--rojo); }
+.lead { font-size: 30px; line-height: 1.45; color: #2B3550; max-width: 980px; }
+.pregunta { margin-top: 34px; font-family: "Fraunces", Georgia, serif; font-size: 34px; font-style: italic; color: var(--azul);
+            border-left: 6px solid var(--azul); padding-left: 24px; max-width: 980px; }
+.equipo { margin-top: auto; margin-bottom: 92px; font-size: 22px; font-weight: 600; line-height: 1.6; }
+.equipo span { font-weight: 400; color: var(--muted); }
+.portada-der { flex: 0.85; display: flex; align-items: center; padding-bottom: 60px; }
+.producto { width: 100%; background: var(--ink); color: #fff; border-radius: 28px; padding: 52px 54px; }
+.prod-tag { font-size: 20px; text-transform: uppercase; letter-spacing: .12em; color: var(--naranja); font-weight: 700; }
+.prod-nombre { font-family: "Fraunces", Georgia, serif; font-size: 52px; font-weight: 700; margin: 10px 0 26px; }
+.prod-kpi { display: flex; align-items: baseline; gap: 22px; padding: 20px 0; border-top: 1px solid rgba(255,255,255,.18); }
+.prod-kpi b { font-size: 60px; min-width: 210px; color: #fff; }
+.prod-kpi span { font-size: 24px; line-height: 1.35; color: #D5DAE3; }
+.prod-pie { margin-top: 26px; font-size: 22px; color: var(--naranja); font-weight: 600; }
+
+/* Etiquetas y notas */
+.etq { font-size: 21px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--azul); margin: 6px 0 14px; }
+.etq.rojo { color: var(--rojo); margin-top: 30px; }
+.nota { margin-top: 30px; font-size: 22px; line-height: 1.45; color: #2B3550; background: #EEF3F9; border-radius: 12px; padding: 18px 24px; }
+
+/* 2. Chips */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.chip { font-family: "Liberation Mono", monospace; font-size: 18px; background: #fff; border: 1px solid #C9D6E6; color: var(--azul);
+        padding: 7px 12px; border-radius: 8px; }
+.fueras { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 26px; }
+.fuera { display: flex; flex-direction: column; gap: 4px; }
+.chip.tachado { color: var(--rojo); border-color: #F1B8C0; text-decoration: line-through; align-self: flex-start; }
+.por { font-size: 19px; color: var(--muted); }
+
+/* 3. KPIs */
+.kpis3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+.kpi { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 26px 26px; }
+.kpi b { display: block; font-size: 72px; line-height: 1; margin-bottom: 12px; }
+.kpi.rojo b { color: var(--rojo); }
+.kpi span { font-size: 21px; line-height: 1.35; color: #2B3550; }
+.comparar { display: flex; flex-direction: column; gap: 26px; }
+.cmpn { display: block; font-size: 21px; font-weight: 600; margin-bottom: 8px; }
+.cmpb { margin: 6px 0; }
+.cmpb span { display: inline-block; color: #fff; font-weight: 700; font-size: 20px; padding: 8px 14px; border-radius: 6px; white-space: nowrap; }
+
+/* 4. Estandarizar */
+.escala { display: flex; align-items: center; justify-content: space-between; background: #fff; border: 1px solid var(--line);
+          border-radius: 16px; padding: 24px 34px; margin-bottom: 34px; }
+.escala b { display: block; font-size: 46px; }
+.escala span { font-size: 19px; color: var(--muted); }
+.escala .flecha { font-size: 22px; font-weight: 700; color: var(--rojo); }
+.c1f { margin-bottom: 26px; }
+.c1e { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+.c1t { display: flex; align-items: center; gap: 14px; }
+.c1b { height: 40px; border-radius: 6px; display: inline-block; }
+.c1v { font-size: 34px; font-weight: 800; }
+.c1n { font-size: 19px; color: var(--muted); margin-top: 6px; }
+
+/* 5. Racimos */
+.dos-col { display: flex; gap: 40px; }
+.dos-col > * { flex: 1; min-width: 0; }
+.racimo { display: flex; flex-wrap: wrap; gap: 10px; background: #EEF3F9; border-radius: 22px; padding: 26px; }
+.bola { font-size: 20px; font-weight: 600; padding: 9px 16px; border-radius: 999px; color: #fff; }
+.bola.azul { background: var(--azul); color: #fff; }
+.bola.roja { background: var(--rojo); color: #fff; }
+.dato { margin-top: 20px; font-size: 26px; }
+.nube .etq.rojo { margin-top: 6px; }
+.solas { display: grid; grid-template-columns: 1fr 1fr; gap: 34px 20px; padding: 30px 10px; }
+.sola { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+.sola small { font-size: 19px; color: var(--muted); }
+
+/* 6. Columnas */
+.cols { position: relative; display: flex; align-items: flex-end; gap: 22px; height: 420px; padding-top: 30px; border-bottom: 2px solid var(--ink); }
+.col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; width: 70px; }
+.colb { width: 100%; border-radius: 6px 6px 0 0; display: block; }
+.colv { font-size: 19px; font-weight: 700; margin-bottom: 6px; }
+.colx { position: absolute; bottom: -34px; font-size: 19px; color: var(--muted); }
+.col { position: relative; }
+.anot { position: absolute; font-size: 21px; line-height: 1.35; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 12px 18px; }
+.anot.a1 { left: 110px; top: 30px; border-left: 6px solid var(--azul); }
+.anot.a2 { left: 200px; top: 190px; border-left: 6px solid var(--rojo); }
+.vs { display: flex; gap: 26px; margin-top: 62px; }
+.vs > div { flex: 1; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; font-size: 21px; line-height: 1.35; }
+.vsn { display: block; font-size: 54px; font-weight: 800; }
+.vs small { color: var(--muted); }
+
+/* 7. Pesos */
+.pt { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+.ps { font-size: 20px; color: var(--muted); margin-bottom: 18px; line-height: 1.35; }
+.bh { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+.bhn { width: 270px; text-align: right; font-size: 20px; }
+.bhb { height: 26px; border-radius: 4px; display: inline-block; min-width: 3px; }
+.bhv { font-size: 20px; font-weight: 700; }
+.lupa { margin-top: 24px; font-size: 20px; line-height: 1.4; background: #FDF0F1; border-radius: 12px; padding: 14px 18px; }
+
+/* 8. Waffle */
+.wbloque { display: flex; flex-direction: column; align-items: center; }
+.waffle { display: grid; grid-template-columns: repeat(10, 46px); gap: 7px; margin: 14px 0 18px; }
+.waffle i { width: 46px; height: 46px; border-radius: 6px; display: block; }
+.wpie { font-size: 28px; }
+.wpie b { font-size: 40px; }
+.wley { position: absolute; left: 96px; bottom: 80px; font-size: 19px; color: var(--muted); }
+
+/* 9. Mapa */
+.mapa { align-items: flex-start; }
+.mapa img { width: 660px; height: auto; flex: none !important; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.lect { display: flex; flex-direction: column; gap: 16px; }
+.lf { font-size: 20px; line-height: 1.35; color: #2B3550; }
+.lf b { display: block; font-size: 22px; color: var(--ink); margin-bottom: 2px; }
+.z { display: inline-block; font-size: 18px; font-weight: 700; padding: 6px 12px; border-radius: 6px; margin: 8px 8px 0 0; color: #fff; }
+.za { background: var(--rojo); } .zb { background: var(--naranja); color: var(--ink); } .zc { background: #C9CED6; color: var(--ink); }
+
+/* 10. Final */
+.final h1 { font-size: 56px; margin-bottom: 26px; }
+.mapa-final { flex: none; width: 820px; }
+.mapa-final img { width: 820px; height: auto; border-radius: 14px; border: 1px solid var(--line); background: #fff; }
+.leyenda { margin-top: 4px; }
+.der { flex: 1; display: flex; flex-direction: column; gap: 20px; }
+.kpis-final { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.kf { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; }
+.kf b { display: block; font-size: 58px; line-height: 1.05; }
+.kf.rojo b { color: var(--rojo); }
+.kf span { font-size: 20px; line-height: 1.3; color: #2B3550; }
+.duelo { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; }
+.duelo .pt { font-size: 22px; }
+.dl { display: flex; align-items: center; gap: 14px; margin: 10px 0; font-size: 20px; }
+.dl > span:first-child { width: 190px; }
+.dlb { flex: 1; height: 26px; background: #EEF0F3; border-radius: 6px; overflow: hidden; }
+.dlb i { display: block; height: 100%; background: var(--gris); }
+.dl b { width: 90px; font-size: 24px; }
+.duelo small { font-size: 17px; color: var(--muted); }
+.nosabe { background: var(--ink); color: #fff; border-radius: 16px; padding: 18px 26px; }
+.nosabe .pt { font-size: 22px; color: var(--naranja); }
+.nosabe ul { padding-left: 22px; }
+.nosabe li { font-size: 19px; line-height: 1.38; margin: 6px 0; color: #E4E8EF; }
+</style></head><body>
+
+<section class="slide portada">
+  <div class="portada-izq">
+    <div class="marca">Gerencia de Riesgo de Crédito · 50.000 tarjetas</div>
+    <h1 class="gigante">Cada mes hay que escoger a quién llamar <em>antes</em> de que deje de pagar.</h1>
+    <p class="lead">Hoy la Gerencia lo decide revisando una ficha de <b>21 columnas por cliente</b>.
+       El programa de seguimiento tiene cupos limitados: llamada del gestor, congelar aumentos de cupo,
+       refinanciar antes de la mora.</p>
+    <p class="pregunta">«¿Puedo ordenar la cartera con un número? ¿Y a quién me pierdo si lo hago?»</p>
+    <div class="equipo">Oscar Contreras · Juan Pablo Sarmiento · Steven Navarro · Juan Diego Grajales<br>
+      <span>Estadística Multidimensional · Sustentación del corte 2 · Equipo 02</span></div>
+  </div>
+  <div class="portada-der">
+    <div class="producto">
+      <div class="prod-tag">Lo que le traemos</div>
+      <div class="prod-nombre">El Radar de seguimiento</div>
+      <div class="prod-kpi"><b>8.195</b><span>clientes al mes, en vez de 50.000 fichas</span></div>
+      <div class="prod-kpi"><b>2</b><span>números por cliente, en vez de 21 columnas</span></div>
+      <div class="prod-kpi"><b>85,5 %</b><span>del saldo de la lista, en los primeros 3.939 clientes a llamar</span></div>
+      <div class="prod-pie">Así llegamos: nueve decisiones con los datos →</div>
+    </div>
+  </div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>1 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">01</span><span>¿Qué variables entran?</span></div>
+  <h1>26 columnas, pero cinco repetían lo que ya decían otras.</h1>
+  <div class="cuerpo"><div class="visual">
+      <div class="etq">Entran · 21 numéricas</div><div class="chips"><span class="chip">Annual_Income</span><span class="chip">Credit_Limit</span><span class="chip">Statement_Balance</span><span class="chip">Payment_Amount</span><span class="chip">Grocery_Spending</span><span class="chip">Utility_Bill_Spending</span><span class="chip">Online_Shopping_Spending</span><span class="chip">Fuel_Spending</span><span class="chip">Dining_Spending</span><span class="chip">Travel_Spending</span><span class="chip">Entertainment_Spending</span><span class="chip">Monthly_Transactions</span><span class="chip">Avg_Transaction_Value</span><span class="chip">Mobile_App_Login</span><span class="chip">EMI_Count</span><span class="chip">International_Transactions</span><span class="chip">Reward_Points_Redeemed</span><span class="chip">Cash_Advance_Amount</span><span class="chip">Card_Age_Months</span><span class="chip">Age</span><span class="chip">Credit_Score</span></div>
+      <div class="etq rojo">Salen · 5 repetidas o derivadas</div><div class="fueras"><div class="fuera"><span class="chip tachado">Monthly_Spending</span><span class="por">= suma exacta de las 7 categorías de gasto</span></div><div class="fuera"><span class="chip tachado">Outstanding_Balance</span><span class="por">r = 0,997 con el saldo facturado</span></div><div class="fuera"><span class="chip tachado">Reward_Points_Earned</span><span class="por">r = 0,98 con el gasto</span></div><div class="fuera"><span class="chip tachado">Payment_Ratio</span><span class="por">cociente de pago ÷ saldo</span></div><div class="fuera"><span class="chip tachado">Credit_Utilization</span><span class="por">cociente de saldo ÷ cupo</span></div></div>
+      <div class="nota">Sexo, ocupación y tipo de tarjeta no construyen el resumen: se usan para colorear el mapa.
+      Los dos cocientes explican el <b>95 %</b> del puntaje: no se botan, se usan como lupa para leer el riesgo.</div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Una ficha de 21 columnas sin repetidas.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Meter las 26 numéricas y las categóricas codificadas.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>Con las 26, una columna se repite exacta (hay una dirección con varianza cero). El eje de tamaño sale idéntico en las dos versiones: correlación 1,00.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Nada de lo que se quitó era información nueva. Lo que el resumen gana es no contar dos veces lo mismo.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>2 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">02</span><span>¿Qué hacemos con faltantes y atípicos?</span></div>
+  <h1>Ningún dato malo. 1.641 clientes raros que no había que borrar, sino mirar.</h1>
+  <div class="cuerpo"><div class="visual">
+      <div class="kpis3">
+        <div class="kpi"><b>0</b><span>faltantes y duplicados: no sale ningún cliente</span></div>
+        <div class="kpi rojo"><b>1.641</b><span>raros en la combinación de sus variables (Mahalanobis, corte del 99 %)</span></div>
+        <div class="kpi"><b>64 %</b><span>de ellos no tiene <i>ninguna</i> variable extrema: columna por columna no se ven</span></div>
+      </div>
+      <div class="etq">¿Quiénes son? Gastan en todo… menos en una cosa (combustible, viajes, entretenimiento)</div>
+      <div class="comparar">
+        <div class="cmp"><span class="cmpn">Puntaje mediano</span>
+          <div class="cmpb"><span style="width:458px;background:#D7263D">573 · raros</span></div>
+          <div class="cmpb"><span style="width:511px;background:#9AA5B8">639 · resto</span></div></div>
+        <div class="cmp"><span class="cmpn">Proporción del saldo que pagan</span>
+          <div class="cmpb"><span style="width:319px;background:#D7263D">0,57 · raros</span></div>
+          <div class="cmpb"><span style="width:476px;background:#9AA5B8">0,85 · resto</span></div></div>
+      </div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Sale 0 casos. Los 1.641 se marcan y se estudian; 0 se corrigen, porque ninguno es un error de captura.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Borrar los atípicos, o revisar solo variable por variable (Tukey).</p></div><div class="c4f"><span class="c4l">La cifra</span><p>Quitarlos mueve las correlaciones como mucho 0,02: no están rompiendo nada.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Borrarlos habría escondido a un grupo con más riesgo que el promedio. Ahora es una lista para revisar.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>3 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">03</span><span>¿Estandarizamos?</span></div>
+  <h1>Sin estandarizar, el «resumen» era solo el ingreso con otro nombre.</h1>
+  <div class="cuerpo"><div class="visual">
+      <div class="escala">
+        <div><b>1,67</b><span>desviación de las cuotas (EMI)</span></div>
+        <div class="flecha">seis órdenes de magnitud →</div>
+        <div><b>₹1.410.000</b><span>desviación del ingreso anual</span></div>
+      </div>
+      <div class="etq">De cada 100 partes de la información, cuántas guarda la primera componente</div>
+      <div class="c1f"><div class="c1e">En rupias, sin estandarizar</div><div class="c1t"><span class="c1b" style="width:860px;background:#9AA5B8"></span><span class="c1v">95,5</span></div><div class="c1n">Una sola variable manda: el ingreso, con peso 0,76. Aporta 56 de cada 100 partes de la varianza total.</div></div>
+      <div class="c1f"><div class="c1e">Estandarizado</div><div class="c1t"><span class="c1b" style="width:432px;background:#5DA9E9"></span><span class="c1v">48,0</span></div><div class="c1n">Ninguna variable manda sola.</div></div>
+      <div class="c1f"><div class="c1e">log(x+1) + estandarizado</div><div class="c1t"><span class="c1b" style="width:451px;background:#2B6CB0"></span><span class="c1v">50,1</span></div><div class="c1n">Además, unos pocos clientes enormes ya no deciden la dirección.</div></div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Sí: logaritmo en las variables con cola larga y después todas a la misma escala.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Trabajar en rupias, o estandarizar sin logaritmo.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>En rupias, la primera componente «guarda» 95,5 de cada 100, pero es el ingreso disfrazado. Estandarizada guarda 50,1 y la construyen todas.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>El resumen pesa a todas las variables, no solo a las que se miden en números grandes.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>4 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">04</span><span>¿Tiene sentido resumir?</span></div>
+  <h1>El dinero se repite. El puntaje va solo.</h1>
+  <div class="cuerpo"><div class="visual dos-col">
+      <div class="nube">
+        <div class="etq">Se repiten · 16 de 21 tienen una compañera con correlación &gt; 0,6</div>
+        <div class="racimo"><span class="bola azul">ingreso</span><span class="bola azul">cupo</span><span class="bola azul">saldo</span><span class="bola azul">pagos</span><span class="bola azul">mercado</span><span class="bola azul">servicios</span><span class="bola azul">en línea</span><span class="bola azul">combustible</span><span class="bola azul">restaurantes</span><span class="bola azul">viajes</span><span class="bola azul">entretenimiento</span><span class="bola azul">transacciones</span><span class="bola azul">valor por compra</span><span class="bola azul">app</span><span class="bola azul">cuotas</span><span class="bola azul">internacionales</span></div>
+        <div class="dato">ingreso ↔ cupo: <b>r = 0,98</b></div>
+      </div>
+      <div class="nube">
+        <div class="etq rojo">Van solas · con ninguna pasan de 0,17</div>
+        <div class="solas"><div class="sola"><span class="bola roja">puntaje</span><small>máx. |r| = 0,17</small></div><div class="sola"><span class="bola roja">edad</span><small>máx. |r| = 0,01</small></div><div class="sola"><span class="bola roja">antigüedad</span><small>máx. |r| = 0,05</small></div><div class="sola"><span class="bola roja">avances</span><small>máx. |r| = 0,07</small></div></div>
+      </div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Sí se puede resumir: hay mucha información repetida.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>No resumir, y seguir mirando las 21 columnas una por una.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>16 de 21 variables se repiten con alguna otra (|r| &gt; 0,6). El puntaje, la variable que más le importa a la Gerencia, no pasa de 0,17 con ninguna.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Primera alerta: el tamaño del cliente cabe en un número; el riesgo, no cabe en ese número.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>5 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">05</span><span>¿Cuántas componentes?</span></div>
+  <h1>Dos números. No uno, y tampoco ocho.</h1>
+  <div class="cuerpo"><div class="visual">
+      <div class="etq">De cada 100 partes de la información de la ficha, cuántas guarda cada componente</div>
+      <div class="cols"><div class="col"><span class="colv">50,1</span><span class="colb" style="height:318px;background:#2B6CB0"></span><span class="colx">C1</span></div><div class="col"><span class="colv">5,3</span><span class="colb" style="height:34px;background:#D7263D"></span><span class="colx">C2</span></div><div class="col"><span class="colv">4,8</span><span class="colb" style="height:30px;background:#C9CED6"></span><span class="colx">C3</span></div><div class="col"><span class="colv">4,7</span><span class="colb" style="height:30px;background:#C9CED6"></span><span class="colx">C4</span></div><div class="col"><span class="colv">4,5</span><span class="colb" style="height:29px;background:#C9CED6"></span><span class="colx">C5</span></div><div class="col"><span class="colv">4,5</span><span class="colb" style="height:29px;background:#C9CED6"></span><span class="colx">C6</span></div><div class="col"><span class="colv">4,1</span><span class="colb" style="height:26px;background:#C9CED6"></span><span class="colx">C7</span></div><div class="col"><span class="colv">2,9</span><span class="colb" style="height:18px;background:#C9CED6"></span><span class="colx">C8</span></div><div class="col"><span class="colv">2,8</span><span class="colb" style="height:18px;background:#C9CED6"></span><span class="colx">C9</span></div><div class="col"><span class="colv">2,5</span><span class="colb" style="height:16px;background:#C9CED6"></span><span class="colx">C10</span></div>
+        <div class="anot a1"><b>C1 · 50,1</b><br>la mitad de la ficha en un número</div>
+        <div class="anot a2"><b>C2 · solo 5,3</b><br>…pero es la que ve el riesgo</div>
+      </div>
+      <div class="vs">
+        <div><span class="vsn azul">18 %</span>de los clientes con peor puntaje caen en el 20 % más alto de C1 <small>(al azar sería 20 %)</small></div>
+        <div><span class="vsn rojo">66 %</span>caen en el 20 % más alto de C2</div>
+      </div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Dos: C1 y C2.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Una (la que más guarda); tres (la regla de «más que una variable»); ocho (para pasar del 80 %).</p></div><div class="c4f"><span class="c4l">La cifra</span><p>C2 guarda poco, pero encuentra a 6.580 de los 10.046 clientes con peor puntaje; C1 solo a 1.832.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Nos quedamos con las componentes según lo que necesita la Gerencia, no según una regla: le basta una ficha de dos números.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>6 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">06</span><span>¿Qué mide cada una?</span></div>
+  <h1>Un eje mide el tamaño del cliente. El otro, su riesgo.</h1>
+  <div class="cuerpo"><div class="visual dos-col">
+      <div class="pesos"><div class="pt azul">C1 · Tamaño del cliente</div>
+        <div class="ps">Todo lo que se mide en rupias o en frecuencia pesa parecido y en la misma dirección.</div>
+        <div class="bh"><span class="bhn">cupo</span><span class="bhb" style="width:161px;background:#2B6CB0"></span><span class="bhv">0,30</span></div><div class="bh"><span class="bhn">ingreso</span><span class="bhb" style="width:161px;background:#2B6CB0"></span><span class="bhv">0,30</span></div><div class="bh"><span class="bhn">saldo</span><span class="bhb" style="width:156px;background:#2B6CB0"></span><span class="bhv">0,29</span></div><div class="bh"><span class="bhn">pagos</span><span class="bhb" style="width:145px;background:#2B6CB0"></span><span class="bhv">0,27</span></div><div class="bh"><span class="bhn">mercado</span><span class="bhb" style="width:145px;background:#2B6CB0"></span><span class="bhv">0,27</span></div><div class="bh"><span class="bhn">app</span><span class="bhb" style="width:134px;background:#2B6CB0"></span><span class="bhv">0,25</span></div><div class="bh"><span class="bhn">… 10 más de dinero y uso</span><span class="bhb" style="width:118px;background:#2B6CB0"></span><span class="bhv">0,22</span></div><div class="bh"><span class="bhn">puntaje</span><span class="bhb" style="width:5px;background:#D7263D"></span><span class="bhv">0,01</span></div></div>
+      <div class="pesos"><div class="pt rojo">C2 · Riesgo</div>
+        <div class="ps">Hacia arriba: peor puntaje, más avances en efectivo, tarjeta más nueva.</div>
+        <div class="bh"><span class="bhn">puntaje</span><span class="bhb" style="width:419px;background:#D7263D"></span><span class="bhv">-0,78</span></div><div class="bh"><span class="bhn">avances en efectivo</span><span class="bhb" style="width:263px;background:#D7263D"></span><span class="bhv">0,49</span></div><div class="bh"><span class="bhn">antigüedad tarjeta</span><span class="bhb" style="width:183px;background:#D7263D"></span><span class="bhv">-0,34</span></div><div class="bh"><span class="bhn">cupo</span><span class="bhb" style="width:5px;background:#9AA5B8"></span><span class="bhv">-0,01</span></div><div class="bh"><span class="bhn">ingreso</span><span class="bhb" style="width:0px;background:#9AA5B8"></span><span class="bhv">0,00</span></div>
+        <div class="lupa"><b>Con la lupa</b> (variables que no la construyen): proporción pagada <b>−0,59</b> · uso del cupo <b>+0,47</b>. Confirma el nombre.</div></div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>C1 = tamaño; C2 = riesgo (C3 = edad, casi sola).</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Ponerles nombre a ojo, sin mirar los pesos.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>En C1, 16 variables de dinero y uso pesan entre 0,20 y 0,30; el puntaje, 0,01. En C2 manda el puntaje (−0,78), con los avances en efectivo (+0,49).</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>El mapa se lee en el idioma del negocio: a la derecha, cuánto pesa el cliente; hacia arriba, cuánto preocupa. Que vayan juntas no quiere decir que una cause a la otra.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>7 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">07</span><span>¿Qué pierde el cliente con un solo número?</span></div>
+  <h1>Con un solo número se nos escapan 8 de cada 10 clientes en riesgo.</h1>
+  <div class="cuerpo"><div class="visual dos-col">
+      <div class="wbloque"><div class="pt azul">Ordenando solo por C1</div><div class="waffle"><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#2B6CB0"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i></div>
+        <div class="wpie"><b class="rojo">8.214</b> de 10.046 se escapan</div></div>
+      <div class="wbloque"><div class="pt rojo">Ordenando por C2</div><div class="waffle"><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#D7263D"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i><i style="background:#E3E6EB"></i></div>
+        <div class="wpie"><b>6.580</b> de 10.046 los encuentra</div></div>
+      <div class="wley">Cada cuadro = 1 de cada 100 clientes del 20 % con peor puntaje · color = los encuentra el número</div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Un número no basta.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Ordenar toda la cartera solo por C1, el mejor resumen de un número.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>De los 10.046 clientes con peor puntaje, C1 deja escapar a 8.214: el 82 %, lo mismo que escoger al azar.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Con un solo número, la Gerencia ordenaría la cartera por tamaño y el riesgo le quedaría fuera.</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>8 / 10</span></footer>
+</section>
+<section class="slide ">
+  <div class="kicker"><span class="num">08</span><span>¿Qué muestra el mapa?</span></div>
+  <h1>No hay tribus de riesgo: la cartera es un continuo.</h1>
+  <div class="cuerpo"><div class="visual dos-col mapa">
+      <img src="mapa_tarjetas.png" alt="Mapa de clientes por tipo de tarjeta">
+      <div class="lect">
+        <div class="lf"><b>En tamaño, la tarjeta ordena</b>De Basic a Signature, los centros van de −2,97 a +4,44 desviaciones.</div>
+        <div class="lf"><b>En riesgo, todas se montan</b>Los cinco centros quedan a menos de 0,2 desviaciones. Con la ocupación pasa lo mismo.</div>
+        <div class="lf"><b>Un solo pico, sin valle</b>No hay un grupo aparte: el riesgo sube poco a poco.</div>
+        <div class="lf corte"><b>El corte lo pone la Gerencia</b>Riesgo &gt; 1 desviación y mitad de tamaño:<br>
+          <span class="z za">A · 4.226</span><span class="z zb">B · 3.969</span><span class="z zc">sin seguimiento · 41.805</span></div>
+      </div>
+    </div><aside class="c4"><div class="c4f"><span class="c4l">Decidimos</span><p>Es un continuo: el corte se define, no se descubre.</p></div><div class="c4f"><span class="c4l">La otra opción</span><p>Buscar grupos hechos: escoger por tipo de tarjeta o por ocupación.</p></div><div class="c4f"><span class="c4l">La cifra</span><p>La tarjeta explica el tamaño (centros de −2,97 a 4,44) y nada del riesgo (&lt; 0,2). Ojo: C2 se parece −0,82 al puntaje.</p></div><div class="c4f"><span class="c4l">Para la Gerencia</span><p>Escoger a quién seguir por tipo de tarjeta no sirve. Y como C2 es casi el puntaje, falta una última pregunta…</p></div></aside></div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>9 / 10</span></footer>
+</section>
+<section class="slide final">
+  <div class="kicker"><span class="num">09</span><span>¿Qué decide el cliente?</span></div>
+  <h1>El puntaje dice quién entra. El tamaño dice por quién empezar.</h1>
+  <div class="cuerpo">
+    <div class="visual mapa-final">
+      <img src="mapa_clientes.png" alt="Mapa con la lista final">
+      <div class="leyenda"><span class="z za">A · 3.939 grandes → llamada del gestor</span>
+        <span class="z zb">B · 4.256 pequeños → mensajes</span></div>
+    </div>
+    <div class="der">
+      <div class="kpis-final">
+        <div class="kf"><b>8.195</b><span>clientes de peor puntaje al mes (16,4 % de la cartera)</span></div>
+        <div class="kf rojo"><b>85,5 %</b><span>del saldo de la lista está en la zona A, que tiene el 48 % de los clientes</span></div>
+      </div>
+      <div class="duelo"><div class="pt">Con los mismos 8.195 cupos</div>
+        <div class="dl"><span>Lista por C2</span><span class="dlb"><i style="width:57.8%"></i></span><b>57,8 %</b></div>
+        <div class="dl"><span>Lista por puntaje</span><span class="dlb"><i style="width:81.6%;background:#D7263D"></i></span><b>81,6 %</b></div>
+        <small>de los clientes con peor puntaje encontrados · C2 es el puntaje con ruido; lo nuevo que aporta el resumen es C1</small></div>
+      <div class="nosabe"><div class="pt">Lo que no sabemos todavía</div>
+        <ul><li>No hay datos de mora real: el puntaje es nuestra mejor aproximación.</li>
+        <li>Frente al RBI, la cartera simulada gasta ~4 veces y debe ~11 veces lo de una tarjeta real en India: los conteos se recalculan con la cartera propia. Los cortes son relativos y sí se pueden llevar.</li>
+        <li>El mapa muestra con qué va el riesgo, no qué lo causa.</li></ul></div>
+    </div>
+  </div>
+  <footer><span>Equipo 02 · Radar de seguimiento para la Gerencia de Riesgo</span><span>10 / 10</span></footer>
+</section>
+</body></html>

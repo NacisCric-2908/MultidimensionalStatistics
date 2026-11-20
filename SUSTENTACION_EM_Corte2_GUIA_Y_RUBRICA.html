@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Sustentación corte 2</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<h1
+id="sustentación-del-corte-2-las-decisiones-que-tomamos-con-los-datos">Sustentación
+del corte 2 — Las decisiones que tomamos con los datos</h1>
+<p><strong>Estadística Multidimensional · 26158 · grupo 020-81 · periodo
+2026-3</strong> <strong>Sábados 21 y 28 de noviembre de 2026 · 15
+minutos por equipo · sobre 5,0</strong></p>
+<hr />
+<h2 id="qué-se-sustenta">1. Qué se sustenta</h2>
+<p>Lo trabajado en el corte 2 <strong>hasta componentes
+principales</strong>, sobre el dataset del equipo y para el cliente de
+su caso de negocio:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tema</th>
+<th>Sesión</th>
+<th>Qué tienen que poder explicar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normal multivariante y distancia de Mahalanobis</td>
+<td>Sábado 3 de octubre</td>
+<td>Qué casos están lejos de todos a la vez, y qué decidieron con
+ellos</td>
+</tr>
+<tr>
+<td>Componentes principales I</td>
+<td>Sábado 17 de octubre</td>
+<td>Si un número alcanza, cuánto guarda, qué mide cada componente y qué
+se pierde, contado en casos</td>
+</tr>
+<tr>
+<td>Componentes principales II</td>
+<td>Lunes 19 de octubre</td>
+<td>El mapa y el biplot: qué va con qué, si hay grupos o un continuo, y
+qué decide el cliente en el mapa</td>
+</tr>
+</tbody>
+</table>
+<p>La pregunta de fondo de la sustentación es: <strong>¿qué decisiones
+tomaron con sus datos, y por qué?</strong> Cada decisión se defiende con
+una cifra de su propio análisis.</p>
+<h2 id="quién-sustenta-cada-sábado">2. Quién sustenta cada sábado</h2>
+<p>Los equipos que en el corte 1 sustentaron el segundo día, ahora
+sustentan el primero, y al revés.</p>
+<table>
+<thead>
+<tr>
+<th>Sábado 21 de noviembre</th>
+<th>Sábado 28 de noviembre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01 Celis</td>
+<td>04 Pinilla</td>
+</tr>
+<tr>
+<td>02 Grajales</td>
+<td>05 Bautista</td>
+</tr>
+<tr>
+<td>03 Arenas</td>
+<td>07 Truque</td>
+</tr>
+<tr>
+<td>06 Barrera</td>
+<td>08 Martínez</td>
+</tr>
+<tr>
+<td>10 Pradilla</td>
+<td>09 García</td>
+</tr>
+<tr>
+<td>12 Flórez</td>
+<td>11 Ospina</td>
+</tr>
+</tbody>
+</table>
+<p>Se sustenta <strong>en el orden de la tabla</strong>. El primer
+equipo empieza a la hora de inicio de la clase. <strong>Todos los
+equipos del día están desde el principio</strong>: si un equipo falta,
+pasa el siguiente.</p>
+<h2 id="la-entrega">3. La entrega</h2>
+<p><strong>Todos los equipos entregan el mismo día: viernes 20 de
+noviembre de 2026, 6:00 p. m.</strong>, en Moodle, también los que
+sustentan el sábado 28. Después de esa hora no se cambia la entrega.</p>
+<p><strong>Qué se sube</strong> (un envío por equipo):</p>
+<ol type="1">
+<li>El <code>.Rmd</code> y su <code>.html</code> tejido. El
+<code>.html</code> abre solo y trae las gráficas.</li>
+<li>La presentación en PDF, con la que van a sustentar.</li>
+<li>Al principio del <code>.Rmd</code>, la <strong>tabla de
+decisiones</strong>: una fila por cada una de las nueve decisiones de la
+sección 4, con estas columnas: <em>qué decidimos · qué otra opción había
+· qué cifra lo sostiene · qué le cambia al cliente</em>.</li>
+</ol>
+<p><strong>Se sustenta con lo que se entregó.</strong> Una presentación
+distinta de la entrega no se recibe.</p>
+<h2 id="cómo-son-los-15-minutos">4. Cómo son los 15 minutos</h2>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 30%" />
+<col style="width: 30%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">Minuto</th>
+<th>Qué pasa</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0–1</td>
+<td>Proyectan la presentación (ya descargada en el equipo de la
+sala)</td>
+<td>El equipo</td>
+</tr>
+<tr>
+<td style="text-align: right;">1–9</td>
+<td><strong>Presentación: 8 minutos.</strong> En el minuto 8 se
+corta</td>
+<td>Todos los integrantes</td>
+</tr>
+<tr>
+<td style="text-align: right;">9–14</td>
+<td><strong>Preguntas del docente: 5 minutos.</strong> Al menos una
+pregunta a cada integrante, sobre cualquier parte del trabajo</td>
+<td>El docente escoge quién responde</td>
+</tr>
+<tr>
+<td style="text-align: right;">14–15</td>
+<td>Cambio de equipo</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Qué debe tener la presentación</strong> (8 minutos, máximo 10
+láminas).</p>
+<p>La presentación <strong>no recorre pasos técnicos: cuenta las
+decisiones que tomaron</strong>. Primero, una lámina con el cliente y su
+decisión. Después, estas nueve decisiones, en este orden:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>La decisión</th>
+<th>Lo que tienen que mostrar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><strong>¿Qué variables entran?</strong></td>
+<td>Cuáles entran, cuáles se dejaron por fuera y por qué</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><strong>¿Qué hacemos con faltantes y atípicos?</strong></td>
+<td>Cuántos casos salen; con Mahalanobis, cuáles se estudiaron y cuáles
+se corrigieron</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><strong>¿Estandarizamos?</strong></td>
+<td>La desviación de cada variable, la decisión (sí o no) y cuánto
+cambia lo que guarda la primera componente de una forma y de la
+otra</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><strong>¿Tiene sentido resumir?</strong></td>
+<td>Las correlaciones: qué se repite y qué va sola</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><strong>¿Cuántas componentes?</strong></td>
+<td>Cuánto guarda cada una, y cuántas se quedan <strong>por lo que
+necesita el cliente</strong>, no por una regla</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td><strong>¿Qué mide cada una?</strong></td>
+<td>El nombre de cada componente, sostenido en sus pesos</td>
+</tr>
+<tr>
+<td style="text-align: right;">7</td>
+<td><strong>¿Qué pierde el cliente con un solo número?</strong></td>
+<td>Los casos que se escapan, contados</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td><strong>¿Qué muestra el mapa?</strong></td>
+<td>Si hay grupos o un continuo, un corte y cuántos casos caen en cada
+zona</td>
+</tr>
+<tr>
+<td style="text-align: right;">9</td>
+<td><strong>¿Qué decide el cliente?</strong></td>
+<td>La recomendación, con su cifra, y lo que no se sabe todavía</td>
+</tr>
+</tbody>
+</table>
+<p>Cada decisión se cuenta igual: <strong>qué decidimos · qué otra
+opción había · qué cifra lo sostiene · qué le cambia al
+cliente</strong>. Nada de salidas de R en las láminas: la salida está en
+el <code>.html</code>.</p>
+<hr />
+<h2 id="la-rúbrica">5. La rúbrica</h2>
+<h3 id="nota-del-equipo-g-sobre-50">5.1 Nota del equipo (G), sobre
+5,0</h3>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th style="text-align: right;">#</th>
+<th>Criterio</th>
+<th style="text-align: right;">Máx.</th>
+<th>100 % si…</th>
+<th>50 % si…</th>
+<th>0 si…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td><strong>Decisiones con los datos</strong> (1, 2 y 4)</td>
+<td style="text-align: right;">1,5</td>
+<td>La tabla de decisiones tiene las nueve filas, cada decisión tiene su
+cifra y la otra opción, y la explican sin leerla. Dicen cuántos casos
+salieron y por qué</td>
+<td>Hay decisiones sin cifra o sin razón, o dicen «limpiamos los datos»
+sin decir qué</td>
+<td>No saben qué casos o variables quitaron, ni por qué</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td><strong>Atípicos con Mahalanobis</strong> (2)</td>
+<td style="text-align: right;">0,7</td>
+<td>Muestran los casos más lejanos y, para cada uno, si es un error que
+se corrigió o un caso real que se estudió</td>
+<td>Calculan la distancia pero no deciden nada con ella</td>
+<td>No la usaron, o borraron atípicos sin revisarlos</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td><strong>El resumen</strong> (3, 5, 6 y 7)</td>
+<td style="text-align: right;">1,2</td>
+<td>Dicen cuánto guarda la primera componente, cuántas usan <strong>por
+la necesidad del cliente</strong>, le ponen nombre a cada una con sus
+pesos, y justifican si estandarizaron</td>
+<td>Dan las cifras, pero el número de componentes o los nombres no se
+sostienen</td>
+<td>Muestran la salida de R sin leerla</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td><strong>El mapa y la decisión</strong> (8 y 9)</td>
+<td style="text-align: right;">1,1</td>
+<td>Leen el biplot (qué flechas van juntas, cuál va sola), dicen si hay
+grupos o un continuo, y proponen un grupo o un corte <strong>contado en
+casos</strong>, que termina en la decisión del cliente</td>
+<td>Leen el biplot pero no llegan a un grupo o un corte para el
+cliente</td>
+<td>Muestran el biplot sin leerlo</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td><strong>Presentación</strong></td>
+<td style="text-align: right;">0,5</td>
+<td>Cumplen los 8 minutos, hablan todos, hablan del negocio y no de R, y
+no leen la pantalla</td>
+<td>Se pasan del tiempo o habla uno solo</td>
+<td>Leen las láminas o no terminan</td>
+</tr>
+<tr>
+<td style="text-align: right;"></td>
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>5,0</strong></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Se califica con 100 %, 50 % o 0 del máximo de cada criterio. Se puede
+usar un valor intermedio solo si se escribe por qué.</p>
+<h3 id="nota-individual-i-sobre-50">5.2 Nota individual (I), sobre
+5,0</h3>
+<p>Las preguntas del docente, <strong>a cualquier integrante y sobre el
+trabajo de todo el equipo</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>Respuesta</th>
+<th style="text-align: right;">Nota</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>✓ Responde bien y con una cifra o un caso de su análisis</td>
+<td style="text-align: right;">5,0</td>
+</tr>
+<tr>
+<td>½ Responde a medias, o bien pero sin sostenerlo</td>
+<td style="text-align: right;">2,5</td>
+</tr>
+<tr>
+<td>✗ No responde, o dice «eso lo hizo otro»</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Si a un integrante se le hacen dos preguntas, I es el promedio de las
+dos.</p>
+<h3 id="cómo-se-combinan">5.3 Cómo se combinan</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Si el equipo…</th>
+<th>Nota de cada integrante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Funciona como equipo</strong>: cada uno responde bien sobre
+el trabajo de los otros</td>
+<td>(15·G + 5·I) / 20</td>
+</tr>
+<tr>
+<td><strong>Se repartió el trabajo</strong>: «eso lo hizo otro», se
+contradicen o uno solo sabe</td>
+<td>(5·G + 15·I) / 20</td>
+</tr>
+</tbody>
+</table>
+<p>El docente decide cuál de las dos fórmulas aplica, al final de los 15
+minutos, y lo anota.</p>
+<h3 id="descuentos">5.4 Descuentos</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Situación</th>
+<th style="text-align: right;">Descuento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrega después del viernes 20 a las 6:00 p. m. y antes de la
+sustentación</td>
+<td style="text-align: right;">−0,5 a la nota G</td>
+</tr>
+<tr>
+<td>No entregó, o la presentación no corresponde a la entrega</td>
+<td style="text-align: right;">G se califica solo con lo que se ve en la
+sala, sobre 3,0</td>
+</tr>
+<tr>
+<td>Integrante ausente sin excusa</td>
+<td style="text-align: right;">Nota 0 para ese integrante; el equipo
+sustenta igual</td>
+</tr>
+<tr>
+<td>Integrante que llega después de que el equipo terminó</td>
+<td style="text-align: right;">−1,0 a su nota</td>
+</tr>
+<tr>
+<td>Afirmar que una componente <strong>demuestra</strong> una causa o
+una capacidad</td>
+<td style="text-align: right;">−0,3 a la nota G</td>
+</tr>
+<tr>
+<td>Decir «autovalores» o «vectores propios» sin decir qué significan
+para el cliente</td>
+<td style="text-align: right;">−0,2 a la nota G</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejemplo-de-cálculo">5.5 Ejemplo de cálculo</h3>
+<p>Un equipo saca G = 4,0. En las preguntas, tres integrantes responden
+bien (I = 5,0) y uno a medias (I = 2,5). El docente juzga que el equipo
+funciona como equipo:</p>
+<ul>
+<li>Los tres que respondieron bien: (15 × 4,0 + 5 × 5,0) / 20 =
+<strong>4,25</strong></li>
+<li>El que respondió a medias: (15 × 4,0 + 5 × 2,5) / 20 =
+<strong>3,63</strong></li>
+</ul>
+<hr />
+<h2 id="lo-que-no-entra-en-esta-sustentación">6. Lo que no entra en esta
+sustentación</h2>
+<ul>
+<li><strong>Análisis factorial</strong> (los comportamientos detrás de
+las variables, con PCFA y PF): va en la entrega final y la presentación
+del sábado 5 de diciembre.</li>
+<li><strong>Hotelling y MANOVA</strong>: entran en el quiz-parcial del
+lunes 23 de noviembre.</li>
+<li><strong>Los temas adicionales</strong> de correspondencias y
+correlación canónica: se calificaron aparte, el 14 de noviembre.</li>
+</ul>
+<p><em>Estadística Multidimensional · 26158 · periodo 2026-3 · Jhon
+Alejandro Varón Robayo · Universidad Distrital.</em></p>
+</body>
+</html>
