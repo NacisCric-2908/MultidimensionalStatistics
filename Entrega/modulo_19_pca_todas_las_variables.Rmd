@@ -1,0 +1,1195 @@
+<!--
+  MÓDULO 19 — pegar al final de analisis_synthetic_credit_card.Rmd
+  Solo necesita el objeto `credit` (Módulo 1). No modifica ningún objeto de los módulos
+  anteriores: todo lo nuevo termina en _num, _mix, _19 o tiene un nombre que no se usa antes.
+-->
+
+# Módulo 19: Componentes Principales con Todas las Variables del Dataset
+
+Los Módulos 16 y 17 aplicaron componentes principales a las 21 variables numéricas que dejó el
+Módulo 15, después de apartar cinco columnas derivadas o redundantes (`Monthly_Spending`,
+`Payment_Ratio`, `Credit_Utilization`, `Reward_Points_Earned` y `Outstanding_Balance`) y de dejar
+por fuera las variables categóricas. Este módulo vuelve a aplicar la técnica con **todo el
+dataset**, en dos versiones:
+
+1.  **Parte I — solo variables numéricas.** Entran las 26 columnas numéricas, sin excluir
+    ninguna. Las tres categóricas (`Gender`, `Occupation` y `Card_Type`) no participan en la
+    construcción de las componentes: se usan después para colorear el mapa y comprobar si los
+    grupos que ya se conocen se separan en él.
+2.  **Parte II — numéricas más categóricas codificadas.** Entran las mismas 26 numéricas más las
+    tres categóricas, convertidas a número con *label encoding* (la ordinal `Card_Type` y la
+    binaria `Gender`) y con *one-hot* (la nominal `Occupation`, de seis niveles).
+
+`Customer_ID` queda fuera de las dos versiones: es un identificador y no mide nada.
+
+Cada resultado se explica con dos frases:
+
+- **Qué se hace:** qué se calcula o se dibuja, y por qué se hace así.
+- **Qué veo:** lo que muestran el número o el gráfico, con las cifras calculadas en el propio
+  documento.
+
+El orden es el de las sesiones de componentes principales (PCA I y PCA II): ¿las variables se
+repiten?, ¿hay que estandarizar?, cuánta información guarda cada componente, qué mide cada una,
+el mapa, el biplot, ¿hay grupos o un continuo?, ¿los grupos conocidos se separan? y, al final,
+qué cambia al meter las categóricas. Aquí no hay un caso de negocio de por medio: no se toma
+ninguna decisión para un cliente, solo se describe lo que la técnica encuentra.
+
+------------------------------------------------------------------------
+
+## Parte I: Componentes principales con las 26 variables numéricas
+
+### Las 26 variables y su transformación
+
+**Qué se hace.** Se toman las 26 columnas numéricas del dataset, sin excluir ninguna. Antes de
+calcular nada se repite la decisión de transformación del Módulo 15: las variables con cola larga
+hacia la derecha (asimetría mayor que 1) entran con `log(x+1)`, que acorta la cola para que unos
+pocos clientes enormes no decidan la dirección de las componentes; después todas se estandarizan
+con `scale()` (media 0 y desviación 1), porque conviven rupias, conteos, meses y proporciones
+(Módulo 10). Hay un cambio frente al Módulo 15: allí el criterio era el valor **absoluto** de la
+asimetría, y aquí solo cuenta la asimetría **positiva**. Con las 26 variables entra
+`Payment_Ratio`, la única con asimetría negativa fuerte ($-1{,}04$, Módulo 3), y un logaritmo
+—que acorta colas derechas— la dejaría más torcida, no menos.
+
+```{r, p19_paquetes}
+for (pk in c("ggplot2", "ggrepel")) {
+  if (!requireNamespace(pk, quietly = TRUE)) install.packages(pk, repos = "https://cloud.r-project.org")
+}
+library(ggplot2)
+theme_set(theme_minimal(base_size = 12))
+
+# Formato español (coma decimal, punto de miles) y dos ayudantes para armar frases con listas
+coma  <- function(x, d = 1) formatC(x, format = "f", digits = d, decimal.mark = ",", big.mark = ".")
+miles <- function(x) formatC(round(x), format = "d", big.mark = ".")
+unir  <- function(x) if (length(x) <= 1) x else paste(paste(x[-length(x)], collapse = ", "), "y", x[length(x)])
+cod   <- function(x) paste0("`", x, "`")      # nombres de variable en formato de código
+```
+
+```{r, p19_datos}
+vars_num   <- names(credit)[sapply(credit, is.numeric)]   # las 26 columnas numéricas
+vars_cat   <- c("Gender", "Occupation", "Card_Type")      # las 3 categóricas (Customer_ID es solo un identificador)
+orden_tipo <- c("Basic", "Silver", "Gold", "Platinum", "Signature")
+gastos_cat <- c("Online_Shopping_Spending", "Grocery_Spending", "Fuel_Spending", "Dining_Spending",
+                "Travel_Spending", "Entertainment_Spending", "Utility_Bill_Spending")
+p_num <- length(vars_num)
+
+c(clientes = nrow(credit), numericas = p_num, categoricas = length(vars_cat),
+  celdas_vacias = sum(is.na(credit[c(vars_num, vars_cat)])))
+```
+
+```{r, p19_etiquetas, echo = FALSE}
+# Etiquetas en español y bloques de color para los gráficos de este módulo
+etiqueta <- c(
+  Age = "Edad", Annual_Income = "Ingreso anual", Credit_Limit = "Cupo",
+  Card_Age_Months = "Antigüedad de la tarjeta", Monthly_Spending = "Gasto mensual",
+  Monthly_Transactions = "Compras al mes", Avg_Transaction_Value = "Valor por compra",
+  Online_Shopping_Spending = "Gasto en línea", Grocery_Spending = "Gasto en mercado",
+  Fuel_Spending = "Gasto en combustible", Dining_Spending = "Gasto en restaurantes",
+  Travel_Spending = "Gasto en viajes", Entertainment_Spending = "Gasto en entretenimiento",
+  Utility_Bill_Spending = "Gasto en servicios", Outstanding_Balance = "Saldo pendiente",
+  Statement_Balance = "Saldo facturado", Payment_Amount = "Monto pagado",
+  Payment_Ratio = "Proporción pagada", Credit_Utilization = "Uso del cupo",
+  Cash_Advance_Amount = "Avances en efectivo", EMI_Count = "Compras a cuotas",
+  International_Transactions = "Compras internacionales", Reward_Points_Earned = "Puntos ganados",
+  Reward_Points_Redeemed = "Puntos redimidos", Mobile_App_Login = "Ingresos a la app",
+  Credit_Score = "Puntaje crediticio",
+  Gender_01 = "Género (F = 0, M = 1)", Card_Type_1a5 = "Tipo de tarjeta (1 a 5)",
+  Gender_F = "Género: F", Gender_M = "Género: M",
+  Occupation_Business_Owner = "Ocupación: dueño de negocio",
+  Occupation_Government_Employee = "Ocupación: empleado público",
+  Occupation_Private_Employee = "Ocupación: empleado privado",
+  Occupation_Retired = "Ocupación: jubilado", Occupation_Self_Employed = "Ocupación: independiente",
+  Occupation_Student = "Ocupación: estudiante",
+  Card_Type_Basic = "Tarjeta Basic", Card_Type_Silver = "Tarjeta Silver", Card_Type_Gold = "Tarjeta Gold",
+  Card_Type_Platinum = "Tarjeta Platinum", Card_Type_Signature = "Tarjeta Signature"
+)
+
+bloque <- c(
+  Annual_Income = "Dinero y cupo", Credit_Limit = "Dinero y cupo", Statement_Balance = "Dinero y cupo",
+  Outstanding_Balance = "Dinero y cupo", Payment_Amount = "Dinero y cupo",
+  Monthly_Spending = "Gasto", Online_Shopping_Spending = "Gasto", Grocery_Spending = "Gasto",
+  Fuel_Spending = "Gasto", Dining_Spending = "Gasto", Travel_Spending = "Gasto",
+  Entertainment_Spending = "Gasto", Utility_Bill_Spending = "Gasto", Reward_Points_Earned = "Gasto",
+  Monthly_Transactions = "Uso de la tarjeta", Avg_Transaction_Value = "Uso de la tarjeta",
+  EMI_Count = "Uso de la tarjeta", International_Transactions = "Uso de la tarjeta",
+  Cash_Advance_Amount = "Uso de la tarjeta", Reward_Points_Redeemed = "Uso de la tarjeta",
+  Mobile_App_Login = "Uso de la tarjeta",
+  Payment_Ratio = "Pago y riesgo", Credit_Utilization = "Pago y riesgo", Credit_Score = "Pago y riesgo",
+  Age = "Perfil", Card_Age_Months = "Perfil"
+)
+col_bloque <- c("Dinero y cupo" = "#2B6CB0", "Gasto" = "#2F855A", "Uso de la tarjeta" = "#718096",
+                "Pago y riesgo" = "#C05621", "Perfil" = "#805AD5", "Categóricas" = "#D69E2E")
+stopifnot(setequal(vars_num, names(bloque)))
+orden_vars <- names(bloque)[order(match(bloque, names(col_bloque)))]   # variables agrupadas por bloque
+
+lab <- function(v) { r <- unname(etiqueta[v]); r[is.na(r)] <- v[is.na(r)]; r }
+bloque_de <- function(v) { b <- unname(bloque[v]); b[is.na(b)] <- "Categóricas"; b }
+```
+
+```{r, p19_transformacion}
+skew <- function(x) mean(((x - mean(x)) / sd(x))^3)
+asim_num    <- sapply(credit[vars_num], skew)
+con_log     <- vars_num[asim_num > 1]       # solo colas a la derecha: log(x+1) las acorta
+neg_fuertes <- vars_num[asim_num < -1]      # colas a la izquierda: el logaritmo las empeoraría
+
+X_num <- credit[vars_num]
+X_num[con_log] <- lapply(X_num[con_log], log1p)
+Z_num <- scale(X_num)                       # media 0 y desviación 1 en las 26 columnas
+
+data.frame(variable = vars_num, asimetria = round(asim_num, 2),
+           transformacion = ifelse(vars_num %in% con_log, "log(x+1) + scale()", "scale()"),
+           row.names = NULL)
+
+c(medias_cero = all(abs(colMeans(Z_num)) < 1e-10),
+  desviaciones_uno = all(abs(apply(Z_num, 2, sd) - 1) < 1e-10))
+```
+
+```{r, p19_texto_transformacion, include = FALSE}
+txt_neg <- if (length(neg_fuertes) > 0) {
+  paste0("Con asimetría negativa fuerte queda ", unir(cod(neg_fuertes)), " (",
+         paste(coma(asim_num[neg_fuertes], 2), collapse = ", "),
+         "): se deja solo con `scale()`, sin logaritmo")
+} else {
+  "Ninguna variable tiene asimetría negativa fuerte"
+}
+```
+
+**Qué veo.** `r length(con_log)` de las `r p_num` variables entran con logaritmo
+(`r unir(cod(con_log))`) y `r p_num - length(con_log)` solo se estandarizan. `r txt_neg`. Después
+de `scale()` las 26 columnas tienen media cero y desviación uno (las dos comprobaciones de la
+última línea de la salida dan `TRUE`).
+
+### ¿Las variables se repiten?
+
+**Qué se hace.** Un PCA solo puede resumir si las variables se repiten entre sí: si fueran
+independientes, cada una traería información que las demás no tienen. Se calcula la matriz de
+correlaciones $\mathbf{R}$ de las 26 columnas ya transformadas, se dibuja ordenando las variables
+por parecido (`hclust`, la misma idea del mapa de calor del Módulo 8) para que los bloques se
+vean, y se calcula, para cada variable, con cuál otra se parece más y cuántos pares pasan de 0,95.
+
+```{r, p19_correlaciones, fig.width=11, fig.height=9}
+R_num <- cor(Z_num)
+orden_h   <- hclust(as.dist(1 - abs(R_num)))$order
+nombres_h <- vars_num[orden_h]
+
+cor_larga <- as.data.frame(as.table(R_num))
+names(cor_larga) <- c("v1", "v2", "r")
+cor_larga$v1 <- factor(cor_larga$v1, levels = nombres_h)
+cor_larga$v2 <- factor(cor_larga$v2, levels = rev(nombres_h))
+
+ggplot(cor_larga, aes(v1, v2, fill = r)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient2(low = "#C05621", mid = "white", high = "#2B6CB0",
+                       limits = c(-1, 1), name = "Correlación") +
+  labs(title = "Qué tanto se mueven juntas las 26 variables (ya transformadas)",
+       subtitle = "Azul: van juntas · naranja: van en contra · variables ordenadas por parecido",
+       x = NULL, y = NULL) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r, p19_correlaciones_tabla}
+diag_na <- R_num; diag(diag_na) <- NA
+mayor_r   <- apply(abs(diag_na), 1, max, na.rm = TRUE)
+mejor_par <- apply(abs(diag_na), 1, function(f) names(which.max(f)))
+tabla_mayor <- data.frame(variable = vars_num, su_mayor_correlacion = round(mayor_r, 2),
+                          con = unname(mejor_par), row.names = NULL)
+tabla_mayor[order(tabla_mayor$su_mayor_correlacion), ]
+
+tri <- which(upper.tri(R_num) & abs(R_num) > 0.95, arr.ind = TRUE)
+pares_altos <- data.frame(var1 = vars_num[tri[, 1]], var2 = vars_num[tri[, 2]], r = round(R_num[tri], 3))
+pares_altos <- pares_altos[order(-abs(pares_altos$r)), ]
+pares_altos
+```
+
+```{r, p19_texto_correlaciones, include = FALSE}
+n_pares_95 <- nrow(pares_altos)
+txt_pares <- if (n_pares_95 == 0) "ninguno" else
+  unir(paste0(cod(head(pares_altos$var1, 5)), "–", cod(head(pares_altos$var2, 5))))
+solas <- names(mayor_r)[mayor_r < 0.3]
+txt_solas <- if (length(solas) > 0) {
+  paste0("En el otro extremo, ", unir(cod(solas)), " no pasan de 0,3 con ninguna otra: no se repiten con nada")
+} else {
+  "Ninguna variable queda por debajo de 0,3 con todas las demás"
+}
+```
+
+**Qué veo.** `r sum(mayor_r > 0.6)` de las 26 variables tienen al menos una compañera con
+$|r|$ mayor que 0,6, y `r n_pares_95` pares pasan de 0,95 (los más altos: `r txt_pares`).
+`r txt_solas`. El puntaje, que en el Módulo 16 iba solo, ahora tiene compañeras: su correlación
+más alta es `r coma(mayor_r[["Credit_Score"]], 2)` con `r mejor_par[["Credit_Score"]]`, porque
+`Payment_Ratio` y `Credit_Utilization` ya no están apartadas. En el mapa de calor se ve el
+bloque grande de dinero, gasto y saldos, y varias variables sueltas por fuera de él.
+
+### ¿Estandarizar? Tres versiones del PCA
+
+**Qué se hace.** La decisión de estandarizar se toma antes de correr el PCA, y se comprueba
+corriéndolo de tres maneras: sin estandarizar (sobre la matriz de covarianzas $\mathbf{S}$, en las
+unidades originales), estandarizado sin logaritmo y estandarizado con el logaritmo del apartado
+anterior (sobre $\mathbf{R}$). En cada una se mira cuánta información guarda la primera
+componente (C1), qué variable pesa más en ella y qué tan torcidos quedan los puntajes de C1.
+
+```{r, p19_estandarizar}
+pca_sin_escala <- prcomp(credit[, vars_num], scale. = FALSE)   # sobre S: mandan las unidades
+pca_sin_log    <- prcomp(credit[, vars_num], scale. = TRUE)    # sobre R, sin logaritmo
+pca_num        <- prcomp(Z_num)                                # sobre R, con log(x+1) donde hace falta
+
+info_c1 <- function(pc) 100 * pc$sdev[1]^2 / sum(pc$sdev^2)
+var_c1  <- function(pc) names(which.max(abs(pc$rotation[, 1])))
+peso_c1 <- function(pc) max(abs(pc$rotation[, 1]))
+
+tabla_est <- data.frame(
+  version = c("Sin estandarizar (sobre S)", "Estandarizado, sin log (sobre R)", "log(x+1) + estandarizado (sobre R)"),
+  la_C1_guarda_de_cada_100 = round(c(info_c1(pca_sin_escala), info_c1(pca_sin_log), info_c1(pca_num)), 1),
+  variable_que_mas_pesa_en_C1 = c(var_c1(pca_sin_escala), var_c1(pca_sin_log), var_c1(pca_num)),
+  su_peso = round(c(peso_c1(pca_sin_escala), peso_c1(pca_sin_log), peso_c1(pca_num)), 2),
+  asimetria_de_los_puntajes_de_C1 = round(c(abs(skew(pca_sin_escala$x[, 1])), abs(skew(pca_sin_log$x[, 1])),
+                                            abs(skew(pca_num$x[, 1]))), 2))
+tabla_est
+```
+
+**Qué veo.**
+
+- **Sin estandarizar**, C1 guarda `r coma(info_c1(pca_sin_escala))` de cada 100 partes de la
+  información y una sola variable, `r var_c1(pca_sin_escala)`, tiene un peso de
+  `r coma(peso_c1(pca_sin_escala), 2)`: la componente es esa variable con otro nombre, porque se
+  mide en los números más grandes.
+- **Estandarizando sin logaritmo**, C1 guarda `r coma(info_c1(pca_sin_log))` y la variable que más
+  pesa (`r var_c1(pca_sin_log)`) tiene un peso de `r coma(peso_c1(pca_sin_log), 2)`: ya no manda
+  ninguna sola.
+- **Con logaritmo**, C1 guarda `r coma(info_c1(pca_num))` y la variable de mayor peso es
+  `r var_c1(pca_num)` (`r coma(peso_c1(pca_num), 2)`). La cantidad cambia poco, pero la forma sí:
+  la asimetría de los puntajes de C1 pasa de `r coma(abs(skew(pca_sin_log$x[, 1])), 2)` a
+  `r coma(abs(skew(pca_num$x[, 1])), 2)`, es decir, con el logaritmo C1 deja de estar tirada por
+  unos pocos clientes enormes.
+
+La versión que sigue en el resto del módulo es la tercera.
+
+### Cuánta información guarda cada componente
+
+**Qué se hace.** Las componentes no crean ni destruyen información: la reparten. Con datos
+estandarizados, la suma de los valores propios $\lambda_1 + \dots + \lambda_p$ es la traza de
+$\mathbf{R}$, es decir $p = 26$, y la parte de la información que guarda la componente $k$ es
+$\lambda_k / 26$. Para decidir cuántas componentes mirar se usan tres referencias: el acumulado de
+80 %, la regla de Kaiser ($\lambda > 1$: la componente guarda más que una variable original) y la
+forma del codo del gráfico.
+
+```{r, p19_reparto}
+lambda_num <- pca_num$sdev^2
+reparto_num <- data.frame(componente = factor(paste0("C", 1:p_num), levels = paste0("C", 1:p_num)),
+                          lambda = lambda_num,
+                          de_cada_100 = 100 * lambda_num / sum(lambda_num))
+reparto_num$acumulado <- cumsum(reparto_num$de_cada_100)
+k80_num    <- which(reparto_num$acumulado >= 80)[1]
+kaiser_num <- sum(lambda_num > 1)
+
+c(suma_lambdas = sum(lambda_num), traza_R = sum(diag(R_num)))
+transform(head(reparto_num, 10), lambda = round(lambda, 3),
+          de_cada_100 = round(de_cada_100, 1), acumulado = round(acumulado, 1))
+```
+
+```{r, p19_reparto_plot, fig.width=10, fig.height=5}
+ggplot(reparto_num, aes(componente, de_cada_100)) +
+  geom_col(aes(fill = lambda > 1), width = 0.75) +
+  geom_line(aes(y = acumulado, group = 1), color = "#C05621", linewidth = 0.9) +
+  geom_point(aes(y = acumulado), color = "#C05621", size = 1.8) +
+  geom_hline(yintercept = 80, linetype = "dashed", color = "grey40") +
+  annotate("text", x = p_num - 1, y = 75, label = "80 de cada 100", color = "grey30", size = 3.5) +
+  scale_fill_manual(values = c("TRUE" = "#2B6CB0", "FALSE" = "grey75"), guide = "none") +
+  scale_y_continuous(limits = c(0, 102)) +
+  labs(title = "De cada 100 partes de información, cuántas guarda cada componente (26 variables)",
+       subtitle = "Barras: cada componente (en azul, las de valor propio mayor que 1) · línea naranja: acumulado",
+       x = NULL, y = "De cada 100")
+```
+
+**Qué veo.** La suma de los valores propios da `r coma(sum(lambda_num), 1)`, igual a la traza de
+$\mathbf{R}$. La primera componente guarda `r coma(reparto_num$de_cada_100[1])` de cada 100 partes
+de la información; con dos se llega a `r coma(reparto_num$acumulado[2])`. Tienen $\lambda > 1$
+`r kaiser_num` componentes, y para pasar de 80 de cada 100 hacen falta `r k80_num`
+(`r coma(reparto_num$acumulado[k80_num])` acumulado). Con 26 variables la información queda
+repartida entre bastantes componentes: después de las primeras, cada una agrega poco y casi lo
+mismo, el codo del gráfico.
+
+#### Las variables redundantes y las últimas componentes
+
+**Qué se hace.** El Módulo 10 sacó cinco columnas porque vuelven singular la matriz $\mathbf{S}$ y
+la distancia de Mahalanobis necesita su inversa. El PCA no invierte nada: descompone
+$\mathbf{R}$ en valores propios, y una dependencia exacta aparece simplemente como un valor propio
+igual a cero. Se compara el menor valor propio sin logaritmo y con logaritmo, y se mira de qué
+está hecha la última componente de la versión sin logaritmo.
+
+```{r, p19_redundancia}
+ev_crudo <- pca_sin_log$sdev^2                               # valores propios de R sin logaritmo
+gasto8   <- c("Monthly_Spending", gastos_cat)
+ultima_crudo   <- pca_sin_log$rotation[, p_num]
+peso_en_gasto8 <- 100 * sum(ultima_crudo[gasto8]^2)
+
+data.frame(version = c("Sin logaritmo (sobre R)", "Con log(x+1) (la usada en el módulo)"),
+           menor_valor_propio = signif(c(min(ev_crudo), min(lambda_num)), 3),
+           componentes_con_valor_propio_menor_que_0_05 = c(sum(ev_crudo < 0.05), sum(lambda_num < 0.05)))
+
+# Pesos de la última componente sin logaritmo: ¿qué variables la forman?
+round(sort(abs(ultima_crudo), decreasing = TRUE)[1:9], 3)
+```
+
+**Qué veo.** Sin logaritmo, el menor valor propio es `r signif(min(ev_crudo), 2)`: un cero
+numérico. La última componente está hecha, en `r coma(peso_en_gasto8, 1)` de cada 100 de su peso,
+por `Monthly_Spending` y las siete categorías de gasto: es la suma exacta que ya había encontrado
+el Módulo 10, y el PCA la encuentra solo. Con logaritmo, el logaritmo de una suma no es la suma de
+los logaritmos, así que la dependencia deja de ser exacta y el menor valor propio sube a
+`r signif(min(lambda_num), 2)`; aun así hay `r sum(lambda_num < 0.05)` componentes con valor propio
+menor que 0,05: las variables siguen siendo casi redundantes entre sí. **El PCA tolera las 26
+columnas sin problema; lo que no tolera es invertir $\mathbf{S}$.**
+
+### ¿Qué mide cada componente?
+
+**Qué se hace.** Cada componente es una suma con pesos de las 26 variables estandarizadas. El
+**peso** dice cuánto manda cada variable: cerca de cero, no cuenta. Con 26 variables, un reparto
+parejo daría un peso de $1/\sqrt{26} \approx 0{,}20$, y esa es la línea punteada de los gráficos:
+un peso mayor que ella pesa más de lo que le tocaría. `prcomp()` entrega cada componente con un
+signo arbitrario (invertirlo da la misma componente reflejada), así que el signo se fija con
+variables ancla: la componente que más se mueve con el cupo (`Credit_Limit`) queda positiva hacia
+**más cupo**; la que más se mueve con el puntaje (`Credit_Score`) queda positiva hacia **peor
+puntaje**; las demás, positivas en su variable de mayor peso. Se guardan las cuatro primeras.
+
+```{r, p19_orientar}
+k_or <- 4
+orientar <- function(pc, k = k_or) {
+  s   <- pc$x[, 1:k, drop = FALSE]
+  r_c <- cor(s, Z_num[, "Credit_Limit"])[, 1]
+  i_t <- which.max(abs(r_c))                    # componente que lleva el cupo
+  r_p <- cor(s, Z_num[, "Credit_Score"])[, 1]
+  r_p[i_t] <- 0
+  i_r <- which.max(abs(r_p))                    # componente que lleva el puntaje
+  sg <- rep(1, k)
+  sg[i_t] <- sign(r_c[i_t])
+  sg[i_r] <- -sign(r_p[i_r])
+  for (j in setdiff(seq_len(k), c(i_t, i_r))) {
+    sg[j] <- sign(pc$rotation[which.max(abs(pc$rotation[, j])), j])
+  }
+  list(signo = sg, tamano = unname(i_t), riesgo = unname(i_r))
+}
+# Coordenadas de los clientes en los dos ejes (cupo y puntaje) ya orientados
+ejes <- function(pc, or) {
+  s <- sweep(pc$x[, 1:k_or], 2, or$signo, "*")[, c(or$tamano, or$riesgo)]
+  colnames(s) <- c("tam", "rie")
+  s
+}
+
+or_num <- orientar(pca_num)
+ct <- or_num$tamano                     # componente que lleva el cupo
+cr <- or_num$riesgo                     # componente que lleva el puntaje
+punt_num  <- sweep(pca_num$x[, 1:k_or], 2, or_num$signo, "*")
+pesos_num <- sweep(pca_num$rotation[, 1:k_or], 2, or_num$signo, "*")
+colnames(punt_num) <- colnames(pesos_num) <- paste0("C", 1:k_or)
+ax_num <- ejes(pca_num, or_num)
+
+data.frame(componente = paste0("C", c(ct, cr)),
+           lleva_a = c("Credit_Limit (cupo)", "Credit_Score (puntaje)"),
+           correlacion_con_esa_variable = round(c(cor(punt_num[, ct], Z_num[, "Credit_Limit"]),
+                                                  cor(punt_num[, cr], Z_num[, "Credit_Score"])), 2),
+           orientacion = c("positiva = más cupo", "positiva = peor puntaje"))
+
+# Pesos de las cuatro primeras componentes, variables agrupadas por bloque
+data.frame(variable = orden_vars, bloque = unname(bloque[orden_vars]),
+           round(pesos_num[orden_vars, ], 2), row.names = NULL)
+```
+
+```{r, p19_pesos_plot, fig.width=12, fig.height=8}
+pesos_larga <- data.frame(variable = rep(rownames(pesos_num), k_or),
+                          componente = rep(colnames(pesos_num), each = nrow(pesos_num)),
+                          peso = as.vector(pesos_num))
+pesos_larga$bloque <- factor(unname(bloque[pesos_larga$variable]), levels = names(col_bloque))
+pesos_larga$variable <- factor(pesos_larga$variable, levels = rev(orden_vars), labels = rev(lab(orden_vars)))
+pesos_larga$componente <- factor(pesos_larga$componente, levels = colnames(pesos_num),
+                                 labels = paste0("C", 1:k_or, " (", coma(reparto_num$de_cada_100[1:k_or]), " %)"))
+
+ggplot(pesos_larga, aes(peso, variable, fill = bloque)) +
+  geom_col(width = 0.7) +
+  geom_vline(xintercept = 0, color = "grey40") +
+  geom_vline(xintercept = c(-1, 1) / sqrt(p_num), linetype = "dotted", color = "grey50") +
+  facet_wrap(~ componente, nrow = 1) +
+  scale_fill_manual(values = col_bloque, name = NULL) +
+  labs(title = "Qué variables mandan en cada una de las cuatro primeras componentes",
+       subtitle = "Línea punteada: el peso que tendría cada variable en un reparto parejo (1/raíz de 26)",
+       x = "Peso", y = NULL) +
+  theme(legend.position = "top")
+```
+
+```{r, p19_texto_pesos, include = FALSE}
+top_pesos <- function(w, n = 5) {
+  o <- order(abs(w), decreasing = TRUE)[seq_len(n)]
+  unir(paste0(cod(names(w)[o]), " (", coma(w[o], 2), ")"))
+}
+dinero_gasto <- names(bloque)[bloque %in% c("Dinero y cupo", "Gasto")]
+riesgo_vars  <- c("Credit_Score", "Payment_Ratio", "Credit_Utilization")
+w_t <- pesos_num[, ct]
+w_r <- pesos_num[, cr]
+top_r <- names(sort(abs(w_r), decreasing = TRUE))[1:6]
+
+txt_t <- if (all(w_t[dinero_gasto] > 0.1)) {
+  "reúne a todo el dinero y al gasto en el mismo sentido y con pesos parecidos: se lee como el **tamaño del cliente**"
+} else {
+  "no reúne a todo el dinero y al gasto con el mismo signo: el nombre «tamaño» le queda solo en parte"
+}
+txt_r <- if (all(riesgo_vars %in% top_r)) {
+  "reúne al puntaje, a la proporción pagada y al uso del cupo: se lee como el **comportamiento de pago y riesgo**"
+} else {
+  paste0("no está hecha por las tres variables de pago y riesgo a la vez; su correlación con el puntaje es ",
+         coma(cor(punt_num[, cr], Z_num[, "Credit_Score"]), 2))
+}
+otras <- setdiff(1:k_or, c(ct, cr))
+txt_otras <- paste(paste0("la C", otras, ": ", sapply(otras, function(j) top_pesos(pesos_num[, j], 4))),
+                   collapse = "; ")
+```
+
+**Qué veo.**
+
+- **C`r ct`, la que lleva el cupo** (`r coma(reparto_num$de_cada_100[ct])` de cada 100 partes de la
+  información): sus pesos más altos son `r top_pesos(w_t, 6)`. Esta componente `r txt_t`.
+- **C`r cr`, la que lleva el puntaje** (`r coma(reparto_num$de_cada_100[cr])` de cada 100): sus
+  pesos más altos son `r top_pesos(w_r, 6)`. Esta componente `r txt_r`. Como el signo está fijado
+  hacia peor puntaje, el puntaje y la proporción pagada pesan con signo contrario al del uso del
+  cupo si van en sentidos opuestos, y eso se lee directamente en la tabla de pesos.
+- **Las otras dos de las cuatro primeras** quedan para variables más sueltas: `r txt_otras`.
+
+### El mapa de los clientes
+
+**Qué se hace.** Cada cliente es un punto cuyas coordenadas son sus puntajes en dos componentes:
+la que lleva el cupo (eje horizontal) y la que lleva el puntaje (eje vertical). Es un resumen en
+dos dimensiones de la ficha de 26 variables. Como las componentes son perpendiculares entre sí por
+construcción, las dos coordenadas no están correlacionadas; lo que el gráfico muestra es la forma
+de la nube y cuánta información guarda el plano.
+
+```{r, p19_mapa, fig.width=8, fig.height=6.5}
+info_mapa_num <- reparto_num$de_cada_100[ct] + reparto_num$de_cada_100[cr]
+
+ggplot(data.frame(x = ax_num[, "tam"], y = ax_num[, "rie"]), aes(x, y)) +
+  geom_point(alpha = 0.06, size = 0.35, color = "#2B6CB0") +
+  geom_hline(yintercept = 0, color = "grey50", linetype = "dashed") +
+  geom_vline(xintercept = 0, color = "grey50", linetype = "dashed") +
+  labs(title = paste0("El mapa de los ", miles(nrow(ax_num)), " clientes con las 26 variables numéricas"),
+       subtitle = paste0("Las dos componentes guardan ", coma(info_mapa_num),
+                         " de cada 100 partes de la información de la ficha"),
+       x = paste0("C", ct, "  ·  más cupo hacia la derecha  →"),
+       y = paste0("C", cr, "  ·  peor puntaje hacia arriba  →"))
+```
+
+**Qué veo.** El plano guarda `r coma(info_mapa_num)` de cada 100 partes de la información (C`r ct`:
+`r coma(reparto_num$de_cada_100[ct])`; C`r cr`: `r coma(reparto_num$de_cada_100[cr])`); las otras
+`r coma(100 - info_mapa_num)` partes quedan en componentes que el mapa no dibuja. La nube es
+`r coma(sd(ax_num[, "tam"]) / sd(ax_num[, "rie"]), 1)` veces más ancha en el eje horizontal que en
+el vertical, y la asimetría de las coordenadas es `r coma(skew(ax_num[, "tam"]), 2)` en el
+horizontal y `r coma(skew(ax_num[, "rie"]), 2)` en el vertical (cerca de cero es simétrica). La
+correlación entre las dos coordenadas es `r coma(cor(ax_num[, "tam"], ax_num[, "rie"]), 2)`.
+
+### El biplot: clientes y variables en el mismo dibujo
+
+**Qué se hace.** En el biplot cada variable es una flecha cuyas coordenadas son su correlación con
+cada eje (también igual al peso multiplicado por la desviación de la componente). La flecha apunta
+hacia donde crece la variable; **llega a la circunferencia** si el plano la representa entera, y es
+más corta cuanto más información de esa variable queda en otras componentes; y **el ángulo entre
+dos flechas** dice cuánto van juntas: cerca de 0°, juntas; cerca de 90°, sin relación; cerca de
+180°, en contra. Se colorean por bloque de variables para poder leer los 26 nombres.
+
+```{r, p19_biplot_datos}
+flechas_num <- cor(Z_num, ax_num)           # correlación de cada variable con cada eje
+fl_num <- data.frame(variable = rownames(flechas_num), x = flechas_num[, "tam"], y = flechas_num[, "rie"],
+                     row.names = NULL)
+fl_num$etiqueta <- lab(fl_num$variable)
+fl_num$bloque   <- factor(bloque_de(fl_num$variable), levels = names(col_bloque))
+fl_num$angulo   <- atan2(fl_num$y, fl_num$x) * 180 / pi     # 0° = derecha, 90° = arriba
+fl_num$largo    <- sqrt(fl_num$x^2 + fl_num$y^2)            # 1 = la variable se ve entera en el mapa
+
+# Comprobación: correlación con el eje = peso × desviación de la componente
+c(flecha_igual_a_peso_por_desviacion =
+    isTRUE(all.equal(unname(flechas_num[, "tam"]), unname(pesos_num[, ct] * pca_num$sdev[ct]))))
+```
+
+```{r, p19_biplot_funcion}
+dibujar_biplot <- function(fl, pts, titulo, xlab, ylab) {
+  esc  <- unname(1.1 / quantile(abs(as.vector(pts)), 0.99))   # reescala los puntos para que quepan
+  nube <- data.frame(x = pts[, 1] * esc, y = pts[, 2] * esc)
+  t_c  <- seq(0, 2 * pi, length.out = 200)
+  circulo <- data.frame(x = cos(t_c), y = sin(t_c))
+  ggplot() +
+    geom_point(data = nube, aes(x, y), alpha = 0.12, size = 0.5, color = "grey60") +
+    geom_path(data = circulo, aes(x, y), color = "grey50", linetype = "dashed") +
+    geom_hline(yintercept = 0, color = "grey70") +
+    geom_vline(xintercept = 0, color = "grey70") +
+    geom_segment(data = fl, aes(x = 0, y = 0, xend = x, yend = y, color = bloque),
+                 arrow = arrow(length = unit(0.2, "cm")), linewidth = 0.8) +
+    ggrepel::geom_text_repel(data = fl, aes(x, y, label = etiqueta, color = bloque), size = 3.3,
+                             fontface = "bold", box.padding = 0.35, point.padding = 0.2,
+                             min.segment.length = 0, max.overlaps = Inf, seed = 1, show.legend = FALSE) +
+    scale_color_manual(values = col_bloque, name = NULL) +
+    coord_fixed(xlim = c(-1.25, 1.25), ylim = c(-1.25, 1.25)) +
+    labs(title = titulo,
+         subtitle = "Una flecha que llega a la circunferencia se ve entera en el mapa · los puntos están reescalados",
+         x = xlab, y = ylab) +
+    theme(legend.position = "top")
+}
+```
+
+```{r, p19_biplot, fig.width=10, fig.height=8.5}
+set.seed(2026)
+idx_b <- sample(nrow(ax_num), 6000)             # solo para que el gráfico sea liviano
+dibujar_biplot(fl_num, ax_num[idx_b, ], "Biplot con las 26 variables numéricas",
+               paste0("C", ct, "  ·  más cupo  →"), paste0("C", cr, "  ·  peor puntaje  →"))
+```
+
+```{r, p19_biplot_angulos}
+ang_entre <- function(a, b) acos(pmin(1, pmax(-1, sum(a * b) / sqrt(sum(a^2) * sum(b^2))))) * 180 / pi
+M_fl <- as.matrix(fl_num[, c("x", "y")]); rownames(M_fl) <- fl_num$variable
+A_num <- outer(seq_len(nrow(M_fl)), seq_len(nrow(M_fl)),
+               Vectorize(function(i, j) ang_entre(M_fl[i, ], M_fl[j, ])))
+dimnames(A_num) <- list(fl_num$variable, fl_num$variable)
+
+# Ángulo entre las direcciones promedio de cada bloque
+fl_num$bloque <- droplevels(fl_num$bloque)
+dir_bloque <- sapply(split(fl_num[, c("x", "y")], fl_num$bloque), colMeans)
+nb <- ncol(dir_bloque)
+ang_bloques <- outer(seq_len(nb), seq_len(nb), Vectorize(function(i, j) ang_entre(dir_bloque[, i], dir_bloque[, j])))
+dimnames(ang_bloques) <- list(colnames(dir_bloque), colnames(dir_bloque))
+round(ang_bloques)
+
+# Cuánto se ve de cada variable en el plano
+tabla_flechas <- data.frame(variable = fl_num$variable, bloque = as.character(fl_num$bloque),
+                            angulo_desde_el_eje_horizontal = round(fl_num$angulo),
+                            largo_de_la_flecha = round(fl_num$largo, 2),
+                            de_cada_100_que_se_ve = round(100 * fl_num$largo^2))
+tabla_flechas[order(match(tabla_flechas$bloque, names(col_bloque)), -tabla_flechas$largo_de_la_flecha), ]
+```
+
+```{r, p19_texto_biplot, include = FALSE}
+v_dinero <- c("Annual_Income", "Credit_Limit", "Statement_Balance", "Payment_Amount")
+sub_dinero   <- A_num[v_dinero, v_dinero][upper.tri(A_num[v_dinero, v_dinero])]
+ang_ing_cupo <- A_num["Annual_Income", "Credit_Limit"]
+ang_pun_din  <- A_num["Credit_Score", v_dinero]
+ang_gasto_din <- ang_bloques["Gasto", "Dinero y cupo"]
+ang_pago_din  <- ang_bloques["Pago y riesgo", "Dinero y cupo"]
+n_opuestas_num <- sum(A_num[upper.tri(A_num)] > 120)
+pobres_num <- lab(fl_num$variable[fl_num$largo < 0.5])
+visible_num <- 100 * mean(fl_num$largo^2)
+txt_pobres <- if (length(pobres_num) == 0) {
+  "todas las flechas pasan de 0,5"
+} else {
+  paste0(length(pobres_num), " flechas miden menos de 0,5 (", unir(pobres_num),
+         "): de esas variables el plano ve menos de una cuarta parte, y sus ángulos no son confiables")
+}
+```
+
+**Qué veo.**
+
+- **Van juntas:** las flechas de ingreso, cupo, saldo facturado y monto pagado forman ángulos de
+  `r round(min(sub_dinero))`° a `r round(max(sub_dinero))`° entre ellas; ingreso y cupo, `r round(ang_ing_cupo)`°.
+  Entre las direcciones promedio de los bloques, la de gasto forma `r round(ang_gasto_din)`° con la de
+  dinero y cupo.
+- **Aparte:** la dirección promedio de pago y riesgo forma `r round(ang_pago_din)`° con la de dinero y
+  cupo; el puntaje forma entre `r round(min(ang_pun_din))`° y `r round(max(ang_pun_din))`° con las
+  cuatro de dinero (con el cupo, `r round(A_num["Credit_Score", "Credit_Limit"])`°).
+- **En contra:** `r if (n_opuestas_num == 0) "ningún par de flechas pasa de 120°" else paste0("hay ", n_opuestas_num, " pares de flechas con más de 120°")`.
+- **Cuánto se ve:** en promedio, cada variable se ve `r coma(visible_num)` de cada 100 partes en el
+  plano (es exactamente lo que guarda el mapa), pero muy desigual: `r txt_pobres`. La tabla de flechas
+  da, para cada variable, su largo y el porcentaje que el plano representa.
+
+### ¿Hay grupos o un continuo?
+
+**Qué se hace.** Se mira si la nube de clientes está formada por islas separadas por huecos, o si
+es una sola mancha continua. Se cuentan los picos de la densidad de cada eje (ignorando bultos
+menores al 10 % del pico más alto) y se mide qué tan profundo es el valle entre los dos mayores. Como
+referencia se hace el mismo cálculo con el PCA de `iris`, un caso con una isla de verdad (setosa).
+
+```{r, p19_continuo_datos}
+forma_dens <- function(x, prom = 0.10) {
+  d <- density(x); y <- d$y
+  pic <- which(diff(sign(diff(y))) == -2) + 1
+  pic <- pic[y[pic] >= prom * max(y)]
+  q <- quantile(x, c(0.10, 0.90))
+  central <- min(y[d$x >= q[1] & d$x <= q[2]]) / max(y)      # lo más bajo del 80 % central
+  if (length(pic) < 2) return(c(picos = length(pic), valle_sobre_pico = NA, central_sobre_pico = central))
+  dos <- sort(pic[order(y[pic], decreasing = TRUE)[1:2]])
+  c(picos = length(pic), valle_sobre_pico = min(y[dos[1]:dos[2]]) / min(y[dos]), central_sobre_pico = central)
+}
+f_t <- forma_dens(ax_num[, "tam"]); f_r <- forma_dens(ax_num[, "rie"])
+ir  <- prcomp(iris[, 1:4], scale. = TRUE)$x
+i_1 <- forma_dens(ir[, 1]); i_2 <- forma_dens(ir[, 2])
+
+fmt_v     <- function(f) if (is.na(f["valle_sobre_pico"])) "no hay valle" else paste0(coma(100 * f["valle_sobre_pico"], 0), " %")
+hay_valle <- function(f) f["picos"] >= 2 && !is.na(f["valle_sobre_pico"]) && f["valle_sobre_pico"] < 0.5
+continuo_num <- !hay_valle(f_t) && !hay_valle(f_r)
+
+data.frame(
+  mapa = c("Clientes · eje del cupo", "Clientes · eje del puntaje", "Iris · C1", "Iris · C2"),
+  picos = unname(c(f_t["picos"], f_r["picos"], i_1["picos"], i_2["picos"])),
+  densidad_en_el_valle_sobre_la_del_pico = c(fmt_v(f_t), fmt_v(f_r), fmt_v(i_1), fmt_v(i_2)),
+  densidad_mas_baja_del_80_central_sobre_el_pico =
+    paste0(coma(100 * unname(c(f_t["central_sobre_pico"], f_r["central_sobre_pico"],
+                               i_1["central_sobre_pico"], i_2["central_sobre_pico"])), 0), " %"))
+```
+
+```{r, p19_continuo_graficos, fig.width=9, fig.height=5.5}
+mapa_num <- data.frame(x = ax_num[, "tam"], y = ax_num[, "rie"])
+
+ggplot(mapa_num, aes(x, y)) +
+  geom_point(alpha = 0.05, size = 0.3, color = "#2B6CB0") +
+  geom_density_2d(color = "#C05621", bins = 10, linewidth = 0.5) +
+  labs(title = "La nube de clientes con sus curvas de nivel",
+       subtitle = "Un grupo aparte se vería como una segunda mancha rodeada de huecos",
+       x = paste0("C", ct, "  ·  más cupo  →"), y = paste0("C", cr, "  ·  peor puntaje  →"))
+
+dens_larga <- rbind(data.frame(eje = paste0("C", ct, " · cupo"), valor = mapa_num$x),
+                    data.frame(eje = paste0("C", cr, " · puntaje"), valor = mapa_num$y))
+ggplot(dens_larga, aes(valor)) +
+  geom_density(fill = "#2B6CB0", alpha = 0.35, color = "#2B6CB0") +
+  facet_wrap(~ eje, scales = "free") +
+  labs(title = "Cuántos clientes hay a lo largo de cada eje",
+       subtitle = "Si hubiera islas, la curva tendría dos cumbres separadas por un valle",
+       x = "Posición en la componente", y = "Densidad")
+
+data.frame(C1 = ir[, 1], C2 = ir[, 2], especie = iris$Species) |>
+  ggplot(aes(C1, C2, color = especie)) +
+  geom_point(size = 1.8) +
+  scale_color_manual(values = c("#C05621", "#2B6CB0", "#718096"), name = NULL) +
+  labs(title = "Referencia: el mapa de iris, con una isla",
+       subtitle = "Setosa queda separada de las otras dos por un hueco en C1", x = "C1", y = "C2") +
+  theme(legend.position = "top")
+```
+
+**Qué veo.** La densidad del eje del cupo tiene `r f_t[["picos"]]` pico(s) y la del eje del puntaje
+tiene `r f_r[["picos"]]`.
+`r if (hay_valle(f_t)) paste0("En el eje del cupo hay un valle que baja a ", fmt_v(f_t), " de la altura del pico.") else "En el eje del cupo no hay un valle que separe dos cumbres."`
+`r if (hay_valle(f_r)) paste0("En el eje del puntaje hay un valle que baja a ", fmt_v(f_r), " de la altura del pico.") else "En el eje del puntaje tampoco."`
+Dentro del 80 % central de los clientes, la densidad más baja es `r coma(100 * f_t[["central_sobre_pico"]], 0)` %
+de la más alta en el eje del cupo y `r coma(100 * f_r[["central_sobre_pico"]], 0)` % en el del puntaje. Con
+el mismo cálculo, iris tiene `r i_1[["picos"]]` picos en C1 y su valle baja a `r fmt_v(i_1)` del pico: así se
+ve una isla de verdad. Las curvas de nivel de los clientes
+`r if (continuo_num) "forman una sola mancha, sin un segundo centro: la cartera es un continuo y cada cliente está un poco más o menos a la derecha o arriba que el de al lado, sin un punto donde termine un grupo y empiece otro" else "muestran más de un centro: hay indicios de más de una masa de clientes, que conviene contrastar con una variable conocida antes de llamarla grupo"`.
+
+### ¿Los grupos que ya se conocen se separan en el mapa?
+
+**Qué se hace.** En esta versión las categóricas no participaron en construir las componentes, así
+que sirven de contraste externo. Para cada una (`Card_Type`, `Occupation` y `Gender`) se calculan,
+sobre cada uno de los dos ejes, dos medidas: el **$\eta^2$** (de cada 100 partes de la variación del
+eje, cuántas explica saber el grupo) y la **amplitud** (la distancia entre el grupo de promedio más
+alto y el de más bajo, en desviaciones típicas dentro de los grupos; con más de 2 los grupos extremos
+casi no se montan). Después se dibuja el mapa por grupo con la elipse que contiene al 90 % de cada uno.
+La distinción es la de la sesión de PCA II: grupos que **se separan** (una nube aparte, con hueco)
+frente a grupos que **solo se desplazan** (nubes que se montan).
+
+```{r, p19_grupos_datos}
+tipo_f <- factor(credit$Card_Type, levels = orden_tipo)
+ocup_f <- factor(credit$Occupation)
+gen_f  <- factor(credit$Gender)
+grupos_cat <- list(Card_Type = tipo_f, Occupation = ocup_f, Gender = gen_f)
+
+eta2_pc <- function(y, g) {
+  m <- tapply(y, g, mean); n <- tapply(y, g, length)
+  sum(n * (m - mean(y))^2) / sum((y - mean(y))^2)
+}
+amplitud <- function(y, g) {
+  m <- tapply(y, g, mean)
+  sd_dentro <- sqrt(sum(tapply(y, g, function(v) sum((v - mean(v))^2))) / (length(y) - nlevels(g)))
+  (max(m) - min(m)) / sd_dentro
+}
+tabla_grupos <- function(ax) {
+  data.frame(variable = names(grupos_cat),
+             eta2_tam = sapply(grupos_cat, function(g) 100 * eta2_pc(ax[, "tam"], g)),
+             eta2_rie = sapply(grupos_cat, function(g) 100 * eta2_pc(ax[, "rie"], g)),
+             amplitud_tam = sapply(grupos_cat, function(g) amplitud(ax[, "tam"], g)),
+             amplitud_rie = sapply(grupos_cat, function(g) amplitud(ax[, "rie"], g)),
+             row.names = NULL)
+}
+gr_num <- tabla_grupos(ax_num)
+transform(gr_num, eta2_tam = round(eta2_tam, 1), eta2_rie = round(eta2_rie, 1),
+          amplitud_tam = round(amplitud_tam, 2), amplitud_rie = round(amplitud_rie, 2))
+
+# ¿En qué orden quedan los tipos de tarjeta a lo largo del eje del cupo?
+medias_tipo <- tapply(ax_num[, "tam"], tipo_f, mean)
+round(medias_tipo, 2)
+tipos_en_orden <- identical(names(sort(medias_tipo)), orden_tipo)
+```
+
+```{r, p19_grupos_mapa, fig.width=8.5, fig.height=6.5}
+set.seed(2026)
+muestra_19 <- sample(nrow(ax_num), 12000)
+df_g <- data.frame(x = ax_num[, "tam"], y = ax_num[, "rie"], tipo = tipo_f, ocup = ocup_f)
+
+ggplot(df_g, aes(x, y, color = tipo)) +
+  geom_point(data = df_g[muestra_19, ], alpha = 0.15, size = 0.4) +
+  stat_ellipse(level = 0.90, type = "norm", linewidth = 1.1) +
+  scale_color_viridis_d(name = "Card_Type", option = "D", end = 0.9) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 2.5))) +
+  labs(title = "El mapa por tipo de tarjeta, con la elipse del 90 % de cada grupo",
+       subtitle = "Los puntos son una muestra de 12.000 clientes · las elipses usan a todos",
+       x = paste0("C", ct, "  ·  más cupo  →"), y = paste0("C", cr, "  ·  peor puntaje  →"))
+
+ggplot(df_g, aes(x, y, color = ocup)) +
+  geom_point(data = df_g[muestra_19, ], alpha = 0.15, size = 0.4) +
+  stat_ellipse(level = 0.90, type = "norm", linewidth = 1.1) +
+  scale_color_viridis_d(name = "Occupation", option = "C", end = 0.9) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 2.5))) +
+  labs(title = "El mapa por ocupación, con la elipse del 90 % de cada grupo",
+       subtitle = "Los puntos son una muestra de 12.000 clientes · las elipses usan a todos",
+       x = paste0("C", ct, "  ·  más cupo  →"), y = paste0("C", cr, "  ·  peor puntaje  →"))
+```
+
+```{r, p19_texto_grupos, include = FALSE}
+g_num <- function(v, col) gr_num[[col]][gr_num$variable == v]
+medias_ocup <- tapply(ax_num[, "tam"], ocup_f, mean)
+txt_tipo_orden <- if (tipos_en_orden) {
+  "los cinco tipos quedan ordenados de Basic a Signature a lo largo del eje del cupo"
+} else {
+  "los tipos de tarjeta no quedan en el orden de su jerarquía a lo largo del eje del cupo"
+}
+txt_tipo_rie <- if (g_num("Card_Type", "amplitud_rie") < 0.3) {
+  "En el eje del puntaje los cinco centros casi coinciden: las nubes se montan completas, y el tipo de tarjeta no dice nada del riesgo."
+} else {
+  "En el eje del puntaje también hay diferencia entre tipos, aunque menor que en el del cupo."
+}
+```
+
+**Qué veo.** Sobre el eje del cupo, `Card_Type` explica `r coma(g_num("Card_Type", "eta2_tam"), 1)` de
+cada 100 partes de la variación y la amplitud entre tipos es `r coma(g_num("Card_Type", "amplitud_tam"), 2)`
+desviaciones: `r txt_tipo_orden`. `r txt_tipo_rie` En ese eje el tipo de tarjeta explica `r coma(g_num("Card_Type", "eta2_rie"), 1)`
+de cada 100 partes y la amplitud es `r coma(g_num("Card_Type", "amplitud_rie"), 2)`. Con `Occupation`, el eje del cupo
+tiene un $\eta^2$ de `r coma(g_num("Occupation", "eta2_tam"), 1)` y una amplitud de
+`r coma(g_num("Occupation", "amplitud_tam"), 2)`, con `r names(which.min(medias_ocup))` en el extremo bajo y
+`r names(which.max(medias_ocup))` en el alto; en el eje del puntaje, `r coma(g_num("Occupation", "eta2_rie"), 1)`
+de cada 100. `Gender` explica `r coma(g_num("Gender", "eta2_tam"), 2)` y `r coma(g_num("Gender", "eta2_rie"), 2)` de cada 100
+en los dos ejes. En las elipses del mapa se ve lo mismo que en los números: los grupos conocidos **se
+desplazan** a lo largo del eje del cupo (y los extremos se separan más o menos según la amplitud), y
+`r if (g_num("Card_Type", "amplitud_rie") < 0.3 && g_num("Occupation", "amplitud_rie") < 0.3) "casi no se desplazan" else "se desplazan algo"` a lo largo del eje del puntaje.
+Esto es lo que cabe esperar al ser el tipo de tarjeta y la ocupación decisiones ligadas al ingreso (Módulo 7); **va con
+la posición en el mapa, no se dice que la cause**.
+
+### Frente al PCA de 21 variables de los Módulos 16 y 17
+
+**Qué se hace.** Se repite el PCA con las 21 variables retenidas del Módulo 15 (las mismas columnas
+estandarizadas que ya están en `Z_num`) y se compara con el de las 26. La comparación usa los dos
+ejes (cupo y puntaje) de cada versión: cuánta información guarda cada una, qué tanto se parecen sus
+ejes (correlación) y de cada 100 clientes del 20 % más alto en el eje del puntaje de la versión de
+26, cuántos siguen en ese 20 % en la versión que se compara. Además se mira cuántos clientes del 20 %
+con peor `Credit_Score` caen en el 20 % más alto del eje del puntaje, una forma neutral de medir qué tan
+bien ese eje sigue al puntaje.
+
+```{r, p19_vs_21}
+q80    <- function(v) v >= quantile(v, 0.80)
+peor20 <- credit$Credit_Score <= quantile(credit$Credit_Score, 0.20)
+
+resumen_pca <- function(pc, or, nombre, ref) {
+  v  <- 100 * pc$sdev^2 / sum(pc$sdev^2)
+  ax <- ejes(pc, or)
+  data.frame(version = nombre,
+             columnas = nrow(pc$rotation),
+             C1 = v[1],
+             los_dos_ejes = v[or$tamano] + v[or$riesgo],
+             para_80 = which(cumsum(v) >= 80)[1],
+             nulos = sum(pc$sdev^2 < 1e-8),
+             comp_cupo = or$tamano, comp_puntaje = or$riesgo,
+             cor_eje_cupo = cor(ax[, "tam"], ref[, "tam"]),
+             cor_eje_puntaje = cor(ax[, "rie"], ref[, "rie"]),
+             mantiene_lista = 100 * sum(q80(ref[, "rie"]) & q80(ax[, "rie"])) / sum(q80(ref[, "rie"])),
+             peor20_en_el_20_alto = 100 * sum(peor20 & q80(ax[, "rie"])) / sum(peor20),
+             eta2_tarjeta_cupo = 100 * eta2_pc(ax[, "tam"], tipo_f),
+             eta2_tarjeta_puntaje = 100 * eta2_pc(ax[, "rie"], tipo_f),
+             row.names = NULL)
+}
+
+vars_21 <- setdiff(vars_num, c("Monthly_Spending", "Payment_Ratio", "Credit_Utilization",
+                               "Reward_Points_Earned", "Outstanding_Balance"))
+pca_21 <- prcomp(Z_num[, vars_21])
+or_21  <- orientar(pca_21)
+
+comp_21 <- rbind(resumen_pca(pca_21, or_21, "21 variables (Módulos 16 y 17)", ax_num),
+                 resumen_pca(pca_num, or_num, "26 variables (este módulo)", ax_num))
+comp_21[-1] <- lapply(comp_21[-1], round, 2)
+comp_21
+```
+
+**Qué veo.** Con 21 variables, C1 guarda `r coma(comp_21$C1[1])` de cada 100 partes de la información;
+con las 26, `r coma(comp_21$C1[2])`. Los dos ejes (cupo y puntaje) guardan `r coma(comp_21$los_dos_ejes[1])` con
+21 variables y `r coma(comp_21$los_dos_ejes[2])` con 26, y los dos ejes de la versión de 21 se parecen a los de la
+de 26 con correlaciones de `r coma(comp_21$cor_eje_cupo[1], 2)` (cupo) y `r coma(comp_21$cor_eje_puntaje[1], 2)`
+(puntaje). La lista del 20 % más alto en el eje del puntaje conserva `r coma(comp_21$mantiene_lista[1], 0)` de cada 100
+clientes. El 20 % más alto del eje del puntaje contiene a `r coma(comp_21$peor20_en_el_20_alto[1], 0)` de cada 100 de los
+de peor `Credit_Score` con 21 variables y a `r coma(comp_21$peor20_en_el_20_alto[2], 0)` con 26. La diferencia
+viene de las cinco variables que vuelven a entrar: `Payment_Ratio` y `Credit_Utilization`, que en el Módulo 16
+eran solo suplementarias, ahora ayudan a construir el eje del puntaje (pesos de
+`r coma(pesos_num[["Payment_Ratio", cr]], 2)` y `r coma(pesos_num[["Credit_Utilization", cr]], 2)` en C`r cr`, contra
+`r coma(pesos_num[["Credit_Score", cr]], 2)` del propio puntaje), y las otras tres que vuelven (`Monthly_Spending`, `Reward_Points_Earned` y
+`Outstanding_Balance`) se suman al bloque de dinero y gasto.
+
+------------------------------------------------------------------------
+
+## Parte II: Componentes principales con las numéricas y las categóricas codificadas
+
+### Cómo se codifica cada categórica
+
+**Qué se hace.** El PCA trabaja con números, así que las tres categóricas hay que convertirlas, y
+la forma de hacerlo depende de la naturaleza de cada una:
+
+- **Label encoding** (cada nivel se reemplaza por un entero): sirve cuando hay un orden real o solo
+  dos niveles. `Card_Type` es ordinal (Basic < Silver < Gold < Platinum < Signature), así que
+  se codifica de 1 a 5. Esa codificación **supone** que entre un nivel y el siguiente hay la misma
+  distancia, un supuesto que se pone a prueba más abajo comparándola con el *one-hot*. `Gender` tiene
+  solo dos niveles: 0 y 1 no inventan ningún orden y llevan exactamente la misma información que dos
+  columnas *one-hot* (que serían una el espejo de la otra).
+- **One-hot** (una columna 0/1 por nivel): es la única codificación correcta para una nominal con
+  más de dos niveles. Numerar los seis niveles de `Occupation` inventaría un orden y una distancia
+  que no existen y cambiaría con solo reordenar los niveles.
+
+Dos cuidados, ambos del Módulo 15. Primero, las $k$ columnas *one-hot* de una variable siempre suman
+1, una dependencia exacta como la de `Monthly_Spending`; al PCA no le estorba (solo sobra una
+componente con varianza cero), pero hay que saber que está. Segundo, todas las columnas se
+estandarizan, y las $k$ columnas de `Occupation` se dividen además por $\sqrt{k}$ para que, juntas,
+pesen como **una** sola variable y no como seis: sin ese ajuste, una categórica de seis niveles
+mandaría en el PCA seis veces más que una numérica.
+
+```{r, p19_codificacion}
+dummies <- function(f, prefijo) {
+  D <- sapply(levels(f), function(l) as.integer(f == l))
+  colnames(D) <- paste0(prefijo, "_", gsub("[ -]", "_", levels(f)))
+  D
+}
+dum_gender <- dummies(gen_f, "Gender")
+dum_ocup   <- dummies(ocup_f, "Occupation")
+dum_card   <- dummies(tipo_f, "Card_Type")
+
+lab_cat <- cbind(Gender_01 = as.integer(gen_f) - 1L, Card_Type_1a5 = as.integer(tipo_f))
+
+data.frame(variable = c("Gender", "Card_Type", "Occupation"),
+           naturaleza = c("Nominal, 2 niveles", "Ordinal, 5 niveles", "Nominal, 6 niveles"),
+           codificacion = c("Label encoding: F = 0, M = 1", "Label encoding: Basic = 1 ... Signature = 5",
+                            "One-hot: una columna 0/1 por nivel"),
+           columnas = c(1, 1, ncol(dum_ocup)),
+           peso_en_el_PCA = c("1 variable", "1 variable", "6 columnas ponderadas por 1/raíz de 6: juntas, 1 variable"))
+
+# Verificaciones: un solo 1 por cliente en cada bloque y conteos iguales a las tablas de frecuencia
+c(un_solo_1_por_bloque = all(rowSums(dum_gender) == 1) && all(rowSums(dum_ocup) == 1) && all(rowSums(dum_card) == 1),
+  conteos_coinciden = all(colSums(dum_ocup) == as.vector(table(ocup_f))) &&
+                      all(colSums(dum_card) == as.vector(table(tipo_f))) &&
+                      all(colSums(dum_gender) == as.vector(table(gen_f))))
+table(Gender_01 = lab_cat[, "Gender_01"], Gender = gen_f)
+table(Card_Type_1a5 = lab_cat[, "Card_Type_1a5"], Card_Type = tipo_f)
+```
+
+```{r, p19_matriz_mix}
+Z_lab    <- scale(lab_cat)                              # label encoding, estandarizado como cualquier numérica
+Z_ocup_p <- scale(dum_ocup) / sqrt(ncol(dum_ocup))      # one-hot ponderado por 1/raíz de k
+Z_mix    <- cbind(Z_num, Z_lab, Z_ocup_p)               # 26 numéricas + 2 label + 6 one-hot
+pca_mix  <- prcomp(Z_mix)
+
+c(clientes = nrow(Z_mix), columnas = ncol(Z_mix),
+  varianza_de_las_6_dummies_juntas = sum(apply(Z_ocup_p, 2, var)))
+
+# Variantes de codificación para comparar al final del módulo
+Z_oh_pleno <- cbind(Z_num, scale(dum_gender), scale(dum_ocup), scale(dum_card))
+Z_oh_pond  <- cbind(Z_num, scale(dum_gender) / sqrt(ncol(dum_gender)),
+                    scale(dum_ocup) / sqrt(ncol(dum_ocup)), scale(dum_card) / sqrt(ncol(dum_card)))
+pca_oh_pleno <- prcomp(Z_oh_pleno)
+pca_oh_pond  <- prcomp(Z_oh_pond)
+```
+
+**Qué veo.** Las tres categóricas quedan en `r ncol(Z_mix) - p_num` columnas nuevas: dos de *label
+encoding* (`Gender_01` y `Card_Type_1a5`) y `r ncol(dum_ocup)` de *one-hot* (una por ocupación). La
+matriz final tiene `r ncol(Z_mix)` columnas para los `r miles(nrow(Z_mix))` clientes. Las dos
+verificaciones dan `TRUE`: cada cliente tiene un solo 1 en cada bloque y los conteos de cada columna
+coinciden con las tablas de frecuencia del Módulo 2, es decir, la codificación no perdió ni inventó
+a ningún cliente. Las seis columnas de `Occupation`, ya ponderadas, suman una varianza de
+`r coma(sum(apply(Z_ocup_p, 2, var)), 2)`: juntas pesan como **una** variable, igual que `Gender` y
+`Card_Type`.
+
+### Cuánta información guarda cada componente, ahora con las categóricas
+
+**Qué se hace.** Se repite el reparto de información del PCA con las `r ncol(Z_mix)` columnas y se
+compara, componente por componente, con el de las 26 numéricas. Como cada categórica pesa como una
+variable, la suma de los valores propios debe ser 29 (las 26 numéricas más tres variables).
+
+```{r, p19_info_mix}
+lambda_mix <- pca_mix$sdev^2
+reparto_mix <- data.frame(componente = paste0("C", seq_along(lambda_mix)), lambda = lambda_mix,
+                          de_cada_100 = 100 * lambda_mix / sum(lambda_mix))
+reparto_mix$acumulado <- cumsum(reparto_mix$de_cada_100)
+k80_mix    <- which(reparto_mix$acumulado >= 80)[1]
+kaiser_mix <- sum(lambda_mix > 1)
+
+c(suma_lambdas = sum(lambda_mix), esperado = p_num + 3, ultimo_valor_propio = min(lambda_mix))
+
+data.frame(componente = paste0("C", 1:10),
+           solo_numericas = round(reparto_num$de_cada_100[1:10], 1),
+           acumulado_solo_numericas = round(reparto_num$acumulado[1:10], 1),
+           con_categoricas = round(reparto_mix$de_cada_100[1:10], 1),
+           acumulado_con_categoricas = round(reparto_mix$acumulado[1:10], 1))
+```
+
+```{r, p19_info_mix_plot, fig.width=10, fig.height=4.8}
+barras_ab <- rbind(data.frame(version = "Solo numéricas", comp = 1:10, v = reparto_num$de_cada_100[1:10]),
+                   data.frame(version = "Con categóricas", comp = 1:10, v = reparto_mix$de_cada_100[1:10]))
+barras_ab$comp <- factor(barras_ab$comp, levels = 1:10, labels = paste0("C", 1:10))
+
+ggplot(barras_ab, aes(comp, v, fill = version)) +
+  geom_col(position = "dodge", width = 0.75) +
+  scale_fill_manual(values = c("Solo numéricas" = "#2B6CB0", "Con categóricas" = "#C05621"), name = NULL) +
+  labs(title = "Cuánta información guarda cada componente, sin y con las categóricas",
+       subtitle = "Las diez primeras componentes de cada versión",
+       x = NULL, y = "De cada 100 partes de la información") +
+  theme(legend.position = "top")
+```
+
+**Qué veo.** La suma de los valores propios es `r coma(sum(lambda_mix), 1)`, igual a las
+`r p_num + 3` variables que se esperaban (26 numéricas y tres categóricas de peso 1). Sin las
+categóricas, C1 guarda `r coma(reparto_num$de_cada_100[1])` de cada 100 partes; con ellas,
+`r coma(reparto_mix$de_cada_100[1])`; las dos primeras suman `r coma(reparto_num$acumulado[2])` y
+`r coma(reparto_mix$acumulado[2])`. Para pasar de 80 de cada 100 hacen falta `r k80_num` componentes
+sin las categóricas y `r k80_mix` con ellas, y tienen $\lambda > 1$ `r kaiser_num` y `r kaiser_mix`
+respectivamente. El último valor propio con las categóricas es `r signif(min(lambda_mix), 2)`: es la
+componente de varianza cero que deja el *one-hot* de `Occupation`, como se advirtió arriba, y no un
+error. Las cifras no se comparan una a una porque la ficha tiene otra composición: son tres
+variables más.
+
+### Qué mide cada componente, y dónde caen las categóricas
+
+**Qué se hace.** Se repite la orientación de signos (la componente del cupo positiva hacia más cupo,
+la del puntaje positiva hacia peor puntaje) y se mira de dónde sale el peso de cada componente:
+como cada componente tiene pesos de norma 1, el cuadrado de los pesos de un grupo de columnas dice
+qué parte de la componente construye ese grupo. Se separan las 26 numéricas, `Gender`, `Card_Type`
+y `Occupation` (las seis columnas juntas). También se mira la correlación de cada columna categórica
+con los dos ejes.
+
+```{r, p19_pesos_mix}
+or_mix <- orientar(pca_mix)
+ctm <- or_mix$tamano
+crm <- or_mix$riesgo
+punt_mix  <- sweep(pca_mix$x[, 1:k_or], 2, or_mix$signo, "*")
+pesos_mix <- sweep(pca_mix$rotation[, 1:k_or], 2, or_mix$signo, "*")
+colnames(punt_mix) <- colnames(pesos_mix) <- paste0("C", 1:k_or)
+ax_mix <- ejes(pca_mix, or_mix)
+
+cols_cat <- list(Gender = "Gender_01", Card_Type = "Card_Type_1a5", Occupation = colnames(dum_ocup))
+peso_bloque <- rbind(
+  Numericas  = colSums(pesos_mix[vars_num, , drop = FALSE]^2),
+  Gender     = colSums(pesos_mix[cols_cat$Gender, , drop = FALSE]^2),
+  Card_Type  = colSums(pesos_mix[cols_cat$Card_Type, , drop = FALSE]^2),
+  Occupation = colSums(pesos_mix[cols_cat$Occupation, , drop = FALSE]^2))
+
+data.frame(componente = paste0("C", c(ctm, crm)),
+           lleva_a = c("Credit_Limit (cupo)", "Credit_Score (puntaje)"),
+           correlacion_con_esa_variable = round(c(cor(punt_mix[, ctm], Z_num[, "Credit_Limit"]),
+                                                  cor(punt_mix[, crm], Z_num[, "Credit_Score"])), 2))
+
+# De cada 100 partes del peso de cada componente, cuántas construye cada grupo de columnas
+round(100 * peso_bloque, 1)
+
+# Pesos de las columnas categóricas y su correlación con los dos ejes
+round(cbind(pesos_mix[unlist(cols_cat), ], cor(Z_mix[, unlist(cols_cat)], ax_mix)), 2)
+```
+
+```{r, p19_texto_pesos_mix, include = FALSE}
+comp_cat <- apply(peso_bloque[c("Gender", "Card_Type", "Occupation"), , drop = FALSE], 1, which.max)
+cor_cat  <- cor(Z_mix[, unlist(cols_cat)], ax_mix)
+r_tarjeta_cupo <- cor_cat["Card_Type_1a5", "tam"]
+r_tarjeta_rie  <- cor_cat["Card_Type_1a5", "rie"]
+ocup_max <- names(which.max(abs(cor_cat[colnames(dum_ocup), "tam"])))
+txt_gender <- if (peso_bloque["Gender", comp_cat[["Gender"]]] > 0.5) {
+  paste0("`Gender` concentra más de la mitad de su peso en una sola componente (la C", comp_cat[["Gender"]],
+         "): no se parece a nada y construye la suya, lo esperable de una variable casi independiente de las demás")
+} else {
+  "`Gender` reparte su peso entre varias componentes"
+}
+```
+
+**Qué veo.** La componente del cupo es la C`r ctm` y la del puntaje, la C`r crm`; la correlación de
+cada una con su variable ancla es `r coma(cor(punt_mix[, ctm], Z_num[, "Credit_Limit"]), 2)` y
+`r coma(cor(punt_mix[, crm], Z_num[, "Credit_Score"]), 2)`. En la tabla de reparto del peso, `Card_Type`
+concentra su mayor parte en la C`r comp_cat[["Card_Type"]]`
+(`r coma(100 * peso_bloque["Card_Type", comp_cat[["Card_Type"]]], 1)` de cada 100 partes del peso de esa
+componente), `Occupation` en la C`r comp_cat[["Occupation"]]`
+(`r coma(100 * peso_bloque["Occupation", comp_cat[["Occupation"]]], 1)`) y `Gender` en la
+C`r comp_cat[["Gender"]]` (`r coma(100 * peso_bloque["Gender", comp_cat[["Gender"]]], 1)`). Sobre los
+ejes, `Card_Type_1a5` tiene una correlación de `r coma(r_tarjeta_cupo, 2)` con el eje del cupo y de
+`r coma(r_tarjeta_rie, 2)` con el del puntaje; la columna de ocupación más correlacionada con el eje del
+cupo es `r ocup_max` (`r coma(cor_cat[ocup_max, "tam"], 2)`). `r txt_gender`. Las columnas que sí comparten información con
+las demás (`Card_Type_1a5` y las ocupaciones ligadas al ingreso) se suman a las componentes que ya existían.
+
+### El mapa y el biplot con las categóricas
+
+**Qué se hace.** Se dibuja el biplot de las `r ncol(Z_mix)` columnas sobre los dos ejes (cupo y
+puntaje) de esta versión: las flechas de las numéricas conservan los colores del biplot anterior y
+las de las categóricas salen en amarillo. Después se dibuja, lado a lado, el mapa por tipo de tarjeta
+de la versión solo numérica y la de la versión con categóricas. En la segunda, el tipo de tarjeta
+deja de ser un contraste externo, porque ayudó a construir el mapa.
+
+```{r, p19_biplot_mix, fig.width=10, fig.height=8.5}
+flechas_mix <- cor(Z_mix, ax_mix)
+fl_mix <- data.frame(variable = rownames(flechas_mix), x = flechas_mix[, "tam"], y = flechas_mix[, "rie"],
+                     row.names = NULL)
+fl_mix$etiqueta <- lab(fl_mix$variable)
+fl_mix$bloque   <- factor(bloque_de(fl_mix$variable), levels = names(col_bloque))
+fl_mix$largo    <- sqrt(fl_mix$x^2 + fl_mix$y^2)
+
+set.seed(2026)
+idx_bm <- sample(nrow(ax_mix), 6000)
+dibujar_biplot(fl_mix, ax_mix[idx_bm, ], "Biplot con las 26 numéricas y las categóricas codificadas",
+               paste0("C", ctm, "  ·  más cupo  →"), paste0("C", crm, "  ·  peor puntaje  →"))
+```
+
+```{r, p19_mapa_ab, fig.width=11, fig.height=5.8}
+df_ab <- rbind(data.frame(version = "Solo numéricas", x = ax_num[, "tam"], y = ax_num[, "rie"], tipo = tipo_f),
+               data.frame(version = "Con categóricas", x = ax_mix[, "tam"], y = ax_mix[, "rie"], tipo = tipo_f))
+df_ab$version <- factor(df_ab$version, levels = c("Solo numéricas", "Con categóricas"))
+df_ab$muestra <- rep(seq_len(nrow(ax_num)) %in% muestra_19, 2)
+
+ggplot(df_ab, aes(x, y, color = tipo)) +
+  geom_point(data = df_ab[df_ab$muestra, ], alpha = 0.15, size = 0.4) +
+  stat_ellipse(level = 0.90, type = "norm", linewidth = 1.1) +
+  facet_wrap(~ version, scales = "free") +
+  scale_color_viridis_d(name = "Card_Type", option = "D", end = 0.9) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 2.5))) +
+  labs(title = "El mapa por tipo de tarjeta, sin y con las categóricas",
+       subtitle = "Puntos: muestra de 12.000 clientes · elipses del 90 % con todos · cada panel con su propia escala",
+       x = "Eje del cupo (más cupo →)", y = "Eje del puntaje (peor puntaje →)") +
+  theme(legend.position = "top")
+```
+
+```{r, p19_texto_biplot_mix, include = FALSE}
+cat_cols <- unlist(cols_cat)
+largo_cat <- setNames(fl_mix$largo[match(cat_cols, fl_mix$variable)], cat_cols)
+ang_tarjeta_cupo <- atan2(fl_mix$y[fl_mix$variable == "Card_Type_1a5"], fl_mix$x[fl_mix$variable == "Card_Type_1a5"]) * 180 / pi
+```
+
+**Qué veo.** En el biplot, la flecha de `Card_Type_1a5` mide `r coma(largo_cat[["Card_Type_1a5"]], 2)` y
+apunta a `r round(ang_tarjeta_cupo)`° desde el eje horizontal (`r coma(r_tarjeta_cupo, 2)` de correlación con el eje
+del cupo, `r coma(r_tarjeta_rie, 2)` con el del puntaje); las de ocupación miden entre
+`r coma(min(largo_cat[colnames(dum_ocup)]), 2)` y `r coma(max(largo_cat[colnames(dum_ocup)]), 2)` y `Gender_01`,
+`r coma(largo_cat[["Gender_01"]], 2)`. En los mapas, la amplitud entre tipos de tarjeta a lo largo del eje horizontal es
+`r coma(amplitud(ax_num[, "tam"], tipo_f), 2)` desviaciones en la versión solo numérica y
+`r coma(amplitud(ax_mix[, "tam"], tipo_f), 2)` en la que incluye las categóricas, y en el eje vertical
+`r coma(amplitud(ax_num[, "rie"], tipo_f), 2)` y `r coma(amplitud(ax_mix[, "rie"], tipo_f), 2)`. Esa
+comparación no se interpreta como un hallazgo sobre la tarjeta, porque en la segunda versión el tipo de
+tarjeta ya no es un contraste externo: ayudó a construir el mapa.
+
+### ¿Cambia el mapa si se agregan las categóricas?
+
+**Qué se hace.** Se comparan los dos ejes (cupo y puntaje) de las dos versiones con tres medidas: la
+correlación entre el eje de una versión y el de la otra (cerca de 1: es el mismo eje), cuántos de
+cada 100 clientes del 20 % más alto en el eje del puntaje de la versión numérica siguen en el 20 %
+más alto de la versión con categóricas, y cuánto de cada eje explica ahora cada categórica ($\eta^2$).
+
+```{r, p19_comparacion_ab}
+comp_ab <- rbind(resumen_pca(pca_num, or_num, "Solo numéricas", ax_num),
+                 resumen_pca(pca_mix, or_mix, "Con categóricas (mixta)", ax_num))
+comp_ab[-1] <- lapply(comp_ab[-1], round, 2)
+comp_ab[, c("version", "los_dos_ejes", "comp_cupo", "comp_puntaje", "cor_eje_cupo", "cor_eje_puntaje",
+            "mantiene_lista", "peor20_en_el_20_alto")]
+
+gr_mix <- tabla_grupos(ax_mix)
+data.frame(variable = gr_num$variable,
+           eta2_cupo_sin_categoricas = round(gr_num$eta2_tam, 1),
+           eta2_cupo_con_categoricas = round(gr_mix$eta2_tam, 1),
+           eta2_puntaje_sin_categoricas = round(gr_num$eta2_rie, 1),
+           eta2_puntaje_con_categoricas = round(gr_mix$eta2_rie, 1))
+```
+
+```{r, p19_texto_comparacion, include = FALSE}
+estable_mix <- comp_ab$cor_eje_puntaje[2] > 0.95 && comp_ab$mantiene_lista[2] >= 85
+cupo_igual  <- comp_ab$cor_eje_cupo[2] > 0.95
+```
+
+**Qué veo.** El eje del cupo de la versión con categóricas se parece al de la numérica con una
+correlación de `r coma(comp_ab$cor_eje_cupo[2], 2)` y el del puntaje, con `r coma(comp_ab$cor_eje_puntaje[2], 2)`.
+La lista del 20 % más alto en el eje del puntaje conserva `r coma(comp_ab$mantiene_lista[2], 0)` de cada 100
+clientes, y ese eje contiene a `r coma(comp_ab$peor20_en_el_20_alto[2], 0)` de cada 100 de los de peor puntaje
+(`r coma(comp_ab$peor20_en_el_20_alto[1], 0)` sin categóricas).
+`r if (cupo_igual) "El eje del cupo se conserva: las categóricas se acomodan en él en vez de reordenarlo." else "El eje del cupo se reacomoda: ahora las categóricas son una de las cosas que lo construyen."`
+`r if (estable_mix) "El eje del puntaje también se conserva, así que meter las categóricas con esta codificación no cambia el mapa de forma importante." else "El eje del puntaje cambia de forma apreciable, así que la lista de clientes que quedan arriba ya no es la misma."`
+En la tabla de $\eta^2$, `Card_Type` explica `r coma(gr_num$eta2_tam[1], 1)` de cada 100 del eje del cupo sin
+categóricas y `r coma(gr_mix$eta2_tam[1], 1)` con ellas; en el eje del puntaje, `r coma(gr_num$eta2_rie[1], 1)` y
+`r coma(gr_mix$eta2_rie[1], 1)`. El tipo de tarjeta **va con** la posición en el mapa; no se dice que la
+cause.
+
+### ¿Importa cómo se codifica? Cuatro versiones
+
+**Qué se hace.** Se comparan cuatro versiones del PCA con las mismas 26 numéricas:
+(1) solo las numéricas; (2) la versión **mixta** de este módulo (*label encoding* para `Gender` y
+`Card_Type`, *one-hot* ponderado para `Occupation`); (3) *one-hot* **ponderado** para las tres
+categóricas (cada una pesa como una variable); y (4) *one-hot* **sin ponderar** para las tres (las
+13 columnas pesan cada una como una variable, así que las categóricas juntas pesan 13 veces más que
+una numérica). Para cada versión se halla qué componentes llevan el cupo y el puntaje, y se comparan
+con los ejes de la versión numérica.
+
+```{r, p19_variantes_tabla}
+or_pond   <- orientar(pca_oh_pond)
+or_pleno  <- orientar(pca_oh_pleno)
+var_res <- rbind(resumen_pca(pca_num, or_num, "1. Solo numéricas", ax_num),
+                 resumen_pca(pca_mix, or_mix, "2. Mixta (label + one-hot ponderado)", ax_num),
+                 resumen_pca(pca_oh_pond, or_pond, "3. One-hot ponderado en las tres", ax_num),
+                 resumen_pca(pca_oh_pleno, or_pleno, "4. One-hot sin ponderar en las tres", ax_num))
+var_res[-1] <- lapply(var_res[-1], round, 2)
+
+var_res[, c("version", "columnas", "C1", "los_dos_ejes", "para_80", "nulos", "comp_cupo", "comp_puntaje")]
+var_res[, c("version", "cor_eje_cupo", "cor_eje_puntaje", "mantiene_lista", "peor20_en_el_20_alto",
+            "eta2_tarjeta_cupo", "eta2_tarjeta_puntaje")]
+
+# En la versión sin ponderar: ¿qué componentes están hechas sobre todo por las columnas de las categóricas?
+cols_dum_pleno <- setdiff(colnames(Z_oh_pleno), vars_num)
+peso_dum_pleno <- 100 * colSums(pca_oh_pleno$rotation[cols_dum_pleno, 1:8]^2)
+round(peso_dum_pleno, 1)
+comp_dum_pleno <- which(peso_dum_pleno > 50)
+```
+
+**Qué veo.** Las cuatro versiones tienen `r var_res$columnas[1]`, `r var_res$columnas[2]`,
+`r var_res$columnas[3]` y `r var_res$columnas[4]` columnas, y C1 guarda `r coma(var_res$C1[1])`,
+`r coma(var_res$C1[2])`, `r coma(var_res$C1[3])` y `r coma(var_res$C1[4])` de cada 100 partes. El
+eje del cupo de las versiones 2, 3 y 4 se parece al de la numérica con correlaciones de
+`r coma(var_res$cor_eje_cupo[2], 2)`, `r coma(var_res$cor_eje_cupo[3], 2)` y `r coma(var_res$cor_eje_cupo[4], 2)`; el del
+puntaje, con `r coma(var_res$cor_eje_puntaje[2], 2)`, `r coma(var_res$cor_eje_puntaje[3], 2)` y
+`r coma(var_res$cor_eje_puntaje[4], 2)`. La lista del 20 % más alto en el eje del puntaje conserva
+`r coma(var_res$mantiene_lista[2], 0)`, `r coma(var_res$mantiene_lista[3], 0)` y `r coma(var_res$mantiene_lista[4], 0)` de cada 100
+clientes. Las versiones con *one-hot* tienen `r var_res$nulos[3]` (ponderado) y `r var_res$nulos[4]` (sin
+ponderar) componentes de varianza cero, una por cada bloque de columnas que siempre suma 1. En la
+versión sin ponderar, `r if (length(comp_dum_pleno) == 0) "ninguna de las ocho primeras componentes tiene más de la mitad de su peso en las columnas de las categóricas" else paste0("las componentes ", unir(paste0("C", comp_dum_pleno)), " tienen más de la mitad de su peso en las columnas de las categóricas")`:
+con tantas columnas, las categóricas dejan de ser un complemento y empiezan a construir componentes propias.
+Entre la versión 2 y la 3 solo cambia la codificación de `Card_Type` (un entero ordinal frente a cinco
+columnas): la correlación del eje del cupo entre ellas dos es
+`r coma(cor(ejes(pca_mix, or_mix)[, "tam"], ejes(pca_oh_pond, or_pond)[, "tam"]), 3)`, de modo que el supuesto de
+distancias iguales entre tipos de tarjeta, hecho al codificarla de 1 a 5, `r if (cor(ejes(pca_mix, or_mix)[, "tam"], ejes(pca_oh_pond, or_pond)[, "tam"]) > 0.98) "casi no cambia el mapa" else "sí cambia el eje del cupo"`.
+
+------------------------------------------------------------------------
+
+## Qué no dice este módulo
+
+- **No dice que las componentes sean causas.** "Cupo" y "puntaje" son los nombres de los ejes por las variables ancla
+  y por lo que pesa en cada uno; mostrar que las variables se mueven juntas no demuestra que exista algo
+  oculto que las produzca (esa es la pregunta del Módulo 18, el análisis factorial).
+- **No es la técnica propia de las variables mixtas.** El PCA se hizo sobre variables numéricas y columnas 0/1 codificadas
+  y estandarizadas; para mezclar variables numéricas y categóricas existen técnicas pensadas para ello (el
+  análisis de correspondencias múltiples y el FAMD), que no se usan aquí.
+- **La codificación es una decisión, no un hecho de los datos.** El *label encoding* de `Card_Type` supone distancias
+  iguales entre niveles, y la ponderación $1/\sqrt{k}$ es la elección del Módulo 15; la comparación de cuatro
+  versiones mide cuánto depende de ellas el resultado.
+- **Los mapas muestran un plano.** Dibujan `r coma(info_mapa_num)` de cada 100 partes de la información en la versión
+  numérica y `r coma(reparto_mix$de_cada_100[ctm] + reparto_mix$de_cada_100[crm])` en la que incluye las categóricas; las demás
+  componentes no están dibujadas.
+
+## Conclusión del módulo
+
+1.  **Con las 26 variables numéricas**, la primera componente guarda `r coma(reparto_num$de_cada_100[1])` de cada 100
+    partes de la información, hacen falta `r k80_num` componentes para pasar de 80 y `r kaiser_num` tienen
+    $\lambda > 1$. El PCA tolera las columnas redundantes que el Módulo 10 tuvo que sacar: la dependencia exacta del
+    gasto aparece como una componente de varianza casi cero (`r signif(min(ev_crudo), 2)` sin logaritmo).
+2.  **Estandarizar y transformar importa:** sin estandarizar, la primera componente es `r var_c1(pca_sin_escala)` con otro
+    nombre (peso `r coma(peso_c1(pca_sin_escala), 2)`); con el logaritmo la asimetría de los puntajes de C1 baja de
+    `r coma(abs(skew(pca_sin_log$x[, 1])), 2)` a `r coma(abs(skew(pca_num$x[, 1])), 2)`.
+3.  **Qué miden las dos componentes principales:** la C`r ct` lleva el cupo y la C`r cr` lleva el puntaje; el mapa
+    de las dos guarda `r coma(info_mapa_num)` de cada 100 partes. La del cupo `r txt_t`; la del puntaje `r txt_r`.
+4.  **Los clientes forman `r if (continuo_num) "un continuo" else "una nube con más de una masa"`** en el mapa, y los grupos que ya
+    se conocen (tarjeta y ocupación) se desplazan a lo largo del eje del cupo
+    (`r coma(g_num("Card_Type", "eta2_tam"), 1)` y `r coma(g_num("Occupation", "eta2_tam"), 1)` de cada 100 de variación) y
+    explican `r coma(g_num("Card_Type", "eta2_rie"), 1)` y `r coma(g_num("Occupation", "eta2_rie"), 1)` del eje del puntaje.
+5.  **Con las categóricas codificadas** (`r ncol(Z_mix)` columnas), el eje del cupo se parece al de las numéricas con una
+    correlación de `r coma(comp_ab$cor_eje_cupo[2], 2)` y el del puntaje con `r coma(comp_ab$cor_eje_puntaje[2], 2)`; la
+    lista del 20 % más alto en el eje del puntaje conserva `r coma(comp_ab$mantiene_lista[2], 0)` de cada 100 clientes.
+6.  **La codificación importa:** la correlación del eje del puntaje con el de las numéricas es
+    `r coma(var_res$cor_eje_puntaje[4], 2)` con el *one-hot* sin ponderar (13 columnas que pesan cada una como una
+    variable, con `r length(comp_dum_pleno)` componente(s) hechas sobre todo por ellas),
+    `r coma(var_res$cor_eje_puntaje[3], 2)` con el *one-hot* ponderado y `r coma(var_res$cor_eje_puntaje[2], 2)` con la
+    versión mixta; en las dos versiones ponderadas, cada categórica pesa como una variable, que es el criterio del Módulo 15.
