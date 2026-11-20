@@ -147,3 +147,20 @@ footer { position: absolute; left: 96px; right: 96px; bottom: 24px; display: fle
 .abajo.cuatro { grid-template-columns: 1.15fr 1fr 1fr 1fr; gap: 22px; }
 .abajo.cuatro .caja { font-size: 18px; padding: 20px 22px; }
 .abajo.cuatro .caja p + p { margin-top: 10px; }
+
+.mini.peq { font-size: 18px; margin-top: 12px; }
+.grande.medio > b { font-size: 60px; }
+.grande.medio > span { font-size: 22px; }
+.caso { display: grid; grid-template-columns: 210px 1fr 150px; gap: 12px; align-items: baseline; font-size: 18px; padding: 8px 0; border-top: 1px solid var(--line); }
+.caso em { font-style: normal; font-weight: 700; color: #1E6B3A; text-align: right; }
+.sds { columns: 1; }
+.sd { display: grid; grid-template-columns: 180px 300px 1fr; align-items: center; gap: 10px; font-size: 16px; line-height: 1; margin: 3px 0; }
+.sdn { text-align: right; color: #36405A; }
+.sdb { height: 13px; background: #1F4E79; border-radius: 3px; display: inline-block; }
+.sdv { font-weight: 700; font-size: 15px; }
+.brujula { width: 100%; height: 280px; }
+.bt1, .bt2 { font: 700 15px Inter, sans-serif; fill: #1F4E79; }
+.bt2 { font-weight: 400; }
+.bt3 { font: 700 16px Inter, sans-serif; fill: #C8102E; }
+.bt4 { font: 400 14px Inter, sans-serif; fill: #5B6475; }
+.bt5 { font: 600 13px Inter, sans-serif; fill: #5B6475; }

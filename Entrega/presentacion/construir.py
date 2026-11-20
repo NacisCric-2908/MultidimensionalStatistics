@@ -109,9 +109,13 @@ s3 = lamina(3, "¿Qué hacemos con faltantes y atípicos?",
             "Hallazgo 2: sus datos están sanos, pero hay 1.641 clientes con un perfil que nadie estaba mirando.",
             f"""<div class="fila">
       <div class="col-p">
-        <div class="sano"><b>0</b> datos faltantes &nbsp;·&nbsp; <b>0</b> clientes duplicados &nbsp;·&nbsp; <b>0</b> valores imposibles</div>
-        <div class="grande rojo"><b>1.641</b><span>clientes «raros»: cada dato por separado es normal, pero la combinación no lo es (3,3 % de la cartera)</span></div>
-        <div class="mini"><b>64 de cada 100</b> de ellos no tienen ningún dato extremo: una revisión columna por columna no los encuentra.</div>
+        <div class="sano"><b>0</b> faltantes · <b>0</b> duplicados · <b>0</b> valores imposibles</div>
+        <div class="grande rojo medio"><b>1.641</b><span>clientes «raros»: cada dato por separado es normal, pero la combinación no lo es (3,3 % de la cartera)</span></div>
+        <div class="mini"><b>64 de cada 100</b> no tienen ningún dato extremo: revisando columna por columna no se ven.</div>
+        <div class="etq" style="margin-top:22px">Los tres más lejanos, uno por uno</div>
+        <div class="caso"><span><b>CC145327</b> · Platinum</span><span>combustible casi en cero (5,1 desviaciones por debajo)</span><em>real · se estudia</em></div>
+        <div class="caso"><span><b>CC107443</b> · Silver</span><span>compras en línea casi en cero, con muchas transacciones</span><em>real · se estudia</em></div>
+        <div class="caso"><span><b>CC139311</b> · Gold</span><span>viajes casi en cero, con muchas transacciones</span><em>real · se estudia</em></div>
       </div>
       <div class="col-g perfil">
         <div class="ptag">Perfil de riesgo · «El cliente disparejo»</div>
@@ -121,12 +125,13 @@ s3 = lamina(3, "¿Qué hacemos con faltantes y atípicos?",
         <div class="comp"><span>Con tarjeta Platinum o Signature</span><b class="rojo">38 %</b><em>frente a 21 % del resto</em></div>
       </div>
     </div>""" + franja(
-                "No sale ningún cliente. Los 1.641 se marcan y se estudian; no hubo errores que corregir.",
+                "No sale ningún cliente. Los 1.641 son casos reales: se marcan y se estudian. Errores que corregir: 0 (no hay valores imposibles).",
                 "Borrarlos como «datos raros», o revisar solo dato por dato.",
                 "Quitarlos no cambia la estructura de la cartera (las relaciones se mueven como mucho 0,02).",
                 "Borrarlos habría escondido a un grupo con más riesgo que el promedio. Ahora tienen nombre, y en la lámina 10 les decimos qué hacer con ellos."))
 
 # ------------------------------------------------------------------ 4. Estandarizar
+FILAS_SD = '''<div class="sd"><span class="sdn">ingreso</span><span class="sdb" style="width:298px"></span><span class="sdv">1.410.000</span></div><div class="sd"><span class="sdn">cupo</span><span class="sdb" style="width:291px"></span><span class="sdv">1.010.000</span></div><div class="sd"><span class="sdn">saldo facturado</span><span class="sdb" style="width:280px"></span><span class="sdv">560.000</span></div><div class="sd"><span class="sdn">pagos</span><span class="sdb" style="width:276px"></span><span class="sdv">453.000</span></div><div class="sd"><span class="sdn">avances en efectivo</span><span class="sdb" style="width:241px"></span><span class="sdv">78.000</span></div><div class="sd"><span class="sdn">mercado</span><span class="sdb" style="width:218px"></span><span class="sdv">23.700</span></div><div class="sd"><span class="sdn">servicios</span><span class="sdb" style="width:212px"></span><span class="sdv">16.800</span></div><div class="sd"><span class="sdn">en línea</span><span class="sdb" style="width:211px"></span><span class="sdv">16.600</span></div><div class="sd"><span class="sdn">combustible</span><span class="sdb" style="width:210px"></span><span class="sdv">15.500</span></div><div class="sd"><span class="sdn">restaurantes</span><span class="sdb" style="width:208px"></span><span class="sdv">13.700</span></div><div class="sd"><span class="sdn">entretenimiento</span><span class="sdb" style="width:206px"></span><span class="sdv">12.300</span></div><div class="sd"><span class="sdn">viajes</span><span class="sdb" style="width:203px"></span><span class="sdv">10.700</span></div><div class="sd"><span class="sdn">puntos redimidos</span><span class="sdb" style="width:173px"></span><span class="sdv">2.360</span></div><div class="sd"><span class="sdn">valor por compra</span><span class="sdb" style="width:152px"></span><span class="sdv">780</span></div><div class="sd"><span class="sdn">puntaje</span><span class="sdb" style="width:105px"></span><span class="sdv">68,4</span></div><div class="sd"><span class="sdn">transacciones</span><span class="sdb" style="width:95px"></span><span class="sdv">42,0</span></div><div class="sd"><span class="sdn">antigüedad (meses)</span><span class="sdb" style="width:89px"></span><span class="sdv">31,2</span></div><div class="sd"><span class="sdn">ingresos a la app</span><span class="sdb" style="width:77px"></span><span class="sdv">16,8</span></div><div class="sd"><span class="sdn">edad</span><span class="sdb" style="width:71px"></span><span class="sdv">12,2</span></div><div class="sd"><span class="sdn">internacionales</span><span class="sdb" style="width:41px"></span><span class="sdv">2,60</span></div><div class="sd"><span class="sdn">cuotas</span><span class="sdb" style="width:32px"></span><span class="sdv">1,67</span></div>'''
 s4 = lamina(4, "¿Estandarizamos?",
             "Medidos en rupias, los clientes ricos tapan todo lo demás.",
             f"""<div class="fila">
@@ -139,14 +144,15 @@ s4 = lamina(4, "¿Estandarizamos?",
         <div class="mini">El primer indicador guarda 50,1 de cada 100 partes de la información de la ficha, y lo construyen todas.</div>
       </div>
       <div class="col-p">
-        <div class="cita">«Si su modelo de seguimiento usa montos en rupias, termina vigilando a los clientes más ricos, no a los más riesgosos.»</div>
-        <div class="mini">De la columna más chica (cuotas, 1,67) a la más grande (ingreso, ₹1.410.000) hay seis órdenes de magnitud.</div>
+        <div class="etq">Cuánto varía cada columna, en sus propias unidades</div>
+        <div class="sds">{FILAS_SD}</div>
+        <div class="mini peq">Escala logarítmica: de 1,67 cuotas a ₹1.410.000 de ingreso hay seis órdenes de magnitud.</div>
       </div>
     </div>""" + franja(
                 "Sí: pasar todo a la misma escala, con logaritmo en los montos con colas largas.",
                 "Trabajar en rupias, o igualar escalas sin logaritmo (guarda 48,0).",
                 "En rupias, el resumen «guarda» 95,5 de cada 100, pero es el ingreso disfrazado (peso 0,76). En la misma escala, 50,1, y aportan todas.",
-                "Los indicadores pesan a todos los clientes por lo que hacen, no por cuánto ganan."))
+                "Con montos en rupias, un modelo de seguimiento vigila a los más ricos, no a los más riesgosos. Así, pesa a cada cliente por lo que hace."))
 
 # ------------------------------------------------------------------ 5. Resumir
 quint = [("20 % de menor ingreso", 20.4), ("Siguiente 20 %", 21.0), ("20 % del medio", 20.6),
@@ -244,6 +250,7 @@ s8 = lamina(8, "¿Qué pierde el cliente con un solo número?",
                 "Un seguimiento basado en «los clientes más grandes» deja fuera a casi todos los que van a necesitarlo."))
 
 # ------------------------------------------------------------------ 9. Grupos
+BRUJULA = '''<svg viewBox="0 0 330 290" class="brujula"><defs><marker id="pt1F4E79" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#1F4E79"/></marker><marker id="ptC8102E" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#C8102E"/></marker><marker id="pt9AA5B8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#9AA5B8"/></marker></defs><line x1="10" y1="150" x2="320" y2="150" stroke="#E2E5EA" stroke-width="2"/><line x1="130" y1="10" x2="130" y2="285" stroke="#E2E5EA" stroke-width="2"/><line x1="130" y1="150" x2="276" y2="150" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="276" y2="152" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="271" y2="129" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="264" y2="160" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="259" y2="152" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="250" y2="152" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="238" y2="152" stroke="#1F4E79" stroke-width="2.5" marker-end="url(#pt1F4E79)"/><line x1="130" y1="150" x2="133" y2="273" stroke="#C8102E" stroke-width="4" marker-end="url(#ptC8102E)"/><line x1="130" y1="150" x2="142" y2="72" stroke="#C8102E" stroke-width="4" marker-end="url(#ptC8102E)"/><line x1="130" y1="150" x2="128" y2="204" stroke="#9AA5B8" stroke-width="3" marker-end="url(#pt9AA5B8)"/><text x="175" y="185" class="bt1">dinero y uso</text><text x="175" y="203" class="bt2">16 flechas juntas</text><text x="140" y="276" class="bt3">puntaje</text><text x="148" y="80" class="bt3">avances</text><text x="60" y="205" class="bt4">antigüedad</text><text x="322" y="282" class="bt5" text-anchor="end">más tamaño →</text><text x="136" y="22" class="bt5">↑ más riesgo</text></svg>'''
 tarj = [("Basic", 66000), ("Silver", 227000), ("Gold", 519000), ("Platinum", 1053500), ("Signature", 4094500)]
 peor_t = [("Basic", 20.3), ("Silver", 21.1), ("Gold", 20.7), ("Platinum", 18.0), ("Signature", 17.5)]
 peor_o = [("Estudiante", 20.2), ("Jubilado", 20.6), ("Empleado privado", 20.5), ("Empleado público", 20.3),
@@ -254,9 +261,9 @@ s9 = lamina(9, "¿Qué muestra el mapa?",
       <div><div class="etq">Cupo mediano por categoría</div>{barras(tarj, 4094500, lambda v: "₹" + es(v / 1000, 0) + " mil", ancho=270)}
         <div class="mini">La categoría ordena perfecto el tamaño…</div></div>
       <div><div class="etq rojo">De cada 100, en el 20 % de peor puntaje</div>{barras(peor_t, 25, lambda v: es(v), ancho=270, color="#C8102E")}
-        <div class="mini">…pero el riesgo es el mismo en todas.</div></div>
-      <div><div class="etq rojo">Lo mismo por ocupación</div>{barras(peor_o, 25, lambda v: es(v), ancho=200, color="#C8102E")}
-        <div class="mini">Entre 19 y 21 de cada 100 en todas.</div></div>
+        <div class="mini">…pero el riesgo es el mismo en todas. Por ocupación, igual: entre 19 y 21 de cada 100.</div></div>
+      <div><div class="etq">La brújula de su cartera (biplot)</div>{BRUJULA}
+        <div class="mini peq">Las flechas de dinero van juntas (ingreso y cupo, 0°). El puntaje va solo, en ángulo recto con el dinero (88°). Los avances en efectivo apuntan al lado opuesto del puntaje (170°).</div></div>
     </div>
     <div class="continuo"><b>No hay «tipos» de cliente riesgoso:</b> el riesgo sube poco a poco, sin un punto natural de corte, así que el corte lo pone la Gerencia.
       Proponemos: <b>puntaje de 560 o menos</b> (una desviación por debajo del promedio de 629) y, dentro de ellos, la mitad más grande primero:
